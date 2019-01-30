@@ -41,7 +41,7 @@ export default class MilestoneModel extends BasicModel {
     } = data;
 
     this._selectedFiatType = selectedFiatType;
-    this._maxAmount = new BigNumber(utils.fromWei(maxAmount));
+    this._maxAmount = utils.fromWei(maxAmount);
     this._fiatAmount = new BigNumber(fiatAmount);
     this._recipientAddress = recipientAddress;
     this._status = status;
@@ -54,6 +54,7 @@ export default class MilestoneModel extends BasicModel {
     this._confirmations = confirmations;
     this._requiredConfirmations = requiredConfirmations;
     this._commitTime = commitTime;
+    this._campaignId = campaignId;
     this._pluginAddress = pluginAddress;
     this._token = token;
     this._conversionRateTimestamp = conversionRateTimestamp;
@@ -65,7 +66,6 @@ export default class MilestoneModel extends BasicModel {
     this._recipient = recipient;
     this._reviewer = reviewer;
     this._mined = mined;
-    this._campaignId = campaignId;
   }
 
   toIpfs() {
@@ -88,7 +88,7 @@ export default class MilestoneModel extends BasicModel {
       title: this._title,
       description: this._description,
       image: cleanIpfsPath(this._image),
-      maxAmount: utils.toWei(this.maxAmount.toFixed()), // maxAmount is stored as wei in feathers
+      maxAmount: utils.toWei(this.maxAmount), // maxAmount is stored as wei in feathers
       ownerAddress: this._ownerAddress,
       reviewerAddress: this._reviewerAddress,
       recipientAddress: this._recipientAddress,
@@ -173,6 +173,10 @@ export default class MilestoneModel extends BasicModel {
     return 'milestone';
   }
 
+  get id() {
+    return this._id;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   get type() {
     return MilestoneModel.type;
@@ -185,10 +189,6 @@ export default class MilestoneModel extends BasicModel {
   set title(value) {
     this.checkType(value, ['string'], 'title');
     this._title = value;
-  }
-
-  get id() {
-    return this._id;
   }
 
   get description() {
@@ -212,17 +212,19 @@ export default class MilestoneModel extends BasicModel {
   get maxAmount() {
     // max amount is not stored in wei
     if (this.itemizeState) {
-      return this.items.reduce(
-        (accumulator, item) => accumulator.plus(new BigNumber(utils.fromWei(item.wei))),
-        new BigNumber(0),
-      );
+      return this.items
+        .reduce(
+          (accumulator, item) => accumulator.plus(new BigNumber(utils.fromWei(item.wei))),
+          new BigNumber(0),
+        )
+        .toFixed();
     }
 
     return this._maxAmount;
   }
 
   set maxAmount(value) {
-    this.checkInstanceOf(value, BigNumber, 'maxAmount');
+    this.checkType(value, ['string'], 'maxAmount');
     this._maxAmount = value;
   }
 

@@ -408,7 +408,7 @@ class MilestoneService {
           milestone.campaignReviewerAddress,
           from,
           utils.toWei(milestone.maxAmount.toFixed()),
-          milestone.token.foreignAddress,
+          milestone.token.address,
           5 * 24 * 60 * 60, // 5 days in seconds
           { from, $extraGas: extraGas() },
         );
@@ -515,7 +515,7 @@ class MilestoneService {
             campaignReviewer.address,
             owner.address,
             utils.toWei(maxAmount.toFixed()),
-            token.foreignAddress,
+            token.address,
             5 * 24 * 60 * 60, // 5 days in seconds
             { from, $extraGas: extraGas() },
           )
@@ -796,7 +796,7 @@ class MilestoneService {
         return cappedMilestone
           .mWithdraw(data.pledges, {
             from,
-            $extraGas: extraGas(),
+            $extraGas: 4000000, // extraGas(),
           })
           .once('transactionHash', hash => {
             txHash = hash;

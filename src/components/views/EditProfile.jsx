@@ -36,7 +36,7 @@ class EditProfile extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    checkForeignNetwork(this.props.isForeignNetwork).then(() =>
+    checkForeignNetwork(this.props.isCorrectNetwork).then(() =>
       isLoggedIn(this.props.currentUser)
         .then(() => checkBalance(this.props.balance))
         .then(() => this.setState({ isLoading: false }))
@@ -219,7 +219,6 @@ class EditProfile extends Component {
                     className="btn btn-success"
                     formNoValidate
                     type="submit"
-                    network="Foreign"
                     disabled={isSaving || isPristine || (currentUser && currentUser.giverId === 0)}
                     isLoading={isSaving}
                     loadingText="Saving..."
@@ -239,7 +238,7 @@ class EditProfile extends Component {
 EditProfile.propTypes = {
   currentUser: PropTypes.instanceOf(User),
   balance: PropTypes.instanceOf(BigNumber).isRequired,
-  isForeignNetwork: PropTypes.bool.isRequired,
+  isCorrectNetwork: PropTypes.bool.isRequired,
 };
 
 EditProfile.defaultProps = {

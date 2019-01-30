@@ -14,7 +14,7 @@ import config from 'configuration';
 
 import Loader from '../Loader';
 import DelegateButton from '../DelegateButton';
-import { getUserName, getUserAvatar, convertEthHelper } from '../../lib/helpers';
+import { getUserName, getUserAvatar } from '../../lib/helpers';
 
 import DelegationProvider, {
   Consumer as DelegationConsumer,
@@ -26,15 +26,15 @@ import Donation from '../../models/Donation';
  */
 const Delegations = ({ balance, currentUser }) => (
   <Web3Consumer>
-    {({ state: { isForeignNetwork } }) => (
+    {({ state: { isCorrectNetwork } }) => (
       <DelegationProvider currentUser={currentUser}>
         <DelegationConsumer>
           {({
             state: {
               isLoading,
               delegations,
-              campaigns,
               milestones,
+              campaigns,
               totalResults,
               visiblePages,
               skipPages,
@@ -51,12 +51,11 @@ const Delegations = ({ balance, currentUser }) => (
                     )}
 
                     <NetworkWarning
-                      incorrectNetwork={!isForeignNetwork}
-                      networkName={config.foreignNetworkName}
+                      incorrectNetwork={!isCorrectNetwork}
+                      networkName={config.networkName}
                     />
 
                     {isLoading && <Loader className="fixed" />}
-
                     {!isLoading && (
                       <div>
                         {delegations &&
@@ -76,18 +75,22 @@ const Delegations = ({ balance, currentUser }) => (
                                 </thead>
                                 <tbody>
                                   {delegations.map(d => (
-                                    <tr key={d._id}>
+                                    <tr key={d.id}>
                                       {currentUser.authenticated && (
                                         <td className="td-actions">
                                           {/* When donated to a dac, allow delegation
                                     to campaigns and milestones */}
                                           {(d.delegateId > 0 ||
                                             d.ownerTypeId === currentUser.address) &&
-                                            isForeignNetwork &&
                                             d.status === Donation.WAITING &&
+                                            isCorrectNetwork &&
                                             d.amountRemaining > 0 && (
                                               <DelegateButton
-                                                types={campaigns.concat(milestones)}
+                                                types={campaigns.concat(
+                                                  milestones.filter(
+                                                    m => m.token.symbol === d.token.symbol,
+                                                  ),
+                                                )}
                                                 donation={d}
                                                 balance={balance}
                                                 symbol={
@@ -100,8 +103,8 @@ const Delegations = ({ balance, currentUser }) => (
                                           {/* When donated to a campaign, only allow delegation
                                     to milestones of that campaign */}
                                           {d.ownerType === 'campaign' &&
-                                            isForeignNetwork &&
                                             d.status === Donation.COMMITTED &&
+                                            isCorrectNetwork &&
                                             d.amountRemaining > 0 && (
                                               <DelegateButton
                                                 types={milestones.filter(
@@ -133,7 +136,7 @@ const Delegations = ({ balance, currentUser }) => (
                                             &nbsp;
                                           </span>
                                         )}
-                                        {convertEthHelper(d.amountRemaining)}{' '}
+                                        {d.amountRemaining.toString()}{' '}
                                         {(d.token && d.token.symbol) || config.nativeTokenName}
                                       </td>
                                       <td className="td-user">

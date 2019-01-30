@@ -22,7 +22,6 @@ import {
 } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
-import templates from '../../lib/milestoneTemplates';
 
 import ErrorPopup from '../ErrorPopup';
 import MilestoneProof from '../MilestoneProof';
@@ -69,12 +68,10 @@ class EditMilestone extends Component {
     this.setFiatAmount = this.setFiatAmount.bind(this);
     this.changeSelectedFiat = this.changeSelectedFiat.bind(this);
     this.onItemsChanged = this.onItemsChanged.bind(this);
-    this.handleTemplateChange = this.handleTemplateChange.bind(this);
-    this.validateMilestoneDesc = this.validateMilestoneDesc.bind(this);
   }
 
   componentDidMount() {
-    checkForeignNetwork(this.props.isForeignNetwork)
+    checkForeignNetwork(this.props.isCorrectNetwork)
       .then(() => this.checkUser())
       .then(async () => {
         this.setState({
@@ -192,30 +189,16 @@ class EditMilestone extends Component {
         resp.rates[milestone.selectedFiatType] ||
         Object.values(resp.rates).find(v => v !== undefined);
 
-      // This rate is undefined, use the first defined rate
+      // This rate is undefined, use the milestone rate
       if (!rate) {
         milestone.selectedFiatType = milestone.token.symbol;
         rate = resp.rates[milestone.token.symbol];
       }
-      milestone.fiatAmount = rate ? milestone.fiatAmount.div(rate) : new BigNumber(0);
+      milestone.maxAmount = milestone.fiatAmount.div(rate).toString();
       milestone.conversionRateTimestamp = resp.timestamp;
 
-      milestone.maxAmount = milestone.fiatAmount.div(rate);
       this.setState({ milestone });
     });
-
-    // FIXME: this is an infinite loop, should be rewritten
-    //   // update all the input fields
-    //   const rate = resp.rates[milestone.selectedFiatType];
-    //
-    //   this.setState(prevState => {
-    //     milestone.fiatAmount = prevState.milestone.fiatAmount.div(rate);
-    //     return {
-    //       milestone,
-    //       maxAmount: milestone.fiatAmount,
-    //     };
-    //   });
-    // });
   }
 
   setFiatAmount(name, value) {
@@ -224,7 +207,7 @@ class EditMilestone extends Component {
     const conversionRate = this.props.currentRate.rates[milestone.selectedFiatType];
 
     if (conversionRate && maxAmount.gte(0)) {
-      milestone.maxAmount = maxAmount;
+      milestone.maxAmount = maxAmount.toString();
       milestone.fiatAmount = maxAmount.times(conversionRate);
       milestone.conversionRateTimestamp = this.props.currentRate.timestamp;
 
@@ -237,7 +220,7 @@ class EditMilestone extends Component {
     const fiatAmount = new BigNumber(value || '0');
     const conversionRate = this.props.currentRate.rates[milestone.selectedFiatType];
     if (conversionRate && fiatAmount.gte(0)) {
-      milestone.maxAmount = fiatAmount.div(conversionRate);
+      milestone.maxAmount = fiatAmount.div(conversionRate).toString();
       milestone.fiatAmount = fiatAmount;
       milestone.conversionRateTimestamp = this.props.currentRate.timestamp;
 
@@ -248,10 +231,8 @@ class EditMilestone extends Component {
   changeSelectedFiat(fiatType) {
     const { milestone } = this.state;
     const conversionRate = this.props.currentRate.rates[fiatType];
-    const maxAmount = milestone.fiatAmount.div(conversionRate);
 
-    milestone.maxAmount = maxAmount;
-    milestone.fiatAmount = maxAmount.times(conversionRate);
+    milestone.maxAmount = milestone.fiatAmount.div(conversionRate).toString();
     milestone.selectedFiatType = fiatType;
 
     this.setState({ milestone });
@@ -283,7 +264,11 @@ class EditMilestone extends Component {
 
     return authenticateIfPossible(this.props.currentUser)
       .then(() => {
-        if (!this.props.isProposed && !this.props.isCampaignManager(this.props.currentUser)) {
+        if (
+          this.props.isNew &&
+          !this.props.isProposed &&
+          !this.props.isCampaignManager(this.props.currentUser)
+        ) {
           throw new Error('not whitelisted');
         }
       })
@@ -430,52 +415,10 @@ class EditMilestone extends Component {
     this.setState({ milestone });
   }
 
-  handleTemplateChange(option) {
-    const { milestone } = this.state;
-    milestone.description = templates.templates[option];
-    this.setState({
-      milestone,
-      template: option,
-    });
-  }
-
   triggerRouteBlocking() {
     const form = this.form.current.formsyForm;
     // we only block routing if the form state is not submitted
     this.setState({ isBlocking: form && (!form.state.formSubmitted || form.state.isSubmitting) });
-  }
-
-  validateMilestoneDesc(value) {
-    if (this.state.template === 'Reward DAO') {
-      return (
-        value.includes('Intro') &&
-        value.includes('Description') &&
-        value.includes('Proof') &&
-        value.includes('Video') &&
-        value.includes('Reward')
-      );
-    }
-    if (this.state.template === 'Regular Reward') {
-      return (
-        value.includes('Intro') &&
-        value.includes('Description') &&
-        value.includes('Video') &&
-        value.includes('Amount')
-      );
-    }
-    if (this.state.template === 'Expenses') {
-      return value.includes('Expenses') && value.includes('Description');
-    }
-    if (this.state.template === 'Bounties') {
-      return (
-        value.includes('Intro') &&
-        value.includes('What') &&
-        value.includes('Why') &&
-        value.includes('Deadline') &&
-        value.includes('Link to Bounty')
-      );
-    }
-    return value.length > 10;
   }
 
   render() {
@@ -568,26 +511,11 @@ class EditMilestone extends Component {
                     <div className="form-group">
                       <QuillFormsy
                         name="description"
-                        templatesDropdown
                         label="Explain how you are going to do this successfully."
-                        helpText="Make it as extensive as necessary. Your goal is to build trust,
-                        so that people donate Ether to your Campaign. Don't hesitate to add a detailed budget for this Milestone"
+                        helpText="Make it as extensive as necessary. Your goal is to build trust, so that people donate Ether to your Campaign. Don't hesitate to add a detailed budget for this Milestone"
                         value={milestone.description}
-                        placeholder="Describe how you're going to execute your Milestone successfully
-                        ..."
-                        onTextChanged={content => this.constructSummary(content)}
-                        validations={{
-                          // eslint-disable-next-line
-                          templateValidator: function(values, value) {
-                            return this.validateMilestoneDesc(value);
-                          }.bind(this),
-                        }}
+                        placeholder="Describe how you're going to execute your Milestone successfully..."
                         help="Describe your Milestone."
-                        handleTemplateChange={this.handleTemplateChange}
-                        validationErrors={{
-                          templateValidator:
-                            'Please provide at least 10 characters and do not edit the template keywords.',
-                        }}
                         required
                       />
                     </div>
@@ -632,7 +560,7 @@ class EditMilestone extends Component {
                           isEtherAddress: 'Please insert a valid Ethereum address.',
                         }}
                         required
-                        disabled={!isNew && !isProposed}
+                        disabled={milestone.projectId !== undefined}
                       />
                     </div>
 
@@ -678,7 +606,7 @@ class EditMilestone extends Component {
                                   isMoment: 'Please provide a date.',
                                 }}
                                 required={!milestone.itemizeState}
-                                disabled={!isNew && !isProposed}
+                                disabled={milestone.projectId !== undefined}
                               />
                             </div>
                           </div>
@@ -692,13 +620,13 @@ class EditMilestone extends Component {
                                 type="number"
                                 step="any"
                                 label={`Maximum amount in ${milestone.selectedFiatType}`}
-                                value={milestone.fiatAmount.toFixed()}
+                                value={milestone.fiatAmount.toString()}
                                 placeholder="10"
                                 validations="greaterThan:0"
                                 validationErrors={{
                                   greaterEqualTo: 'Minimum value must be greater than 0',
                                 }}
-                                disabled={!isNew && !isProposed}
+                                disabled={milestone.projectId !== undefined}
                                 onChange={this.setMaxAmount}
                               />
                             </div>
@@ -714,7 +642,7 @@ class EditMilestone extends Component {
                                 helpText={`1 ${milestone.token.symbol} = ${
                                   currentRate.rates[milestone.selectedFiatType]
                                 } ${milestone.selectedFiatType}`}
-                                disabled={!isNew && !isProposed}
+                                disabled={milestone.projectId !== undefined}
                                 required
                               />
                             </div>
@@ -727,14 +655,14 @@ class EditMilestone extends Component {
                                 type="number"
                                 step="any"
                                 label={`Maximum amount in ${milestone.token.name}`}
-                                value={milestone.maxAmount.toFixed()}
+                                value={milestone.maxAmount.toString()}
                                 placeholder="10"
                                 validations="greaterThan:0"
                                 validationErrors={{
                                   greaterEqualTo: 'Minimum value must be greater than 0',
                                 }}
                                 required
-                                disabled={!isNew && !isProposed}
+                                disabled={milestone.projectId !== undefined}
                                 onChange={this.setFiatAmount}
                               />
                             </div>
@@ -762,7 +690,6 @@ class EditMilestone extends Component {
                           type="submit"
                           disabled={isSaving || !formIsValid}
                           isLoading={isSaving}
-                          network="Foreign"
                           loadingText="Saving..."
                         >
                           <span>{this.btnText()}</span>
@@ -789,7 +716,7 @@ EditMilestone.propTypes = {
   isProposed: PropTypes.bool,
   isNew: PropTypes.bool,
   balance: PropTypes.instanceOf(BigNumber).isRequired,
-  isForeignNetwork: PropTypes.bool.isRequired,
+  isCorrectNetwork: PropTypes.bool.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,
@@ -799,7 +726,7 @@ EditMilestone.propTypes = {
   getConversionRates: PropTypes.func.isRequired,
   currentRate: PropTypes.shape({
     rates: PropTypes.shape().isRequired,
-    timestamp: PropTypes.number.isRequired,
+    timestamp: PropTypes.string.isRequired,
   }),
   fiatTypes: PropTypes.arrayOf(PropTypes.object).isRequired,
   isCampaignManager: PropTypes.func.isRequired,

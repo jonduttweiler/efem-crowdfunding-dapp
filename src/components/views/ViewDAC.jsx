@@ -18,7 +18,6 @@ import DAC from '../../models/DAC';
 import { getUserName, getUserAvatar } from '../../lib/helpers';
 import DACService from '../../services/DACService';
 import CampaignCard from '../CampaignCard';
-import ShareOptions from '../ShareOptions';
 import config from '../../configuration';
 
 /**
@@ -141,10 +140,7 @@ class ViewDAC extends Component {
             <div className="container-fluid">
               <div className="row">
                 <div className="col-md-8 m-auto">
-                  <div className="go-back-section">
-                    <GoBackButton to="/" title="Communities" />
-                    <ShareOptions pageUrl={window.location.href} pageTitle={dac.title} />
-                  </div>
+                  <GoBackButton to="/" title="Communities" />
 
                   <center>
                     <Link to={`/profile/${dac.owner.address}`}>

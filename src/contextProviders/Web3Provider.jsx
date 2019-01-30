@@ -62,8 +62,7 @@ const fetchNetwork = async web3 => ({
 });
 
 const getNetworkState = (networkId, networkType) => ({
-  isHomeNetwork: networkId === config.homeNetworkId,
-  isForeignNetwork: networkId === config.foreignNetworkId,
+  isCorrectNetwork: networkId === config.nodeId,
   currentNetwork: networkType,
 });
 
@@ -89,8 +88,7 @@ class Web3Provider extends Component {
       balance: new BigNumber(0),
       currentNetwork: undefined,
       validProvider: false,
-      isHomeNetwork: false,
-      isForeignNetwork: false,
+      isCorrectNetwork: false,
       isEnabled: false,
       setupTimeout: false,
     };
@@ -215,8 +213,7 @@ class Web3Provider extends Component {
       balance,
       currentNetwork,
       validProvider,
-      isHomeNetwork,
-      isForeignNetwork,
+      isCorrectNetwork,
       isEnabled,
       setupTimeout,
     } = this.state;
@@ -230,8 +227,7 @@ class Web3Provider extends Component {
             balance,
             currentNetwork,
             validProvider,
-            isHomeNetwork,
-            isForeignNetwork,
+            isCorrectNetwork,
             isEnabled,
           },
           actions: {

@@ -12,7 +12,7 @@ import MilestoneActions from 'components/MilestoneActions';
 import { isLoggedIn } from 'lib/middleware';
 import Loader from '../Loader';
 import User from '../../models/User';
-import { getTruncatedText, getReadableStatus, convertEthHelper } from '../../lib/helpers';
+import { getTruncatedText, getReadableStatus } from '../../lib/helpers';
 import config from '../../configuration';
 
 import MilestoneService from '../../services/MilestoneService';
@@ -88,7 +88,7 @@ class MyMilestones extends Component {
         }),
       onError: err => {
         console.log('err', err);
-        // TO DO: handle error here in view
+        // TODO: handle error here in view
         this.setState({ isLoading: false });
       },
     });
@@ -125,7 +125,7 @@ class MyMilestones extends Component {
 
     return (
       <Web3Consumer>
-        {({ state: { isForeignNetwork } }) => (
+        {({ state: { isCorrectNetwork } }) => (
           <div id="milestones-view">
             <div className="container-fluid page-layout dashboard-table-view">
               <div className="row">
@@ -133,8 +133,8 @@ class MyMilestones extends Component {
                   <h1>Your milestones</h1>
 
                   <NetworkWarning
-                    incorrectNetwork={!isForeignNetwork}
-                    networkName={config.foreignNetworkName}
+                    incorrectNetwork={!isCorrectNetwork}
+                    networkName={config.networkName}
                   />
 
                   <ul className="nav nav-tabs">
@@ -232,7 +232,7 @@ class MyMilestones extends Component {
                                       {getReadableStatus(m.status)}
                                     </td>
                                     <td className="td-donations-number">
-                                      {convertEthHelper(m.maxAmount)} {m.token.symbol}
+                                      {m.maxAmount} {m.token.symbol}
                                     </td>
                                     <td className="td-donations-number">
                                       {(m.donationCounters &&
@@ -241,12 +241,10 @@ class MyMilestones extends Component {
                                         0}
                                     </td>
                                     <td className="td-donations-">
-                                      {convertEthHelper(
-                                        (m.donationCounters &&
-                                          m.donationCounters.length &&
-                                          m.donationCounters[0].currentBalance) ||
-                                          '0',
-                                      )}{' '}
+                                      {(m.donationCounters &&
+                                        m.donationCounters.length &&
+                                        m.donationCounters[0].currentBalance.toString()) ||
+                                        '0'}{' '}
                                       {m.token.symbol}
                                     </td>
                                     <td className="td-reviewer">

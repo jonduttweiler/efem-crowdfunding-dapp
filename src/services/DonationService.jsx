@@ -34,7 +34,7 @@ function updateExistingDonation(donation, amount, status) {
 }
 
 /**
- * Create an allowance for the givethBridge contract to transfer the provided token address
+ * Create an allowance for the liquidPledging contract to transfer the provided token address
  * on behalf of the provided user
  *
  * @param {string} tokenContractAddress Address of the token to create an allowance on
@@ -48,7 +48,7 @@ const createAllowance = async (tokenContractAddress, tokenHolderAddress, amount)
   let txHash;
   try {
     return ERC20.methods
-      .approve(config.givethBridgeAddress, amount)
+      .approve(config.liquidPledgingAddress, amount)
       .send({ from: tokenHolderAddress })
       .on('transactionHash', transactionHash => {
         txHash = transactionHash;
@@ -629,9 +629,9 @@ class DonationService {
     const network = await getNetwork();
     const ERC20 = network.tokens[tokenContractAddress];
 
-    // read existing allowance for the givethBridge
+    // read existing allowance for the LP
     const allowance = await ERC20.methods
-      .allowance(tokenHolderAddress, config.givethBridgeAddress)
+      .allowance(tokenHolderAddress, config.liquidPledgingAddress)
       .call();
 
     // if no allowance, we set the allowance
@@ -708,7 +708,7 @@ class DonationService {
       amountRemaining: amount,
       pledgeId: 0,
       status: Donation.PENDING,
-      homeTxHash: txHash,
+      txHash,
       mined: false,
       token,
     };
@@ -826,6 +826,66 @@ class DonationService {
         };
       })
       .catch(err => err);
+  }
+
+  static async createLPDonation({
+    from,
+    giverUser,
+    giverId,
+    donateToAdminId,
+    token,
+    amount,
+    donateTo, // dac, campaign, milestone
+    addGiver = false,
+    onCreated = () => {},
+    onSuccess = () => {},
+    onError = () => {},
+    onCancel = () => {},
+  }) {
+    const network = await getNetwork();
+    const etherScanUrl = network.etherscan;
+    const opts = { from, $extraGas: extraGas() };
+    let lpMethod;
+    let tx;
+    let txHash;
+
+    if (addGiver) {
+      lpMethod = network.liquidPledging.addGiverAndDonate;
+    } else {
+      lpMethod = network.liquidPledging.donate;
+    }
+
+    if (token.address === '0x0000000000000000000000000000000000000000') {
+      // native currency, set value on options
+      opts.value = amount;
+      tx = lpMethod(giverId, donateToAdminId, opts);
+    } else {
+      // token
+
+      // actually uses 225710, but runs out of gas if exact
+      // opts = Object.assign(opts, { gas: 300000 });
+
+      tx = lpMethod(giverId, donateToAdminId, token.address, amount, opts);
+    }
+
+    return tx
+      .on('transactionHash', async transactionHash => {
+        txHash = transactionHash;
+
+        await DonationService.newFeathersDonation(giverUser, donateTo, amount, token, txHash);
+        onCreated(`${etherScanUrl}tx/${txHash}`);
+      })
+      .then(() => {
+        onSuccess(`${etherScanUrl}tx/${txHash}`);
+      })
+      .catch(e => {
+        if (!e.message.includes('User denied transaction signature')) {
+          const err = !(e instanceof Error) ? JSON.stringify(e, null, 2) : e;
+          onCancel(err);
+        } else {
+          onError(e);
+        }
+      });
   }
 }
 

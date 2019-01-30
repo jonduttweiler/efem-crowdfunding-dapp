@@ -8,7 +8,6 @@ import { Consumer as Web3Consumer } from 'contextProviders/Web3Provider';
 import config from 'configuration';
 
 import Loader from '../Loader';
-import { convertEthHelper } from '../../lib/helpers';
 import { Consumer as UserConsumer } from '../../contextProviders/UserProvider';
 import DonationProvider, {
   Consumer as DonationConsumer,
@@ -19,7 +18,7 @@ import DonationProvider, {
  */
 const Donations = () => (
   <Web3Consumer>
-    {({ state: { isForeignNetwork, balance } }) => (
+    {({ state: { isCorrectNetwork, balance } }) => (
       <UserConsumer>
         {({ state: { currentUser } }) => (
           <DonationProvider currentUser={currentUser} balance={balance}>
@@ -45,8 +44,8 @@ const Donations = () => (
                         )}
 
                         <NetworkWarning
-                          incorrectNetwork={!isForeignNetwork}
-                          networkName={config.foreignNetworkName}
+                          incorrectNetwork={!isCorrectNetwork}
+                          networkName={config.networkName}
                         />
 
                         {isLoading && <Loader className="fixed" />}
@@ -74,7 +73,7 @@ const Donations = () => (
                                       <tr key={d.id} className={d.isPending ? 'pending' : ''}>
                                         {currentUser.authenticated && (
                                           <td className="td-actions">
-                                            {d.canRefund(currentUser, isForeignNetwork) && (
+                                            {d.canRefund(currentUser, isCorrectNetwork) && (
                                               <button
                                                 type="button"
                                                 className="btn btn-sm btn-danger"
@@ -83,7 +82,7 @@ const Donations = () => (
                                                 Refund
                                               </button>
                                             )}
-                                            {d.canApproveReject(currentUser, isForeignNetwork) && (
+                                            {d.canApproveReject(currentUser, isCorrectNetwork) && (
                                               <div>
                                                 <button
                                                   type="button"
@@ -133,8 +132,7 @@ const Donations = () => (
                                           </Link>
                                         </td>
                                         <td className="td-donations-amount">
-                                          {convertEthHelper(d.amountRemaining)}{' '}
-                                          {d.token && d.token.symbol}
+                                          {d.amountRemaining.toString()} {d.token && d.token.symbol}
                                         </td>
 
                                         {etherScanUrl && (

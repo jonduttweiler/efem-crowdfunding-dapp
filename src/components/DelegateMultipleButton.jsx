@@ -186,13 +186,8 @@ class DelegateMultipleButton extends Component {
             new BigNumber('0'),
           );
 
-          if (this.props.milestone) {
-            const maxDonationAmount = this.props.milestone.maxAmount.minus(
-              this.props.milestone.currentBalance,
-            );
-
-            if (maxDonationAmount.lt(amount)) amount = maxDonationAmount;
-          }
+          if (this.props.milestone && this.props.milestone.maxAmount.lt(amount))
+            amount = this.props.milestone.maxAmount;
 
           this.setState({
             delegations,
@@ -309,10 +304,7 @@ class DelegateMultipleButton extends Component {
             </div>
           )}
           {validProvider && (
-            <NetworkWarning
-              incorrectNetwork={!isCorrectNetwork}
-              networkName={config.foreignNetworkName}
-            />
+            <NetworkWarning incorrectNetwork={!isCorrectNetwork} networkName={config.networkName} />
           )}
           <p>
             You are delegating donations to
@@ -375,11 +367,11 @@ class DelegateMultipleButton extends Component {
                             type="range"
                             name="amount2"
                             min={0}
+                            tooltip={false}
                             max={maxAmount.toNumber()}
                             step={maxAmount.toNumber() / 10}
                             value={Number(amount)}
                             labels={{ 0: '0', [maxAmount.toNumber()]: maxAmount.toFixed() }}
-                            tooltip={false}
                             onChange={newAmount =>
                               this.setState(prevState => ({
                                 amount:
@@ -456,10 +448,10 @@ export default props => (
   <WhiteListConsumer>
     {({ state: { tokenWhitelist } }) => (
       <Web3Consumer>
-        {({ state: { isForeignNetwork, validProvider } }) => (
+        {({ state: { isCorrectNetwork, validProvider } }) => (
           <DelegateMultipleButton
             validProvider={validProvider}
-            isCorrectNetwork={isForeignNetwork}
+            isCorrectNetwork={isCorrectNetwork}
             tokenWhitelist={tokenWhitelist}
             {...props}
           />

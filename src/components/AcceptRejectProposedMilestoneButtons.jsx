@@ -111,7 +111,7 @@ class AcceptRejectProposedMilestoneButtons extends Component {
 
     return (
       <Web3Consumer>
-        {({ state: { isForeignNetwork } }) => (
+        {({ state: { isCorrectNetwork } }) => (
           <Fragment>
             {currentUser &&
               milestone.campaign.ownerAddress === currentUser.address &&
@@ -121,7 +121,7 @@ class AcceptRejectProposedMilestoneButtons extends Component {
                     type="button"
                     className="btn btn-success btn-sm"
                     onClick={() => this.acceptProposedMilestone()}
-                    disabled={!isForeignNetwork}
+                    disabled={!isCorrectNetwork}
                   >
                     <i className="fa fa-check-square-o" />
                     &nbsp;Accept
@@ -130,7 +130,7 @@ class AcceptRejectProposedMilestoneButtons extends Component {
                     type="button"
                     className="btn btn-danger btn-sm"
                     onClick={() => this.rejectProposedMilestone()}
-                    disabled={!isForeignNetwork}
+                    disabled={!isCorrectNetwork}
                   >
                     <i className="fa fa-times-circle-o" />
                     &nbsp;Reject

@@ -55,7 +55,7 @@ class EditCampaign extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    checkForeignNetwork(this.props.isForeignNetwork)
+    checkForeignNetwork(this.props.isCorrectNetwork)
       .then(() => this.checkUser())
       .then(() => {
         // Load this Campaign
@@ -318,7 +318,6 @@ class EditCampaign extends Component {
                           type="submit"
                           disabled={isSaving || !formIsValid}
                           isLoading={isSaving}
-                          network="Foreign"
                           loadingText="Saving..."
                         >
                           {isNew ? 'Create' : 'Update'} Campaign
@@ -340,7 +339,7 @@ EditCampaign.propTypes = {
   currentUser: PropTypes.instanceOf(User),
   isNew: PropTypes.bool,
   balance: PropTypes.instanceOf(BigNumber).isRequired,
-  isForeignNetwork: PropTypes.bool.isRequired,
+  isCorrectNetwork: PropTypes.bool.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,

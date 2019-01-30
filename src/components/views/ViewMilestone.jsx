@@ -10,21 +10,21 @@ import BigNumber from 'bignumber.js';
 
 import User from 'models/User';
 import Campaign from 'models/Campaign';
-import MilestoneActions from 'components/MilestoneActions';
 
-import BackgroundImageHeader from 'components/BackgroundImageHeader';
-import DonateButton from 'components/DonateButton';
-import ErrorPopup from 'components/ErrorPopup';
-import GoBackButton from 'components/GoBackButton';
-import Loader from 'components/Loader';
-import MilestoneItem from 'components/MilestoneItem';
-import ListDonations from 'components/ListDonations';
-import MilestoneConversations from 'components/MilestoneConversations';
-import DelegateMultipleButton from 'components/DelegateMultipleButton';
-import { convertEthHelper, getUserAvatar, getUserName } from '../../lib/helpers';
+import MilestoneActions from 'components/MilestoneActions';
+import { getUserAvatar, getUserName } from '../../lib/helpers';
+
+import BackgroundImageHeader from '../BackgroundImageHeader';
+import DonateButton from '../DonateButton';
+import ErrorPopup from '../ErrorPopup';
+import GoBackButton from '../GoBackButton';
+import ListDonations from '../ListDonations';
+import Loader from '../Loader';
+import MilestoneItem from '../MilestoneItem';
+import MilestoneConversations from '../MilestoneConversations';
+import DelegateMultipleButton from '../DelegateMultipleButton';
 
 import MilestoneService from '../../services/MilestoneService';
-import ShareOptions from '../ShareOptions';
 
 /**
   Loads and shows a single milestone
@@ -135,6 +135,8 @@ class ViewMilestone extends Component {
       newDonations,
     } = this.state;
 
+    const getMaxDonation = () => new BigNumber(milestone.maxAmount).minus(milestone.currentBalance);
+
     return (
       <div id="view-milestone-view">
         {isLoading && <Loader className="fixed" />}
@@ -151,7 +153,7 @@ class ViewMilestone extends Component {
 
               {!milestone.fullyFunded && (
                 <p>
-                  Amount requested: {convertEthHelper(milestone.maxAmount)} {milestone.token.symbol}
+                  Amount requested: {milestone.maxAmount} {milestone.token.symbol}
                 </p>
               )}
               <p>Campaign: {campaign.title} </p>
@@ -167,14 +169,14 @@ class ViewMilestone extends Component {
                         adminId: milestone.projectId,
                         campaignId: campaign._id,
                         token: milestone.token,
+                        maxDonation: getMaxDonation(),
                       }}
                       currentUser={currentUser}
                       history={history}
-                      maxDonationAmount={milestone.maxAmount.minus(milestone.currentBalance)}
+                      maxAmount={milestone.maxAmount}
                     />
                     {currentUser && (
                       <DelegateMultipleButton
-                        style={{ padding: '10px 10px' }}
                         milestone={milestone}
                         campaign={campaign}
                         balance={balance}
@@ -186,11 +188,14 @@ class ViewMilestone extends Component {
 
                 {/* Milestone actions */}
 
-                <MilestoneActions
-                  milestone={milestone}
-                  balance={balance}
-                  currentUser={currentUser}
-                />
+                {currentUser &&
+                  currentUser.authenticated && (
+                    <MilestoneActions
+                      milestone={milestone}
+                      balance={balance}
+                      currentUser={currentUser}
+                    />
+                  )}
               </div>
             </BackgroundImageHeader>
 
@@ -198,17 +203,14 @@ class ViewMilestone extends Component {
               <div className="row">
                 <div className="col-md-8 m-auto">
                   <div>
-                    <div className="go-back-section">
-                      <GoBackButton
-                        history={history}
-                        styleName="inline"
-                        title={`Campaign: ${campaign.title}`}
-                      />
-                      <ShareOptions pageUrl={window.location.href} pageTitle={milestone.title} />
-                    </div>
+                    <GoBackButton
+                      history={history}
+                      styleName="inline"
+                      title={`Campaign: ${campaign.title}`}
+                    />
 
                     <center>
-                      <Link to={`/profile/${milestone.ownerAddress}`}>
+                      <Link to={`/profile/${milestone.owner.address}`}>
                         <Avatar size={50} src={getUserAvatar(milestone.owner)} round />
                         <p className="small">{getUserName(milestone.owner)}</p>
                       </Link>
@@ -328,14 +330,14 @@ class ViewMilestone extends Component {
                             The maximum amount of {milestone.token.symbol} that can be donated to
                             this Milestone. Based on the requested amount in fiat.
                           </small>
-                          {convertEthHelper(milestone.maxAmount)} {milestone.token.symbol}
-                          {milestone.items.length === 0 &&
+                          {milestone.maxAmount} {milestone.token.symbol}
+                          {milestone.fiatAmount &&
                             milestone.selectedFiatType &&
                             milestone.selectedFiatType !== milestone.token.symbol &&
-                            milestone.fiatAmount && (
+                            milestone.items.length === 0 && (
                               <span>
                                 {' '}
-                                ({milestone.fiatAmount.toFixed()} {milestone.selectedFiatType})
+                                ({milestone.fiatAmount.toString()} {milestone.selectedFiatType})
                               </span>
                             )}
                         </div>
@@ -346,7 +348,7 @@ class ViewMilestone extends Component {
                             The amount of {milestone.token.symbol} currently donated to this
                             Milestone
                           </small>
-                          {convertEthHelper(milestone.currentBalance)} {milestone.token.symbol}
+                          {milestone.currentBalance.toString()} {milestone.token.symbol}
                         </div>
 
                         <div className="form-group">
@@ -397,11 +399,12 @@ class ViewMilestone extends Component {
                         adminId: milestone.projectId,
                         campaignId: campaign._id,
                         token: milestone.token,
+                        maxDonation: getMaxDonation(),
                       }}
                       currentUser={currentUser}
                       history={history}
                       type={milestone.type}
-                      maxDonationAmount={milestone.maxAmount.minus(milestone.currentBalance)}
+                      maxAmount={milestone.maxAmount}
                     />
                   )}
                 </div>

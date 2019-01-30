@@ -55,7 +55,7 @@ class EditDAC extends Component {
   }
 
   componentDidMount() {
-    checkForeignNetwork(this.props.isForeignNetwork)
+    checkForeignNetwork(this.props.isCorrectNetwork)
       .then(() => this.checkUser())
       .then(() => {
         if (!this.props.isNew) {
@@ -320,7 +320,6 @@ class EditDAC extends Component {
                           type="submit"
                           disabled={isSaving || !formIsValid || (dac.id && dac.delegateId === 0)}
                           isLoading={isSaving}
-                          network="Foreign"
                           loadingText="Saving..."
                         >
                           {isNew ? 'Create DAC' : 'Update DAC'}
@@ -342,7 +341,7 @@ EditDAC.propTypes = {
   currentUser: PropTypes.instanceOf(User),
   isNew: PropTypes.bool,
   balance: PropTypes.instanceOf(BigNumber).isRequired,
-  isForeignNetwork: PropTypes.bool.isRequired,
+  isCorrectNetwork: PropTypes.bool.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,

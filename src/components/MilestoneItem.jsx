@@ -2,9 +2,10 @@ import { withFormsy } from 'formsy-react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { convertEthHelper, getTruncatedText } from 'lib/helpers';
-import MilestoneItemModel from 'models/MilestoneItem';
 import { utils } from 'web3';
+
+import { getTruncatedText } from 'lib/helpers';
+import MilestoneItemModel from 'models/MilestoneItem';
 
 /** *
  * NOTE: This component is created as a Formsy form component
@@ -26,13 +27,6 @@ class MilestoneItem extends React.Component {
     const { removeItem, item, isEditMode, token } = this.props;
     return (
       <tr>
-        {isEditMode && (
-          <td className="td-item-remove">
-            <button type="button" className="btn btn-link" onClick={removeItem}>
-              X
-            </button>
-          </td>
-        )}
         <td className="td-item-date">{moment.utc(item.date).format('Do MMM YYYY')}</td>
 
         <td className="td-item-description">{getTruncatedText(item.description)}</td>
@@ -45,7 +39,7 @@ class MilestoneItem extends React.Component {
           </span>
         </td>
 
-        <td className="td-item-amount-ether">{convertEthHelper(utils.fromWei(item.wei))}</td>
+        <td className="td-item-amount-ether">{utils.fromWei(item.wei)}</td>
 
         <td className="td-item-file-upload">
           {item.image &&
@@ -64,6 +58,14 @@ class MilestoneItem extends React.Component {
               </div>
             )}
         </td>
+
+        {isEditMode && (
+          <td className="td-item-remove">
+            <button type="button" className="btn btn-link" onClick={removeItem}>
+              X
+            </button>
+          </td>
+        )}
       </tr>
     );
   }

@@ -70,7 +70,7 @@ class DelegationProvider extends Component {
 
     const query = paramsForServer({
       query: {
-        amountRemaining: { $ne: 0 },
+        amountRemaining: { $ne: '0' },
         $or: [
           { ownerTypeId: { $in: campaignIds }, status: Donation.COMMITTED },
           {
@@ -82,10 +82,6 @@ class DelegationProvider extends Component {
             delegateId: { $exists: false },
             status: Donation.WAITING,
           },
-          // {
-          // ownerTypeId: this.props.currentUser.address,
-          // delegateTypeId: { $gt: 0 },
-          // },
         ],
         $sort: { createdAt: 1 },
         $limit: this.state.itemsPerPage,
@@ -197,16 +193,6 @@ class DelegationProvider extends Component {
             query: {
               status: Milestone.IN_PROGRESS,
               fullyFunded: { $ne: true },
-              $select: [
-                'title',
-                '_id',
-                'projectId',
-                'campaignId',
-                'maxAmount',
-                'status',
-                'token',
-                'donationCounters',
-              ],
               $limit: 100,
               $sort: {
                 createdAt: -1,
@@ -285,11 +271,7 @@ class DelegationProvider extends Component {
 
 DelegationProvider.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
-  currentUser: PropTypes.instanceOf(User),
-};
-
-DelegationProvider.defaultProps = {
-  currentUser: undefined,
+  currentUser: PropTypes.instanceOf(User).isRequired,
 };
 
 export default DelegationProvider;

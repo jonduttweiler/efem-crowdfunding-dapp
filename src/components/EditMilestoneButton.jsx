@@ -18,12 +18,8 @@ class EditMilestoneButton extends Component {
           history.push(
             `/campaigns/${milestone.campaignId}/milestones/${milestone._id}/edit/proposed`,
           );
-          // TODO:
-          // history.push(`/milestones/${milestone._id}/edit/proposed`);
         } else {
           history.push(`/campaigns/${milestone.campaignId}/milestones/${milestone._id}/edit`);
-          // TODO:
-          // history.push(`/milestones/${milestone._id}/edit`);
         }
       })
       .catch(err => {
@@ -38,12 +34,12 @@ class EditMilestoneButton extends Component {
 
     return (
       <Web3Consumer>
-        {({ state: { isForeignNetwork } }) => (
+        {({ state: { isCorrectNetwork } }) => (
           <Fragment>
             {currentUser &&
               (milestone.ownerAddress === currentUser.address ||
                 milestone.campaign.ownerAddress === currentUser.address) &&
-              isForeignNetwork &&
+              isCorrectNetwork &&
               ['Proposed', 'Rejected', 'InProgress', 'NeedsReview'].includes(milestone.status) && (
                 <button type="button" className="btn btn-link" onClick={() => this.editMilestone()}>
                   <i className="fa fa-edit" />

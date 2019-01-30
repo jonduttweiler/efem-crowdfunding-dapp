@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-import { convertEthHelper } from '../lib/helpers';
 import config from '../configuration';
 
 /**
@@ -46,7 +45,7 @@ const CardStats = ({ peopleCount, maxAmount, totalDonated, type, status, token }
           <span>
             <p>Requested</p>
             <p>
-              {convertEthHelper(maxAmount)} {token.symbol}
+              {maxAmount} {token.symbol}
             </p>
           </span>
         )}
@@ -69,14 +68,14 @@ CardStats.propTypes = {
   type: PropTypes.string.isRequired,
   peopleCount: PropTypes.number.isRequired,
   status: PropTypes.string,
-  maxAmount: PropTypes.instanceOf(BigNumber),
+  maxAmount: PropTypes.string,
   totalDonated: PropTypes.instanceOf(BigNumber),
   token: PropTypes.shape(),
 };
 
 CardStats.defaultProps = {
   status: 'In Progress',
-  maxAmount: new BigNumber('0'),
+  maxAmount: '0',
   totalDonated: new BigNumber('0'),
   token: {
     symbol: config.nativeTokenName,

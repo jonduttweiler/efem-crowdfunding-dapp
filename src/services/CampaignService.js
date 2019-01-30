@@ -46,10 +46,7 @@ class CampaignService {
           status: Campaign.ACTIVE,
           $limit,
           $skip,
-          // Should set a specific prop for "qualified" updates
-          // Current impl will allow a campaign manager to be first
-          // in the list by just editing the campaign
-          $sort: { updatedAt: 1 },
+          $sort: { createdAt: -1 },
         },
       })
       .then(resp => {
@@ -104,7 +101,7 @@ class CampaignService {
             $or: [{ intendedProjectTypeId: id }, { ownerTypeId: id }],
             ownerTypeId: id,
             isReturn: false,
-            $sort: { usdValue: -1, createdAt: -1 },
+            $sort: { createdAt: -1 },
             $limit,
             $skip,
           },
@@ -136,7 +133,7 @@ class CampaignService {
             $or: [{ intendedProjectTypeId: id }, { ownerTypeId: id }],
             ownerTypeId: id,
             isReturn: false,
-            $sort: { usdValue: -1, createdAt: -1 },
+            $sort: { createdAt: -1 },
             $limit: 0,
           },
           schema: 'includeTypeAndGiverDetails',

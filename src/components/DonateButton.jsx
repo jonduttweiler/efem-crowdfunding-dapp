@@ -11,8 +11,6 @@ import { Link } from 'react-router-dom';
 
 import getNetwork from '../lib/blockchain/getNetwork';
 import User from '../models/User';
-import Milestone from '../models/Milestone';
-import extraGas from '../lib/blockchain/extraGas';
 import pollEvery from '../lib/pollEvery';
 import LoaderButton from './LoaderButton';
 import ErrorPopup from './ErrorPopup';
@@ -42,10 +40,6 @@ const modalStyles = {
 
 Modal.setAppElement('#root');
 
-// tx only requires 25400 gas, but for some reason we get an out of gas
-// error in web3 with that amount (even though the tx succeeds)
-const DONATION_GAS = 30400;
-
 class DonateButton extends React.Component {
   constructor(props) {
     super(props);
@@ -57,10 +51,7 @@ class DonateButton extends React.Component {
     this.state = {
       isSaving: false,
       formIsValid: false,
-      defaultAmount: true,
-      amount: '1',
-      givethBridge: undefined,
-      etherscanUrl: '',
+      amount: '0',
       modalVisible: false,
       showCustomAddress: false,
       customAddress:
@@ -77,9 +68,6 @@ class DonateButton extends React.Component {
   }
 
   componentDidMount() {
-    getNetwork().then(network => {
-      this.setState({ givethBridge: network.givethBridge, etherscanUrl: network.homeEtherscan });
-    });
     this.pollToken();
   }
 
@@ -88,37 +76,28 @@ class DonateButton extends React.Component {
   }
 
   setToken(address) {
-    const { amount, defaultAmount } = this.state;
-    const token = this.props.tokenWhitelist.find(t => t.address === address);
-    token.balance = new BigNumber('0'); // FIXME: There should be a balance provider handling all of this...
+    const selectedToken = this.props.tokenWhitelist.find(t => t.address === address);
+    selectedToken.balance = new BigNumber('0'); // FIXME: There should be a balance provider handling all of this...
+    this.setState({ selectedToken }, () => this.pollToken());
+  }
 
-    let amt = amount;
-    if (defaultAmount) {
-      amt = token.symbol === config.nativeTokenName ? '1' : '100';
+  setAmount(amount) {
+    if (!Number.isNaN(parseFloat(amount))) {
+      // protecting against overflow occuring when BigNumber receives something that results in NaN
+      this.setState({ amount: new BigNumber(amount) });
     }
-    this.setState(
-      {
-        selectedToken: token,
-        amount: amt,
-      },
-      () => this.pollToken(),
-    );
   }
 
   getMaxAmount() {
     const { selectedToken } = this.state;
-    const { NativeTokenBalance } = this.props;
+    const { NativeTokenBalance, model } = this.props;
 
     const balance =
       selectedToken.symbol === config.nativeTokenName ? NativeTokenBalance : selectedToken.balance;
 
-    // Determine max amount
-    let maxAmount = new BigNumber(utils.fromWei(balance.toFixed()));
+    if (model.maxDonation && balance.gt(model.maxDonation)) return model.maxDonation;
 
-    if (this.props.maxDonationAmount && balance.gt(this.props.maxDonationAmount))
-      maxAmount = this.props.maxDonationAmount;
-
-    return maxAmount;
+    return new BigNumber(utils.fromWei(balance.toFixed()));
   }
 
   pollToken() {
@@ -168,157 +147,134 @@ class DonateButton extends React.Component {
   closeDialog() {
     this.setState({
       modalVisible: false,
-      amount: '1',
-      defaultAmount: true,
+      amount: '0',
       formIsValid: false,
     });
   }
 
   openDialog() {
-    const { model } = this.props;
-    this.setState(prevState => {
-      const isMilestone = model.type === Milestone.type;
-      const amount = isMilestone ? this.getMaxAmount().toFixed() : prevState.amount;
-      return {
-        modalVisible: true,
-        amount,
-        defaultAmount: isMilestone ? false : prevState.defaultAmount,
-        formIsValid: false,
-      };
+    this.setState({
+      modalVisible: true,
+      amount: this.getMaxAmount().toString(),
+      formIsValid: false,
     });
   }
 
   submit(model) {
-    this.donateWithBridge(model);
+    this.donate(model);
     this.setState({ isSaving: true });
   }
 
-  donateWithBridge(model) {
+  donate(model) {
     const { currentUser } = this.props;
     const { adminId } = this.props.model;
-    const { givethBridge, etherscanUrl, showCustomAddress, selectedToken } = this.state;
+    const { showCustomAddress, selectedToken } = this.state;
 
-    const value = utils.toWei(model.amount);
+    const amount = utils.toWei(model.amount);
     const isDonationInToken = selectedToken.symbol !== config.nativeTokenName;
     const tokenAddress = isDonationInToken ? selectedToken.address : 0;
 
     const _makeDonationTx = async () => {
-      let method;
-      let donationUser;
-      const opts = { from: currentUser.address, $extraGas: extraGas() };
-
-      // actually uses 84766, but runs out of gas if exact
-      if (!isDonationInToken) Object.assign(opts, { value, gas: DONATION_GAS });
+      let txData = {
+        from: currentUser.address,
+        donateToAdminId: adminId,
+        token: selectedToken,
+        amount,
+        donateTo: this.props.model,
+      };
 
       if (showCustomAddress) {
         // Donating on behalf of another user or address
         try {
+          // check if that user exists
           const user = await feathersClient.service('users').get(model.customAddress);
+
           if (user && user.giverId > 0) {
-            method = givethBridge.donate(user.giverId, adminId, tokenAddress, value, opts);
-            donationUser = user;
+            txData = Object.assign({}, txData, {
+              giverUser: user,
+              giverId: user.giverId,
+            });
           } else {
-            givethBridge.donateAndCreateGiver(
-              model.customAddress,
-              adminId,
-              tokenAddress,
-              value,
-              opts,
-            );
-            donationUser = { address: model.customAddress };
+            // if not, set the new user and add as giver
+            txData = Object.assign({}, txData, {
+              giverUser: { address: model.customAddress },
+              giverId: model.customAddress,
+              addGiver: true,
+            });
           }
         } catch (e) {
-          givethBridge.donateAndCreateGiver(
-            model.customAddress,
-            adminId,
-            tokenAddress,
-            value,
-            opts,
-          );
-          donationUser = { address: model.customAddress };
+          // we can't be sure if there's a user, so we just set the new user and add as giver
+          txData = Object.assign({}, txData, {
+            giverUser: { address: model.customAddress },
+            giverId: model.customAddress,
+            addGiver: true,
+          });
         }
-      } else {
+      } else if (currentUser.giverId > 0) {
         // Donating on behalf of logged in DApp user
-        method =
-          currentUser.giverId > 0
-            ? givethBridge.donate(currentUser.giverId, adminId, tokenAddress, value, opts)
-            : givethBridge.donateAndCreateGiver(
-                currentUser.address,
-                adminId,
-                tokenAddress,
-                value,
-                opts,
-              );
-        donationUser = currentUser;
+        // if user already exists
+        txData = Object.assign({}, txData, {
+          giverUser: currentUser,
+          giverId: currentUser.giverId,
+        });
+      } else {
+        // create the user as a giver
+        txData = Object.assign({}, txData, {
+          giverUser: currentUser,
+          giverId: currentUser.giverId,
+          addGiver: true,
+        });
       }
 
-      let txHash;
-      method
-        .on('transactionHash', async transactionHash => {
-          txHash = transactionHash;
-          this.closeDialog();
-          await DonationService.newFeathersDonation(
-            donationUser,
-            this.props.model,
-            value,
-            selectedToken,
-            txHash,
-          );
+      DonationService.createLPDonation(
+        Object.assign({}, txData, {
+          onCreated: txUrl => {
+            this.closeDialog();
+            this.setState({
+              modalVisible: false,
+              isSaving: false,
+            });
 
-          this.setState({
-            modalVisible: false,
-            isSaving: false,
-          });
+            GA.trackEvent({
+              category: 'Donation',
+              action: 'donated',
+              label: txUrl,
+            });
 
-          GA.trackEvent({
-            category: 'Donation',
-            action: 'donated',
-            label: `${etherscanUrl}tx/${txHash}`,
-          });
-
-          React.toast.info(
-            <p>
-              Awesome! Your donation is pending...
-              <br />
-              <a href={`${etherscanUrl}tx/${txHash}`} target="_blank" rel="noopener noreferrer">
-                View transaction
-              </a>
-            </p>,
-          );
-        })
-        .then(() => {
-          React.toast.success(
-            <p>
-              Woot! Woot! Donation received. You are awesome!
-              <br />
-              Note: because we are bridging networks, there will be a delay before your donation
-              appears.
-              <br />
-              <a href={`${etherscanUrl}tx/${txHash}`} target="_blank" rel="noopener noreferrer">
-                View transaction
-              </a>
-            </p>,
-          );
-        })
-        .catch(e => {
-          if (!e.message.includes('User denied transaction signature')) {
-            const err = !(e instanceof Error) ? JSON.stringify(e, null, 2) : e;
-            ErrorPopup(
-              'Something went wrong with your donation.',
-              `${etherscanUrl}tx/${txHash} => ${err}`,
+            React.toast.info(
+              <p>
+                Awesome! Your donation is pending...
+                <br />
+                <a href={txUrl} target="_blank" rel="noopener noreferrer">
+                  View transaction
+                </a>
+              </p>,
             );
-          } else {
-            React.toast.info('The transaction was cancelled. No donation has been made :-(');
-          }
-          this.setState({
-            isSaving: false,
-          });
-        });
+          },
+          onSuccess: txUrl => {
+            React.toast.success(
+              <p>
+                Woot! Woot! Donation received. You are awesome!
+                <br />
+                <a href={txUrl} target="_blank" rel="noopener noreferrer">
+                  View transaction
+                </a>
+              </p>,
+            );
+          },
+          onError: err => {
+            ErrorPopup('Something went wrong with rejecting the proposed milestone', err);
+            this.setState({
+              isSaving: false,
+            });
+          },
+        }),
+      );
     };
 
-    // if donating in token, first approve transfer of token by bridge
+    // if donating in token, first approve transfer of token by LiquidPledging by creating an allowance
     if (isDonationInToken) {
-      DonationService.approveERC20tokenTransfer(tokenAddress, currentUser.address, value)
+      DonationService.approveERC20tokenTransfer(tokenAddress, currentUser.address, amount)
         .then(() => _makeDonationTx())
         .catch(err => {
           this.setState({
@@ -350,13 +306,14 @@ class DonateButton extends React.Component {
       selectedToken,
     } = this.state;
 
+    const maxAmount = this.getMaxAmount();
+
     const style = {
       display: 'inline-block',
     };
 
     const balance =
       selectedToken.symbol === config.nativeTokenName ? NativeTokenBalance : selectedToken.balance;
-    const maxAmount = this.getMaxAmount();
 
     return (
       <span style={style}>
@@ -394,7 +351,7 @@ class DonateButton extends React.Component {
             {validProvider && (
               <NetworkWarning
                 incorrectNetwork={!isCorrectNetwork}
-                networkName={config.homeNetworkName}
+                networkName={config.networkName}
               />
             )}
             {isCorrectNetwork &&
@@ -449,7 +406,7 @@ class DonateButton extends React.Component {
             <span className="label">How much {selectedToken.symbol} do you want to donate?</span>
 
             {validProvider &&
-              maxAmount.toNumber() !== 0 &&
+              maxAmount.toNumber() > 0 &&
               balance.gt(0) && (
                 <div className="form-group">
                   <Slider
@@ -458,14 +415,13 @@ class DonateButton extends React.Component {
                     min={0}
                     max={maxAmount.toNumber()}
                     step={maxAmount.toNumber() / 10}
-                    value={Number(Number(amount).toFixed(4))}
+                    value={Number(amount)}
                     labels={{
                       0: '0',
-                      [maxAmount.toFixed()]: maxAmount.toFixed(4),
+                      [maxAmount.toFixed()]: maxAmount.toFixed(),
                     }}
                     tooltip={false}
-                    format={val => `${val} ${config.nativeTokenName}`}
-                    onChange={newAmount => this.setState({ amount: newAmount })}
+                    onChange={newAmount => this.setState({ amount: newAmount.toString() })}
                   />
                 </div>
               )}
@@ -476,9 +432,7 @@ class DonateButton extends React.Component {
                 id="amount-input"
                 type="number"
                 value={amount}
-                onChange={(name, newAmount) =>
-                  this.setState({ amount: newAmount, defaultAmount: false })
-                }
+                onChange={(name, newAmount) => this.setState({ amount: newAmount })}
                 validations={{
                   lessOrEqualTo: maxAmount.toNumber(),
                   greaterThan: 0,
@@ -574,12 +528,12 @@ const modelTypes = PropTypes.shape({
   title: PropTypes.string.isRequired,
   campaignId: PropTypes.string,
   token: PropTypes.shape({}),
+  maxDonation: PropTypes.instanceOf(BigNumber),
 });
 
 DonateButton.propTypes = {
   model: modelTypes.isRequired,
   currentUser: PropTypes.instanceOf(User),
-  maxDonationAmount: PropTypes.instanceOf(BigNumber),
   NativeTokenBalance: PropTypes.instanceOf(BigNumber).isRequired,
   validProvider: PropTypes.bool.isRequired,
   isCorrectNetwork: PropTypes.bool.isRequired,
@@ -588,18 +542,17 @@ DonateButton.propTypes = {
 
 DonateButton.defaultProps = {
   currentUser: undefined,
-  maxDonationAmount: undefined, // new BigNumber(10000000000000000),
 };
 
 export default props => (
   <WhiteListConsumer>
     {({ state: { tokenWhitelist } }) => (
       <Web3Consumer>
-        {({ state: { isHomeNetwork, validProvider, balance } }) => (
+        {({ state: { isCorrectNetwork, validProvider, balance } }) => (
           <DonateButton
             NativeTokenBalance={balance}
             validProvider={validProvider}
-            isCorrectNetwork={isHomeNetwork}
+            isCorrectNetwork={isCorrectNetwork}
             tokenWhitelist={tokenWhitelist}
             {...props}
           />

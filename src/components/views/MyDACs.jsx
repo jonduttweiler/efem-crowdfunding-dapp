@@ -5,7 +5,7 @@ import Pagination from 'react-js-pagination';
 import { utils } from 'web3';
 
 import { isLoggedIn, checkBalance } from '../../lib/middleware';
-import { getTruncatedText, convertEthHelper, history } from '../../lib/helpers';
+import { getTruncatedText, history } from '../../lib/helpers';
 
 import Loader from '../Loader';
 
@@ -144,7 +144,7 @@ class MyDACs extends Component {
                                   {d.donationCounters.length > 0 &&
                                     d.donationCounters.map(counter => (
                                       <p key={`total_donated-${d.key}-${counter.symbol}`}>
-                                        {convertEthHelper(counter.totalDonated)} {counter.symbol}
+                                        {counter.totalDonated.toString()} {counter.symbol}
                                       </p>
                                     ))}
 

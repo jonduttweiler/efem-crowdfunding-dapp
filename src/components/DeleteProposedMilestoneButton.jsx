@@ -22,7 +22,7 @@ const DeleteProposedMilestoneButton = ({ milestone, currentUser }) => {
 
   return (
     <Web3Consumer>
-      {({ state: { isForeignNetwork } }) => (
+      {({ state: { isCorrectNetwork } }) => (
         <Fragment>
           {currentUser &&
             milestone.ownerAddress === currentUser.address &&
@@ -32,7 +32,7 @@ const DeleteProposedMilestoneButton = ({ milestone, currentUser }) => {
                   type="button"
                   className="btn btn-danger btn-sm"
                   onClick={_deleteProposedMilestone}
-                  disable={!isForeignNetwork ? true : undefined}
+                  disable={!isCorrectNetwork}
                 >
                   <i className="fa fa-times-circle-o" />
                   &nbsp;Delete

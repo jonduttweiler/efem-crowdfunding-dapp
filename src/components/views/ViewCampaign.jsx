@@ -25,7 +25,6 @@ import CampaignService from '../../services/CampaignService';
 
 import ErrorPopup from '../ErrorPopup';
 import ErrorBoundary from '../ErrorBoundary';
-import ShareOptions from '../ShareOptions';
 import config from '../../configuration';
 
 /**
@@ -176,14 +175,15 @@ class ViewCampaign extends Component {
                   currentUser={currentUser}
                   history={history}
                 />
-                {currentUser && (
-                  <DelegateMultipleButton
-                    style={{ padding: '10px 10px' }}
-                    campaign={campaign}
-                    balance={balance}
-                    currentUser={currentUser}
-                  />
-                )}
+                {currentUser &&
+                  currentUser.authenticated && (
+                    <DelegateMultipleButton
+                      style={{ padding: '10px 10px' }}
+                      campaign={campaign}
+                      balance={balance}
+                      currentUser={currentUser}
+                    />
+                  )}
                 {campaign.communityUrl && (
                   <CommunityButton className="btn btn-secondary" url={campaign.communityUrl}>
                     Join our community
@@ -194,10 +194,7 @@ class ViewCampaign extends Component {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-md-8 m-auto">
-                    <div className="go-back-section">
-                      <GoBackButton to="/" title="Campaigns" />
-                      <ShareOptions pageUrl={window.location.href} pageTitle={campaign.title} />
-                    </div>
+                    <GoBackButton to="/" title="Campaigns" />
 
                     <center>
                       <Link to={`/profile/${campaign.owner.address}`}>

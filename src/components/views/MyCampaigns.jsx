@@ -13,7 +13,7 @@ import { isLoggedIn, checkBalance } from '../../lib/middleware';
 import confirmationDialog from '../../lib/confirmationDialog';
 import Loader from '../Loader';
 import User from '../../models/User';
-import { getTruncatedText, convertEthHelper, history } from '../../lib/helpers';
+import { getTruncatedText, history } from '../../lib/helpers';
 import CampaignService from '../../services/CampaignService';
 import Campaign from '../../models/Campaign';
 import AuthenticationWarning from '../AuthenticationWarning';
@@ -135,7 +135,7 @@ class MyCampaigns extends Component {
 
     return (
       <Web3Consumer>
-        {({ state: { isForeignNetwork } }) => (
+        {({ state: { isCorrectNetwork } }) => (
           <div id="campaigns-view">
             <div className="container-fluid page-layout dashboard-table-view">
               <div className="row">
@@ -147,8 +147,8 @@ class MyCampaigns extends Component {
                   <AuthenticationWarning currentUser={currentUser} />
 
                   <NetworkWarning
-                    incorrectNetwork={!isForeignNetwork}
-                    networkName={config.foreignNetworkName}
+                    incorrectNetwork={!isCorrectNetwork}
+                    networkName={config.networkName}
                   />
 
                   {isLoading && <Loader className="fixed" />}
@@ -193,7 +193,7 @@ class MyCampaigns extends Component {
 
                                         {(c.reviewerAddress === currentUser.address ||
                                           c.owner.address === currentUser.address) &&
-                                          isForeignNetwork &&
+                                          isCorrectNetwork &&
                                           c.isActive && (
                                             <button
                                               type="button"
@@ -230,8 +230,7 @@ class MyCampaigns extends Component {
                                       {c.donationCounters.length > 0 &&
                                         c.donationCounters.map(counter => (
                                           <p key={`total_donated-${c.key}-${counter.symbol}`}>
-                                            {convertEthHelper(counter.totalDonated)}{' '}
-                                            {counter.symbol}
+                                            {counter.totalDonated.toString()} {counter.symbol}
                                           </p>
                                         ))}
                                       {c.donationCounters.length === 0 && <span>-</span>}
