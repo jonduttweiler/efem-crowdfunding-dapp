@@ -188,13 +188,14 @@ class ViewMilestone extends Component {
 
                 {/* Milestone actions */}
 
-                {currentUser.authenticated && (
-                  <MilestoneActions
-                    milestone={milestone}
-                    balance={balance}
-                    currentUser={currentUser}
-                  />
-                )}
+                {currentUser &&
+                  currentUser.authenticated && (
+                    <MilestoneActions
+                      milestone={milestone}
+                      balance={balance}
+                      currentUser={currentUser}
+                    />
+                  )}
               </div>
             </BackgroundImageHeader>
 

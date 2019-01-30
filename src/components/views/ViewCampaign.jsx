@@ -175,14 +175,15 @@ class ViewCampaign extends Component {
                   currentUser={currentUser}
                   history={history}
                 />
-                {currentUser.authenticated && (
-                  <DelegateMultipleButton
-                    style={{ padding: '10px 10px' }}
-                    campaign={campaign}
-                    balance={balance}
-                    currentUser={currentUser}
-                  />
-                )}
+                {currentUser &&
+                  currentUser.authenticated && (
+                    <DelegateMultipleButton
+                      style={{ padding: '10px 10px' }}
+                      campaign={campaign}
+                      balance={balance}
+                      currentUser={currentUser}
+                    />
+                  )}
                 {campaign.communityUrl && (
                   <CommunityButton className="btn btn-secondary" url={campaign.communityUrl}>
                     Join our community
