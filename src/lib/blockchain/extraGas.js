@@ -5,7 +5,7 @@ export default () => {
     case 'localhost':
       return 1000000;
     case 'rsk_testnet':
-      return 100000;
+      return 1000000;
     default:
       return 0;
   }
