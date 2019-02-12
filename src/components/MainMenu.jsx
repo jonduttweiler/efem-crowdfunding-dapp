@@ -68,15 +68,16 @@ class MainMenu extends Component {
                     />
                   </button>
 
-                  <Link className="navbar-brand" to="/">
-                    <img src="/img/Giveth-typelogo.svg" width="70px" alt="Giveth logo" />
-                  </Link>
-
                   <div
                     className={`collapse navbar-collapse ${showMobileMenu ? 'show' : ''} `}
                     id="navbarSupportedContent"
                   >
                     <ul className="navbar-nav mr-auto">
+                      <li className="nav-item dropdown">
+                        <NavLink className="nav-link" to="/">
+                          Explore
+                        </NavLink>
+                      </li>
                       {validProvider &&
                         state.currentUser && (
                           <li className="nav-item dropdown">
