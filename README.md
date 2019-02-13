@@ -1,9 +1,11 @@
-![Giveth Dapp](./readme-header.png)
 
 
-> DApp - Donation Application for charitable giving without losing ownership
 
-Welcome to the code for Giveth's DApp. This is an open source effort to realize the potential of ethereum smart contracts. More specifically, the Giveth DApp provides an alternative to traditional donation.
+
+
+> b4H DApp - Donation Application for supporting causes without losing ownership
+
+Welcome to the code for b4H DApp. This is an open source effort started at Giveth.io to realize the potential of ethereum smart contracts. More specifically, the Giveth DApp provides an alternative to traditional donation. That genesis effort is now complemented for the whole #blockchain4goood community by adopting bitcoin as a store of value.
 
 ## Table of content
 
@@ -180,14 +182,14 @@ then show the appropriate balance when donating in ANT tokens.
 **NOTE**: If you get a nonce error in MetaMask or if the dapp fails to load with your metamask unlocked, it could be b/c metamask is confused. You should go to "settings" -> "Reset Account" in MetaMask in order to reset the nonce & cached account data.
 
 ### Development and PR Testing
-1. The Giveth Dapp is auto deployed from the develop branch and is live on Rinkeby [develop.giveth.io](https://develop.giveth.io). All pull requests are autodeployed and the PR preview will be generated upon submission. To learn how to access PR previews see [Development Process & Quality Assurance](https://wiki.giveth.io/documentation/DApp/product-development-testing/) on our wiki.
+1. The b4H Dapp is auto deployed from the develop branch and [is live on RSK Testnet] (https://dapp.giveth.site). All pull requests are autodeployed and the PR preview will be generated upon submission. To learn how to access PR previews see [Development Process & Quality Assurance](https://wiki.giveth.io/documentation/DApp/product-development-testing/) on the wiki.
 2. In order to use the dapp you will need to create account. If this is your first time, click "sign up" to create an account. If you already have a valid keychain file, use it to sign in.
 3. You will need test ether on the Rinkeby network. Go to the "wallet" page to see your new address (0x..). Copy that address and use the faucet to get some: https://faucet.rinkeby.io/
 
 
 
 ### Deployment Environments
-At Giveth, we are using the [gitflow](http://nvie.com/posts/a-successful-git-branching-model/) branching model to deploy to 4 different environments.
+At b4H Dapp, we are using the [gitflow](http://nvie.com/posts/a-successful-git-branching-model/) branching model to deploy to 4 different environments.
 
 Name | Blockchain | Branch Deployed | Auto Deploy | Use |
 -----|------------|-----------------|-------------|-----|
