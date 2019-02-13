@@ -1,5 +1,7 @@
-
-
+<p align="center">
+  <img width="400" src="https://github.com/blockchain4humanity/dapp-ui/blob/Brand-changes/public/img/b4hlogo%20copy.jpg">
+  </a>
+</p>
 
 
 
