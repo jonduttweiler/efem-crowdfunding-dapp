@@ -849,7 +849,7 @@ class DonationService {
     let tx;
     let txHash;
 
-    if (addGiver) {
+    if (addGiver || giverId === undefined) {
       lpMethod = network.liquidPledging.addGiverAndDonate;
     } else {
       lpMethod = network.liquidPledging.donate;
@@ -858,7 +858,8 @@ class DonationService {
     if (token.address === '0x0000000000000000000000000000000000000000') {
       // native currency, set value on options
       opts.value = amount;
-      tx = lpMethod(giverId, donateToAdminId, token.address, 0, opts);
+      console.log({ giverId, donateToAdminId, addr: token.address, opts });
+      tx = lpMethod(giverId, donateToAdminId, token.address, '0', opts);
     } else {
       // token
       tx = lpMethod(giverId, donateToAdminId, token.address, amount, opts);
