@@ -310,7 +310,7 @@ class EditMilestone extends Component {
             if (this.props.isProposed) {
               React.toast.info(<p>Your Milestone has been proposed to the Campaign Owner.</p>);
             }
-          } else if (txUrl) {
+          } else if (typeof txUrl === 'string') {
             React.toast.info(
               <p>
                 Your Milestone is pending....

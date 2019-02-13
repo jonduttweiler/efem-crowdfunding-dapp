@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import Portis from '@portis/web3';
 import config from '../../configuration';
 
 let newWeb3;
@@ -33,14 +34,18 @@ export default () =>
       if (window.ethereum) {
         newWeb3 = new Web3(window.ethereum);
         newWeb3.enable = enable.bind(newWeb3);
-        // newWeb3.accountsEnabled = false;
       } else if (window.web3) {
         newWeb3 = new Web3(window.web3.currentProvider);
         newWeb3.enable = newWeb3.eth.getAccounts;
         newWeb3.accountsEnabled = true;
       } else {
-        newWeb3 = new Web3(config.nodeConnection);
-        newWeb3.defaultNode = true;
+        const myPrivateEthereumNode = {
+          nodeUrl: config.nodeConnection,
+          chainId: config.nodeId,
+          nodeProtocol: 'rpc',
+        };
+        const portis = new Portis('912ffb93-0aa8-4c63-b68f-9328fc9cfea7', myPrivateEthereumNode);
+        newWeb3 = new Web3(portis.provider);
       }
     }
 
