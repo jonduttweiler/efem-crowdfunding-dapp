@@ -1,5 +1,5 @@
 {
-  "name": "giveth-dapp",
+  "name": "b4h-dapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -12,7 +12,7 @@
     "@feathersjs/socketio": "^3.2.9",
     "@feathersjs/socketio-client": "^1.2.1",
     "@portis/web3": "^2.0.0-beta.11",
-    "bignumber.js": "^7.2.1",
+    "bignumber.js": "^8.0.2",
     "ethereumjs-abi": "^0.6.5",
     "feathers-hooks-common": "^4.20.2",
     "feathers-reactive": "^0.7.2",
@@ -20,7 +20,6 @@
     "formsy-react-components": "^1.0.0",
     "giveth-liquidpledging": "2.0.0-beta.4",
     "history": "^4.7.2",
-    "lerna": "^2.11.0",
     "localforage": "^1.5.0",
     "lpp-campaign": "2.0.0-beta.0",
     "lpp-capped-native-milestone": "1.0.0-beta.0",
@@ -29,7 +28,6 @@
     "node-fetch": "^2.1.1",
     "node-sass-chokidar": "^0.0.3",
     "prop-types": "^15.5.10",
-    "react": "16.4.1",
     "react-addons-shallow-compare": "^15.6.0",
     "react-avatar": "^2.3.0",
     "react-cropper": "^1.0.1",
@@ -46,6 +44,7 @@
     "react-responsive-masonry": "^1.5.0",
     "react-router": "^4.1.2",
     "react-router-dom": "^4.1.2",
+    "react-scripts": "2.1.5",
     "react-toastify": "2.1.7",
     "react-toggle": "^4.0.2",
     "request": "^2.85.0",
@@ -57,19 +56,11 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^17.0.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-jsx-a11y": "^6.1.0",
-    "eslint-plugin-prettier": "^2.6.2",
-    "eslint-plugin-react": "^7.9.1",
-    "giveth-react-scripts": "1.1.4",
-    "husky": "^1.0.0-rc.12",
-    "jsdoc": "^3.5.5",
-    "lint-staged": "^7.2.0",
-    "npm-run-all": "^4.1.3",
-    "prettier": "^1.13.7"
+    "npm-run-all": "^4.1.5",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "babel-loader": "^8.0.5",
+    "webpack": "^4.28.3"
   },
   "scripts": {
     "precommit": "lint-staged",
@@ -98,9 +89,15 @@
     "url": "https://github.com/Giveth/giveth-dapp.git"
   },
   "author": {
-    "name": "Giveth",
-    "email": "info@giveth.io",
-    "url": "http://giveth.io"
+    "name": "Blockchain 4 Humanity",
+    "email": "hello@b4h.world",
+    "url": "http://b4h.world"
   },
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

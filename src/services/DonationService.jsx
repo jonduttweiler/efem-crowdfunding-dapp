@@ -858,7 +858,6 @@ class DonationService {
     if (token.address === '0x0000000000000000000000000000000000000000') {
       // native currency, set value on options
       opts.value = amount;
-      console.log({ giverId, donateToAdminId, addr: token.address, opts });
       tx = lpMethod(giverId, donateToAdminId, token.address, '0', opts);
     } else {
       // token
