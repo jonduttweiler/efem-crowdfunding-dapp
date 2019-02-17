@@ -205,10 +205,9 @@ class EditCampaign extends Component {
 
                     {!isNew && <h3>Edit campaign{campaign.title}</h3>}
                     <p>
-                      <i className="fa fa-question-circle" />
-                      A campaign solves a specific cause by executing a project via its Milestones.
-                      Funds raised by a campaign need to be delegated to its Milestones in order to
-                      be paid out.
+                      <i className="fa fa-question-circle" />A campaign solves a specific cause by
+                      executing a project via its Milestones. Funds raised by a campaign need to be
+                      delegated to its Milestones in order to be paid out.
                     </p>
                   </div>
 
@@ -354,10 +353,12 @@ EditCampaign.defaultProps = {
   isNew: false,
 };
 
-export default props => (
-  <WhiteListConsumer>
-    {({ state: { reviewers }, actions: { isCampaignManager } }) => (
-      <EditCampaign reviewers={reviewers} isCampaignManager={isCampaignManager} {...props} />
-    )}
-  </WhiteListConsumer>
-);
+export default function EditCmpn(props) {
+  return (
+    <WhiteListConsumer>
+      {({ state: { reviewers }, actions: { isCampaignManager } }) => (
+        <EditCampaign reviewers={reviewers} isCampaignManager={isCampaignManager} {...props} />
+      )}
+    </WhiteListConsumer>
+  );
+}

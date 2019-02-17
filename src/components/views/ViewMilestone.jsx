@@ -188,14 +188,13 @@ class ViewMilestone extends Component {
 
                 {/* Milestone actions */}
 
-                {currentUser &&
-                  currentUser.authenticated && (
-                    <MilestoneActions
-                      milestone={milestone}
-                      balance={balance}
-                      currentUser={currentUser}
-                    />
-                  )}
+                {currentUser && currentUser.authenticated && (
+                  <MilestoneActions
+                    milestone={milestone}
+                    balance={balance}
+                    currentUser={currentUser}
+                  />
+                )}
               </div>
             </BackgroundImageHeader>
 
@@ -223,44 +222,43 @@ class ViewMilestone extends Component {
                 </div>
               </div>
 
-              {milestone.items &&
-                milestone.items.length > 0 && (
-                  <div className="row spacer-top-50 dashboard-table-view">
-                    <div className="col-md-8 m-auto">
-                      <h4>Milestone proof</h4>
-                      <p>These receipts show how the money of this milestone was spent.</p>
+              {milestone.items && milestone.items.length > 0 && (
+                <div className="row spacer-top-50 dashboard-table-view">
+                  <div className="col-md-8 m-auto">
+                    <h4>Milestone proof</h4>
+                    <p>These receipts show how the money of this milestone was spent.</p>
 
-                      {/* MilesteneItem needs to be wrapped in a form or it won't mount */}
-                      <Form>
-                        <div className="table-container">
-                          <table className="table table-striped table-hover">
-                            <thead>
-                              <tr>
-                                <th className="td-item-date">Date</th>
-                                <th className="td-item-description">Description</th>
-                                <th className="td-item-amount-fiat">Amount Fiat</th>
-                                <th className="td-item-amount-ether">
-                                  Amount {milestone.token.symbol}
-                                </th>
-                                <th className="td-item-file-upload">Attached proof</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {milestone.items.map((item, i) => (
-                                <MilestoneItem
-                                  key={item._id}
-                                  name={`milestoneItem-${i}`}
-                                  item={item}
-                                  token={milestone.token}
-                                />
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </Form>
-                    </div>
+                    {/* MilesteneItem needs to be wrapped in a form or it won't mount */}
+                    <Form>
+                      <div className="table-container">
+                        <table className="table table-striped table-hover">
+                          <thead>
+                            <tr>
+                              <th className="td-item-date">Date</th>
+                              <th className="td-item-description">Description</th>
+                              <th className="td-item-amount-fiat">Amount Fiat</th>
+                              <th className="td-item-amount-ether">
+                                Amount {milestone.token.symbol}
+                              </th>
+                              <th className="td-item-file-upload">Attached proof</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {milestone.items.map((item, i) => (
+                              <MilestoneItem
+                                key={item._id}
+                                name={`milestoneItem-${i}`}
+                                item={item}
+                                token={milestone.token}
+                              />
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </Form>
                   </div>
-                )}
+                </div>
+              )}
 
               <div className="row spacer-top-50">
                 <div className="col-md-8 m-auto">

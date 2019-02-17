@@ -447,13 +447,12 @@ class EditMilestone extends Component {
                   <div className="form-header">
                     {isNew && !isProposed && <h3>Add a new milestone</h3>}
 
-                    {!isNew &&
-                      !isProposed && (
-                        <h3>
-                          Edit milestone
-                          {milestone.title}
-                        </h3>
-                      )}
+                    {!isNew && !isProposed && (
+                      <h3>
+                        Edit milestone
+                        {milestone.title}
+                      </h3>
+                    )}
 
                     {isNew && isProposed && <h3>Propose a Milestone</h3>}
 

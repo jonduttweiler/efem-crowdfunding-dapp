@@ -28,8 +28,7 @@ class JoinGivethCommunity extends Component {
             DAC! However, Giveth is still in alpha and we only allow a select group of people to
             start DACs
             <br />
-            Please <strong>contact us on our Slack</strong>
-            , or keep browsing
+            Please <strong>contact us on our Slack</strong>, or keep browsing
           </p>,
         ),
         icon: 'info',
@@ -73,8 +72,7 @@ class JoinGivethCommunity extends Component {
             It&#8217;s great to see that you want to start a campaign, however, Giveth is still in
             beta and we only allow a select group of people to start campaigns
             <br />
-            Please <strong>contact us on our Slack</strong>
-            , or keep browsing
+            Please <strong>contact us on our Slack</strong>, or keep browsing
           </p>,
         ),
         icon: 'info',
@@ -153,14 +151,16 @@ JoinGivethCommunity.defaultProps = {
   currentUser: undefined,
 };
 
-export default props => (
-  <WhiteListConsumer>
-    {({ actions: { isDelegate, isCampaignManager } }) => (
-      <JoinGivethCommunity
-        {...props}
-        isDelegate={isDelegate}
-        isCampaignManager={isCampaignManager}
-      />
-    )}
-  </WhiteListConsumer>
-);
+export default function JoinCom(props) {
+  return (
+    <WhiteListConsumer>
+      {({ actions: { isDelegate, isCampaignManager } }) => (
+        <JoinGivethCommunity
+          {...props}
+          isDelegate={isDelegate}
+          isCampaignManager={isCampaignManager}
+        />
+      )}
+    </WhiteListConsumer>
+  );
+}

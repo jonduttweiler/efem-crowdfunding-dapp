@@ -1,13 +1,23 @@
 {
   "extends": [
     "airbnb",
+    "eslint:recommended",
+    "plugin:react/recommended",
     "plugin:prettier/recommended",
     "prettier",
     "prettier/flowtype",
     "prettier/react",
     "prettier/standard"
   ],
+  "plugins": ["prettier"],
   "rules": {
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "no-console": 1,
     "jsx-a11y/anchor-is-valid": [
       "error",
       {
@@ -59,5 +69,6 @@
         "moduleDirectory": ["node_modules", "src/"]
       }
     }
-  }
+  },
+  "parser": "babel-eslint"
 }

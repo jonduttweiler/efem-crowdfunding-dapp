@@ -216,17 +216,17 @@ class EditDAC extends Component {
                     {!isNew && <h3>Edit DAC</h3>}
 
                     <p>
-                      <i className="fa fa-question-circle" />
-                      A DAC aims to solve a cause by building a Community, raising funds and
-                      delegating those funds to Campaigns that solve its cause. Should you create a
-                      Campaign or Community? Read more{' '}
+                      <i className="fa fa-question-circle" />A DAC aims to solve a cause by building
+                      a Community, raising funds and delegating those funds to Campaigns that solve
+                      its cause. Should you create a Campaign or Community? Read more{' '}
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href="https://wiki.giveth.io/documentation/glossary/"
                       >
                         here
-                      </a>.
+                      </a>
+                      .
                     </p>
                   </div>
 
@@ -355,8 +355,10 @@ EditDAC.defaultProps = {
   isNew: false,
 };
 
-export default props => (
-  <WhiteListConsumer>
-    {({ actions: { isDelegate } }) => <EditDAC {...props} isDelegate={isDelegate} />}
-  </WhiteListConsumer>
-);
+export default function EdtDAC(props) {
+  return (
+    <WhiteListConsumer>
+      {({ actions: { isDelegate } }) => <EditDAC {...props} isDelegate={isDelegate} />}
+    </WhiteListConsumer>
+  );
+}

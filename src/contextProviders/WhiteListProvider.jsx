@@ -38,7 +38,8 @@ function isInWhitelist(currentUser, whitelist) {
 async function getUsers(addresses) {
   const query = { $select: ['_id', 'name', 'address'] };
 
-  if (Array.isArray(addresses) && addresses.length > 0) query.address = { $in: addresses.map(a => a.address) };
+  if (Array.isArray(addresses) && addresses.length > 0)
+    query.address = { $in: addresses.map(a => a.address) };
   else query.email = { $exists: true };
 
   const resp = await feathersClient.service('/users').find({ query });
@@ -67,7 +68,6 @@ class WhiteListProvider extends Component {
       projectOwnerWhitelist: [],
       tokenWhitelist: [],
       fiatWhitelist: [],
-      isLoading: true,
       hasError: false,
     };
   }
@@ -80,16 +80,18 @@ class WhiteListProvider extends Component {
       const campaignManagers = await getUsers(whitelist.projectOwnerWhitelist);
       const reviewers = await getUsers(whitelist.reviewerWhitelist);
 
-      this.setState({
-        ...whitelist,
-        delegates,
-        campaignManagers,
-        reviewers,
-        isLoading: false,
-      });
+      this.setState(
+        {
+          ...whitelist,
+          delegates,
+          campaignManagers,
+          reviewers,
+        },
+        () => this.props.onLoaded(),
+      );
     } catch (err) {
       console.error(err);
-      this.setState({ isLoading: false, hasError: true });
+      this.setState({ hasError: true }, () => this.props.onLoaded());
     }
   }
 
@@ -103,7 +105,6 @@ class WhiteListProvider extends Component {
       projectOwnerWhitelist,
       tokenWhitelist,
       fiatWhitelist,
-      isLoading,
       hasError,
     } = this.state;
 
@@ -116,7 +117,6 @@ class WhiteListProvider extends Component {
             reviewers,
             tokenWhitelist,
             fiatWhitelist,
-            isLoading,
             hasError,
           },
           actions: {
@@ -134,6 +134,7 @@ class WhiteListProvider extends Component {
 
 WhiteListProvider.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
+  onLoaded: PropTypes.func.isRequired,
 };
 
 export default WhiteListProvider;

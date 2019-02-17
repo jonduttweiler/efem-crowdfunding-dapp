@@ -78,6 +78,7 @@ class MilestoneProof extends Component {
                       <tbody>
                         {items.map((item, i) => (
                           <MilestoneItem
+                            key={item.id}
                             name={`milestoneItem-${i}`}
                             index={i}
                             item={item}
@@ -91,18 +92,16 @@ class MilestoneProof extends Component {
                   </div>
                 )}
 
-                {items.length > 0 &&
-                  canEdit && (
-                    <AddMilestoneItem onClick={() => this.toggleAddMilestoneItemModal()} />
-                  )}
+                {items.length > 0 && canEdit && (
+                  <AddMilestoneItem onClick={() => this.toggleAddMilestoneItemModal()} />
+                )}
 
-                {items.length === 0 &&
-                  canEdit && (
-                    <div className="text-center">
-                      <p>Attach an expense, invoice or anything else that requires payment.</p>
-                      <AddMilestoneItem onClick={() => this.toggleAddMilestoneItemModal()} />
-                    </div>
-                  )}
+                {items.length === 0 && canEdit && (
+                  <div className="text-center">
+                    <p>Attach an expense, invoice or anything else that requires payment.</p>
+                    <AddMilestoneItem onClick={() => this.toggleAddMilestoneItemModal()} />
+                  </div>
+                )}
               </div>
             </div>
           </div>

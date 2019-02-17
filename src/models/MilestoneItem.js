@@ -17,7 +17,9 @@ export default class MilestoneItemModel extends Model {
       wei = '',
       conversionRate = parseFloat(0),
       conversionRateTimestamp = new Date().toISOString(),
-      _id,
+      _id = Math.random()
+        .toString(16)
+        .slice(2),
     } = data;
 
     this._date = date;
