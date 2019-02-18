@@ -73,11 +73,14 @@ class MainMenu extends Component {
                     id="navbarSupportedContent"
                   >
                     <ul className="navbar-nav mr-auto">
-                      <li className="nav-item dropdown">
-                        <NavLink className="nav-link" to="/">
-                          Explore
-                        </NavLink>
-                      </li>
+                      <Link className="navbar-brand" to="/">
+                        <img src="/img/logo.svg" width="40px" alt="B4H logo" />
+                      </Link>
+
+                      <NavLink className="nav-link" to="/">
+                        Explore
+                      </NavLink>
+
                       {validProvider && state.currentUser && state.currentUser.authenticated && (
                         <li className="nav-item dropdown">
                           <NavLink
@@ -97,19 +100,19 @@ class MainMenu extends Component {
                             aria-labelledby="navbarDropdownDashboard"
                           >
                             <NavLink className="dropdown-item" to="/my-milestones">
-                              My Milestones
+                              Milestones
                             </NavLink>
                             <NavLink className="dropdown-item" to="/donations">
-                              My Donations
+                              Donations
                             </NavLink>
                             <NavLink className="dropdown-item" to="/delegations">
-                              My Delegations
+                              Delegations
                             </NavLink>
                             <NavLink className="dropdown-item" to="/my-dacs">
-                              My Funds
+                              Funds
                             </NavLink>
                             <NavLink className="dropdown-item" to="/my-campaigns">
-                              My Campaigns
+                              Campaigns
                             </NavLink>
                           </div>
                         </li>
