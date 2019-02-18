@@ -149,7 +149,7 @@ class DelegationProvider extends Component {
                     d.id = d._id;
                     d.element = (
                       <span>
-                        {d.title} <em>DAC</em>
+                        {d.title} <em>Fund</em>
                       </span>
                     );
                     return d;

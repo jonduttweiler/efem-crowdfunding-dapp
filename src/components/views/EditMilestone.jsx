@@ -553,10 +553,10 @@ class EditMilestone extends Component {
                         type="text"
                         value={milestone.recipientAddress}
                         placeholder="0x0000000000000000000000000000000000000000"
-                        help="Enter an Ethereum address."
+                        help="Enter a RSK address."
                         validations="isEtherAddress"
                         validationErrors={{
-                          isEtherAddress: 'Please insert a valid Ethereum address.',
+                          isEtherAddress: 'Please insert a valid RSK address.',
                         }}
                         required
                         disabled={milestone.projectId !== undefined}

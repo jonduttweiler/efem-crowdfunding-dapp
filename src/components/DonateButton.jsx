@@ -358,7 +358,7 @@ class DonateButton extends React.Component {
               <p>
                 {model.type.toLowerCase() === DAC.type && (
                   <span>
-                    You&apos;re pledging: as long as the DAC owner does not lock your money you can
+                    You&apos;re pledging: as long as the Fund owner does not lock your money you can
                     take it back any time.
                   </span>
                 )}
@@ -375,7 +375,7 @@ class DonateButton extends React.Component {
             {validProvider && !currentUser && (
               <div className="alert alert-warning">
                 <i className="fa fa-exclamation-triangle" />
-                It looks like your Ethereum Provider is locked or you need to enable it.
+                It looks like your Provider is locked or you need to enable it.
               </div>
             )}
 
@@ -470,7 +470,7 @@ class DonateButton extends React.Component {
                   placeholder="0x0000000000000000000000000000000000000000"
                   validations="isEtherAddress"
                   validationErrors={{
-                    isEtherAddress: 'Please insert a valid Ethereum address.',
+                    isEtherAddress: 'Please insert a valid RSK address.',
                   }}
                   required={this.state.showRecipientAddress}
                 />

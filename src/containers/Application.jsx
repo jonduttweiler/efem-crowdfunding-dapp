@@ -427,7 +427,7 @@ class Application extends Component {
                                           <center>
                                             <h2>Oops, something went wrong...</h2>
                                             <p>
-                                              The Giveth dapp could not load for some reason. Please
+                                              The B4H dapp could not load for some reason. Please
                                               try again...
                                             </p>
                                           </center>

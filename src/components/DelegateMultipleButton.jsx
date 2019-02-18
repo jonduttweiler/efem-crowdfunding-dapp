@@ -319,7 +319,7 @@ class DelegateMultipleButton extends Component {
                 <InputToken
                   name="delegateFrom"
                   label="Delegate from:"
-                  placeholder={milestone ? 'Select a DAC or Campaign' : 'Select a DAC'}
+                  placeholder={milestone ? 'Select a Fund or Campaign' : 'Select a Fund'}
                   value={this.state.objectToDelegateFrom}
                   options={delegationOptions}
                   onSelect={this.selectedObject}

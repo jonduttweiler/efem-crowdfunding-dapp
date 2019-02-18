@@ -200,7 +200,7 @@ class ConversationModal extends Component {
                   name="message"
                   label="Accompanying message"
                   // {/* helpText="Make it as extensive as necessary. Your goal is to build trust,
-                  // so that people donate Ether to your Campaign. Don't hesitate to add a detailed budget for this Milestone"
+                  // so that people donate BTC to your Campaign. Don't hesitate to add a detailed budget for this Milestone"
                   // */}
                   value={message}
                   placeholder={textPlaceholder}

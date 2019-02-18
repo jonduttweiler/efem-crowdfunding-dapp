@@ -135,13 +135,14 @@ class EditProfile extends Component {
 
             {!isLoading && (
               <div>
-                <h3>Edit your profile</h3>
+                {user.email && <h3>Edit your profile</h3>}
+                {!user.email && <h3>Create a profile to get started</h3>}
                 <p>
                   <i className="fa fa-question-circle" />
-                  Trust is important to run successful Communities or Campaigns. Without trust you
-                  will likely not receive donations. Therefore, we strongly recommend that you{' '}
+                  Trust is important to run successful Funds or Campaigns. Without trust you will
+                  likely not receive donations. Therefore, we strongly recommend that you{' '}
                   <strong>fill out your profile </strong>
-                  when you want to start Communities or Campaigns on Giveth.
+                  when you want to start Funds or Campaigns on the B4H dapp.
                 </p>
                 <div className="alert alert-warning">
                   <i className="fa fa-exclamation-triangle" />

@@ -14,7 +14,7 @@ const DACs = () => (
         <div id="campaigns-view" className="card-view">
           <div className="container-fluid page-layout reduced-padding">
             <h4>
-              Decentralized Altruistic Communities{' '}
+              Decentralized Funds{' '}
               {total > 0 && <span className="badge badge-success">{total}</span>}
             </h4>
             {!hasError && isLoading && <Loader />}
@@ -22,8 +22,8 @@ const DACs = () => (
             !hasError && !isLoading && dacs.length > 0 && (
               <div>
                 <p>
-                  These Communities are solving causes. Help them realise their goals by joining
-                  them and giving Ether or tokens!
+                  These Funds are solving causes. Help them realise their goals by giving Bitcoin or
+                  tokens!
                 </p>
                 <div className="cards-grid-container">
                   {dacs.map(dac => (
@@ -37,7 +37,7 @@ const DACs = () => (
             !hasError && !isLoading && dacs.length === 0 && (
               <div>
                 <center>
-                  <p>There are no decentralized altruistic communities (DACs) yet!</p>
+                  <p>There are no Decentralized Funds yet!</p>
                   <img
                     className="empty-state-img"
                     src={`${process.env.PUBLIC_URL}/img/community.svg`}
@@ -50,8 +50,8 @@ const DACs = () => (
             )}
             {hasError && (
               <p>
-                <strong>Oops, something went wrong...</strong> The Giveth dapp could not load any
-                DACs for some reason. Please try refreshing the page...
+                <strong>Oops, something went wrong...</strong> The B4H dapp could not load any Funds
+                for some reason. Please try refreshing the page...
               </p>
             )}
           </div>

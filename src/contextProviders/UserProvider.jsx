@@ -16,8 +16,10 @@ export { Consumer };
 
 // TO DO: This is the minimum transaction view required to:
 // create a DAC / Campaign / Milestone / Profile
-React.minimumWalletBalance = 0.01;
-React.minimumWalletBalanceInWei = new BigNumber(utils.toWei('0.01'));
+React.minimumWalletBalance = 0.0008;
+React.minimumWalletBalanceInWei = new BigNumber(
+  utils.toWei(new BigNumber(React.minimumWalletBalance).toString()),
+);
 
 /**
  * This container holds the application and its routes.

@@ -21,7 +21,7 @@ const Campaigns = () => (
               <div>
                 <p>
                   These Campaigns work hard to solve causes. Help them realise their goals by giving
-                  Ether or tokens!
+                  Bitcoin or tokens!
                 </p>
                 <div className="cards-grid-container">
                   {campaigns.map(campaign => (
@@ -49,8 +49,8 @@ const Campaigns = () => (
             )}
             {hasError && (
               <p>
-                <strong>Oops, something went wrong...</strong> The Giveth dapp could not load
-                Campaigns for some reason. Please try refreshing the page...
+                <strong>Oops, something went wrong...</strong> The dapp could not load Campaigns for
+                some reason. Please try refreshing the page...
               </p>
             )}
           </div>

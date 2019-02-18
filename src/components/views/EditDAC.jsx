@@ -71,7 +71,7 @@ class EditDAC extends Component {
             })
             .catch(err => {
               ErrorPopup(
-                'Sadly we were unable to load the DAC. Please refresh the page and try again.',
+                'Sadly we were unable to load the Fund. Please refresh the page and try again.',
                 err,
               );
             });
@@ -81,7 +81,7 @@ class EditDAC extends Component {
       })
       .catch(err => {
         ErrorPopup(
-          'There has been a problem loading the DAC. Please refresh the page and try again.',
+          'There has been a problem loading the Fund. Please refresh the page and try again.',
           err,
         );
       });
@@ -145,7 +145,7 @@ class EditDAC extends Component {
     };
 
     const afterMined = (created, url, id) => {
-      const msg = `Your DAC has been ${created ? 'created' : 'updated'}`;
+      const msg = `Your Fund has been ${created ? 'created' : 'updated'}`;
       showToast(msg, url, true);
 
       if (created) {
@@ -167,7 +167,9 @@ class EditDAC extends Component {
     const afterSave = (err, created, url) => {
       if (this.mounted) this.setState({ isSaving: false });
       if (err) return;
-      const msg = created ? 'Your DAC is pending...' : 'Your DAC is being updated...';
+      const msg = created
+        ? 'The creation of your Fund is pending...'
+        : 'Your Fund is being updated...';
       showToast(msg, url);
 
       if (created) history.push('/my-dacs');
@@ -211,14 +213,14 @@ class EditDAC extends Component {
                   <GoBackButton history={history} />
 
                   <div className="form-header">
-                    {isNew && <h3>Start a Decentralized Altruistic Community (DAC)</h3>}
+                    {isNew && <h3>Start a Decentralized Fund</h3>}
 
-                    {!isNew && <h3>Edit DAC</h3>}
+                    {!isNew && <h3>Edit Fund</h3>}
 
                     <p>
-                      <i className="fa fa-question-circle" />A DAC aims to solve a cause by building
-                      a Community, raising funds and delegating those funds to Campaigns that solve
-                      its cause. Should you create a Campaign or Community? Read more{' '}
+                      <i className="fa fa-question-circle" />A Fund aims to solve a cause by raising
+                      funds and delegating those funds to Campaigns that solve its cause. Should you
+                      create a Campaign or Fund? Read more{' '}
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
@@ -254,11 +256,11 @@ class EditDAC extends Component {
                     <Input
                       name="title"
                       id="title-input"
-                      label="Community cause"
+                      label="Fund cause"
                       type="text"
                       value={dac.title}
                       placeholder="e.g. Hurricane relief."
-                      help="Describe your Decentralized Altruistic Community (DAC) in 1 sentence."
+                      help="Describe your Decentralized Fund in 1 sentence."
                       validations="minLength:3"
                       validationErrors={{
                         minLength: 'Please provide at least 3 characters.',
@@ -272,11 +274,11 @@ class EditDAC extends Component {
                         name="description"
                         label="Explain your cause"
                         helpText="Make it as extensive as necessary. Your goal is to build trust,
-                        so that people join your Community and/or donate Ether."
+                        so that people donate to your Fund."
                         value={dac.description}
                         placeholder="Describe how you're going to solve your cause..."
                         validations="minLength:20"
-                        help="Describe your dac."
+                        help="Describe your cause."
                         validationErrors={{
                           minLength: 'Please provide at least 10 characters.',
                         }}
@@ -322,7 +324,7 @@ class EditDAC extends Component {
                           isLoading={isSaving}
                           loadingText="Saving..."
                         >
-                          {isNew ? 'Create DAC' : 'Update DAC'}
+                          {isNew ? 'Create Fund' : 'Update Fund'}
                         </LoaderButton>
                       </div>
                     </div>

@@ -78,7 +78,7 @@ class MainMenu extends Component {
                           Explore
                         </NavLink>
                       </li>
-                      {validProvider && state.currentUser && (
+                      {validProvider && state.currentUser && state.currentUser.authenticated && (
                         <li className="nav-item dropdown">
                           <NavLink
                             className="nav-link dropdown-toggle"
@@ -106,7 +106,7 @@ class MainMenu extends Component {
                               My Delegations
                             </NavLink>
                             <NavLink className="dropdown-item" to="/my-dacs">
-                              My Communities
+                              My Funds
                             </NavLink>
                             <NavLink className="dropdown-item" to="/my-campaigns">
                               My Campaigns
@@ -176,7 +176,8 @@ class MainMenu extends Component {
                             aria-labelledby="navbarDropdownYou"
                           >
                             <NavLink className="dropdown-item" to="/profile">
-                              Profile
+                              {state.currentUser.authenticated && <span>Profile</span>}
+                              {!state.currentUser.authenticated && <span>Register</span>}
                             </NavLink>
                             {/* <NavLink className="dropdown-item" to="/wallet">
                               Wallet

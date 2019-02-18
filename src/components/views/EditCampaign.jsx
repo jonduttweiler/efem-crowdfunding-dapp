@@ -253,7 +253,7 @@ class EditCampaign extends Component {
                       name="description"
                       label="Explain how you are going to do this successfully."
                       helpText="Make it as extensive as necessary.
-                      Your goal is to build trust, so that people donate Ether to your campaign."
+                      Your goal is to build trust, so that people donate Bitcoin to your campaign."
                       value={campaign.description}
                       placeholder="Describe how you're going to execute your campaign successfully..."
                       validations="minLength:20"
@@ -280,7 +280,7 @@ class EditCampaign extends Component {
                         type="text"
                         value={campaign.communityUrl}
                         placeholder="https://slack.giveth.com"
-                        help="Where can people join your Community? Giveth redirects people there."
+                        help="Where can people join your Community? The dapp redirects people there."
                         validations="isUrl"
                         validationErrors={{ isUrl: 'Please provide a url.' }}
                       />

@@ -92,7 +92,7 @@ class MyDACs extends Component {
         <div className="container-fluid page-layout dashboard-table-view">
           <div className="row">
             <div className="col-md-10 m-auto">
-              {(isLoading || (dacs && dacs.data.length > 0)) && <h1>Your Communities (DACs)</h1>}
+              {(isLoading || (dacs && dacs.data.length > 0)) && <h1>Your Funds</h1>}
 
               {isLoading && <Loader className="fixed" />}
 
@@ -182,10 +182,7 @@ class MyDACs extends Component {
                   {dacs && dacs.data.length === 0 && (
                     <div>
                       <center>
-                        <h3>
-                          You didn&apos;t create any Decentralized Altruistic Communities (DACs)
-                          yet!
-                        </h3>
+                        <h3>You didn&apos;t create any Decentralized Funds yet!</h3>
                         <img
                           className="empty-state-img"
                           src={`${process.env.PUBLIC_URL}/img/community.svg`}

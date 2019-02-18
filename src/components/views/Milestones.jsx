@@ -20,7 +20,7 @@ const Campaigns = () => (
               <div>
                 <p>
                   Here are a few of the latest Milestones. Help them realise their goals by giving
-                  Ether or tokens!
+                  Bitcoin or tokens!
                 </p>
                 <div className="cards-grid-container">
                   {milestones.map(milestone => (
@@ -66,7 +66,7 @@ const Campaigns = () => (
             )}
             {hasError && (
               <p>
-                <strong>Oops, something went wrong...</strong> The Giveth dapp could not load
+                <strong>Oops, something went wrong...</strong> The B4H dapp could not load
                 Milestones for some reason. Please try refreshing the page...
               </p>
             )}
