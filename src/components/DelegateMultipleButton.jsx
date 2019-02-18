@@ -186,8 +186,8 @@ class DelegateMultipleButton extends Component {
             new BigNumber('0'),
           );
 
-          if (this.props.milestone && this.props.milestone.maxAmount.lt(amount))
-            amount = this.props.milestone.maxAmount;
+          if (this.props.milestone && new BigNumber(this.props.milestone.maxAmount).lt(amount))
+            amount = new BigNumber(this.props.milestone.maxAmount);
 
           this.setState({
             delegations,
