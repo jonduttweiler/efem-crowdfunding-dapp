@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withFormsy } from 'formsy-react';
 import ReactQuill from 'react-quill';
-import { feathersRest } from '../lib/feathersClient';
+import IPFSService from 'services/IPFSService';
+import config from '../configuration';
 
 import VideoPopup from './VideoPopup';
 
@@ -34,33 +35,17 @@ class QuillFormsy extends Component {
 
   handleImageUpload() {
     const file = this.imageUploader.files[0];
-    const reader = new FileReader();
 
-    // file type is only image.
-    if (/^image\//.test(file.type)) {
-      reader.onload = e => {
-        this.saveToServer(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-    // else {
-    //   console.warn('You could only upload images.');
-    // }
-  }
-
-  saveToServer(image) {
-    feathersRest
-      .service('uploads')
-      .create({
-        uri: image,
-      })
-      .then(file => this.insertToEditor(file));
+    IPFSService.upload(file).then(hash => {
+      console.log('file', config.ipfsGateway + hash.slice(6));
+      this.insertToEditor(config.ipfsGateway + hash.slice(6));
+    });
   }
 
   insertToEditor(file) {
     const quill = this.reactQuillRef.getEditor();
     const range = quill.getSelection();
-    quill.insertEmbed(range.index, 'image', file.url);
+    quill.insertEmbed(range.index, 'image', file);
   }
 
   render() {
