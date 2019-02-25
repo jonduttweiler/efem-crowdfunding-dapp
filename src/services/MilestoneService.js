@@ -313,10 +313,12 @@ class MilestoneService {
 
     try {
       // if a proposed or rejected milestone, create/update it only in feathers
-      if ([Milestone.PROPOSED, Milestone.REJECTED].includes(milestone.status)) {
+      if (
+        [Milestone.PROPOSED, Milestone.REJECTED, Milestone.IN_PROGRESS].includes(milestone.status)
+      ) {
         if (milestone.id) await milestones.patch(milestone.id, milestone.toFeathers());
         else await milestones.create(milestone.toFeathers());
-        afterSave(true);
+        afterSave(false);
         return true;
       }
 
@@ -412,19 +414,19 @@ class MilestoneService {
           5 * 24 * 60 * 60, // 5 days in seconds
           { from, $extraGas: extraGas() },
         );
+
+        let milestoneId;
+        await tx.once('transactionHash', async hash => {
+          txHash = hash;
+
+          // create milestone in feathers
+          // if (milestone.id) await milestones.patch(milestone.id, milestone.toFeathers(txHash));
+          milestoneId = await milestones.create(milestone.toFeathers(txHash))._id;
+          afterSave(!milestone.projectId, `${etherScanUrl}tx/${txHash}`);
+        });
+
+        afterMined(!milestone.projectId, `${etherScanUrl}tx/${txHash}`, milestoneId);
       }
-
-      let milestoneId;
-      await tx.once('transactionHash', async hash => {
-        txHash = hash;
-
-        // create milestone in feathers
-        // if (milestone.id) await milestones.patch(milestone.id, milestone.toFeathers(txHash));
-        milestoneId = await milestones.create(milestone.toFeathers(txHash))._id;
-        afterSave(false, !milestone.projectId, `${etherScanUrl}tx/${txHash}`);
-      });
-
-      afterMined(!milestone.projectId, `${etherScanUrl}tx/${txHash}`, milestoneId);
     } catch (err) {
       ErrorPopup(
         `Something went wrong with the Milestone ${
