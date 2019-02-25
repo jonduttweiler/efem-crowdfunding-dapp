@@ -168,6 +168,7 @@ class MyMilestones extends Component {
                                 <th className="td-created-at">Created</th>
                                 <th className="td-name">Name</th>
                                 <th className="td-status">Status</th>
+                                <th className="td-confirmations">Confirmations</th>
                                 <th className="td-donations-number">Requested</th>
                                 <th className="td-donations-number">Donations</th>
                                 <th className="td-donations-amount">Donated</th>
@@ -221,6 +222,10 @@ class MyMilestones extends Component {
                                       </span>
                                     )}
                                     {getReadableStatus(m.status)}
+                                  </td>
+                                  <td className="td-confirmations">
+                                    {m.confirmations !== m.requiredConfirmations &&
+                                      `${m.confirmations}/${m.requiredConfirmations}`}
                                   </td>
                                   <td className="td-donations-number">
                                     {m.maxAmount} {m.token.symbol}
