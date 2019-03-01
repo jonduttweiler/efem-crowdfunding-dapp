@@ -110,7 +110,10 @@ class JoinGivethCommunity extends Component {
     const { currentUser, isDelegate, isCampaignManager } = this.props;
 
     return (
-      <div id="join-giveth-community">
+      <div
+        id="join-giveth-community"
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/img/hero.jpeg)` }}
+      >
         <div className="vertical-align">
           <center>
             <h3>Building the Future of Giving, with You.</h3>
