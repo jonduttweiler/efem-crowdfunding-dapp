@@ -23,10 +23,9 @@ const configurations = {
     nodeConnection: 'http://localhost:8545',
     networkName: 'ganache',
     nodeId: 88,
-    etherscan: 'https://etherscan.io/', // this won't work, only here so we can see links during development
+    etherscan: 'https://explorer.testnet.rsk.co/', // this won't work, only here so we can see links during development
     feathersConnection: 'http://localhost:3030',
-    // ipfsGateway: 'http://localhost:8080/ipfs/',
-    ipfsGateway: 'https://ipfs.giveth.io/ipfs/',
+    ipfsGateway: 'http://localhost:8080/ipfs/',
     sendErrors: false,
     analytics: {
       ga_UA: 'UA-103956937-3',
@@ -45,8 +44,7 @@ const configurations = {
     nodeId: 31,
     etherscan: 'https://explorer.testnet.rsk.co/',
     feathersConnection: 'https://feathers.dapp.giveth.site',
-    ipfsGateway: 'https://ipfs.giveth.io/ipfs/',
-    // ipfsGateway: 'http://68.183.77.54:8080/ipfs',
+    ipfsGateway: 'https://feathers.b4h.world',
     sendErrors: false,
     analytics: {
       ga_UA: 'UA-103956937-3',
