@@ -44,7 +44,7 @@ const configurations = {
     nodeId: 31,
     etherscan: 'https://explorer.testnet.rsk.co/',
     feathersConnection: 'https://feathers.dapp.giveth.site',
-    ipfsGateway: 'https://feathers.b4h.world',
+    ipfsGateway: 'https://ipfs.b4h.world/ipfs/',
     sendErrors: false,
     analytics: {
       ga_UA: 'UA-103956937-3',
