@@ -116,7 +116,9 @@ class JoinGivethCommunity extends Component {
       >
         <div className="vertical-align">
           <center>
-            <h3>Building the Future of Giving, with You.</h3>
+            <h3>
+              <br />
+            </h3>
             {isDelegate(currentUser) && (
               <button type="button" className="btn btn-info" onClick={() => this.createDAC()}>
                 Create a Fund
