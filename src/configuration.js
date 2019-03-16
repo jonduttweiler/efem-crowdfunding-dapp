@@ -43,7 +43,7 @@ const configurations = {
     networkName: 'rsk_testnet',
     nodeId: 31,
     etherscan: 'https://explorer.testnet.rsk.co/',
-    feathersConnection: 'https://testnet.b4h.world',
+    feathersConnection: 'https://testnet.feathers.b4h.world',
     ipfsGateway: 'https://testnet.ipfs.b4h.world/ipfs/',
     sendErrors: false,
     analytics: {

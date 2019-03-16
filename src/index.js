@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import localForage from 'localforage';
 
-import registerServiceWorker from './lib/registerServiceWorker';
+import * as serviceWorker from './serviceWorker';
 import Application from './containers/Application';
 import './styles/application.css';
 
@@ -25,4 +25,7 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-registerServiceWorker();
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
