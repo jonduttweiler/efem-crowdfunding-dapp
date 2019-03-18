@@ -84,7 +84,7 @@ class DonateButton extends React.Component {
   setAmount(amount) {
     if (!Number.isNaN(parseFloat(amount))) {
       // protecting against overflow occuring when BigNumber receives something that results in NaN
-      this.setState({ amount: new BigNumber(amount) });
+      this.setState({ amount: new BigNumber(amount.toFixed().replace(',', '.')) });
     }
   }
 
