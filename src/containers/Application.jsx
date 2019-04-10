@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Helmet } from 'react-helmet';
 
-import { Router, Route, Redirect, Switch } from 'react-router-dom';
+import { Link, Router, Route, Redirect, Switch } from 'react-router-dom';
 
 import localforage from 'localforage';
 
@@ -33,6 +33,8 @@ import NotFound from '../components/views/NotFound';
 import Explore from '../components/views/Explore';
 import Campaigns from '../components/views/Campaigns';
 import DACs from '../components/views/DACs';
+import TermsAndConditions from '../components/views/TermsAndConditions';
+import PrivacyPolicy from '../components/views/PrivacyPolicy';
 
 import EditCampaign from '../components/views/EditCampaign';
 import ViewCampaign from '../components/views/ViewCampaign';
@@ -157,7 +159,16 @@ class Application extends Component {
                                               {/* Routes are defined here. Persistent data is set as props on components
                                 NOTE order matters, wrong order breaks routes!
                             */}
-
+                                              <Route
+                                                exact
+                                                path="/termsandconditions"
+                                                render={props => <TermsAndConditions {...props} />}
+                                              />
+                                              <Route
+                                                exact
+                                                path="/privacypolicy"
+                                                render={props => <PrivacyPolicy {...props} />}
+                                              />
                                               <Route
                                                 exact
                                                 path="/dacs/new"
@@ -420,6 +431,41 @@ class Application extends Component {
 
                                               <Route component={NotFound} />
                                             </Switch>
+
+                                            <div
+                                              style={{
+                                                marginTop: '5px',
+                                                marginBottom: '5px',
+                                                height: '1px',
+                                                width: '100%',
+                                                borderTop: '1px solid gray',
+                                              }}
+                                            />
+                                            <footer
+                                              className="page-footer"
+                                              style={{ padding: '.5rem' }}
+                                            >
+                                              <small>
+                                                <ul
+                                                  style={{
+                                                    display: 'flex',
+                                                    listStyle: 'none',
+                                                    position: 'absolute',
+                                                    left: '50%',
+                                                    transform: 'translatex(-50%)',
+                                                  }}
+                                                >
+                                                  <li style={{ marginRight: '2.4rem' }}>
+                                                    <Link to="/termsandconditions">
+                                                      Terms and Conditions
+                                                    </Link>
+                                                  </li>
+                                                  <li style={{ marginRight: '2.4rem' }}>
+                                                    <Link to="/privacypolicy">Privacy Policy</Link>
+                                                  </li>
+                                                </ul>
+                                              </small>
+                                            </footer>
                                           </div>
                                         )}
 

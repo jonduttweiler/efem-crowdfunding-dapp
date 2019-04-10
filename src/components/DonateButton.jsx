@@ -4,7 +4,6 @@ import Modal from 'react-modal';
 import BigNumber from 'bignumber.js';
 import { utils } from 'web3';
 import { Form, Input } from 'formsy-react-components';
-import Toggle from 'react-toggle';
 import Slider from 'react-rangeslider';
 import GA from 'lib/GoogleAnalytics';
 import { Link } from 'react-router-dom';
@@ -16,7 +15,6 @@ import LoaderButton from './LoaderButton';
 import ErrorPopup from './ErrorPopup';
 import config from '../configuration';
 import DonationService from '../services/DonationService';
-import { feathersClient } from '../lib/feathersClient';
 import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 import NetworkWarning from './NetworkWarning';
 import SelectFormsy from './SelectFormsy';
@@ -53,9 +51,6 @@ class DonateButton extends React.Component {
       formIsValid: false,
       amount: '0',
       modalVisible: false,
-      showCustomAddress: false,
-      customAddress:
-        props.currentUser && props.currentUser.address ? props.currentUser.address : undefined,
       tokenWhitelistOptions: props.tokenWhitelist.map(t => ({
         value: t.address,
         title: t.name,
@@ -168,7 +163,7 @@ class DonateButton extends React.Component {
   donate(model) {
     const { currentUser } = this.props;
     const { adminId } = this.props.model;
-    const { showCustomAddress, selectedToken } = this.state;
+    const { selectedToken } = this.state;
 
     const amount = utils.toWei(model.amount);
     const isDonationInToken = selectedToken.symbol !== config.nativeTokenName;
@@ -182,35 +177,7 @@ class DonateButton extends React.Component {
         amount,
         donateTo: this.props.model,
       };
-
-      if (showCustomAddress) {
-        // Donating on behalf of another user or address
-        try {
-          // check if that user exists
-          const user = await feathersClient.service('users').get(model.customAddress);
-
-          if (user && user.giverId > 0) {
-            txData = Object.assign({}, txData, {
-              giverUser: user,
-              giverId: user.giverId,
-            });
-          } else {
-            // if not, set the new user and add as giver
-            txData = Object.assign({}, txData, {
-              giverUser: { address: model.customAddress },
-              giverId: model.customAddress,
-              addGiver: true,
-            });
-          }
-        } catch (e) {
-          // we can't be sure if there's a user, so we just set the new user and add as giver
-          txData = Object.assign({}, txData, {
-            giverUser: { address: model.customAddress },
-            giverId: model.customAddress,
-            addGiver: true,
-          });
-        }
-      } else if (currentUser.giverId > 0) {
+      if (currentUser.giverId > 0) {
         // Donating on behalf of logged in DApp user
         // if user already exists
         txData = Object.assign({}, txData, {
@@ -300,8 +267,6 @@ class DonateButton extends React.Component {
       formIsValid,
       isSaving,
       modalVisible,
-      customAddress,
-      showCustomAddress,
       tokenWhitelistOptions,
       selectedToken,
     } = this.state;
@@ -440,48 +405,13 @@ class DonateButton extends React.Component {
                 autoFocus
               />
             </div>
-
-            {showCustomAddress && (
-              <div className="alert alert-success">
-                <i className="fa fa-exclamation-triangle" />
-                The donation will be donated on behalf of address:
-              </div>
-            )}
-
-            <div className="react-toggle-container">
-              <Toggle
-                id="show-recipient-address"
-                defaultChecked={showCustomAddress}
-                onChange={() =>
-                  this.setState(prevState => ({
-                    showCustomAddress: !prevState.showCustomAddress,
-                  }))
-                }
-              />
-              <div className="label">I want to donate on behalf of another address</div>
-            </div>
-            {showCustomAddress && (
-              <div className="form-group recipient-address-container">
-                <Input
-                  name="customAddress"
-                  id="title-input"
-                  type="text"
-                  value={customAddress}
-                  placeholder="0x0000000000000000000000000000000000000000"
-                  validations="isEtherAddress"
-                  validationErrors={{
-                    isEtherAddress: 'Please insert a valid RSK address.',
-                  }}
-                  required={this.state.showRecipientAddress}
-                />
-              </div>
-            )}
-            {!showCustomAddress && (
-              <div>
-                <br />
-                <br />
-              </div>
-            )}
+            <p>
+              <small>
+                By donating you agree to our{' '}
+                <Link to="/termsandconditions">Terms and Conditions</Link> and{' '}
+                <Link to="/privacypolicy">Privacy Policy</Link>.
+              </small>
+            </p>
 
             {validProvider && currentUser && maxAmount.toNumber() !== 0 && balance !== '0' && (
               <LoaderButton
