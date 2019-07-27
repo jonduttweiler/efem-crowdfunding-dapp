@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Loader from './Loader';
-import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
-import config from '../configuration';
 
 // Need to disable the button type because the rule does not allow prop values
 /* eslint react/button-has-type: 0 */
@@ -26,32 +24,18 @@ const LoaderButton = ({
   loadingText,
   children,
 }) => (
-  <Web3Consumer>
-    {({ state: { isCorrectNetwork } }) => (
-      <span>
-        <button
-          className={className}
-          formNoValidate={formNoValidate}
-          type={type}
-          disabled={disabled || !isCorrectNetwork}
-        >
-          {isLoading && (
-            <span>
-              <Loader className="small btn-loader" />
-              {loadingText}
-            </span>
-          )}
+  <span>
+    <button className={className} formNoValidate={formNoValidate} type={type} disabled={disabled}>
+      {isLoading && (
+        <span>
+          <Loader className="small btn-loader" />
+          {loadingText}
+        </span>
+      )}
 
-          {!isLoading && <span>{children}</span>}
-        </button>
-        {!isCorrectNetwork && (
-          <small className="form-text loader-button-network-help">
-            Please choose the <strong>{config.networkName}</strong> network with your Web3 Provider.
-          </small>
-        )}
-      </span>
-    )}
-  </Web3Consumer>
+      {!isLoading && <span>{children}</span>}
+    </button>
+  </span>
 );
 
 LoaderButton.propTypes = {

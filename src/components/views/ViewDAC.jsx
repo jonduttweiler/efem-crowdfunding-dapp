@@ -10,7 +10,7 @@ import Balances from 'components/Balances';
 import Loader from '../Loader';
 import GoBackButton from '../GoBackButton';
 import BackgroundImageHeader from '../BackgroundImageHeader';
-import DonateButton from '../DonateButton';
+// import DonateButton from '../DonateButton';
 import ListDonations from '../ListDonations';
 import CommunityButton from '../CommunityButton';
 import User from '../../models/User';
@@ -118,7 +118,7 @@ class ViewDAC extends Component {
               <h6>Decentralized Altruistic Community</h6>
               <h1>{dac.title}</h1>
 
-              <DonateButton
+              {/*<DonateButton
                 model={{
                   type: DAC.type,
                   title: dac.title,
@@ -129,7 +129,7 @@ class ViewDAC extends Component {
                 currentUser={currentUser}
                 commmunityUrl={dac.communityUrl}
                 history={history}
-              />
+              />*/}
               {dac.communityUrl && (
                 <CommunityButton className="btn btn-secondary" url={dac.communityUrl}>
                   Join our community
@@ -189,7 +189,7 @@ class ViewDAC extends Component {
                     loadMore={this.loadMoreDonations}
                     newDonations={newDonations}
                   />
-                  <DonateButton
+                  {/*<DonateButton
                     model={{
                       type: DAC.type,
                       title: dac.title,
@@ -199,7 +199,7 @@ class ViewDAC extends Component {
                     }}
                     currentUser={currentUser}
                     history={history}
-                  />
+                  />*/}
                 </div>
               </div>
             </div>

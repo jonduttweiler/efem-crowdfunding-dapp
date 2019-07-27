@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import BigNumber from 'bignumber.js';
 import { Link } from 'react-router-dom';
 
 import { Form, Input } from 'formsy-react-components';
 import GA from 'lib/GoogleAnalytics';
 import Loader from '../Loader';
 import FormsyImageUploader from '../FormsyImageUploader';
-import { checkBalance, checkForeignNetwork, isLoggedIn } from '../../lib/middleware';
+import { isLoggedIn } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
 import { history } from '../../lib/helpers';
@@ -37,19 +36,16 @@ class EditProfile extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    checkForeignNetwork(this.props.isCorrectNetwork).then(() =>
-      isLoggedIn(this.props.currentUser)
-        .then(() => checkBalance(this.props.balance))
-        .then(() => this.setState({ isLoading: false }))
-        .catch(err => {
-          if (err === 'noBalance') history.goBack();
-          else {
-            this.setState({
-              isLoading: false,
-            });
-          }
-        }),
-    );
+    isLoggedIn(this.props.currentUser)
+      .then(() => this.setState({ isLoading: false }))
+      .catch(err => {
+        if (err === 'noBalance') history.goBack();
+        else {
+          this.setState({
+            isLoading: false,
+          });
+        }
+      });
   }
 
   componentWillUnmount() {
@@ -81,32 +77,16 @@ class EditProfile extends Component {
       else React.toast.info(toast);
     };
 
-    const afterMined = (created, url) => {
-      const msg = created ? 'You are now a registered user' : 'Your profile has been updated';
-      showToast(msg, url, true);
+    const afterSave = () => {
+      const msg = 'Your profile has been updated';
+      showToast(msg, true);
 
-      if (created) {
-        GA.trackEvent({
-          category: 'User',
-          action: 'created',
-          label: this.state.user.address,
-        });
-      } else {
-        if (this.mounted) this.setState({ isSaving: false });
-        GA.trackEvent({
-          category: 'User',
-          action: 'updated',
-          label: this.state.user.address,
-        });
-      }
-    };
-    const afterSave = (created, url) => {
       if (this.mounted) this.setState({ isSaving: false });
-
-      const msg = created ? 'We are registering you as a user' : 'Your profile is being updated';
-      showToast(msg, url);
-
-      if (created) history.push('/');
+      GA.trackEvent({
+        category: 'User',
+        action: 'updated',
+        label: this.state.user.address,
+      });
     };
 
     this.setState(
@@ -115,7 +95,7 @@ class EditProfile extends Component {
       },
       () => {
         // Save the User
-        this.state.user.save(afterSave, afterMined);
+        this.state.user.save(afterSave);
       },
     );
   }
@@ -245,8 +225,6 @@ class EditProfile extends Component {
 
 EditProfile.propTypes = {
   currentUser: PropTypes.instanceOf(User),
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
-  isCorrectNetwork: PropTypes.bool.isRequired,
 };
 
 EditProfile.defaultProps = {

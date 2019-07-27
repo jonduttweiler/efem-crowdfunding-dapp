@@ -9,7 +9,6 @@ import ErrorPopup from 'components/ErrorPopup';
 import { checkBalance } from 'lib/middleware';
 import ConversationModal from 'components/ConversationModal';
 import GA from 'lib/GoogleAnalytics';
-import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 
 class AcceptRejectProposedMilestoneButtons extends Component {
   constructor() {
@@ -110,38 +109,32 @@ class AcceptRejectProposedMilestoneButtons extends Component {
     const { milestone, currentUser } = this.props;
 
     return (
-      <Web3Consumer>
-        {({ state: { isCorrectNetwork } }) => (
-          <Fragment>
-            {currentUser &&
-              milestone.campaign.ownerAddress === currentUser.address &&
-              milestone.status === 'Proposed' && (
-                <span>
-                  <button
-                    type="button"
-                    className="btn btn-success btn-sm"
-                    onClick={() => this.acceptProposedMilestone()}
-                    disabled={!isCorrectNetwork}
-                  >
-                    <i className="fa fa-check-square-o" />
-                    &nbsp;Accept
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm"
-                    onClick={() => this.rejectProposedMilestone()}
-                    disabled={!isCorrectNetwork}
-                  >
-                    <i className="fa fa-times-circle-o" />
-                    &nbsp;Reject
-                  </button>
-                </span>
-              )}
+      <Fragment>
+        {currentUser &&
+          milestone.campaign.ownerAddress === currentUser.address &&
+          milestone.status === 'Proposed' && (
+            <span>
+              <button
+                type="button"
+                className="btn btn-success btn-sm"
+                onClick={() => this.acceptProposedMilestone()}
+              >
+                <i className="fa fa-check-square-o" />
+                &nbsp;Accept
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger btn-sm"
+                onClick={() => this.rejectProposedMilestone()}
+              >
+                <i className="fa fa-times-circle-o" />
+                &nbsp;Reject
+              </button>
+            </span>
+          )}
 
-            <ConversationModal ref={this.conversationModal} milestone={milestone} />
-          </Fragment>
-        )}
-      </Web3Consumer>
+        <ConversationModal ref={this.conversationModal} milestone={milestone} />
+      </Fragment>
     );
   }
 }

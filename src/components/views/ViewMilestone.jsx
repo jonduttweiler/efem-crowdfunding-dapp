@@ -15,7 +15,7 @@ import MilestoneActions from 'components/MilestoneActions';
 import { getUserAvatar, getUserName } from '../../lib/helpers';
 
 import BackgroundImageHeader from '../BackgroundImageHeader';
-import DonateButton from '../DonateButton';
+// import DonateButton from '../DonateButton';
 import ErrorPopup from '../ErrorPopup';
 import GoBackButton from '../GoBackButton';
 import ListDonations from '../ListDonations';
@@ -135,8 +135,6 @@ class ViewMilestone extends Component {
       newDonations,
     } = this.state;
 
-    const getMaxDonation = () => new BigNumber(milestone.maxAmount).minus(milestone.currentBalance);
-
     return (
       <div id="view-milestone-view">
         {isLoading && <Loader className="fixed" />}
@@ -161,7 +159,7 @@ class ViewMilestone extends Component {
               <div className="milestone-actions">
                 {this.isActiveMilestone() && (
                   <Fragment>
-                    <DonateButton
+                    {/*<DonateButton
                       model={{
                         type: 'milestone',
                         title: milestone.title,
@@ -174,7 +172,7 @@ class ViewMilestone extends Component {
                       currentUser={currentUser}
                       history={history}
                       maxAmount={milestone.maxAmount}
-                    />
+                    />*/}
                     {currentUser && (
                       <DelegateMultipleButton
                         milestone={milestone}
@@ -388,8 +386,9 @@ class ViewMilestone extends Component {
                     newDonations={newDonations}
                     useAmountRemaining
                   />
-                  {this.isActiveMilestone() && (
-                    <DonateButton
+                  {this.isActiveMilestone() &&
+                    {
+                      /*<DonateButton
                       model={{
                         type: 'milestone',
                         title: milestone.title,
@@ -403,8 +402,8 @@ class ViewMilestone extends Component {
                       history={history}
                       type={milestone.type}
                       maxAmount={milestone.maxAmount}
-                    />
-                  )}
+                    />*/
+                    }}
                 </div>
               </div>
             </div>

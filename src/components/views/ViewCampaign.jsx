@@ -14,7 +14,7 @@ import GoBackButton from '../GoBackButton';
 import { isOwner, getUserName, getUserAvatar } from '../../lib/helpers';
 import { checkBalance } from '../../lib/middleware';
 import BackgroundImageHeader from '../BackgroundImageHeader';
-import DonateButton from '../DonateButton';
+// import DonateButton from '../DonateButton';
 import CommunityButton from '../CommunityButton';
 import DelegateMultipleButton from '../DelegateMultipleButton';
 import ListDonations from '../ListDonations';
@@ -164,7 +164,7 @@ class ViewCampaign extends Component {
               <BackgroundImageHeader image={campaign.image} height={300}>
                 <h6>Campaign</h6>
                 <h1>{campaign.title}</h1>
-                <DonateButton
+                {/*<DonateButton
                   model={{
                     type: Campaign.type,
                     title: campaign.title,
@@ -174,7 +174,7 @@ class ViewCampaign extends Component {
                   }}
                   currentUser={currentUser}
                   history={history}
-                />
+                />*/}
                 {currentUser && currentUser.authenticated && (
                   <DelegateMultipleButton
                     style={{ padding: '10px 10px' }}
@@ -287,7 +287,7 @@ class ViewCampaign extends Component {
                       loadMore={this.loadMoreDonations}
                       newDonations={newDonations}
                     />
-                    <DonateButton
+                    {/*<DonateButton
                       model={{
                         type: Campaign.type,
                         title: campaign.title,
@@ -297,7 +297,7 @@ class ViewCampaign extends Component {
                       }}
                       currentUser={currentUser}
                       history={history}
-                    />
+                    />*/}
                   </div>
                 </div>
                 <div className="row spacer-top-50 spacer-bottom-50">
