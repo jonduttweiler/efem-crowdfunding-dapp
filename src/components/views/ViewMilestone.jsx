@@ -1,7 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Form } from 'formsy-react-components';
 import moment from 'moment';
 import Avatar from 'react-avatar';
 import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
@@ -20,9 +19,8 @@ import ErrorPopup from '../ErrorPopup';
 import GoBackButton from '../GoBackButton';
 import ListDonations from '../ListDonations';
 import Loader from '../Loader';
-import MilestoneItem from '../MilestoneItem';
 import MilestoneConversations from '../MilestoneConversations';
-import DelegateMultipleButton from '../DelegateMultipleButton';
+// import DelegateMultipleButton from '../DelegateMultipleButton';
 
 import MilestoneService from '../../services/MilestoneService';
 
@@ -147,32 +145,11 @@ class ViewMilestone extends Component {
 
               {!milestone.status === 'InProgress' && <p>This milestone is not active anymore</p>}
 
-              {milestone.fullyFunded && <p>This milestone has reached its funding goal!</p>}
-
-              {!milestone.fullyFunded && (
-                <p>
-                  Amount requested: {milestone.maxAmount} {milestone.token.symbol}
-                </p>
-              )}
               <p>Campaign: {campaign.title} </p>
 
               <div className="milestone-actions">
-                {this.isActiveMilestone() && (
+                {/*this.isActiveMilestone() && (
                   <Fragment>
-                    {/*<DonateButton
-                      model={{
-                        type: 'milestone',
-                        title: milestone.title,
-                        id: milestone.id,
-                        adminId: milestone.projectId,
-                        campaignId: campaign._id,
-                        token: milestone.token,
-                        maxDonation: getMaxDonation(),
-                      }}
-                      currentUser={currentUser}
-                      history={history}
-                      maxAmount={milestone.maxAmount}
-                    />*/}
                     {currentUser && (
                       <DelegateMultipleButton
                         milestone={milestone}
@@ -182,16 +159,12 @@ class ViewMilestone extends Component {
                       />
                     )}
                   </Fragment>
-                )}
+                )*/}
 
                 {/* Milestone actions */}
 
                 {currentUser && currentUser.authenticated && (
-                  <MilestoneActions
-                    milestone={milestone}
-                    balance={balance}
-                    currentUser={currentUser}
-                  />
+                  <MilestoneActions milestone={milestone} balance={balance} />
                 )}
               </div>
             </BackgroundImageHeader>
@@ -219,44 +192,6 @@ class ViewMilestone extends Component {
                   </div>
                 </div>
               </div>
-
-              {milestone.items && milestone.items.length > 0 && (
-                <div className="row spacer-top-50 dashboard-table-view">
-                  <div className="col-md-8 m-auto">
-                    <h4>Milestone proof</h4>
-                    <p>These receipts show how the money of this milestone was spent.</p>
-
-                    {/* MilesteneItem needs to be wrapped in a form or it won't mount */}
-                    <Form>
-                      <div className="table-container">
-                        <table className="table table-striped table-hover">
-                          <thead>
-                            <tr>
-                              <th className="td-item-date">Date</th>
-                              <th className="td-item-description">Description</th>
-                              <th className="td-item-amount-fiat">Amount Fiat</th>
-                              <th className="td-item-amount-ether">
-                                Amount {milestone.token.symbol}
-                              </th>
-                              <th className="td-item-file-upload">Attached proof</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {milestone.items.map((item, i) => (
-                              <MilestoneItem
-                                key={item._id}
-                                name={`milestoneItem-${i}`}
-                                item={item}
-                                token={milestone.token}
-                              />
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </Form>
-                  </div>
-                </div>
-              )}
 
               <div className="row spacer-top-50">
                 <div className="col-md-8 m-auto">
@@ -292,8 +227,7 @@ class ViewMilestone extends Component {
                         <div className="form-group">
                           <span className="label">Recipient</span>
                           <small className="form-text">
-                            Where the {milestone.token.symbol} goes after successful completion of
-                            the Milestone
+                            Where the funds go after successful completion of the Milestone
                           </small>
 
                           <table className="table-responsive">
@@ -314,7 +248,7 @@ class ViewMilestone extends Component {
                           <div className="form-group">
                             <span className="label">Date of milestone</span>
                             <small className="form-text">
-                              This date defines the {milestone.token.symbol}-fiat conversion rate
+                              This date defines the fiat conversion rate
                             </small>
                             {moment.utc(milestone.date).format('Do MMM YYYY')}
                           </div>
@@ -323,28 +257,18 @@ class ViewMilestone extends Component {
                         <div className="form-group">
                           <span className="label">Max amount to raise</span>
                           <small className="form-text">
-                            The maximum amount of {milestone.token.symbol} that can be donated to
-                            this Milestone. Based on the requested amount in fiat.
+                            The maximum amount that can be donated to this Milestone. Based on the
+                            requested amount in fiat.
                           </small>
-                          {milestone.maxAmount} {milestone.token.symbol}
-                          {milestone.fiatAmount &&
-                            milestone.selectedFiatType &&
-                            milestone.selectedFiatType !== milestone.token.symbol &&
-                            milestone.items.length === 0 && (
-                              <span>
-                                {' '}
-                                ({milestone.fiatAmount.toString()} {milestone.selectedFiatType})
-                              </span>
-                            )}
+                          ({milestone.fiatAmount.toString()} {milestone.selectedFiatType})
                         </div>
 
                         <div className="form-group">
                           <span className="label">Amount donated</span>
                           <small className="form-text">
-                            The amount of {milestone.token.symbol} currently donated to this
-                            Milestone
+                            The amount currently donated to this Milestone
                           </small>
-                          {milestone.currentBalance.toString()} {milestone.token.symbol}
+                          {milestone.currentBalance.toString()}
                         </div>
 
                         <div className="form-group">
@@ -366,11 +290,7 @@ class ViewMilestone extends Component {
                     <div className="col-md-6">
                       <h4>Status updates</h4>
 
-                      <MilestoneConversations
-                        milestone={milestone}
-                        currentUser={currentUser}
-                        balance={balance}
-                      />
+                      <MilestoneConversations milestone={milestone} balance={balance} />
                     </div>
                   </div>
                 </div>
@@ -386,24 +306,6 @@ class ViewMilestone extends Component {
                     newDonations={newDonations}
                     useAmountRemaining
                   />
-                  {this.isActiveMilestone() &&
-                    {
-                      /*<DonateButton
-                      model={{
-                        type: 'milestone',
-                        title: milestone.title,
-                        id: milestone.id,
-                        adminId: milestone.projectId,
-                        campaignId: campaign._id,
-                        token: milestone.token,
-                        maxDonation: getMaxDonation(),
-                      }}
-                      currentUser={currentUser}
-                      history={history}
-                      type={milestone.type}
-                      maxAmount={milestone.maxAmount}
-                    />*/
-                    }}
                 </div>
               </div>
             </div>

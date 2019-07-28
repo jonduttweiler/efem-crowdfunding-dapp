@@ -52,7 +52,7 @@ class MilestoneProof extends Component {
 
   render() {
     const { items, addMilestoneItemModalVisible } = this.state;
-    const { isEditMode, token, milestoneStatus } = this.props;
+    const { isEditMode, milestoneStatus } = this.props;
 
     const canEdit = isEditMode || ['Proposed', 'Pending'].includes(milestoneStatus);
 
@@ -70,7 +70,7 @@ class MilestoneProof extends Component {
                           <th className="td-item-date">Date</th>
                           <th className="td-item-description">Description</th>
                           <th className="td-item-amount-fiat">Amount Fiat</th>
-                          <th className="td-item-fiat-amount">Amount {token.name}</th>
+                          <th className="td-item-fiat-amount">Amount</th>
                           <th className="td-item-file-upload">Attached proof</th>
                           {canEdit && <th className="td-item-action" />}
                         </tr>
@@ -84,7 +84,6 @@ class MilestoneProof extends Component {
                             item={item}
                             removeItem={() => this.removeItem(i)}
                             isEditMode={canEdit}
-                            token={token}
                           />
                         ))}
                       </tbody>
@@ -111,7 +110,6 @@ class MilestoneProof extends Component {
           openModal={addMilestoneItemModalVisible}
           onClose={() => this.toggleAddMilestoneItemModal()}
           onAddItem={item => this.onAddItem(item)}
-          token={token}
         />
       </div>
     );
@@ -123,7 +121,6 @@ MilestoneProof.propTypes = {
   onItemsChanged: PropTypes.func,
   isEditMode: PropTypes.bool.isRequired,
   milestoneStatus: PropTypes.string,
-  token: PropTypes.shape().isRequired,
 };
 
 MilestoneProof.defaultProps = {

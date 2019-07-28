@@ -220,7 +220,6 @@ class ConversationModal extends Component {
                     items={items}
                     onItemsChanged={returnedItems => this.onItemsChanged(returnedItems)}
                     milestoneStatus={milestone.status}
-                    token={milestone.token}
                   />
                 </div>
               )}

@@ -1,31 +1,19 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import BigNumber from 'bignumber.js';
 
 import Milestone from 'models/Milestone';
 import User from 'models/User';
-import { checkBalance } from 'lib/middleware';
 import { history } from 'lib/helpers';
 
 class EditMilestoneButton extends Component {
   editMilestone() {
-    const { balance, milestone } = this.props;
+    const { milestone } = this.props;
 
-    checkBalance(balance)
-      .then(() => {
-        if (['Proposed', 'Rejected'].includes(milestone.status)) {
-          history.push(
-            `/campaigns/${milestone.campaignId}/milestones/${milestone._id}/edit/proposed`,
-          );
-        } else {
-          history.push(`/campaigns/${milestone.campaignId}/milestones/${milestone._id}/edit`);
-        }
-      })
-      .catch(err => {
-        if (err === 'noBalance') {
-          // handle no balance error
-        }
-      });
+    if (['Proposed', 'Rejected'].includes(milestone.status)) {
+      history.push(`/campaigns/${milestone.campaignId}/milestones/${milestone._id}/edit/proposed`);
+    } else {
+      history.push(`/campaigns/${milestone.campaignId}/milestones/${milestone._id}/edit`);
+    }
   }
 
   render() {
@@ -49,7 +37,6 @@ class EditMilestoneButton extends Component {
 
 EditMilestoneButton.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
   milestone: PropTypes.instanceOf(Milestone).isRequired,
 };
 

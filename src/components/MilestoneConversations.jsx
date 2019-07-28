@@ -70,7 +70,7 @@ class MilestoneConversations extends Component {
 
   render() {
     const { isLoading, conversations, etherScanUrl } = this.state;
-    const { milestone, currentUser, balance } = this.props;
+    const { milestone, balance } = this.props;
 
     return (
       <div id="milestone-conversations">
@@ -110,11 +110,7 @@ class MilestoneConversations extends Component {
                     {c.items && c.items.length > 0 && (
                       <Form className="items-form">
                         <strong>Attachments</strong>
-                        <MilestoneProof
-                          items={c.items}
-                          isEditMode={false}
-                          token={milestone.token}
-                        />
+                        <MilestoneProof items={c.items} isEditMode={false} />
                       </Form>
                     )}
 
@@ -123,8 +119,6 @@ class MilestoneConversations extends Component {
                       <MilestoneConversationAction
                         messageContext={c.messageContext}
                         milestone={milestone}
-                        currentUser={currentUser}
-                        balance={balance}
                       />
                     </div>
 
@@ -142,7 +136,6 @@ class MilestoneConversations extends Component {
 
 MilestoneConversations.propTypes = {
   milestone: PropTypes.instanceOf(Milestone).isRequired,
-  currentUser: PropTypes.instanceOf(User).isRequired,
   balance: PropTypes.instanceOf(BigNumber).isRequired,
 };
 
