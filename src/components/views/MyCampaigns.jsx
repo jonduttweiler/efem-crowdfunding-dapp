@@ -125,9 +125,6 @@ class MyCampaigns extends Component {
   render() {
     const { campaigns, isLoading, visiblePages } = this.state;
     const { currentUser } = this.props;
-    const isPendingCampaign =
-      (campaigns.data && campaigns.data.some(d => d.confirmations !== d.requiredConfirmations)) ||
-      false;
 
     return (
       <div id="campaigns-view">

@@ -13,7 +13,6 @@ import BackgroundImageHeader from '../BackgroundImageHeader';
 // import DonateButton from '../DonateButton';
 import ListDonations from '../ListDonations';
 import CommunityButton from '../CommunityButton';
-import User from '../../models/User';
 import { getUserName, getUserAvatar } from '../../lib/helpers';
 import DACService from '../../services/DACService';
 import CampaignCard from '../CampaignCard';
@@ -205,7 +204,6 @@ ViewDAC.propTypes = {
     goBack: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
   }).isRequired,
-  currentUser: PropTypes.instanceOf(User),
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,
@@ -214,8 +212,6 @@ ViewDAC.propTypes = {
   balance: PropTypes.instanceOf(BigNumber).isRequired,
 };
 
-ViewDAC.defaultProps = {
-  currentUser: undefined,
-};
+ViewDAC.defaultProps = {};
 
 export default ViewDAC;

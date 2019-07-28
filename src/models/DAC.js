@@ -46,7 +46,7 @@ class DAC extends BasicModel {
     };
   }
 
-  toFeathers(txHash) {
+  toFeathers() {
     const dac = {
       title: this.title,
       description: this.description,
