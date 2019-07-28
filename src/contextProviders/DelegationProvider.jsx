@@ -192,7 +192,6 @@ class DelegationProvider extends Component {
           .find({
             query: {
               status: Milestone.IN_PROGRESS,
-              fullyFunded: { $ne: true },
               $limit: 100,
               $sort: {
                 createdAt: -1,

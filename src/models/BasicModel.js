@@ -35,7 +35,6 @@ class BasicModel extends Model {
     url,
     donationCount = 0,
     peopleCount = 0,
-    fullyFunded = false,
     donationCounters = [],
     token,
     createdAt,
@@ -54,7 +53,6 @@ class BasicModel extends Model {
     this._url = url;
     this._donationCount = donationCount;
     this._peopleCount = peopleCount;
-    this._fullyFunded = fullyFunded;
     this._donationCounters = donationCounters.map(c => ({
       ...c,
       totalDonated: new BigNumber(utils.fromWei(c.totalDonated)),
@@ -171,15 +169,6 @@ class BasicModel extends Model {
   set peopleCount(value) {
     this.checkType(value, ['number'], 'peopleCount');
     this._peopleCount = value;
-  }
-
-  get fullyFunded() {
-    return this._fullyFunded;
-  }
-
-  set fullyFunded(value) {
-    this.checkType(value, ['boolean'], 'fullyFunded');
-    this._fullyFunded = value;
   }
 
   get donationCounters() {
