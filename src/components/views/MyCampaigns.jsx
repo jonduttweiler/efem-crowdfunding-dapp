@@ -152,9 +152,6 @@ class MyCampaigns extends Component {
                             <th className="td-donations-number">Donations</th>
                             <th className="td-donations-amount">Amount</th>
                             <th className="td-status">Status</th>
-                            <th className="td-confirmations">
-                              {isPendingCampaign && 'Confirmations'}
-                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -228,11 +225,6 @@ class MyCampaigns extends Component {
                                   </span>
                                 )}
                                 {c.status}
-                              </td>
-                              <td className="td-confirmations">
-                                {(isPendingCampaign ||
-                                  c.requiredConfirmations !== c.confirmations) &&
-                                  `${c.confirmations}/${c.requiredConfirmations}`}
                               </td>
                             </tr>
                           ))}

@@ -84,8 +84,6 @@ class MyDACs extends Component {
   render() {
     const { dacs, isLoading, visiblePages } = this.state;
     const { currentUser } = this.props;
-    const isPendingDac =
-      (dacs.data && dacs.data.some(d => d.confirmations !== d.requiredConfirmations)) || false;
 
     return (
       <div id="dacs-view">
@@ -108,7 +106,6 @@ class MyDACs extends Component {
                             <th className="td-donations-number">Number of donations</th>
                             <th className="td-donations-amount">Amount donated</th>
                             <th className="td-status">Status</th>
-                            <th className="td-confirmations">{isPendingDac && 'Confirmations'}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -155,10 +152,6 @@ class MyDACs extends Component {
                                   </span>
                                 )}
                                 {d.status}
-                              </td>
-                              <td className="td-confirmations">
-                                {(isPendingDac || d.requiredConfirmations !== d.confirmations) &&
-                                  `${d.confirmations}/${d.requiredConfirmations}`}
                               </td>
                             </tr>
                           ))}

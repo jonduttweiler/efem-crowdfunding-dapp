@@ -14,10 +14,6 @@ class Campaign extends BasicModel {
     return 'Canceled';
   }
 
-  static get PENDING() {
-    return 'Pending';
-  }
-
   static get ACTIVE() {
     return 'Active';
   }
@@ -35,15 +31,9 @@ class Campaign extends BasicModel {
     super(data);
 
     this.communityUrl = data.communityUrl || '';
-    this.confirmations = data.confirmations || 0;
-    this.projectId = data.projectId || 0;
-    this.pluginAddress = data.pluginAddress || '0x0000000000000000000000000000000000000000';
-    this.status = data.status || Campaign.PENDING;
-    this.requiredConfirmations = data.requiredConfirmations;
+    this.status = data.status || Campaign.ACTIVE;
     this.reviewerAddress = data.reviewerAddress;
     this.ownerAddress = data.ownerAddress;
-    this.mined = data.mined;
-    this._id = data._id;
     this.commitTime = data.commitTime || 0;
   }
 
@@ -63,11 +53,7 @@ class Campaign extends BasicModel {
       title: this.title,
       description: this.description,
       communityUrl: this.communityUrl,
-      projectId: this.projectId,
       image: cleanIpfsPath(this.image),
-      totalDonated: this.totalDonated,
-      donationCount: this.donationCount,
-      peopleCount: this.peopleCount,
       reviewerAddress: this.reviewerAddress,
       status: this.status,
     };
@@ -87,9 +73,8 @@ class Campaign extends BasicModel {
    * Save the campaign to feathers and blockchain if necessary
    *
    * @param afterSve Callback function once the campaign has been saved to feathers
-   * @param afterMined  Callback function once the transaction is mined
    */
-  save(afterSave, afterMined) {
+  save(afterSave) {
     if (this.newImage) {
       IPFSService.upload(this.image)
         .then(hash => {
@@ -98,9 +83,9 @@ class Campaign extends BasicModel {
           this.newImage = false;
         })
         .catch(err => ErrorPopup('Failed to upload image', err))
-        .finally(() => CampaignService.save(this, this.owner.address, afterSave, afterMined));
+        .finally(() => CampaignService.save(this, this.owner.address, afterSave));
     } else {
-      CampaignService.save(this, this.owner.address, afterSave, afterMined);
+      CampaignService.save(this, this.owner.address, afterSave);
     }
   }
 

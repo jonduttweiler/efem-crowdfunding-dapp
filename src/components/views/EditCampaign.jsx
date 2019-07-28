@@ -12,12 +12,7 @@ import SelectFormsy from '../SelectFormsy';
 import FormsyImageUploader from '../FormsyImageUploader';
 import GoBackButton from '../GoBackButton';
 import { isOwner, getTruncatedText, history } from '../../lib/helpers';
-import {
-  checkForeignNetwork,
-  checkBalance,
-  authenticateIfPossible,
-  checkProfile,
-} from '../../lib/middleware';
+import { authenticateIfPossible, checkProfile } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
 import Campaign from '../../models/Campaign';
@@ -55,8 +50,7 @@ class EditCampaign extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    checkForeignNetwork(this.props.isCorrectNetwork)
-      .then(() => this.checkUser())
+    this.checkUser()
       .then(() => {
         // Load this Campaign
         if (!this.props.isNew) {
@@ -90,8 +84,6 @@ class EditCampaign extends Component {
         if (!this.props.isNew && !isOwner(this.state.campaign.ownerAddress, this.props.currentUser))
           history.goBack();
       });
-    } else if (this.props.currentUser && !prevProps.balance.eq(this.props.balance)) {
-      checkBalance(this.props.balance);
     }
   }
 
@@ -117,50 +109,13 @@ class EditCampaign extends Component {
           throw new Error('not whitelisted');
         }
       })
-      .then(() => checkProfile(this.props.currentUser))
-      .then(() => checkBalance(this.props.balance));
+      .then(() => checkProfile(this.props.currentUser));
   }
 
   submit() {
-    const afterMined = url => {
-      if (url) {
-        const msg = (
-          <p>
-            Your Campaign has been created!
-            <br />
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              View transaction
-            </a>
-          </p>
-        );
-        React.toast.success(msg);
-      } else {
-        if (this.mounted) this.setState({ isSaving: false });
-        React.toast.success('Your Campaign has been updated!');
-        history.push(`/campaigns/${this.state.campaign.id}`);
-      }
-    };
-
-    const afterCreate = (err, url, id) => {
-      if (this.mounted) this.setState({ isSaving: false });
-      if (!err) {
-        const msg = (
-          <p>
-            Your Campaign is pending....
-            <br />
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              View transaction
-            </a>
-          </p>
-        );
-        React.toast.info(msg);
-        GA.trackEvent({
-          category: 'Campaign',
-          action: 'created',
-          label: id,
-        });
-        history.push('/my-campaigns');
-      }
+    const afterSave = campaign => {
+      React.toast.success('Your Campaign has been saved!');
+      history.push(`/campaigns/${campaign.id}`);
     };
 
     this.setState(
@@ -170,7 +125,7 @@ class EditCampaign extends Component {
       },
       () => {
         // Save the campaign
-        this.state.campaign.save(afterCreate, afterMined);
+        this.state.campaign.save(afterSave);
       },
     );
   }
@@ -337,8 +292,6 @@ class EditCampaign extends Component {
 EditCampaign.propTypes = {
   currentUser: PropTypes.instanceOf(User),
   isNew: PropTypes.bool,
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
-  isCorrectNetwork: PropTypes.bool.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,

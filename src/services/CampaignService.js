@@ -7,7 +7,6 @@ import extraGas from '../lib/blockchain/extraGas';
 import { feathersClient } from '../lib/feathersClient';
 import Campaign from '../models/Campaign';
 import Donation from '../models/Donation';
-import IPFSService from './IPFSService';
 import ErrorPopup from '../components/ErrorPopup';
 
 const campaigns = feathersClient.service('campaigns');
@@ -42,7 +41,6 @@ class CampaignService {
       .service('campaigns')
       .find({
         query: {
-          projectId: { $gt: 0 }, // 0 is a pending campaign
           status: Campaign.ACTIVE,
           $limit,
           $skip,
@@ -186,83 +184,14 @@ class CampaignService {
    * @param campaign    Campaign object to be saved
    * @param from        address of the user saving the Campaign
    * @param afterSave   Callback to be triggered after the Campaign is saved in feathers
-   * @param afterMined  Callback to be triggered after the transaction is mined
    */
-  static async save(campaign, from, afterSave = () => {}, afterMined = () => {}) {
-    if (campaign.id && campaign.projectId === 0) {
-      throw new Error(
-        'You must wait for your Campaign to be creation to finish before you can update it',
-      );
-    }
-
-    let txHash;
-    let etherScanUrl;
+  static async save(campaign, from, afterSave = () => {}) {
     try {
-      let profileHash;
-      try {
-        profileHash = await IPFSService.upload(campaign.toIpfs());
-      } catch (err) {
-        ErrorPopup('Failed to upload campaign to ipfs');
-      }
-
-      const network = await getNetwork();
-      etherScanUrl = network.etherscan;
-
-      // nothing to update or failed ipfs upload
-      if (campaign.projectId && (campaign.url === profileHash || !profileHash)) {
-        // ipfs upload may have failed, but we still want to update feathers
-        if (!profileHash) {
-          await campaigns.patch(campaign.id, campaign.toFeathers(txHash));
-        }
-        afterSave(null, false);
-        afterMined(false, undefined, campaign.id);
-        return;
-      }
-
-      let promise;
-      if (campaign.projectId) {
-        // LPPCampaign function update(string newName, string newUrl, uint64 newCommitTime)
-        promise = new LPPCampaign(await getWeb3(), campaign.pluginAddress).update(
-          campaign.title,
-          profileHash || '',
-          0,
-          {
-            from,
-            $extraGas: extraGas(),
-          },
-        );
-      } else {
-        // LPPCampaignFactory function newCampaign(string name, string url, uint64 parentProject, address reviewer)
-        const { lppCampaignFactory } = network;
-        promise = lppCampaignFactory.newCampaign(
-          campaign.title,
-          profileHash || '',
-          0,
-          campaign.reviewerAddress,
-          {
-            from,
-            $extraGas: extraGas(),
-          },
-        );
-      }
-
-      let { id } = campaign;
-      await promise.once('transactionHash', async hash => {
-        txHash = hash;
-        if (campaign.id) await campaigns.patch(campaign.id, campaign.toFeathers(txHash));
-        else id = (await campaigns.create(campaign.toFeathers(txHash)))._id;
-        afterSave(null, !campaign.projectId, `${etherScanUrl}tx/${txHash}`);
-      });
-
-      afterMined(!campaign.projectId, `${etherScanUrl}tx/${txHash}`, id);
+      if (campaign.id) await campaigns.patch(campaign.id, campaign.toFeathers());
+      else campaign.id = (await campaigns.create(campaign.toFeathers()))._id;
+      afterSave(campaign);
     } catch (err) {
-      ErrorPopup(
-        `Something went wrong with the Campaign ${
-          campaign.projectId > 0 ? 'update' : 'creation'
-        }. Is your wallet unlocked?`,
-        `${etherScanUrl}tx/${txHash} => ${JSON.stringify(err, null, 2)}`,
-      );
-      afterSave(err);
+      ErrorPopup(`Something went wrong with saving the Campaing`);
     }
   }
 
