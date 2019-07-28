@@ -67,9 +67,9 @@ class DAC extends BasicModel {
           this.newImage = false;
         })
         .catch(err => ErrorPopup('Failed to upload image', err))
-        .finally(() => DACService.save(this, this.owner.address, afterSave));
+        .finally(() => DACService.save(this, afterSave));
     } else {
-      DACService.save(this, this.owner.address, afterSave);
+      DACService.save(this, afterSave);
     }
   }
 

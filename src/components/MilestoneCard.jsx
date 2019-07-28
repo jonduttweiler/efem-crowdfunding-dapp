@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from 'react-avatar';
-import BigNumber from 'bignumber.js';
 
 import { getTruncatedText, isOwner, getUserAvatar, getUserName, history } from '../lib/helpers';
-import { checkBalance } from '../lib/middleware';
 import User from '../models/User';
 import CardStats from './CardStats';
 import GivethLogo from '../assets/logo.svg';
@@ -34,20 +32,6 @@ class MilestoneCard extends Component {
 
   editMilestone(e) {
     e.stopPropagation();
-
-    checkBalance(this.props.balance)
-      .then(() => {
-        history.push(
-          `/campaigns/${this.props.milestone.campaign._id}/milestones/${
-            this.props.milestone._id
-          }/edit`,
-        );
-      })
-      .catch(err => {
-        if (err === 'noBalance') {
-          // handle no balance error
-        }
-      });
   }
 
   render() {
@@ -129,7 +113,6 @@ MilestoneCard.propTypes = {
     }).isRequired,
   }).isRequired,
   currentUser: PropTypes.instanceOf(User),
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
 };
 
 MilestoneCard.defaultProps = {

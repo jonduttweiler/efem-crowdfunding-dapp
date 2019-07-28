@@ -197,10 +197,9 @@ class DACService {
    * Save new DAC to the blockchain or update existing one in feathers
    *
    * @param dac         DAC object to be saved
-   * @param from        address of the user creating the DAC
    * @param afterSave   Callback to be triggered after the DAC is saved in feathers
    */
-  static async save(dac, from, afterSave = () => {}) {
+  static async save(dac, afterSave = () => {}) {
     try {
       if (dac.id) await dacs.patch(dac.id, dac.toFeathers());
       else dac.id = (await dacs.create(dac.toFeathers()))._id;

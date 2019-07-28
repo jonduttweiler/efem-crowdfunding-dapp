@@ -208,7 +208,7 @@ class ViewCampaign extends Component {
 
                     <div className="milestone-header spacer-top-50 card-view">
                       <h3>Milestones</h3>
-                      {campaign.projectId > 0 && isOwner(campaign.owner.address, currentUser) && (
+                      {isOwner(campaign.owner.address, currentUser) && (
                         <Link
                           className="btn btn-primary btn-sm pull-right"
                           to={`/campaigns/${campaign.id}/milestones/new`}
@@ -217,16 +217,14 @@ class ViewCampaign extends Component {
                         </Link>
                       )}
 
-                      {campaign.projectId > 0 &&
-                        !isOwner(campaign.owner.address, currentUser) &&
-                        currentUser && (
-                          <Link
-                            className="btn btn-primary btn-sm pull-right"
-                            to={`/campaigns/${campaign.id}/milestones/propose`}
-                          >
-                            Propose Milestone
-                          </Link>
-                        )}
+                      {!isOwner(campaign.owner.address, currentUser) && currentUser && (
+                        <Link
+                          className="btn btn-primary btn-sm pull-right"
+                          to={`/campaigns/${campaign.id}/milestones/propose`}
+                        >
+                          Propose Milestone
+                        </Link>
+                      )}
 
                       {isLoadingMilestones && milestonesTotal === 0 && (
                         <Loader className="relative" />

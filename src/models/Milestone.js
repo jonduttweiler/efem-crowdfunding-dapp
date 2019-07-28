@@ -4,21 +4,22 @@ import { utils } from 'web3';
 import { getStartOfDayUTC, cleanIpfsPath } from 'lib/helpers';
 import BasicModel from './BasicModel';
 import MilestoneItemModel from './MilestoneItem';
+import MilestoneService from '../services/MilestoneService';
+import IPFSService from '../services/IPFSService';
 
 /**
  * The DApp Milestone model
  */
 export default class MilestoneModel extends BasicModel {
-  constructor(data) {
+  constructor(data = {}) {
     super(data);
 
     const {
-      id = data._id || undefined,
       maxAmount = '0',
       selectedFiatType = 'EUR',
       fiatAmount = new BigNumber('0'),
       recipientAddress = '',
-      status = MilestoneModel.PENDING,
+      status = MilestoneModel.IN_PROGRESS,
       projectId = undefined,
       reviewerAddress = '',
       items = [],
@@ -50,7 +51,6 @@ export default class MilestoneModel extends BasicModel {
     this._items = items.map(i => new MilestoneItemModel(i));
     this._itemizeState = items && items.length > 0;
     this._date = getStartOfDayUTC(date);
-    this._id = id;
     this._confirmations = confirmations;
     this._requiredConfirmations = requiredConfirmations;
     this._commitTime = commitTime;
@@ -66,6 +66,8 @@ export default class MilestoneModel extends BasicModel {
     this._recipient = recipient;
     this._reviewer = reviewer;
     this._mined = mined;
+
+    this.save = this.save.bind(this);
   }
 
   toIpfs() {
@@ -83,31 +85,42 @@ export default class MilestoneModel extends BasicModel {
     };
   }
 
-  toFeathers(txHash) {
-    const milestone = {
+  toFeathers() {
+    return {
       title: this._title,
       description: this._description,
       image: cleanIpfsPath(this._image),
-      maxAmount: utils.toWei(this.maxAmount), // maxAmount is stored as wei in feathers
       ownerAddress: this._ownerAddress,
       reviewerAddress: this._reviewerAddress,
       recipientAddress: this._recipientAddress,
       campaignReviewerAddress: this._campaignReviewerAddress,
       campaignId: this._campaignId,
-      projectId: this._projectId,
       status: this._status,
-      items: this._items.map(i => i.toFeathers()),
-      conversionRateTimestamp: this._conversionRateTimestamp,
       selectedFiatType: this._selectedFiatType,
       date: this._date,
       fiatAmount: this._fiatAmount.toString(),
-      conversionRate: this._conversionRate,
-      pluginAddress: this._pluginAddress,
       token: this._token,
     };
-    if (!this.id) milestone.txHash = txHash;
+  }
 
-    return milestone;
+  /**
+   * Save the campaign to feathers and blockchain if necessary
+   *
+   * @param afterSve Callback function once the campaign has been saved to feathers
+   */
+  save(afterSave, onError) {
+    if (this.newImage) {
+      IPFSService.upload(this.image)
+        .then(hash => {
+          // Save the new image address and mark it as old
+          this.image = hash;
+          this.newImage = false;
+        })
+        .catch(err => onError('Failed to upload image', err))
+        .finally(() => MilestoneService.save(this, afterSave, onError));
+    } else {
+      MilestoneService.save(this, afterSave, onError);
+    }
   }
 
   /**
@@ -171,10 +184,6 @@ export default class MilestoneModel extends BasicModel {
 
   static get type() {
     return 'milestone';
-  }
-
-  get id() {
-    return this._id;
   }
 
   // eslint-disable-next-line class-methods-use-this

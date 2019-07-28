@@ -182,10 +182,9 @@ class CampaignService {
    * TODO: Handle error states properly
    *
    * @param campaign    Campaign object to be saved
-   * @param from        address of the user saving the Campaign
    * @param afterSave   Callback to be triggered after the Campaign is saved in feathers
    */
-  static async save(campaign, from, afterSave = () => {}) {
+  static async save(campaign, afterSave = () => {}) {
     try {
       if (campaign.id) await campaigns.patch(campaign.id, campaign.toFeathers());
       else campaign.id = (await campaigns.create(campaign.toFeathers()))._id;

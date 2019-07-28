@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Toggle from 'react-toggle';
 import BigNumber from 'bignumber.js';
 import { Form, Input } from 'formsy-react-components';
 import GA from 'lib/GoogleAnalytics';
@@ -10,24 +9,16 @@ import Milestone from 'models/Milestone';
 import Loader from '../Loader';
 import QuillFormsy from '../QuillFormsy';
 import SelectFormsy from '../SelectFormsy';
-import DatePickerFormsy from '../DatePickerFormsy';
 import FormsyImageUploader from '../FormsyImageUploader';
 import GoBackButton from '../GoBackButton';
-import { isOwner, getTruncatedText, getStartOfDayUTC } from '../../lib/helpers';
-import {
-  checkForeignNetwork,
-  checkBalance,
-  authenticateIfPossible,
-  checkProfile,
-} from '../../lib/middleware';
+import { isOwner, getTruncatedText } from '../../lib/helpers';
+import { authenticateIfPossible, checkProfile } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
 
 import ErrorPopup from '../ErrorPopup';
-import MilestoneProof from '../MilestoneProof';
 
 import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
-import getConversionRatesContext from '../../containers/getConversionRatesContext';
 import MilestoneService from '../../services/MilestoneService';
 import CampaignService from '../../services/CampaignService';
 
@@ -53,10 +44,6 @@ class EditMilestone extends Component {
       isSaving: false,
       formIsValid: false,
       milestone: new Milestone({}),
-      tokenWhitelistOptions: props.tokenWhitelist.map(t => ({
-        value: t.address,
-        title: t.name,
-      })),
       isBlocking: false,
     };
 
@@ -64,15 +51,12 @@ class EditMilestone extends Component {
 
     this.submit = this.submit.bind(this);
     this.setImage = this.setImage.bind(this);
-    this.setMaxAmount = this.setMaxAmount.bind(this);
-    this.setFiatAmount = this.setFiatAmount.bind(this);
     this.changeSelectedFiat = this.changeSelectedFiat.bind(this);
     this.onItemsChanged = this.onItemsChanged.bind(this);
   }
 
   componentDidMount() {
-    checkForeignNetwork(this.props.isCorrectNetwork)
-      .then(() => this.checkUser())
+    this.checkUser()
       .then(async () => {
         this.setState({
           campaignId: this.props.match.params.id,
@@ -94,12 +78,9 @@ class EditMilestone extends Component {
             this.setState({
               milestone,
               campaignTitle: milestone.campaign.title,
-              campaignProjectId: milestone.campaign.projectId,
               campaignReviewerAddress: milestone.campaign.reviewerAddress,
               campaignId: milestone.campaignId,
             });
-
-            await this.props.getConversionRates(milestone.date, milestone.token.symbol);
 
             this.setState({
               isLoading: false,
@@ -114,21 +95,13 @@ class EditMilestone extends Component {
           try {
             const campaign = await CampaignService.get(this.props.match.params.id);
 
-            if (campaign.projectId < 0) {
-              this.props.history.goBack();
-            } else {
-              const milestone = new Milestone({ token: this.props.tokenWhitelist[0] });
-              milestone.recipientAddress = this.props.currentUser.address;
-              milestone.selectedFiatType = milestone.token.symbol;
-              this.setState({
-                campaignTitle: campaign.title,
-                campaignReviewerAddress: campaign.reviewerAddress,
-                campaignProjectId: campaign.projectId,
-                milestone,
-              });
-            }
-
-            this.setDate(this.state.milestone.date);
+            const milestone = new Milestone();
+            milestone.recipientAddress = this.props.currentUser.address;
+            this.setState({
+              campaignTitle: campaign.title,
+              campaignReviewerAddress: campaign.reviewerAddress,
+              milestone,
+            });
 
             this.setState({
               isLoading: false,
@@ -159,8 +132,6 @@ class EditMilestone extends Component {
         )
           this.props.history.goBack();
       });
-    } else if (this.props.currentUser && !prevProps.balance.eq(this.props.balance)) {
-      checkBalance(this.props.balance);
     }
   }
 
@@ -180,61 +151,9 @@ class EditMilestone extends Component {
     milestone.image = image;
   }
 
-  setDate(date) {
-    const { milestone } = this.state;
-    milestone.date = date;
-
-    this.props.getConversionRates(date, milestone.token.symbol).then(resp => {
-      let rate =
-        resp.rates[milestone.selectedFiatType] ||
-        Object.values(resp.rates).find(v => v !== undefined);
-
-      // This rate is undefined, use the milestone rate
-      if (!rate) {
-        milestone.selectedFiatType = milestone.token.symbol;
-        rate = resp.rates[milestone.token.symbol];
-      }
-      milestone.maxAmount = milestone.fiatAmount.div(rate).toString();
-      milestone.conversionRateTimestamp = resp.timestamp;
-
-      this.setState({ milestone });
-    });
-  }
-
-  setFiatAmount(name, value) {
-    const { milestone } = this.state;
-    const maxAmount = new BigNumber(value || '0');
-    const conversionRate = this.props.currentRate.rates[milestone.selectedFiatType];
-
-    if (conversionRate && maxAmount.gte(0)) {
-      milestone.maxAmount = maxAmount.toString();
-      milestone.fiatAmount = maxAmount.times(conversionRate);
-      milestone.conversionRateTimestamp = this.props.currentRate.timestamp;
-
-      this.setState({ milestone });
-    }
-  }
-
-  setMaxAmount(name, value) {
-    const { milestone } = this.state;
-    const fiatAmount = new BigNumber(value || '0');
-    const conversionRate = this.props.currentRate.rates[milestone.selectedFiatType];
-    if (conversionRate && fiatAmount.gte(0)) {
-      milestone.maxAmount = fiatAmount.div(conversionRate).toString();
-      milestone.fiatAmount = fiatAmount;
-      milestone.conversionRateTimestamp = this.props.currentRate.timestamp;
-
-      this.setState({ milestone });
-    }
-  }
-
   changeSelectedFiat(fiatType) {
     const { milestone } = this.state;
-    const conversionRate = this.props.currentRate.rates[fiatType];
-
-    milestone.maxAmount = milestone.fiatAmount.div(conversionRate).toString();
     milestone.selectedFiatType = fiatType;
-
     this.setState({ milestone });
   }
 
@@ -246,14 +165,6 @@ class EditMilestone extends Component {
     } else {
       this.setState({ formIsValid: formState });
     }
-  }
-
-  setToken(address) {
-    const { milestone } = this.state;
-    milestone.token = this.props.tokenWhitelist.find(t => t.address === address);
-    this.setState({ milestone }, () =>
-      this.setDate(this.state.milestone.data || getStartOfDayUTC()),
-    );
   }
 
   checkUser() {
@@ -272,8 +183,7 @@ class EditMilestone extends Component {
           throw new Error('not whitelisted');
         }
       })
-      .then(() => checkProfile(this.props.currentUser))
-      .then(() => !this.props.isProposed && checkBalance(this.props.balance));
+      .then(() => checkProfile(this.props.currentUser));
   }
 
   toggleItemize() {
@@ -288,7 +198,7 @@ class EditMilestone extends Component {
     }));
   }
 
-  submit(/* model */) {
+  submit() {
     const { milestone } = this.state;
 
     milestone.ownerAddress = this.props.currentUser.address;
@@ -298,32 +208,18 @@ class EditMilestone extends Component {
       this.props.isProposed || milestone.status === Milestone.REJECTED
         ? Milestone.PROPOSED
         : milestone.status; // make sure not to change status!
-    milestone.conversionRate = this.props.currentRate.rates[milestone.selectedFiatType];
-    milestone.parentProjectId = this.state.campaignProjectId;
 
-    const _saveMilestone = () =>
-      MilestoneService.save({
-        milestone,
-        from: this.props.currentUser.address,
-        afterSave: (created, txUrl) => {
-          if (created) {
-            if (this.props.isProposed) {
-              React.toast.info(<p>Your Milestone has been proposed to the Campaign Owner.</p>);
-            }
-          } else if (typeof txUrl === 'string') {
-            React.toast.info(
-              <p>
-                Your Milestone is pending....
-                <br />
-                <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  View transaction
-                </a>
-              </p>,
-            );
-          } else {
+    this.setState(
+      {
+        isSaving: true,
+        isBlocking: false,
+      },
+      () => {
+        milestone.save(
+          () => {
             React.toast.success(
               <p>
-                Your Milestone has been updated!
+                Your Milestone has been saved!
                 <br />
               </p>,
             );
@@ -332,52 +228,17 @@ class EditMilestone extends Component {
               action: 'updated',
               label: this.state.id,
             });
-          }
-
-          this.setState({
-            isSaving: false,
-            isBlocking: false,
-          });
-          this.props.history.goBack();
-        },
-        afterMined: (created, txUrl) => {
-          React.toast.success(
-            <p>
-              Your Milestone has been created!
-              <br />
-              <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                View transaction
-              </a>
-            </p>,
-          );
-        },
-        onError: errorMessage => {
-          React.toast.error(errorMessage);
-          this.setState({ isSaving: false });
-        },
-      });
-
-    this.setState(
-      {
-        isSaving: true,
-        isBlocking: false,
-      },
-      () => {
-        if (this.props.isProposed && this.props.isNew) {
-          React.swal({
-            title: 'Propose milestone?',
-            text:
-              'The milestone will be proposed to the campaign owner and he or she might approve or reject your milestone.',
-            icon: 'warning',
-            dangerMode: true,
-            buttons: ['Cancel', 'Yes, propose'],
-          }).then(isConfirmed => {
-            if (isConfirmed) _saveMilestone();
-            else this.setState({ isSaving: false });
-          });
-        } else {
-          _saveMilestone();
-        }
+            this.setState({
+              isSaving: false,
+              isBlocking: false,
+            });
+            this.props.history.goBack();
+          },
+          errorMessage => {
+            React.toast.error(errorMessage);
+            this.setState({ isSaving: false });
+          },
+        );
       },
     );
   }
@@ -422,16 +283,8 @@ class EditMilestone extends Component {
   }
 
   render() {
-    const { isNew, isProposed, history, currentRate, fiatTypes, reviewers } = this.props;
-    const {
-      isLoading,
-      isSaving,
-      formIsValid,
-      campaignTitle,
-      tokenWhitelistOptions,
-      isBlocking,
-      milestone,
-    } = this.state;
+    const { isNew, isProposed, history, fiatTypes, reviewers } = this.props;
+    const { isLoading, isSaving, formIsValid, campaignTitle, isBlocking, milestone } = this.state;
 
     return (
       <div id="edit-milestone-view">
@@ -563,120 +416,42 @@ class EditMilestone extends Component {
                       />
                     </div>
 
-                    <SelectFormsy
-                      name="token"
-                      id="token-select"
-                      label="Raising funds in"
-                      helpText="Select the token you're raising funds in"
-                      value={milestone.token && milestone.token.address}
-                      cta="--- Select a token ---"
-                      options={tokenWhitelistOptions}
-                      onChange={address => this.setToken(address)}
-                      required
-                      disabled={!isNew && !isProposed}
-                    />
-
-                    <div className="react-toggle-container">
-                      <Toggle
-                        id="itemize-state"
-                        defaultChecked={milestone.itemizeState}
-                        onChange={() => this.toggleItemize()}
-                        disabled={!isNew && !isProposed}
-                      />
-                      <span className="label">Add multiple expenses, invoices or items</span>
-                    </div>
-
-                    {!milestone.itemizeState ? (
-                      <div className="card milestone-items-card">
-                        <div className="card-body">
-                          <div className="form-group row">
-                            <div className="col-12">
-                              <DatePickerFormsy
-                                name="date"
-                                type="text"
-                                value={milestone.date}
-                                startDate={milestone.date}
-                                label="Milestone date"
-                                changeDate={dt => this.setDate(dt)}
-                                placeholder="Select a date"
-                                help="Select a date"
-                                validations="isMoment"
-                                validationErrors={{
-                                  isMoment: 'Please provide a date.',
-                                }}
-                                required={!milestone.itemizeState}
-                                disabled={milestone.projectId !== undefined}
-                              />
-                            </div>
+                    <div className="card milestone-items-card">
+                      <div className="card-body">
+                        <div className="form-group row">
+                          <div className="col-6">
+                            <Input
+                              name="fiatAmount"
+                              min="0"
+                              id="fiatamount-input"
+                              type="number"
+                              step="any"
+                              label={`Maximum amount in ${milestone.selectedFiatType}`}
+                              value={milestone.fiatAmount.toString()}
+                              placeholder="10"
+                              validations="greaterThan:0"
+                              validationErrors={{
+                                greaterEqualTo: 'Minimum value must be greater than 0',
+                              }}
+                              disabled={milestone.projectId !== undefined}
+                              onChange={this.setMaxAmount}
+                            />
                           </div>
 
-                          <div className="form-group row">
-                            <div className="col-4">
-                              <Input
-                                name="fiatAmount"
-                                min="0"
-                                id="fiatamount-input"
-                                type="number"
-                                step="any"
-                                label={`Maximum amount in ${milestone.selectedFiatType}`}
-                                value={milestone.fiatAmount.toString()}
-                                placeholder="10"
-                                validations="greaterThan:0"
-                                validationErrors={{
-                                  greaterEqualTo: 'Minimum value must be greater than 0',
-                                }}
-                                disabled={milestone.projectId !== undefined}
-                                onChange={this.setMaxAmount}
-                              />
-                            </div>
-
-                            <div className="col-4">
-                              <SelectFormsy
-                                name="fiatType"
-                                label="Currency"
-                                value={milestone.selectedFiatType}
-                                options={fiatTypes}
-                                allowedOptions={currentRate.rates}
-                                onChange={this.changeSelectedFiat}
-                                helpText={`1 ${milestone.token.symbol} = ${
-                                  currentRate.rates[milestone.selectedFiatType]
-                                } ${milestone.selectedFiatType}`}
-                                disabled={milestone.projectId !== undefined}
-                                required
-                              />
-                            </div>
-
-                            <div className="col-4">
-                              <Input
-                                name="maxAmount"
-                                min="0"
-                                id="maxamount-input"
-                                type="number"
-                                step="any"
-                                label={`Maximum amount in ${milestone.token.name}`}
-                                value={milestone.maxAmount.toString()}
-                                placeholder="10"
-                                validations="greaterThan:0"
-                                validationErrors={{
-                                  greaterEqualTo: 'Minimum value must be greater than 0',
-                                }}
-                                required
-                                disabled={milestone.projectId !== undefined}
-                                onChange={this.setFiatAmount}
-                              />
-                            </div>
+                          <div className="col-6">
+                            <SelectFormsy
+                              name="fiatType"
+                              label="Currency"
+                              value={milestone.selectedFiatType}
+                              options={fiatTypes}
+                              onChange={this.changeSelectedFiat}
+                              disabled={milestone.projectId !== undefined}
+                              required
+                            />
                           </div>
                         </div>
                       </div>
-                    ) : (
-                      <MilestoneProof
-                        isEditMode
-                        items={milestone.items}
-                        onItemsChanged={returnedItems => this.onItemsChanged(returnedItems)}
-                        token={milestone.token}
-                        milestoneStatus={milestone.status}
-                      />
-                    )}
+                    </div>
 
                     <div className="form-group row">
                       <div className="col-6">
@@ -714,19 +489,12 @@ EditMilestone.propTypes = {
   }).isRequired,
   isProposed: PropTypes.bool,
   isNew: PropTypes.bool,
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
-  isCorrectNetwork: PropTypes.bool.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,
       milestoneId: PropTypes.string,
     }).isRequired,
   }).isRequired,
-  getConversionRates: PropTypes.func.isRequired,
-  currentRate: PropTypes.shape({
-    rates: PropTypes.shape().isRequired,
-    timestamp: PropTypes.string.isRequired,
-  }),
   fiatTypes: PropTypes.arrayOf(PropTypes.object).isRequired,
   isCampaignManager: PropTypes.func.isRequired,
   reviewers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -737,18 +505,20 @@ EditMilestone.defaultProps = {
   currentUser: undefined,
   isNew: false,
   isProposed: false,
-  currentRate: undefined,
 };
 
-export default getConversionRatesContext(props => (
+const wrapper = props => (
   <WhiteListConsumer>
-    {({ state: { tokenWhitelist, reviewers }, actions: { isCampaignManager } }) => (
+    {({ state: { tokenWhitelist, fiatWhitelist, reviewers }, actions: { isCampaignManager } }) => (
       <EditMilestone
         tokenWhitelist={tokenWhitelist}
+        fiatTypes={fiatWhitelist.map(f => ({ value: f, title: f }))}
         reviewers={reviewers}
         isCampaignManager={isCampaignManager}
         {...props}
       />
     )}
   </WhiteListConsumer>
-));
+);
+
+export default wrapper;

@@ -39,7 +39,7 @@ class BasicModel extends Model {
     donationCounters = [],
     token,
     createdAt,
-  }) {
+  } = {}) {
     super();
 
     this._id = _id;

@@ -285,159 +285,17 @@ class MilestoneService {
    * TODO: Handle error states properly
    *
    * @param milestone   Milestone object to be saved
-   * @param from        address of the user saving the Milestone
    * @param afterSave   Callback to be triggered after the Milestone is saved in feathers
    * @param afterMined  Callback to be triggered after the transaction is mined
    */
-  static async save({
-    milestone,
-    from,
-    afterSave = () => {},
-    afterMined = () => {},
-    onError = () => {},
-  }) {
-    if (milestone.id && milestone.projectId === 0) {
-      return onError(
-        'You must wait for your Milestone creation to finish before you can update it',
-      );
-    }
-
-    if (!milestone.parentProjectId || milestone.parentProjectId === '0') {
-      return onError(
-        `It looks like the campaign has not been mined yet. Please try again in a bit`,
-      );
-    }
-
-    let txHash;
-    let etherScanUrl;
-
+  static async save(milestone, afterSave = () => {}, onError = () => {}) {
     try {
-      // if a proposed or rejected milestone, create/update it only in feathers
-      if (
-        [Milestone.PROPOSED, Milestone.REJECTED, Milestone.IN_PROGRESS].includes(milestone.status)
-      ) {
-        if (milestone.id) await milestones.patch(milestone.id, milestone.toFeathers());
-        else await milestones.create(milestone.toFeathers());
-        afterSave(false);
-        return true;
-      }
-
-      // upload new milestone image
-      if (milestone.newImage || (milestone.image && milestone.image.includes('data:image'))) {
-        try {
-          milestone.image = await IPFSService.upload(milestone.image);
-          milestone.newImage = false;
-        } catch (err) {
-          ErrorPopup('Failed to upload milestone image to ipfs');
-        }
-      }
-
-      // upload new milestone item images for new milestones
-      if (milestone.itemizeState) {
-        for (const milestoneItem of milestone.items) {
-          if (
-            milestoneItem.newImage ||
-            (milestoneItem.image && milestoneItem.image.includes('data:image'))
-          ) {
-            try {
-              milestoneItem.image = await IPFSService.upload(milestoneItem.image);
-              milestoneItem.newImage = false;
-            } catch (err) {
-              ErrorPopup('Failed to upload milestone item image to ipfs');
-            }
-          }
-        }
-      }
-
-      let profileHash;
-      try {
-        profileHash = await IPFSService.upload(milestone.toIpfs());
-      } catch (err) {
-        ErrorPopup('Failed to upload milestone to ipfs');
-      }
-
-      // nothing to update or failed ipfs upload
-      if (milestone.projectId && (milestone.url === profileHash || !profileHash)) {
-        // ipfs upload may have failed, but we still want to update feathers
-        if (!profileHash) {
-          await milestones.patch(milestone._id, milestone.toFeathers());
-        }
-        afterSave(null, false);
-        return true;
-      }
-
-      const network = await getNetwork();
-      etherScanUrl = network.etherScanUrl;
-
-      let tx;
-      if (milestone.projectId) {
-        // TODO: current milestone has no update function
-        // // LPPCampaign function update(string newName, string newUrl, uint64 newCommitTime)
-        // tx = new LPP(await getWeb3(), campaign.pluginAddress).update(
-        //   campaign.title,
-        //   profileHash || '',
-        //   0,
-        //   {
-        //     from,
-        //     $extraGas: extraGas(),
-        //   },
-        // );
-      } else {
-        /**
-          Create a milestone on chain
-
-          lppCappedMilestoneFactory params
-
-          string _name,
-          string _url,
-          uint64 _parentProject,
-          address _reviewer,
-          address _recipient,
-          address _campaignReviewer,
-          address _milestoneManager,
-          uint _maxAmount,
-          address _acceptedToken,
-          uint _reviewTimeoutSeconds
-        * */
-        const { lppCappedMilestoneFactory } = network;
-
-        tx = lppCappedMilestoneFactory.newMilestone(
-          milestone.title,
-          profileHash || '',
-          milestone.parentProjectId,
-          milestone.reviewerAddress,
-          milestone.recipientAddress,
-          milestone.campaignReviewerAddress,
-          from,
-          utils.toWei(milestone.maxAmount),
-          milestone.token.address,
-          5 * 24 * 60 * 60, // 5 days in seconds
-          { from, $extraGas: extraGas() },
-        );
-
-        let milestoneId;
-        await tx.once('transactionHash', async hash => {
-          txHash = hash;
-
-          // create milestone in feathers
-          // if (milestone.id) await milestones.patch(milestone.id, milestone.toFeathers(txHash));
-          milestoneId = await milestones.create(milestone.toFeathers(txHash))._id;
-          afterSave(!milestone.projectId, `${etherScanUrl}tx/${txHash}`);
-        });
-
-        afterMined(!milestone.projectId, `${etherScanUrl}tx/${txHash}`, milestoneId);
-      }
+      if (milestone.id) await milestones.patch(milestone.id, milestone.toFeathers());
+      else milestone.id = (await milestones.create(milestone.toFeathers()))._id;
+      afterSave(milestone);
     } catch (err) {
-      ErrorPopup(
-        `Something went wrong with the Milestone ${
-          milestone.projectId > 0 ? 'update' : 'creation'
-        }. Is your wallet unlocked?`,
-        `${etherScanUrl}tx/${txHash} => ${JSON.stringify(err, null, 2)}`,
-      );
-      onError(err.message);
+      onError('Something went wrong with saving your Milestone', err);
     }
-
-    return true;
   }
 
   /**

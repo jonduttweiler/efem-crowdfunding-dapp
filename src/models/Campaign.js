@@ -83,9 +83,9 @@ class Campaign extends BasicModel {
           this.newImage = false;
         })
         .catch(err => ErrorPopup('Failed to upload image', err))
-        .finally(() => CampaignService.save(this, this.owner.address, afterSave));
+        .finally(() => CampaignService.save(this, afterSave));
     } else {
-      CampaignService.save(this, this.owner.address, afterSave);
+      CampaignService.save(this, afterSave);
     }
   }
 
