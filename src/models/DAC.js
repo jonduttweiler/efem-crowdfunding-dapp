@@ -13,10 +13,6 @@ class DAC extends BasicModel {
     return 'Canceled';
   }
 
-  static get PENDING() {
-    return 'Pending';
-  }
-
   static get ACTIVE() {
     return 'Active';
   }
@@ -34,11 +30,8 @@ class DAC extends BasicModel {
     super(data);
 
     this.communityUrl = data.communityUrl || '';
-    this.delegateId = data.delegateId || 0;
-    this.status = data.status || DAC.PENDING;
+    this.status = data.status || DAC.Active;
     this.ownerAddress = data.ownerAddress;
-    this._id = data._id;
-    this.confirmations = data.confirmations || 0;
     this.requiredConfirmations = data.requiredConfirmations;
     this.commitTime = data.commitTime || 0;
   }
@@ -58,16 +51,14 @@ class DAC extends BasicModel {
       title: this.title,
       description: this.description,
       communityUrl: this.communityUrl,
-      delegateId: this.delegateId,
       image: cleanIpfsPath(this.image),
       totalDonated: this.totalDonated,
       donationCount: this.donationCount,
     };
-    if (!this.id) dac.txHash = txHash;
     return dac;
   }
 
-  save(afterSave, afterMined) {
+  save(afterSave) {
     if (this.newImage) {
       IPFSService.upload(this.image)
         .then(hash => {
@@ -76,9 +67,9 @@ class DAC extends BasicModel {
           this.newImage = false;
         })
         .catch(err => ErrorPopup('Failed to upload image', err))
-        .finally(() => DACService.save(this, this.owner.address, afterSave, afterMined));
+        .finally(() => DACService.save(this, this.owner.address, afterSave));
     } else {
-      DACService.save(this, this.owner.address, afterSave, afterMined);
+      DACService.save(this, this.owner.address, afterSave);
     }
   }
 

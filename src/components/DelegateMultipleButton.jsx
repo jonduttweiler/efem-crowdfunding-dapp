@@ -19,7 +19,6 @@ import { feathersClient } from '../lib/feathersClient';
 import Loader from './Loader';
 import config from '../configuration';
 import SelectFormsy from './SelectFormsy';
-import NetworkWarning from './NetworkWarning';
 
 import DonationService from '../services/DonationService';
 import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
@@ -302,9 +301,6 @@ class DelegateMultipleButton extends Component {
               It is recommended that you install <a href="https://metamask.io/">MetaMask</a> to
               donate
             </div>
-          )}
-          {validProvider && (
-            <NetworkWarning incorrectNetwork={!isCorrectNetwork} networkName={config.networkName} />
           )}
           <p>
             You are delegating donations to

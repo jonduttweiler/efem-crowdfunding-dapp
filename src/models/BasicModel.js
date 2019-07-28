@@ -29,7 +29,6 @@ class BasicModel extends Model {
     title = '',
     description = '',
     image = '',
-    txHash,
     owner,
     ownerAddress = '0x0',
     reviewer,
@@ -49,7 +48,6 @@ class BasicModel extends Model {
     this._summary = getTruncatedText(description, 100);
     this._image = image;
     this._newImage = false;
-    this._txHash = txHash;
     this._owner = owner || { address: ownerAddress }; // FIXME: Check in feathers, owner should be a model
     this._ownerAddress = ownerAddress;
     this._reviewer = reviewer;

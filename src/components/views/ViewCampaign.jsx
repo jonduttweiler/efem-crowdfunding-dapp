@@ -20,12 +20,10 @@ import DelegateMultipleButton from '../DelegateMultipleButton';
 import ListDonations from '../ListDonations';
 
 import User from '../../models/User';
-import Campaign from '../../models/Campaign';
 import CampaignService from '../../services/CampaignService';
 
 import ErrorPopup from '../ErrorPopup';
 import ErrorBoundary from '../ErrorBoundary';
-import config from '../../configuration';
 
 /**
  * The Campaign detail view mapped to /campaing/id

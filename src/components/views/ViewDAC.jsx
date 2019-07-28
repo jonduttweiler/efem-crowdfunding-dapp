@@ -14,11 +14,9 @@ import BackgroundImageHeader from '../BackgroundImageHeader';
 import ListDonations from '../ListDonations';
 import CommunityButton from '../CommunityButton';
 import User from '../../models/User';
-import DAC from '../../models/DAC';
 import { getUserName, getUserAvatar } from '../../lib/helpers';
 import DACService from '../../services/DACService';
 import CampaignCard from '../CampaignCard';
-import config from '../../configuration';
 
 /**
  * The DAC detail view mapped to /dac/id
@@ -58,7 +56,8 @@ class ViewDAC extends Component {
           () => this.setState({ isLoadingCampaigns: false }), // TODO: inform user of error
         );
       })
-      .catch(() => {
+      .catch(e => {
+        console.error(e);
         this.setState({ isLoading: false });
       }); // TODO: inform user of error
 
@@ -97,7 +96,7 @@ class ViewDAC extends Component {
   }
 
   render() {
-    const { balance, history, currentUser } = this.props;
+    const { balance, history } = this.props;
     const {
       isLoading,
       donations,
@@ -108,17 +107,15 @@ class ViewDAC extends Component {
       donationsTotal,
       newDonations,
     } = this.state;
+    if (isLoading) return <Loader className="fixed" />;
+    if (!dac) return <div id="view-cause-view">Failed to load dac</div>;
     return (
       <div id="view-cause-view">
-        {isLoading && <Loader className="fixed" />}
+        <BackgroundImageHeader image={dac.image} height={300}>
+          <h6>Decentralized Altruistic Community</h6>
+          <h1>{dac.title}</h1>
 
-        {!isLoading && (
-          <div>
-            <BackgroundImageHeader image={dac.image} height={300}>
-              <h6>Decentralized Altruistic Community</h6>
-              <h1>{dac.title}</h1>
-
-              {/*<DonateButton
+          {/*<DonateButton
                 model={{
                   type: DAC.type,
                   title: dac.title,
@@ -130,66 +127,61 @@ class ViewDAC extends Component {
                 commmunityUrl={dac.communityUrl}
                 history={history}
               />*/}
-              {dac.communityUrl && (
-                <CommunityButton className="btn btn-secondary" url={dac.communityUrl}>
-                  Join our community
-                </CommunityButton>
-              )}
-            </BackgroundImageHeader>
+          {dac.communityUrl && (
+            <CommunityButton className="btn btn-secondary" url={dac.communityUrl}>
+              Join our community
+            </CommunityButton>
+          )}
+        </BackgroundImageHeader>
 
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-md-8 m-auto">
-                  <GoBackButton to="/" title="Communities" />
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-md-8 m-auto">
+              <GoBackButton to="/" title="Communities" />
 
-                  <center>
-                    <Link to={`/profile/${dac.owner.address}`}>
-                      <Avatar size={50} src={getUserAvatar(dac.owner)} round />
-                      <p className="small">{getUserName(dac.owner)}</p>
-                    </Link>
-                  </center>
+              <center>
+                <Link to={`/profile/${dac.owner.address}`}>
+                  <Avatar size={50} src={getUserAvatar(dac.owner)} round />
+                  <p className="small">{getUserName(dac.owner)}</p>
+                </Link>
+              </center>
 
-                  <div className="card content-card">
-                    <div className="card-body content">{ReactHtmlParser(dac.description)}</div>
-                  </div>
-                </div>
+              <div className="card content-card">
+                <div className="card-body content">{ReactHtmlParser(dac.description)}</div>
               </div>
+            </div>
+          </div>
 
-              {(isLoadingCampaigns || campaigns.length > 0) && (
-                <div className="row spacer-top-50 spacer-bottom-50">
-                  <div className="col-md-8 m-auto card-view">
-                    <h4>{campaigns.length} Campaign(s)</h4>
-                    <p>These Campaigns are working hard to solve the cause of this Fund </p>
-                    {isLoadingCampaigns && <Loader className="small" />}
+          {(isLoadingCampaigns || campaigns.length > 0) && (
+            <div className="row spacer-top-50 spacer-bottom-50">
+              <div className="col-md-8 m-auto card-view">
+                <h4>{campaigns.length} Campaign(s)</h4>
+                <p>These Campaigns are working hard to solve the cause of this Fund </p>
+                {isLoadingCampaigns && <Loader className="small" />}
 
-                    {campaigns.length > 0 && !isLoadingCampaigns && (
-                      <div className="cards-grid-container">
-                        {campaigns.map(c => (
-                          <CampaignCard
-                            key={c.id}
-                            campaign={c}
-                            history={history}
-                            balance={balance}
-                          />
-                        ))}
-                      </div>
-                    )}
+                {campaigns.length > 0 && !isLoadingCampaigns && (
+                  <div className="cards-grid-container">
+                    {campaigns.map(c => (
+                      <CampaignCard key={c.id} campaign={c} history={history} balance={balance} />
+                    ))}
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+            </div>
+          )}
 
-              <div className="row spacer-top-50 spacer-bottom-50">
-                <div className="col-md-8 m-auto">
-                  <Balances entity={dac} />
+          <div className="row spacer-top-50 spacer-bottom-50">
+            <div className="col-md-8 m-auto">
+              <Balances entity={dac} />
 
-                  <ListDonations
-                    donations={donations}
-                    isLoading={isLoadingDonations}
-                    total={donationsTotal}
-                    loadMore={this.loadMoreDonations}
-                    newDonations={newDonations}
-                  />
-                  {/*<DonateButton
+              <ListDonations
+                donations={donations}
+                isLoading={isLoadingDonations}
+                total={donationsTotal}
+                loadMore={this.loadMoreDonations}
+                newDonations={newDonations}
+              />
+              {/*<DonateButton
                     model={{
                       type: DAC.type,
                       title: dac.title,
@@ -200,11 +192,9 @@ class ViewDAC extends Component {
                     currentUser={currentUser}
                     history={history}
                   />*/}
-                </div>
-              </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     );
   }

@@ -16,7 +16,6 @@ import ErrorPopup from './ErrorPopup';
 import config from '../configuration';
 import DonationService from '../services/DonationService';
 import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
-import NetworkWarning from './NetworkWarning';
 import SelectFormsy from './SelectFormsy';
 import { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProvider';
 import DAC from '../models/DAC';
@@ -311,13 +310,6 @@ class DonateButton extends React.Component {
                 <i className="fa fa-exclamation-triangle" />
                 Please install <a href="https://metamask.io/">MetaMask</a> to donate
               </div>
-            )}
-
-            {validProvider && (
-              <NetworkWarning
-                incorrectNetwork={!isCorrectNetwork}
-                networkName={config.networkName}
-              />
             )}
             {isCorrectNetwork && currentUser && (
               <p>

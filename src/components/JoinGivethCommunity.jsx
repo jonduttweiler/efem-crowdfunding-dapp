@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import BigNumber from 'bignumber.js';
 
 // import CommunityButton from './CommunityButton';
 import User from '../models/User';
-import { checkBalance } from '../lib/middleware';
 import { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProvider';
 
 /**
@@ -36,15 +34,7 @@ class JoinGivethCommunity extends Component {
       return;
     }
     if (this.props.currentUser) {
-      checkBalance(this.props.balance)
-        .then(() => {
-          this.props.history.push('/dacs/new');
-        })
-        .catch(err => {
-          if (err === 'noBalance') {
-            // handle no balance error
-          }
-        });
+      this.props.history.push('/dacs/new');
     } else {
       React.swal({
         title: "You're almost there...",
@@ -80,15 +70,7 @@ class JoinGivethCommunity extends Component {
       return;
     }
     if (this.props.currentUser) {
-      checkBalance(this.props.balance)
-        .then(() => {
-          this.props.history.push('/campaigns/new');
-        })
-        .catch(err => {
-          if (err === 'noBalance') {
-            // handle no balance error
-          }
-        });
+      this.props.history.push('/campaigns/new');
     } else {
       React.swal({
         title: "You're almost there...",
@@ -141,7 +123,6 @@ JoinGivethCommunity.propTypes = {
     goBack: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
   }).isRequired,
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
   currentUser: PropTypes.instanceOf(User),
   isDelegate: PropTypes.func.isRequired,
   isCampaignManager: PropTypes.func.isRequired,

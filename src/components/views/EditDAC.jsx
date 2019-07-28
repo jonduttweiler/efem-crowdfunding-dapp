@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'formsy-react-components';
-import BigNumber from 'bignumber.js';
 
 import GA from 'lib/GoogleAnalytics';
 import Loader from '../Loader';
@@ -10,12 +9,7 @@ import QuillFormsy from '../QuillFormsy';
 import FormsyImageUploader from '../FormsyImageUploader';
 import GoBackButton from '../GoBackButton';
 import { isOwner, getTruncatedText, history } from '../../lib/helpers';
-import {
-  checkForeignNetwork,
-  checkProfile,
-  authenticateIfPossible,
-  checkBalance,
-} from '../../lib/middleware';
+import { checkProfile, authenticateIfPossible } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 
 import DACservice from '../../services/DACService';
@@ -55,8 +49,7 @@ class EditDAC extends Component {
   }
 
   componentDidMount() {
-    checkForeignNetwork(this.props.isCorrectNetwork)
-      .then(() => this.checkUser())
+    this.checkUser()
       .then(() => {
         if (!this.props.isNew) {
           DACservice.get(this.props.match.params.id)
@@ -94,8 +87,6 @@ class EditDAC extends Component {
         if (!this.props.isNew && !isOwner(this.state.dac.ownerAddress, this.props.currentUser))
           history.goBack();
       });
-    } else if (this.props.currentUser && !prevProps.balance.eq(this.props.balance)) {
-      checkBalance(this.props.balance);
     }
   }
 
@@ -121,8 +112,7 @@ class EditDAC extends Component {
           throw new Error('not whitelisted');
         }
       })
-      .then(() => checkProfile(this.props.currentUser))
-      .then(() => checkBalance(this.props.balance));
+      .then(() => checkProfile(this.props.currentUser));
   }
 
   submit() {
@@ -144,35 +134,16 @@ class EditDAC extends Component {
       else React.toast.info(toast);
     };
 
-    const afterMined = (created, url, id) => {
-      const msg = `Your Fund has been ${created ? 'created' : 'updated'}`;
-      showToast(msg, url, true);
-
-      if (created) {
-        GA.trackEvent({
-          category: 'DAC',
-          action: 'created',
-          label: id,
-        });
-      } else {
-        if (this.mounted) this.setState({ isSaving: false });
-        GA.trackEvent({
-          category: 'DAC',
-          action: 'updated',
-          label: id,
-        });
-        history.push(`/dacs/${id}`);
-      }
-    };
-    const afterSave = (err, created, url) => {
+    const afterSave = dac => {
+      const msg = `Your Fund has been saved`;
+      showToast(msg, true);
       if (this.mounted) this.setState({ isSaving: false });
-      if (err) return;
-      const msg = created
-        ? 'The creation of your Fund is pending...'
-        : 'Your Fund is being updated...';
-      showToast(msg, url);
-
-      if (created) history.push('/my-dacs');
+      GA.trackEvent({
+        category: 'DAC',
+        action: 'updated',
+        label: dac.id,
+      });
+      history.push(`/dacs/${dac.id}`);
     };
 
     this.setState(
@@ -182,7 +153,7 @@ class EditDAC extends Component {
       },
       () => {
         // Save the DAC
-        this.state.dac.save(afterSave, afterMined);
+        this.state.dac.save(afterSave);
       },
     );
   }
@@ -342,8 +313,6 @@ class EditDAC extends Component {
 EditDAC.propTypes = {
   currentUser: PropTypes.instanceOf(User),
   isNew: PropTypes.bool,
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
-  isCorrectNetwork: PropTypes.bool.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,

@@ -9,7 +9,6 @@ import ErrorPopup from 'components/ErrorPopup';
 import ConversationModal from 'components/ConversationModal';
 import GA from 'lib/GoogleAnalytics';
 import { checkBalance } from 'lib/middleware';
-import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 
 class CancelMilestoneButton extends Component {
   constructor() {
@@ -89,28 +88,23 @@ class CancelMilestoneButton extends Component {
     const { milestone, currentUser } = this.props;
 
     return (
-      <Web3Consumer>
-        {({ state: { isCorrectNetwork } }) => (
-          <Fragment>
-            {currentUser &&
-              [milestone.reviewerAddress, milestone.ownerAddress].includes(currentUser.address) &&
-              ['InProgress', 'NeedReview'].includes(milestone.status) &&
-              milestone.mined && (
-                <button
-                  type="button"
-                  className="btn btn-danger btn-sm"
-                  onClick={() => this.cancelMilestone()}
-                  disabled={!isCorrectNetwork}
-                >
-                  <i className="fa fa-times" />
-                  &nbsp;Cancel
-                </button>
-              )}
+      <Fragment>
+        {currentUser &&
+          [milestone.reviewerAddress, milestone.ownerAddress].includes(currentUser.address) &&
+          ['InProgress', 'NeedReview'].includes(milestone.status) &&
+          milestone.mined && (
+            <button
+              type="button"
+              className="btn btn-danger btn-sm"
+              onClick={() => this.cancelMilestone()}
+            >
+              <i className="fa fa-times" />
+              &nbsp;Cancel
+            </button>
+          )}
 
-            <ConversationModal ref={this.conversationModal} milestone={milestone} />
-          </Fragment>
-        )}
-      </Web3Consumer>
+        <ConversationModal ref={this.conversationModal} milestone={milestone} />
+      </Fragment>
     );
   }
 }

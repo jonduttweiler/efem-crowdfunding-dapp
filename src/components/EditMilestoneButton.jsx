@@ -6,7 +6,6 @@ import Milestone from 'models/Milestone';
 import User from 'models/User';
 import { checkBalance } from 'lib/middleware';
 import { history } from 'lib/helpers';
-import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 
 class EditMilestoneButton extends Component {
   editMilestone() {
@@ -33,22 +32,17 @@ class EditMilestoneButton extends Component {
     const { milestone, currentUser } = this.props;
 
     return (
-      <Web3Consumer>
-        {({ state: { isCorrectNetwork } }) => (
-          <Fragment>
-            {currentUser &&
-              (milestone.ownerAddress === currentUser.address ||
-                milestone.campaign.ownerAddress === currentUser.address) &&
-              isCorrectNetwork &&
-              ['Proposed', 'Rejected', 'InProgress', 'NeedsReview'].includes(milestone.status) && (
-                <button type="button" className="btn btn-link" onClick={() => this.editMilestone()}>
-                  <i className="fa fa-edit" />
-                  &nbsp;Edit
-                </button>
-              )}
-          </Fragment>
-        )}
-      </Web3Consumer>
+      <Fragment>
+        {currentUser &&
+          (milestone.ownerAddress === currentUser.address ||
+            milestone.campaign.ownerAddress === currentUser.address) &&
+          ['Proposed', 'Rejected', 'InProgress', 'NeedsReview'].includes(milestone.status) && (
+            <button type="button" className="btn btn-link" onClick={() => this.editMilestone()}>
+              <i className="fa fa-edit" />
+              &nbsp;Edit
+            </button>
+          )}
+      </Fragment>
     );
   }
 }
