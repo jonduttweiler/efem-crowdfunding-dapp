@@ -19,6 +19,8 @@
     "formsy-react": "^1.1.4",
     "formsy-react-components": "^1.0.0",
     "giveth-liquidpledging": "2.0.0-beta.4",
+    "lpp-campaign": "2.0.0-beta.0",
+    "lpp-capped-native-milestone": "1.0.0-beta.0",
     "history": "^4.7.2",
     "localforage": "^1.5.0",
     "moment": "^2.19.2",
