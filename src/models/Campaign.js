@@ -70,12 +70,21 @@ class Campaign extends BasicModel {
   }
 
   /**
-   * Save the campaign to feathers and blockchain if necessary
+   * Guarda la campaign en la blockchain.
    *
-   * @param afterSve Callback function once the campaign has been saved to feathers
+   * @param afterSave callback invocado una vez que la campaign
+   * ha sido guardada en la blockchain.
    */
-  save(afterSave) {
-    if (this.newImage) {
+  async save(afterSave) {
+    let imageCid = await IPFSService.upload(this.image);
+    // Save the new image address and mark it as old
+    this.image = imageCid;
+    this.newImage = false;
+    // Se sube en IPFS un JSON con la información de la Campaign.
+    let infoCid = await IPFSService.upload(this.toIpfs());
+    this.infoCid = infoCid;
+    CampaignService.save(this, afterSave);
+    /*if (this.newImage) {
       IPFSService.upload(this.image)
         .then(hash => {
           // Save the new image address and mark it as old
@@ -86,7 +95,7 @@ class Campaign extends BasicModel {
         .finally(() => CampaignService.save(this, afterSave));
     } else {
       CampaignService.save(this, afterSave);
-    }
+    }*/
   }
 
   /**

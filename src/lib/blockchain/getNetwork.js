@@ -1,6 +1,7 @@
-import { LiquidPledging } from 'giveth-liquidpledging';
-import { LPPCampaignFactory } from 'lpp-campaign';
-import { LPPCappedMilestoneFactory } from 'lpp-capped-native-milestone';
+import { Crowdfunding } from '@acdi/efem-crowdfunding';
+//import { LiquidPledging } from 'giveth-liquidpledging';
+//import { LPPCampaignFactory } from 'lpp-campaign';
+//import { LPPCappedMilestoneFactory } from 'lpp-capped-native-milestone';
 
 import getWeb3 from './getWeb3';
 import config from '../../configuration';
@@ -51,12 +52,15 @@ export default async () => {
 
   network = Object.assign({}, config);
 
-  network.liquidPledging = new LiquidPledging(web3, network.liquidPledgingAddress);
-  network.lppCampaignFactory = new LPPCampaignFactory(web3, network.lppCampaignFactoryAddress);
-  network.lppCappedMilestoneFactory = new LPPCappedMilestoneFactory(
+  // Definición de Smart Contract de Crowdfunding
+  network.crowdfunding = new Crowdfunding(web3, network.crowdfundingAddress);
+
+  //network.liquidPledging = new LiquidPledging(web3, network.liquidPledgingAddress);
+  //network.lppCampaignFactory = new LPPCampaignFactory(web3, network.lppCampaignFactoryAddress);
+  /*network.lppCappedMilestoneFactory = new LPPCappedMilestoneFactory(
     web3,
     network.lppCappedMilestoneFactoryAddress,
-  );
+  );*/
 
   network.tokens = {};
   const { tokenWhitelist } = await feathersClient.service('/whitelist').find();

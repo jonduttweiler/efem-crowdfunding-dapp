@@ -178,18 +178,54 @@ class CampaignService {
   }
 
   /**
-   * Save new Campaign to the blockchain or update existing one in feathers
-   * TODO: Handle error states properly
+   * Almacena la nueva campaign en la blockchain o la actualiza.
    *
    * @param campaign    Campaign object to be saved
-   * @param afterSave   Callback to be triggered after the Campaign is saved in feathers
+   * @param afterSave   callback invocado una vez que la campaign
+   * ha sido guardada en la blockchain.
    */
   static async save(campaign, afterSave = () => {}) {
+    let txHash;
+    let etherScanUrl;
     try {
-      if (campaign.id) await campaigns.patch(campaign.id, campaign.toFeathers());
-      else campaign.id = (await campaigns.create(campaign.toFeathers()))._id;
-      afterSave(campaign);
+      const network = await getNetwork();
+      etherScanUrl = network.etherscan;
+      const { crowdfunding } = network;
+      
+      // Temporal hasta que exista la DAC previamente.
+      let receipt = await crowdfunding.newDac(campaign.infoCid,
+        {
+          from: campaign.owner.address,
+          $extraGas: extraGas()
+        });
+      // Temporal hasta que exista la DAC previamente.
+
+      let promiEvent = crowdfunding.newCampaign(
+        campaign.infoCid,
+        //campaign.dacId,
+        1,
+        campaign.reviewerAddress,
+        { 
+          from: campaign.owner.address,
+          $extraGas: extraGas()
+        });
+
+      promiEvent.once('transactionHash', async hash => {
+        txHash = hash;
+        //if (campaign.id) await campaigns.patch(campaign.id, campaign.toFeathers(txHash));
+        //else id = (await campaigns.create(campaign.toFeathers(txHash)))._id;
+        //afterSave(null, !campaign.projectId, `${etherScanUrl}tx/${txHash}`);
+
+        // will be fired once the receipt is mined
+        afterSave(campaign);
+      }).on('error', function(error){ 
+        console.error(`Error procesando tx`, error);
+       })
+      .then(function(receipt){
+          
+      });
     } catch (err) {
+      console.error(`Error creando Campaign`, err);
       ErrorPopup(`Something went wrong with saving the Campaing`);
     }
   }
