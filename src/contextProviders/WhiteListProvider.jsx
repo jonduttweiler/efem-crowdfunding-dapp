@@ -16,6 +16,13 @@ export { Consumer };
  * @return boolean
  *
  */
+/**
+ * TODO:EFEM
+ * A esto deberiamos cambiarlo por una consulta a la blockchain rsk, 
+ * en particular al smart contract de aragon app, preguntando sobre los roles que tiene una determina address 
+ * No se todavía si usa la lista en alguna parte, o simplemente utiliza la siguiente funcion.
+ * Como son funciones de view, no deberian tener costo alguno, pero no se en cuanto tiempo se ejecutan
+ */
 function isInWhitelist(currentUser, whitelist) {
   if (
     (Array.isArray(whitelist) && whitelist.length === 0) ||
@@ -80,8 +87,7 @@ class WhiteListProvider extends Component {
       const campaignManagers = await getUsers(whitelist.projectOwnerWhitelist);
       const reviewers = await getUsers(whitelist.reviewerWhitelist);
 
-      this.setState(
-        {
+      this.setState({
           ...whitelist,
           delegates,
           campaignManagers,

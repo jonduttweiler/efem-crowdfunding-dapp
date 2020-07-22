@@ -5,6 +5,14 @@ import PropTypes from 'prop-types';
 import User from '../models/User';
 import { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProvider';
 
+import OnlyRole from '../components/OnlyRole';
+
+import {
+  CREATE_DAC_ROLE,
+  CREATE_CAMPAIGN_ROLE
+  } from "../constants/Role";
+  
+
 /**
  * The join Giveth community top-bar
  */
@@ -98,19 +106,17 @@ class JoinGivethCommunity extends Component {
       >
         <div className="vertical-align">
           <center>
-            <h3>
-              <br />
-            </h3>
-            {isDelegate(currentUser) && (
+            <h3><br /></h3>
+            <OnlyRole role={CREATE_DAC_ROLE}>
               <button type="button" className="btn btn-info" onClick={() => this.createDAC()}>
                 Create a Fund
               </button>
-            )}
-            {isCampaignManager(currentUser) && (
+            </OnlyRole>
+            <OnlyRole role={CREATE_CAMPAIGN_ROLE}>
               <button type="button" className="btn btn-info" onClick={() => this.createCampaign()}>
                 Start a Campaign
               </button>
-            )}
+            </OnlyRole>
           </center>
         </div>
       </div>
