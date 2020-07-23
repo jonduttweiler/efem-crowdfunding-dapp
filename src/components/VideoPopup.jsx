@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import IPFSService from '../services/IPFSService';
+import IpfsService from '../services/IpfsService';
 import config from '../configuration';
 
 const Label = ({ children }) => (
@@ -109,7 +109,7 @@ class Content extends Component {
         currentState: 'uploading',
       },
       () => {
-        IPFSService.upload(this.state.blob)
+        IpfsService.upload(this.state.blob)
           .then(hash => {
             this.handleExit();
 

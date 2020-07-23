@@ -2,7 +2,7 @@
 
 import BasicModel from './BasicModel';
 import CampaignService from '../services/CampaignService';
-import IPFSService from '../services/IPFSService';
+import IpfsService from '../services/IpfsService';
 import ErrorPopup from '../components/ErrorPopup';
 import { cleanIpfsPath } from '../lib/helpers';
 
@@ -80,19 +80,19 @@ class Campaign extends BasicModel {
    * @param afterSave callback invocado una vez que la campaign
    * ha sido guardada en la blockchain.
    */
-  async save(afterSave) {
-    //let imageCid = await IPFSService.upload(this.image);
+  async save(onLocalSave) {
+    //let imageCid = await IpfsService.upload(this.image);
     // Save the new image address and mark it as old
     //this.image = imageCid;
     //this.newImage = false;
     // Se sube en IPFS un JSON con la información de la Campaign.
-    //let infoCid = await IPFSService.upload(this.toIpfs());
+    //let infoCid = await IpfsService.upload(this.toIpfs());
     //this.infoCid = infoCid;
-    CampaignService.save(this, afterSave, function(){
-      
+    CampaignService.save(this, onLocalSave, function() {
+
     });
     /*if (this.newImage) {
-      IPFSService.upload(this.image)
+      IpfsService.upload(this.image)
         .then(hash => {
           // Save the new image address and mark it as old
           this.image = hash;

@@ -5,7 +5,7 @@ const isIPFS = require('is-ipfs');
 const rp = require('request-promise');
 const url = require('url');
 
-class IPFSService {
+class IpfsService {
   /**
    * Upload a json object or Blob to ipfs
    *
@@ -54,4 +54,4 @@ class IPFSService {
   }
 }
 
-export default IPFSService;
+export default IpfsService;

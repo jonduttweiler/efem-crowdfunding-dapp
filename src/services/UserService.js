@@ -1,7 +1,7 @@
 import { feathersClient } from '../lib/feathersClient';
 
 import ErrorPopup from '../components/ErrorPopup';
-import IPFSService from './IPFSService';
+import IpfsService from './IpfsService';
 
 const users = feathersClient.service('users');
 
@@ -14,7 +14,7 @@ class UserService {
    */
   static async save(user, afterSave = () => {}) {
     try {
-      user.profileHash = await IPFSService.upload(user.toIpfs());
+      user.profileHash = await IpfsService.upload(user.toIpfs());
     } catch (err) {
       ErrorPopup('Failed to upload profile to ipfs');
     }

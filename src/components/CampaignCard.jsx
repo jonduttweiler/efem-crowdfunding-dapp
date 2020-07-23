@@ -39,6 +39,9 @@ class CampaignCard extends Component {
           <div className="card-img" style={{ backgroundImage: `url(${campaign.imageUrl})` }} />
 
           <div className="card-content">
+            <span className="badge badge-secondary">
+              {campaign.status}
+            </span>
             <h4 className="card-title">{getTruncatedText(campaign.title, 40)}</h4>
             <div className="card-text">{campaign.summary}</div>
           </div>

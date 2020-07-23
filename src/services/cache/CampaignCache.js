@@ -1,5 +1,7 @@
-import Campaign from '../models/Campaign';
-
+/**
+ * Cache encargada de mantener los datos de la campaign
+ * localmente en la dapp.
+ */
 class CampaignCache {
 
     constructor() {
@@ -26,6 +28,16 @@ class CampaignCache {
     save(campaign) {
         this.campaigns.push(campaign);
         this.total++;
+    }
+
+    updateByTxHash(campaign) {
+        for (let i = 0; i < this.campaigns.length; i++) {
+            const c = this.campaigns[i];
+            if(c.txHash = campaign.txHash) {
+                this.campaigns[i] = campaign;
+                break;
+            }            
+        }
     }
 }
 

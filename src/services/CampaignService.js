@@ -8,12 +8,12 @@ import { feathersClient } from '../lib/feathersClient';
 import Campaign from '../models/Campaign';
 import Donation from '../models/Donation';
 import ErrorPopup from '../components/ErrorPopup';
-import CampaignCache from './CampaignCache';
-import CrowdfundingBlockchain from './CrowdfundingBlockchain';
+import CampaignCache from './cache/CampaignCache';
+import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 
 const campaigns = feathersClient.service('campaigns');
 const campaignCache = new CampaignCache();
-const crowdfundingBlockchain = new CrowdfundingBlockchain();
+const crowdfundingContractApi = new CrowdfundingContractApi();
 
 class CampaignService {
 
@@ -50,28 +50,10 @@ class CampaignService {
       onSuccess(cacheData.campaigns, cacheData.total);
     } else {
       // Los datos no están cacheados, por lo se utiliza el API.
-      let campaigns = await crowdfundingBlockchain.getCampaigns();
+      let campaigns = await crowdfundingContractApi.getCampaigns();
       let total = campaigns.length;
       campaignCache.setData(campaigns, total);
       onSuccess(campaigns, total);
-      
-      /*return feathersClient
-        .service('campaigns')
-        .find({
-          query: {
-            status: Campaign.ACTIVE,
-            $limit,
-            $skip,
-            $sort: { createdAt: -1 },
-          },
-        })
-        .then(resp => {
-          var campaigns = resp.data.map(c => new Campaign(c));
-          var total = resp.total;
-          campaignCache.setData(campaigns, total);
-          onSuccess(campaigns, total);
-        })
-        .catch(onError);*/
     }    
   }
 
@@ -200,15 +182,15 @@ class CampaignService {
   }
 
   /**
-   * Almacena la nueva campaign en la blockchain o la actualiza.
+   * Almacena la nueva campaign de manera local y en un storage remoto.
    *
    * @param campaign    Campaign object to be saved
-   * @param afterSave   callback invocado una vez que la campaign
-   * ha sido guardada en la blockchain.
+   * @param onSaveLocal invocado una vez que la campaign ha sido almacenada localmente.
+   * @param onSaveRemote invocado una vez que la campaign ha sido almacenada remotamente.
    */
   static async save(campaign, onSaveLocal = () => {}, onSaveRemote = () => {}) {
 
-    await crowdfundingBlockchain.saveCampaign(
+    await crowdfundingContractApi.saveCampaign(
       campaign,
       // Guardado local
       function(campaign) {
@@ -217,6 +199,7 @@ class CampaignService {
       },
       // Confirmación de guardado Remoto
       function(campaign) {
+        campaignCache.updateByTxHash(campaign);
         onSaveRemote(campaign);
       },
       function(error) {

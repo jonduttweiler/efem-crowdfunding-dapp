@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import BasicModel from './BasicModel';
 import DACService from '../services/DACService';
-import IPFSService from '../services/IPFSService';
+import IpfsService from '../services/IpfsService';
 import ErrorPopup from '../components/ErrorPopup';
 import { cleanIpfsPath } from '../lib/helpers';
 
@@ -60,7 +60,7 @@ class DAC extends BasicModel {
 
   save(afterSave) {
     if (this.newImage) {
-      IPFSService.upload(this.image)
+      IpfsService.upload(this.image)
         .then(hash => {
           // Save the new image address and mark it as old
           this.image = hash;

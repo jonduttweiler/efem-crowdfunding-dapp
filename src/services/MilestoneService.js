@@ -13,7 +13,7 @@ import getNetwork from 'lib/blockchain/getNetwork';
 import getWeb3 from 'lib/blockchain/getWeb3';
 import extraGas from 'lib/blockchain/extraGas';
 import DonationService from 'services/DonationService';
-import IPFSService from './IPFSService';
+import IpfsService from './IpfsService';
 import ErrorPopup from '../components/ErrorPopup';
 
 import Donation from '../models/Donation';

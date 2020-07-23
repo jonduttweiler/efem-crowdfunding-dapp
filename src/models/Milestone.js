@@ -5,7 +5,7 @@ import { getStartOfDayUTC, cleanIpfsPath } from 'lib/helpers';
 import BasicModel from './BasicModel';
 import MilestoneItemModel from './MilestoneItem';
 import MilestoneService from '../services/MilestoneService';
-import IPFSService from '../services/IPFSService';
+import IpfsService from '../services/IpfsService';
 
 /**
  * The DApp Milestone model
@@ -110,7 +110,7 @@ export default class MilestoneModel extends BasicModel {
    */
   save(afterSave, onError) {
     if (this.newImage) {
-      IPFSService.upload(this.image)
+      IpfsService.upload(this.image)
         .then(hash => {
           // Save the new image address and mark it as old
           this.image = hash;

@@ -1,5 +1,5 @@
 import Model from './Model';
-import IPFSService from '../services/IPFSService';
+import IpfsService from '../services/IpfsService';
 import UserService from '../services/UserService';
 import ErrorPopup from '../components/ErrorPopup';
 import { cleanIpfsPath } from '../lib/helpers';
@@ -64,7 +64,7 @@ class User extends Model {
 
   save(onSave) {
     if (this._newAvatar) {
-      IPFSService.upload(this._newAvatar)
+      IpfsService.upload(this._newAvatar)
         .then(hash => {
           // Save the new avatar
           this._avatar = hash;
