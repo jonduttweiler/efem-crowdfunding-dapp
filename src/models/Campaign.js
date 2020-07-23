@@ -18,6 +18,10 @@ class Campaign extends BasicModel {
     return 'Active';
   }
 
+  static get PENDING() {
+    return 'Pending';
+  }
+
   static get type() {
     return 'campaign';
   }
@@ -35,6 +39,7 @@ class Campaign extends BasicModel {
     this.reviewerAddress = data.reviewerAddress;
     this.ownerAddress = data.ownerAddress;
     this.commitTime = data.commitTime || 0;
+    this.imageUrl = data.imageUrl;
   }
 
   toIpfs() {
@@ -76,14 +81,16 @@ class Campaign extends BasicModel {
    * ha sido guardada en la blockchain.
    */
   async save(afterSave) {
-    let imageCid = await IPFSService.upload(this.image);
+    //let imageCid = await IPFSService.upload(this.image);
     // Save the new image address and mark it as old
-    this.image = imageCid;
-    this.newImage = false;
+    //this.image = imageCid;
+    //this.newImage = false;
     // Se sube en IPFS un JSON con la información de la Campaign.
-    let infoCid = await IPFSService.upload(this.toIpfs());
-    this.infoCid = infoCid;
-    CampaignService.save(this, afterSave);
+    //let infoCid = await IPFSService.upload(this.toIpfs());
+    //this.infoCid = infoCid;
+    CampaignService.save(this, afterSave, function(){
+      
+    });
     /*if (this.newImage) {
       IPFSService.upload(this.image)
         .then(hash => {

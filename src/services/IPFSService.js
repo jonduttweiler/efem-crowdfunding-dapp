@@ -1,6 +1,10 @@
 import config from '../configuration';
 import ImageTools from '../lib/ImageResizer';
 
+const isIPFS = require('is-ipfs');
+const rp = require('request-promise');
+const url = require('url');
+
 class IPFSService {
   /**
    * Upload a json object or Blob to ipfs
@@ -31,6 +35,21 @@ class IPFSService {
     }).then(res => {
       if (res.ok) return `/ipfs/${res.headers.get('Ipfs-Hash')}`;
       throw new Error('IPFS upload unsuccessful', res);
+    });
+  }
+
+  static resolveUrl(path) {
+    const { ipfsGateway } = config;
+    if (!isIPFS.path(path)) throw new Error(`${path} is not a valid ipfs path`);
+    return url.resolve(ipfsGateway, path);
+  }
+  
+  static download(path) {
+    const { ipfsGateway } = config;
+    if (!isIPFS.path(path)) throw new Error(`${path} is not a valid ipfs path`);
+    return rp({
+      uri: url.resolve(ipfsGateway, path),
+      json: true,
     });
   }
 }

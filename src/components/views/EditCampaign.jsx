@@ -36,6 +36,7 @@ class EditCampaign extends Component {
       // Campaign model
       campaign: new Campaign({
         owner: props.currentUser,
+        status: Campaign.PENDING
       }),
       isBlocking: false,
     };
@@ -113,7 +114,8 @@ class EditCampaign extends Component {
   submit() {
     const afterSave = campaign => {
       React.toast.success('Your Campaign has been saved!');
-      history.push(`/campaigns/${campaign.id}`);
+      //history.push(`/campaigns/${campaign.id}`);
+      history.push(`/`);
     };
 
     this.setState(

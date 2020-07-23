@@ -8,10 +8,17 @@ import { feathersClient } from '../lib/feathersClient';
 import Campaign from '../models/Campaign';
 import Donation from '../models/Donation';
 import ErrorPopup from '../components/ErrorPopup';
+import CampaignCache from './CampaignCache';
+import CrowdfundingBlockchain from './CrowdfundingBlockchain';
 
 const campaigns = feathersClient.service('campaigns');
+const campaignCache = new CampaignCache();
+const crowdfundingBlockchain = new CrowdfundingBlockchain();
 
 class CampaignService {
+
+
+
   /**
    * Get a Campaign defined by ID
    *
@@ -36,21 +43,36 @@ class CampaignService {
    * @param onSuccess Callback function once response is obtained successfylly
    * @param onError   Callback function if error is encountered
    */
-  static getCampaigns($limit = 100, $skip = 0, onSuccess = () => {}, onError = () => {}) {
-    return feathersClient
-      .service('campaigns')
-      .find({
-        query: {
-          status: Campaign.ACTIVE,
-          $limit,
-          $skip,
-          $sort: { createdAt: -1 },
-        },
-      })
-      .then(resp => {
-        onSuccess(resp.data.map(c => new Campaign(c)), resp.total);
-      })
-      .catch(onError);
+  static async getCampaigns($limit = 100, $skip = 0, onSuccess = () => {}, onError = () => {}) {
+    var cacheData = campaignCache.getData();
+    if(cacheData != null) {
+      // Los datos permanecen cacheados, por lo se retornan sin utilizar el API.
+      onSuccess(cacheData.campaigns, cacheData.total);
+    } else {
+      // Los datos no están cacheados, por lo se utiliza el API.
+      let campaigns = await crowdfundingBlockchain.getCampaigns();
+      let total = campaigns.length;
+      campaignCache.setData(campaigns, total);
+      onSuccess(campaigns, total);
+      
+      /*return feathersClient
+        .service('campaigns')
+        .find({
+          query: {
+            status: Campaign.ACTIVE,
+            $limit,
+            $skip,
+            $sort: { createdAt: -1 },
+          },
+        })
+        .then(resp => {
+          var campaigns = resp.data.map(c => new Campaign(c));
+          var total = resp.total;
+          campaignCache.setData(campaigns, total);
+          onSuccess(campaigns, total);
+        })
+        .catch(onError);*/
+    }    
   }
 
   /**
@@ -184,50 +206,22 @@ class CampaignService {
    * @param afterSave   callback invocado una vez que la campaign
    * ha sido guardada en la blockchain.
    */
-  static async save(campaign, afterSave = () => {}) {
-    let txHash;
-    let etherScanUrl;
-    try {
-      const network = await getNetwork();
-      etherScanUrl = network.etherscan;
-      const { crowdfunding } = network;
-      
-      // Temporal hasta que exista la DAC previamente.
-      let receipt = await crowdfunding.newDac(campaign.infoCid,
-        {
-          from: campaign.owner.address,
-          $extraGas: extraGas()
-        });
-      // Temporal hasta que exista la DAC previamente.
+  static async save(campaign, onSaveLocal = () => {}, onSaveRemote = () => {}) {
 
-      let promiEvent = crowdfunding.newCampaign(
-        campaign.infoCid,
-        //campaign.dacId,
-        1,
-        campaign.reviewerAddress,
-        { 
-          from: campaign.owner.address,
-          $extraGas: extraGas()
-        });
-
-      promiEvent.once('transactionHash', async hash => {
-        txHash = hash;
-        //if (campaign.id) await campaigns.patch(campaign.id, campaign.toFeathers(txHash));
-        //else id = (await campaigns.create(campaign.toFeathers(txHash)))._id;
-        //afterSave(null, !campaign.projectId, `${etherScanUrl}tx/${txHash}`);
-
-        // will be fired once the receipt is mined
-        afterSave(campaign);
-      }).on('error', function(error){ 
-        console.error(`Error procesando tx`, error);
-       })
-      .then(function(receipt){
-          
+    await crowdfundingBlockchain.saveCampaign(
+      campaign,
+      // Guardado local
+      function(campaign) {
+        campaignCache.save(campaign);
+        onSaveLocal(campaign);
+      },
+      // Confirmación de guardado Remoto
+      function(campaign) {
+        onSaveRemote(campaign);
+      },
+      function(error) {
+        ErrorPopup(`Something went wrong with saving the Campaing`);
       });
-    } catch (err) {
-      console.error(`Error creando Campaign`, err);
-      ErrorPopup(`Something went wrong with saving the Campaing`);
-    }
   }
 
   /**
