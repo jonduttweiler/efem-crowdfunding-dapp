@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Consumer as RoleConsumer } from "../contextProviders/RoleProvider";
 
-//TODO: definir role como algo requerido con propTypes
+
 //TODO: considerar multiples roles
 export default class OnlyRole extends Component {
 
