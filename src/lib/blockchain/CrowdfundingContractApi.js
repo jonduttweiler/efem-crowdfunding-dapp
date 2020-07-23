@@ -14,6 +14,31 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Obtiene la Campaign a partir del ID especificado.
+     * 
+     * @param {*} id de la campaign a obtener.
+     * @returns campaign cuyo Id coincide con el especificado.
+     */
+    async getCampaign(id) {
+        var crowdfunding = await this.getCrowdfunding();
+        var campaignOnChain = await crowdfunding.getCampaign(id);
+        // Se obtiene la información de la Campaign desde IPFS.
+        var info = await IpfsService.download(campaignOnChain.infoCid);
+        return new Campaign({
+            _id: campaignOnChain.id,
+            title: info.title,
+            description: info.description,
+            image: info.image,
+            imageUrl: IpfsService.resolveUrl(info.image),
+            communityUrl: info.communityUrl,
+            status: this.mapCampaingStatus(campaignOnChain.status),
+            reviewerAddress: campaignOnChain.reviewer,
+            ownerAddress: campaignOnChain.manager,
+            commitTime: 0
+        });
+    }
+
+    /**
      * Obtiene todas las Campaigns desde el Smart Contract.
      */
     async getCampaigns() {
@@ -21,21 +46,8 @@ class CrowdfundingContractApi {
         let ids = await crowdfunding.getCampaignIds();
         let campaigns = [];
         for (let i = 0; i < ids.length; i++) {
-            var campaignOnChain = await crowdfunding.getCampaign(ids[i]);
-            // Se obtiene la información de la Campaign desde IPFS.
-            var info = await IpfsService.download(campaignOnChain.infoCid);
-            campaigns.push(new Campaign({
-                _id: campaignOnChain.id,
-                title: info.title,
-                description: info.description,
-                image: info.image,
-                imageUrl: IpfsService.resolveUrl(info.image),
-                communityUrl: info.communityUrl,
-                status: this.mapCampaingStatus(campaignOnChain.status),
-                reviewerAddress: campaignOnChain.reviewer,
-                ownerAddress: campaignOnChain.manager,
-                commitTime: 0
-            }));
+            var campaign = await this.getCampaign(ids[i]);
+            campaigns.push(campaign);
         }
         return campaigns;
     }

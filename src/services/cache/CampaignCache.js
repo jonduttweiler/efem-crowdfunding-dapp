@@ -9,6 +9,15 @@ class CampaignCache {
         this.total = 0;
     }
 
+    getById(id) {
+        for (let i = 0; i < this.campaigns.length; i++) {
+            const campaign = this.campaigns[i];
+            if(campaign.id = id) {
+                return campaign;
+            }            
+        }
+    }
+
     getData() {
         if (this.campaigns == null) {
             return null;

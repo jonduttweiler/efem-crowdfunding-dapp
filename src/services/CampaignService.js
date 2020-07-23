@@ -26,12 +26,20 @@ class CampaignService {
    */
   static get(id) {
     return new Promise((resolve, reject) => {
-      campaigns
+      var campaign = campaignCache.getById(id);
+      if(campaign != null) {
+        resolve(campaign);
+      } else {
+        crowdfundingContractApi.getCampaign(id).then(campaign => {
+          resolve(campaign);
+        });
+      }
+      /*campaigns
         .find({ query: { _id: id } })
         .then(resp => {
           resolve(new Campaign(resp.data[0]));
         })
-        .catch(reject);
+        .catch(reject);*/
     });
   }
 
