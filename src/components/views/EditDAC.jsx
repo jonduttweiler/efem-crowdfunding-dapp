@@ -16,7 +16,8 @@ import DACservice from '../../services/DACService';
 import DAC from '../../models/DAC';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
-import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
+import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
+import { CREATE_DAC_ROLE } from '../../constants/Role';
 
 /**
  * View to create or edit a DAC
@@ -108,7 +109,7 @@ class EditDAC extends Component {
 
     return authenticateIfPossible(this.props.currentUser)
       .then(() => {
-        if (!this.props.isDelegate(this.props.currentUser)) {
+        if (!this.props.isDelegate) { //(this.props.currentUser)
           throw new Error('not whitelisted');
         }
       })
@@ -318,7 +319,7 @@ EditDAC.propTypes = {
       id: PropTypes.string,
     }).isRequired,
   }).isRequired,
-  isDelegate: PropTypes.func.isRequired,
+  isDelegate: PropTypes.bool.isRequired,
 };
 
 EditDAC.defaultProps = {
@@ -328,8 +329,16 @@ EditDAC.defaultProps = {
 
 export default function EdtDAC(props) {
   return (
-    <WhiteListConsumer>
-      {({ actions: { isDelegate } }) => <EditDAC {...props} isDelegate={isDelegate} />}
-    </WhiteListConsumer>
+    <RoleConsumer>
+      { roles => {
+          if(roles.includes(CREATE_DAC_ROLE)){
+              return <EditDAC {...props} isDelegate={true} />;
+          } else {
+            console.log("Not allowed. CREATE_DAC_ROLE required - Redirect to home");
+            props.history.push("/");
+            return;
+          }
+      }}
+    </RoleConsumer>
   );
 }

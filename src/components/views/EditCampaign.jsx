@@ -16,7 +16,12 @@ import User from '../../models/User';
 import Campaign from '../../models/Campaign';
 import CampaignService from '../../services/CampaignService';
 import ErrorPopup from '../ErrorPopup';
-import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
+
+import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
+import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
+import { CREATE_CAMPAIGN_ROLE } from '../../constants/Role';
+
+/**
 
 /**
  * View to create or edit a Campaign
@@ -103,7 +108,7 @@ class EditCampaign extends Component {
 
     return authenticateIfPossible(this.props.currentUser)
       .then(() => {
-        if (!this.props.isCampaignManager(this.props.currentUser)) {
+        if (!this.props.isCampaignManager) {
           throw new Error('not whitelisted');
         }
       })
@@ -295,7 +300,7 @@ EditCampaign.propTypes = {
       id: PropTypes.string,
     }).isRequired,
   }).isRequired,
-  isCampaignManager: PropTypes.func.isRequired,
+  isCampaignManager: PropTypes.bool,
   reviewers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
@@ -306,10 +311,28 @@ EditCampaign.defaultProps = {
 
 export default function EditCmpn(props) {
   return (
-    <WhiteListConsumer>
-      {({ state: { reviewers }, actions: { isCampaignManager } }) => (
-        <EditCampaign reviewers={reviewers} isCampaignManager={isCampaignManager} {...props} />
-      )}
-    </WhiteListConsumer>
+    <RoleConsumer>
+      {
+        roles => {
+          if (roles.includes(CREATE_CAMPAIGN_ROLE)) {
+            return (
+              <RolesListProvider>
+                <RolesListConsumer>
+                  { ({ reviewers }) => <EditCampaign {...props} reviewers={reviewers} isCampaignManager={true} />}
+                </RolesListConsumer>
+              </RolesListProvider>
+
+            );
+          } else {
+            //TODO: No es del todo correcto hacer la redireción acá. Quizas tendriamos
+            //que mostrar una pantalla diciendole que no tiene permisos y la posibilidad 
+            //de volver al home
+            console.log("Not allowed. CREATE_CAMPAIGN_ROLE required - Redirect to home");
+            props.history.push("/");
+            return null;
+          }
+        }
+      }
+    </RoleConsumer>
   );
 }
