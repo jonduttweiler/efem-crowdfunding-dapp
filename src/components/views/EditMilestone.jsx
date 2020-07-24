@@ -19,6 +19,11 @@ import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
 
 import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
+import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
+import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
+import { CREATE_MILESTONE_ROLE } from '../../constants/Role';
+
+
 import MilestoneService from '../../services/MilestoneService';
 import CampaignService from '../../services/CampaignService';
 
@@ -178,7 +183,7 @@ class EditMilestone extends Component {
         if (
           this.props.isNew &&
           !this.props.isProposed &&
-          !this.props.isCampaignManager(this.props.currentUser)
+          !this.props.isCampaignManager/* (this.props.currentUser) */
         ) {
           throw new Error('not whitelisted');
         }
@@ -496,7 +501,7 @@ EditMilestone.propTypes = {
     }).isRequired,
   }).isRequired,
   fiatTypes: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isCampaignManager: PropTypes.func.isRequired,
+  isCampaignManager: PropTypes.bool,
   reviewers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   tokenWhitelist: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
@@ -508,17 +513,39 @@ EditMilestone.defaultProps = {
 };
 
 const wrapper = props => (
-  <WhiteListConsumer>
-    {({ state: { tokenWhitelist, fiatWhitelist, reviewers }, actions: { isCampaignManager } }) => (
-      <EditMilestone
-        tokenWhitelist={tokenWhitelist}
-        fiatTypes={fiatWhitelist.map(f => ({ value: f, title: f }))}
-        reviewers={reviewers}
-        isCampaignManager={isCampaignManager}
-        {...props}
-      />
-    )}
-  </WhiteListConsumer>
+  <RoleConsumer>
+    {roles => {
+      if (roles.includes(CREATE_MILESTONE_ROLE)) {
+        return (
+          <RolesListProvider>
+            <RolesListConsumer>
+              {({ reviewers }) => (
+                <WhiteListConsumer>
+                  {({ state: { tokenWhitelist, fiatWhitelist } }) => (
+                    <EditMilestone
+                      {...props}
+                      tokenWhitelist={tokenWhitelist}
+                      fiatTypes={fiatWhitelist.map(f => ({ value: f, title: f }))}
+                      reviewers={reviewers}
+                      isCampaignManager={roles.includes(CREATE_MILESTONE_ROLE)/* isCampaignManager es lo mismo?*/}
+                    />
+                  )}
+                </WhiteListConsumer>
+              )}
+            </RolesListConsumer>
+          </RolesListProvider>
+        )
+      } else {
+        //TODO: No es del todo correcto hacer la redireción acá. Quizas tendriamos
+        //que mostrar una pantalla diciendole que no tiene permisos y la posibilidad 
+        //de volver al home
+        console.log("Not allowed. CREATE_CAMPAIGN_ROLE required - Redirect to home");
+        props.history.push("/");
+        return null;
+      }
+    }}
+  </RoleConsumer>
+
 );
 
 export default wrapper;
