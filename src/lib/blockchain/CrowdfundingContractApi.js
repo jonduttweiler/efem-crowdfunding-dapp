@@ -1,3 +1,4 @@
+import DAC from '../../models/DAC';
 import Campaign from '../../models/Campaign';
 import getNetwork from './getNetwork';
 import IpfsService from '../../services/IpfsService';
@@ -25,6 +26,71 @@ class CrowdfundingContractApi {
             console.log(err);
             return false;
         }
+    }
+    
+    /**
+     * Almacena una DAC en el smart contract
+     * @param {} DAC
+     * @param {*} onCreateTransaction 
+     * @param {*} onConfirmation 
+     * @param {*} onError
+     */
+    async saveDAC(dac,onCreateTransaction,onConfirmation,onError){
+        const imageCid = await IpfsService.upload(dac.image);
+        dac.image = imageCid;
+        dac.imageUrl = IpfsService.resolveUrl(imageCid);
+        
+        // Se almacena en IPFS toda la información de la dac.
+        let infoCid = await IpfsService.upload(dac.toIpfs());
+        dac.infoCid = infoCid;
+        
+        const crowdfunding = await this.getCrowdfunding(); //Esto puede ponerse como variable de instancia??
+
+        const promiEvent = crowdfunding.newDac(
+            dac.infoCid,
+            1,
+            dac.reviewerAddress,
+            {from: dac.owner.address,$extraGas: extraGas()});
+
+        promiEvent
+            .once('transactionHash', function (hash) {
+                dac.txHash = hash;
+                onCreateTransaction(dac);
+            })
+            .once('confirmation', function (confNumber, receipt) {
+                onConfirmation(dac);
+            })
+            .on('error', function (error) {
+                console.error(`Error procesando transacción en Smart Contract`, error);
+                onError(error);
+            });
+    }
+
+
+    /**
+     * Obtiene la Dac a partir del ID especificado.
+     * 
+     * @param {*} id de la Dac a obtener.
+     * @returns Dac cuyo Id coincide con el especificado.
+     */
+    async getDAC(id) {
+        const crowdfunding = await this.getCrowdfunding();
+        const dacOnChain = await crowdfunding.getDac(id);
+        // Se obtiene la información de la Dac desde IPFS.
+        const { id: _id, infoCid, status, delegate } = dacOnChain;
+        const { title, description, image, communityUrl } = await IpfsService.download(infoCid);
+
+        return new DAC({
+            _id,
+            title,
+            description,
+            image,
+            imageUrl: IpfsService.resolveUrl(image),
+            communityUrl,
+            status: this.mapDACStatus(status),
+            ownerAddress: delegate,
+            commitTime: 0
+        });
     }
 
     /**
@@ -75,9 +141,8 @@ class CrowdfundingContractApi {
      * @param {*} onError  callback invocado por la ocurrencia de un error.
      */
     async saveCampaign(campaign, onCreateTransaction, onConfirmation, onError) {
-        try {
+        try {           
             var crowdfunding = await this.getCrowdfunding();
-
             // Se almacena en IPFS la imagen de la Campaign.
             let imageCid = await IpfsService.upload(campaign.image);
             campaign.image = imageCid;
@@ -123,6 +188,23 @@ class CrowdfundingContractApi {
             onError(error);
         }
     }
+
+
+
+    /**
+     * Realiza el mapping de los estados de las dac en el
+     * smart contract con los estados en la dapp.
+     * 
+     * @param status de la dac en el smart contract.
+     * @returns estado de la dac en la dapp.
+     */
+    mapDACStatus(status) {
+        switch(status){
+            case 0: return DAC.ACTIVE;
+            case 1: return DAC.CANCELED;   
+        }
+    }
+
 
     /**
      * Realiza el mapping de los estados de las campaign en el

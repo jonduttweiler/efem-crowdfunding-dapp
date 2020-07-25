@@ -1,8 +1,5 @@
-/* eslint-disable import/no-cycle */
 import BasicModel from './BasicModel';
 import DACService from '../services/DACService';
-import IpfsService from '../services/IpfsService';
-import ErrorPopup from '../components/ErrorPopup';
 import { cleanIpfsPath } from '../lib/helpers';
 
 /**
@@ -16,6 +13,11 @@ class DAC extends BasicModel {
   static get ACTIVE() {
     return 'Active';
   }
+
+  static get PENDING() {
+    return 'Pending';
+  }
+
 
   static get type() {
     return 'dac';
@@ -58,19 +60,15 @@ class DAC extends BasicModel {
     return dac;
   }
 
-  save(afterSave) {
-    if (this.newImage) {
-      IpfsService.upload(this.image)
-        .then(hash => {
-          // Save the new image address and mark it as old
-          this.image = hash;
-          this.newImage = false;
-        })
-        .catch(err => ErrorPopup('Failed to upload image', err))
-        .finally(() => DACService.save(this, afterSave));
-    } else {
-      DACService.save(this, afterSave);
-    }
+
+ /**
+   * Guarda la DAC en la blockchain.
+   *
+   * @param afterSave callback invocado una vez que la DAC
+   * ha sido guardada en la blockchain.
+   */
+  save(onLocalSave) {
+    DACService.save(this, onLocalSave, _ => { });
   }
 
   get communityUrl() {

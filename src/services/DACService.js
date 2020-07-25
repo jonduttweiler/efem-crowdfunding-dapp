@@ -8,6 +8,12 @@ import Donation from '../models/Donation';
 
 import ErrorPopup from '../components/ErrorPopup';
 
+import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
+import DacCache from './cache/DacCache';
+
+const crowdfundingContractApi = new CrowdfundingContractApi();
+const dacCache = new DacCache();
+
 BigNumber.config({ DECIMAL_PLACES: 18 });
 
 const dacs = feathersClient.service('dacs');
@@ -20,16 +26,22 @@ class DACService {
    */
   static get(id) {
     return new Promise((resolve, reject) => {
-      dacs
-        .find({
-          query: {
-            _id: id,
-          },
-        })
+      const cached = dacCache.getById(id);
+      if(cached){
+        resolve(cached);
+      } else {
+        crowdfundingContractApi.get(id).then(campaign => {
+          resolve(campaign);
+        });
+      }
+
+
+
+      /* dacs.find({query: {_id: id,},})
         .then(resp => {
           resolve(new DAC(resp.data[0]));
         })
-        .catch(err => reject(err));
+        .catch(err => reject(err)); */
     });
   }
 
@@ -208,6 +220,32 @@ class DACService {
       ErrorPopup('Something went wrong with saving your DAC');
       afterSave(err);
     }
+  }
+
+    /**
+   * Almacena la nueva campaign de manera local y en un storage remoto.
+   *
+   * @param campaign    Campaign object to be saved
+   * @param onSaveLocal invocado una vez que la campaign ha sido almacenada localmente.
+   * @param onSaveRemote invocado una vez que la campaign ha sido almacenada remotamente.
+   */
+  static async save(dac, onSaveLocal = () => {}, onSaveRemote = () => {}) {
+
+    await crowdfundingContractApi.saveDAC(
+      dac,
+      // Guardado local
+      function(dac) {
+        dacCache.save(dac);
+        onSaveLocal(dac);
+      },
+      // Confirmación de guardado Remoto
+      function(dac) {
+        dacCache.updateByTxHash(dac);
+        onSaveRemote(dac);
+      },
+      function(error) {
+        ErrorPopup(`Something went wrong with saving the DAC`);
+      });
   }
 }
 
