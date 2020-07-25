@@ -144,7 +144,7 @@ class Application extends Component {
                               <UserProvider account={account} onLoaded={this.userLoaded}>
                                 <UserConsumer>
                                   {({ state: { currentUser, hasError } }) => (
-                                    <RoleProvider>
+                                    <RoleProvider account = {account}>
                                       <Router history={history}>
                                         <div>
                                           {GA.init() && <GA.RouteTracker />}

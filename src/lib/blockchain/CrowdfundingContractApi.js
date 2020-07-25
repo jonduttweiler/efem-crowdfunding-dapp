@@ -3,6 +3,7 @@ import getNetwork from './getNetwork';
 import IpfsService from '../../services/IpfsService';
 import { cleanIpfsPath } from '../helpers';
 import extraGas from './extraGas';
+import web3 from 'web3';
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -11,6 +12,19 @@ class CrowdfundingContractApi {
 
     constructor() {
 
+    }
+
+
+    async canPerformRole(address, role) {
+        try {
+            const crowdfunding = await this.getCrowdfunding();
+            const hashedRole = web3.utils.keccak256(role); 
+            return await crowdfunding.canPerform(address, hashedRole, []);;
+        } catch (err) {
+            console.log("Fail to invoke canPerform on smart contract");
+            console.log(err);
+            return false;
+        }
     }
 
     /**
