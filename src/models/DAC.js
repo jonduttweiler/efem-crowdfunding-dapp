@@ -14,11 +14,6 @@ class DAC extends BasicModel {
     return 'Active';
   }
 
-  static get PENDING() {
-    return 'Pending';
-  }
-
-
   static get type() {
     return 'dac';
   }

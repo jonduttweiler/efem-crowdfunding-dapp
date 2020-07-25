@@ -205,29 +205,12 @@ class DACService {
       }, onError);
   }
 
-  /**
-   * Save new DAC to the blockchain or update existing one in feathers
-   *
-   * @param dac         DAC object to be saved
-   * @param afterSave   Callback to be triggered after the DAC is saved in feathers
-   */
-  static async save(dac, afterSave = () => {}) {
-    try {
-      if (dac.id) await dacs.patch(dac.id, dac.toFeathers());
-      else dac.id = (await dacs.create(dac.toFeathers()))._id;
-      afterSave(dac);
-    } catch (err) {
-      ErrorPopup('Something went wrong with saving your DAC');
-      afterSave(err);
-    }
-  }
-
     /**
-   * Almacena la nueva campaign de manera local y en un storage remoto.
+   * Almacena la nueva dac de manera local y en un storage remoto.
    *
-   * @param campaign    Campaign object to be saved
-   * @param onSaveLocal invocado una vez que la campaign ha sido almacenada localmente.
-   * @param onSaveRemote invocado una vez que la campaign ha sido almacenada remotamente.
+   * @param dac    DAC object to be saved
+   * @param onSaveLocal invocado una vez que la dac ha sido almacenada localmente.
+   * @param onSaveRemote invocado una vez que la dac ha sido almacenada remotamente.
    */
   static async save(dac, onSaveLocal = () => {}, onSaveRemote = () => {}) {
 

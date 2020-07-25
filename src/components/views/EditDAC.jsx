@@ -31,15 +31,14 @@ class EditDAC extends Component {
   constructor(props) {
     super(props);
 
+    // DAC model
+    const dac = new DAC({ owner: props.currentUser });
+
     this.state = {
       isLoading: true,
       isSaving: false,
       formIsValid: false,
-
-      // DAC model
-      dac: new DAC({
-        owner: props.currentUser,
-      }),
+      dac: dac,
       isBlocking: false,
     };
 
@@ -50,35 +49,36 @@ class EditDAC extends Component {
   }
 
   componentDidMount() {
-    this.checkUser()
-      .then(() => {
-        if (!this.props.isNew) {
-          DACservice.get(this.props.match.params.id)
-            .then(dac => {
-              // The user is not an owner, hence can not change the DAC
-              if (!isOwner(dac.ownerAddress, this.props.currentUser)) {
-                // TODO: Not really user friendly
-                history.goBack();
-              } else {
-                this.setState({ isLoading: false, dac });
-              }
-            })
-            .catch(err => {
-              ErrorPopup(
-                'Sadly we were unable to load the Fund. Please refresh the page and try again.',
-                err,
-              );
-            });
-        } else {
-          this.setState({ isLoading: false });
-        }
-      })
-      .catch(err => {
-        ErrorPopup(
-          'There has been a problem loading the Fund. Please refresh the page and try again.',
-          err,
-        );
-      });
+    
+    this.checkUser().then(() => {
+      
+      if (!this.props.isNew) {
+        const dacId = this.props.match.params.id;
+
+        DACservice.get(dacId).then(dac => {
+          // The user is not an owner, hence can not change the DAC
+          if (!isOwner(dac.ownerAddress, this.props.currentUser)) {
+            // TODO: Not really user friendly
+            history.goBack();
+          } else {
+            this.setState({ isLoading: false, dac });
+          }
+        })
+          .catch(err => {
+            ErrorPopup(
+              'Sadly we were unable to load the Fund. Please refresh the page and try again.',
+              err,
+            );
+          });
+      } else {
+        this.setState({ isLoading: false });
+      }
+    }).catch(err => {
+      ErrorPopup(
+        'There has been a problem loading the Fund. Please refresh the page and try again.',
+        err,
+      );
+    });
     this.mounted = true;
   }
 
@@ -102,7 +102,7 @@ class EditDAC extends Component {
   }
 
   checkUser() {
-    if (!this.props.currentUser) {
+    if (!this.props.currentUser) { //Si no hay nadie logeado?
       history.push('/');
       return Promise.reject();
     }
@@ -147,17 +147,12 @@ class EditDAC extends Component {
       history.push(`/dacs/${dac.id}`);
     };
 
-    this.setState(
-      {
-        isSaving: true,
-        isBlocking: false,
-      },
-      () => {
-        // Save the DAC
-        this.state.dac.save(afterSave);
+    this.setState({ isSaving: true, isBlocking: false, }, () => {
+        const dac = this.state.dac;
+        dac.save(afterSave);// Save the DAC
       },
     );
-  }
+  } //End save 
 
   toggleFormValid(state) {
     this.setState({ formIsValid: state });

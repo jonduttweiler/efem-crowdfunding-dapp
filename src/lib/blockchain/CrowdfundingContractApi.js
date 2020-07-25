@@ -36,21 +36,18 @@ class CrowdfundingContractApi {
      * @param {*} onError
      */
     async saveDAC(dac,onCreateTransaction,onConfirmation,onError){
-        const imageCid = await IpfsService.upload(dac.image);
-        dac.image = imageCid;
-        dac.imageUrl = IpfsService.resolveUrl(imageCid);
-        
-        // Se almacena en IPFS toda la información de la dac.
-        let infoCid = await IpfsService.upload(dac.toIpfs());
-        dac.infoCid = infoCid;
-        
         const crowdfunding = await this.getCrowdfunding(); //Esto puede ponerse como variable de instancia??
 
-        const promiEvent = crowdfunding.newDac(
-            dac.infoCid,
-            1,
-            dac.reviewerAddress,
-            {from: dac.owner.address,$extraGas: extraGas()});
+        console.log("Saving dac on CrowdfundingContractApi");
+
+        // Se almacena en IPFS toda la información de la dac.
+        dac.image = await IpfsService.upload(dac.image);
+        dac.imageUrl = await IpfsService.resolveUrl(dac.image);
+        dac.infoCid = await IpfsService.upload(dac.toIpfs());
+        console.log(dac.infoCid);
+        console.log("owner:"+dac.owner.address)
+
+        const promiEvent = crowdfunding.newDac(dac.infoCid, { from: dac.owner.address, $extraGas: extraGas() });
 
         promiEvent
             .once('transactionHash', function (hash) {
@@ -62,6 +59,7 @@ class CrowdfundingContractApi {
             })
             .on('error', function (error) {
                 console.error(`Error procesando transacción en Smart Contract`, error);
+                console.log(error);
                 onError(error);
             });
     }
