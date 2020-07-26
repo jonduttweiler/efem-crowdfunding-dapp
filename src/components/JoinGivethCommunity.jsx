@@ -3,7 +3,15 @@ import PropTypes from 'prop-types';
 
 // import CommunityButton from './CommunityButton';
 import User from '../models/User';
-import { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProvider';
+import { Consumer as RoleConsumer } from '../contextProviders/RoleProvider';
+
+import OnlyRole from '../components/OnlyRole';
+
+import {
+  CREATE_DAC_ROLE,
+  CREATE_CAMPAIGN_ROLE
+  } from "../constants/Role";
+  
 
 /**
  * The join Giveth community top-bar
@@ -17,7 +25,7 @@ class JoinGivethCommunity extends Component {
   }
 
   createDAC() {
-    if (!this.props.isDelegate(this.props.currentUser)) {
+    if (!this.props.isDelegate) {
       React.swal({
         title: 'Sorry, this Dapp is in beta...',
         content: React.swal.msg(
@@ -33,6 +41,7 @@ class JoinGivethCommunity extends Component {
       });
       return;
     }
+
     if (this.props.currentUser) {
       this.props.history.push('/dacs/new');
     } else {
@@ -53,7 +62,7 @@ class JoinGivethCommunity extends Component {
   }
 
   createCampaign() {
-    if (!this.props.isCampaignManager(this.props.currentUser)) {
+    if (!this.props.isCampaignManager) {
       React.swal({
         title: 'Sorry, this Dapp is in beta...',
         content: React.swal.msg(
@@ -89,8 +98,6 @@ class JoinGivethCommunity extends Component {
   }
 
   render() {
-    const { currentUser, isDelegate, isCampaignManager } = this.props;
-
     return (
       <div
         id="join-giveth-community"
@@ -98,19 +105,17 @@ class JoinGivethCommunity extends Component {
       >
         <div className="vertical-align">
           <center>
-            <h3>
-              <br />
-            </h3>
-            {isDelegate(currentUser) && (
+            <h3><br/></h3>
+            <OnlyRole role={CREATE_DAC_ROLE}>
               <button type="button" className="btn btn-info" onClick={() => this.createDAC()}>
                 Create a Fund
               </button>
-            )}
-            {isCampaignManager(currentUser) && (
+            </OnlyRole>
+            <OnlyRole role={CREATE_CAMPAIGN_ROLE}>
               <button type="button" className="btn btn-info" onClick={() => this.createCampaign()}>
                 Start a Campaign
               </button>
-            )}
+            </OnlyRole>
           </center>
         </div>
       </div>
@@ -124,8 +129,8 @@ JoinGivethCommunity.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   currentUser: PropTypes.instanceOf(User),
-  isDelegate: PropTypes.func.isRequired,
-  isCampaignManager: PropTypes.func.isRequired,
+  isDelegate: PropTypes.bool,
+  isCampaignManager: PropTypes.bool,
 };
 
 JoinGivethCommunity.defaultProps = {
@@ -134,14 +139,14 @@ JoinGivethCommunity.defaultProps = {
 
 export default function JoinCom(props) {
   return (
-    <WhiteListConsumer>
-      {({ actions: { isDelegate, isCampaignManager } }) => (
+    <RoleConsumer>
+      { roles => (
         <JoinGivethCommunity
-          {...props}
-          isDelegate={isDelegate}
-          isCampaignManager={isCampaignManager}
+          {...props} //history && currentUser
+          isDelegate={roles.includes(CREATE_DAC_ROLE)}
+          isCampaignManager={roles.includes(CREATE_CAMPAIGN_ROLE)} 
         />
       )}
-    </WhiteListConsumer>
+    </RoleConsumer>
   );
 }

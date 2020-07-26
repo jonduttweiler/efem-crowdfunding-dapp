@@ -16,7 +16,8 @@ import DACservice from '../../services/DACService';
 import DAC from '../../models/DAC';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
-import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
+import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
+import { CREATE_DAC_ROLE } from '../../constants/Role';
 
 /**
  * View to create or edit a DAC
@@ -30,15 +31,14 @@ class EditDAC extends Component {
   constructor(props) {
     super(props);
 
+    // DAC model
+    const dac = new DAC({ owner: props.currentUser });
+
     this.state = {
       isLoading: true,
       isSaving: false,
       formIsValid: false,
-
-      // DAC model
-      dac: new DAC({
-        owner: props.currentUser,
-      }),
+      dac: dac,
       isBlocking: false,
     };
 
@@ -49,35 +49,36 @@ class EditDAC extends Component {
   }
 
   componentDidMount() {
-    this.checkUser()
-      .then(() => {
-        if (!this.props.isNew) {
-          DACservice.get(this.props.match.params.id)
-            .then(dac => {
-              // The user is not an owner, hence can not change the DAC
-              if (!isOwner(dac.ownerAddress, this.props.currentUser)) {
-                // TODO: Not really user friendly
-                history.goBack();
-              } else {
-                this.setState({ isLoading: false, dac });
-              }
-            })
-            .catch(err => {
-              ErrorPopup(
-                'Sadly we were unable to load the Fund. Please refresh the page and try again.',
-                err,
-              );
-            });
-        } else {
-          this.setState({ isLoading: false });
-        }
-      })
-      .catch(err => {
-        ErrorPopup(
-          'There has been a problem loading the Fund. Please refresh the page and try again.',
-          err,
-        );
-      });
+    
+    this.checkUser().then(() => {
+      
+      if (!this.props.isNew) {
+        const dacId = this.props.match.params.id;
+
+        DACservice.get(dacId).then(dac => {
+          // The user is not an owner, hence can not change the DAC
+          if (!isOwner(dac.ownerAddress, this.props.currentUser)) {
+            // TODO: Not really user friendly
+            history.goBack();
+          } else {
+            this.setState({ isLoading: false, dac });
+          }
+        })
+          .catch(err => {
+            ErrorPopup(
+              'Sadly we were unable to load the Fund. Please refresh the page and try again.',
+              err,
+            );
+          });
+      } else {
+        this.setState({ isLoading: false });
+      }
+    }).catch(err => {
+      ErrorPopup(
+        'There has been a problem loading the Fund. Please refresh the page and try again.',
+        err,
+      );
+    });
     this.mounted = true;
   }
 
@@ -101,14 +102,14 @@ class EditDAC extends Component {
   }
 
   checkUser() {
-    if (!this.props.currentUser) {
+    if (!this.props.currentUser) { //Si no hay nadie logeado?
       history.push('/');
       return Promise.reject();
     }
 
     return authenticateIfPossible(this.props.currentUser)
       .then(() => {
-        if (!this.props.isDelegate(this.props.currentUser)) {
+        if (!this.props.isDelegate) { //(this.props.currentUser)
           throw new Error('not whitelisted');
         }
       })
@@ -146,17 +147,12 @@ class EditDAC extends Component {
       history.push(`/dacs/${dac.id}`);
     };
 
-    this.setState(
-      {
-        isSaving: true,
-        isBlocking: false,
-      },
-      () => {
-        // Save the DAC
-        this.state.dac.save(afterSave);
+    this.setState({ isSaving: true, isBlocking: false, }, () => {
+        const dac = this.state.dac;
+        dac.save(afterSave);// Save the DAC
       },
     );
-  }
+  } //End save 
 
   toggleFormValid(state) {
     this.setState({ formIsValid: state });
@@ -318,7 +314,7 @@ EditDAC.propTypes = {
       id: PropTypes.string,
     }).isRequired,
   }).isRequired,
-  isDelegate: PropTypes.func.isRequired,
+  isDelegate: PropTypes.bool.isRequired,
 };
 
 EditDAC.defaultProps = {
@@ -328,8 +324,16 @@ EditDAC.defaultProps = {
 
 export default function EdtDAC(props) {
   return (
-    <WhiteListConsumer>
-      {({ actions: { isDelegate } }) => <EditDAC {...props} isDelegate={isDelegate} />}
-    </WhiteListConsumer>
+    <RoleConsumer>
+      { roles => {
+          if(roles.includes(CREATE_DAC_ROLE)){
+              return <EditDAC {...props} isDelegate={true} />;
+          } else {
+            console.log("Not allowed. CREATE_DAC_ROLE required - Redirect to home");
+            props.history.push("/");
+            return;
+          }
+      }}
+    </RoleConsumer>
   );
 }
