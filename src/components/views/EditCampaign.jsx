@@ -18,6 +18,9 @@ import CampaignService from '../../services/CampaignService';
 import ErrorPopup from '../ErrorPopup';
 import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
 
+import { connect } from 'react-redux'
+import { addCampaign, selectCampaigns } from '../../redux/reducers/campaignsSlice'
+
 /**
  * View to create or edit a Campaign
  *
@@ -114,7 +117,6 @@ class EditCampaign extends Component {
   submit() {
     const afterSave = campaign => {
       React.toast.success('Your Campaign has been saved!');
-      //history.push(`/campaigns/${campaign.id}`);
       history.push(`/`);
     };
 
@@ -125,7 +127,8 @@ class EditCampaign extends Component {
       },
       () => {
         // Save the campaign
-        this.state.campaign.save(afterSave);
+        this.props.addCampaign(this.state.campaign);
+        afterSave(this.state.campaign);
       },
     );
   }
@@ -306,7 +309,18 @@ EditCampaign.defaultProps = {
   isNew: false,
 };
 
-export default function EditCmpn(props) {
+const mapStateToProps = (state, ownProps) => {
+  return {
+    campaigns: selectCampaigns(state)
+  }
+}
+
+const mapDispatchToProps = { addCampaign }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(function EditCmpn(props) {
   return (
     <WhiteListConsumer>
       {({ state: { reviewers }, actions: { isCampaignManager } }) => (
@@ -314,4 +328,4 @@ export default function EditCmpn(props) {
       )}
     </WhiteListConsumer>
   );
-}
+})

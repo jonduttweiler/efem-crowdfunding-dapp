@@ -8,16 +8,12 @@ import { feathersClient } from '../lib/feathersClient';
 import Campaign from '../models/Campaign';
 import Donation from '../models/Donation';
 import ErrorPopup from '../components/ErrorPopup';
-import CampaignCache from './cache/CampaignCache';
 import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 
 const campaigns = feathersClient.service('campaigns');
-const campaignCache = new CampaignCache();
 const crowdfundingContractApi = new CrowdfundingContractApi();
 
 class CampaignService {
-
-
 
   /**
    * Get a Campaign defined by ID
@@ -26,43 +22,13 @@ class CampaignService {
    */
   static get(id) {
     return new Promise((resolve, reject) => {
-      var campaign = campaignCache.getById(id);
-      if(campaign != null) {
-        resolve(campaign);
-      } else {
-        crowdfundingContractApi.getCampaign(id).then(campaign => {
-          resolve(campaign);
-        });
-      }
-      /*campaigns
+      campaigns
         .find({ query: { _id: id } })
         .then(resp => {
           resolve(new Campaign(resp.data[0]));
         })
-        .catch(reject);*/
+        .catch(reject);
     });
-  }
-
-  /**
-   * Get Campaigns
-   *
-   * @param $limit    Amount of records to be loaded
-   * @param $skip     Amounds of record to be skipped
-   * @param onSuccess Callback function once response is obtained successfylly
-   * @param onError   Callback function if error is encountered
-   */
-  static async getCampaigns($limit = 100, $skip = 0, onSuccess = () => {}, onError = () => {}) {
-    var cacheData = campaignCache.getData();
-    if(cacheData != null) {
-      // Los datos permanecen cacheados, por lo se retornan sin utilizar el API.
-      onSuccess(cacheData.campaigns, cacheData.total);
-    } else {
-      // Los datos no están cacheados, por lo se utiliza el API.
-      let campaigns = await crowdfundingContractApi.getCampaigns();
-      let total = campaigns.length;
-      campaignCache.setData(campaigns, total);
-      onSuccess(campaigns, total);
-    }    
   }
 
   /**
@@ -187,32 +153,6 @@ class CampaignService {
         });
         onSuccess(newResp);
       }, onError);
-  }
-
-  /**
-   * Almacena la nueva campaign de manera local y en un storage remoto.
-   *
-   * @param campaign    Campaign object to be saved
-   * @param onSaveLocal invocado una vez que la campaign ha sido almacenada localmente.
-   * @param onSaveRemote invocado una vez que la campaign ha sido almacenada remotamente.
-   */
-  static async save(campaign, onSaveLocal = () => {}, onSaveRemote = () => {}) {
-
-    await crowdfundingContractApi.saveCampaign(
-      campaign,
-      // Guardado local
-      function(campaign) {
-        campaignCache.save(campaign);
-        onSaveLocal(campaign);
-      },
-      // Confirmación de guardado Remoto
-      function(campaign) {
-        campaignCache.updateByTxHash(campaign);
-        onSaveRemote(campaign);
-      },
-      function(error) {
-        ErrorPopup(`Something went wrong with saving the Campaing`);
-      });
   }
 
   /**

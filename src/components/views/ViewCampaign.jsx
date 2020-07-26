@@ -22,8 +22,10 @@ import ListDonations from '../ListDonations';
 import User from '../../models/User';
 import CampaignService from '../../services/CampaignService';
 
-import ErrorPopup from '../ErrorPopup';
 import ErrorBoundary from '../ErrorBoundary';
+
+import { connect } from 'react-redux'
+import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 
 /**
  * The Campaign detail view mapped to /campaing/id
@@ -35,7 +37,7 @@ import ErrorBoundary from '../ErrorBoundary';
 class ViewCampaign extends Component {
   constructor(props) {
     super(props);
-
+    
     this.state = {
       isLoading: true,
       isLoadingMilestones: true,
@@ -55,21 +57,18 @@ class ViewCampaign extends Component {
   }
 
   componentDidMount() {
-    const campaignId = this.props.match.params.id;
 
-    CampaignService.get(campaignId)
-      .then(campaign => this.setState({ campaign, isLoading: false }))
-      .catch(err => {
-        ErrorPopup('Something went wrong loading campaign. Please try refresh the page.', err);
-        this.setState({ isLoading: false });
-      }); // TODO: inform user of error
+    this.setState({
+      campaign: this.props.campaign,
+      isLoading: false
+    });
 
-    this.loadMoreMilestones(campaignId);
+    this.loadMoreMilestones(this.props.campaign.id);
 
     this.loadMoreDonations();
     // subscribe to donation count
     this.donationsObserver = CampaignService.subscribeNewDonations(
-      campaignId,
+      this.props.campaign.id,
       newDonations =>
         this.setState({
           newDonations,
@@ -159,7 +158,7 @@ class ViewCampaign extends Component {
 
           {!isLoading && (
             <div>
-              <BackgroundImageHeader image={campaign.image} height={300}>
+              <BackgroundImageHeader image={campaign.imageUrl} height={300}>
                 <h6>Campaign</h6>
                 <h1>{campaign.title}</h1>
                 {/*<DonateButton
@@ -334,4 +333,10 @@ ViewCampaign.defaultProps = {
   currentUser: undefined,
 };
 
-export default ViewCampaign;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    campaign: selectCampaign(state, ownProps.match.params.id)
+  }
+}
+
+export default connect(mapStateToProps)(ViewCampaign)

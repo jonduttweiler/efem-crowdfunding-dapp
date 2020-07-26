@@ -1,8 +1,8 @@
 import Campaign from '../../models/Campaign';
 import getNetwork from './getNetwork';
 import IpfsService from '../../services/IpfsService';
-import { cleanIpfsPath } from '../helpers';
 import extraGas from './extraGas';
+import { Observable } from 'rxjs'
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -14,100 +14,101 @@ class CrowdfundingContractApi {
     }
 
     /**
-     * Obtiene la Campaign a partir del ID especificado.
-     * 
-     * @param {*} id de la campaign a obtener.
-     * @returns campaign cuyo Id coincide con el especificado.
-     */
-    async getCampaign(id) {
-        var crowdfunding = await this.getCrowdfunding();
-        var campaignOnChain = await crowdfunding.getCampaign(id);
-        // Se obtiene la información de la Campaign desde IPFS.
-        var info = await IpfsService.download(campaignOnChain.infoCid);
-        return new Campaign({
-            _id: campaignOnChain.id,
-            title: info.title,
-            description: info.description,
-            image: info.image,
-            imageUrl: IpfsService.resolveUrl(info.image),
-            communityUrl: info.communityUrl,
-            status: this.mapCampaingStatus(campaignOnChain.status),
-            reviewerAddress: campaignOnChain.reviewer,
-            ownerAddress: campaignOnChain.manager,
-            commitTime: 0
-        });
-    }
-
-    /**
      * Obtiene todas las Campaigns desde el Smart Contract.
      */
-    async getCampaigns() {
-        var crowdfunding = await this.getCrowdfunding();
-        let ids = await crowdfunding.getCampaignIds();
-        let campaigns = [];
-        for (let i = 0; i < ids.length; i++) {
-            var campaign = await this.getCampaign(ids[i]);
-            campaigns.push(campaign);
-        }
-        return campaigns;
+    getCampaigns() {
+        return new Observable(async subscriber => {
+            try {
+                var crowdfunding = await this.getCrowdfunding();
+                let ids = await crowdfunding.getCampaignIds();
+                let campaigns = [];
+                for (let i = 0; i < ids.length; i++) {
+                    var campaignOnChain = await crowdfunding.getCampaign(ids[i]);
+                    // Se obtiene la información de la Campaign desde IPFS.
+                    var info = await IpfsService.download(campaignOnChain.infoCid);
+                    campaigns.push(new Campaign({
+                        _id: campaignOnChain.id,
+                        title: info.title,
+                        description: info.description,
+                        image: info.image,
+                        imageUrl: IpfsService.resolveUrl(info.image),
+                        communityUrl: info.communityUrl,
+                        status: this.mapCampaingStatus(campaignOnChain.status),
+                        reviewerAddress: campaignOnChain.reviewer,
+                        ownerAddress: campaignOnChain.manager,
+                        commitTime: 0
+                    }));
+                }
+                subscriber.next(campaigns);
+            } catch (error) {
+                subscriber.error(error);
+            }
+        });
     }
 
     /**
      * Almacena una Campaing en el Smart Contarct.
      * 
-     * @param {*} campaign a almacenar.
-     * @param {*} onCreateTransaction callback invocado tras la creación de transacción.
-     * @param {*} onConfirmation callback invocado tras la confirmación de la transacción.
-     * @param {*} onError  callback invocado por la ocurrencia de un error.
+     * @param campaign a almacenar.
      */
-    async saveCampaign(campaign, onCreateTransaction, onConfirmation, onError) {
-        try {
-            var crowdfunding = await this.getCrowdfunding();
+    saveCampaign(campaign) {
 
-            // Se almacena en IPFS la imagen de la Campaign.
-            let imageCid = await IpfsService.upload(campaign.image);
-            campaign.image = imageCid;
-            campaign.imageUrl = IpfsService.resolveUrl(imageCid);
+        return new Observable(async subscriber => {
 
-            // Se almacena en IPFS toda la información de la Campaign.
-            let infoCid = await IpfsService.upload(campaign.toIpfs());
-            campaign.infoCid = infoCid;
+            try {
+                var crowdfunding = await this.getCrowdfunding();
 
-            // Temporal hasta que exista la DAC previamente.
-            /*let receipt = await crowdfunding.newDac(campaign.infoCid,
-              {
-                from: campaign.owner.address,
-                $extraGas: extraGas()
-              });*/
-            // Temporal hasta que exista la DAC previamente.
+                // Se almacena en IPFS la imagen de la Campaign.
+                let imageCid = await IpfsService.upload(campaign.image);
+                campaign.image = imageCid;
+                campaign.imageUrl = IpfsService.resolveUrl(imageCid);
 
-            let promiEvent = crowdfunding.newCampaign(
-                campaign.infoCid,
-                //campaign.dacId,
-                1,
-                campaign.reviewerAddress,
-                {
+                // Se almacena en IPFS toda la información de la Campaign.
+                let infoCid = await IpfsService.upload(campaign.toIpfs());
+                campaign.infoCid = infoCid;
+
+                // Temporal hasta que exista la DAC previamente.
+                /*let receipt = await crowdfunding.newDac(campaign.infoCid,
+                  {
                     from: campaign.owner.address,
                     $extraGas: extraGas()
-                });
+                  });*/
+                // Temporal hasta que exista la DAC previamente.
 
-            promiEvent
-                .once('transactionHash', function (hash) {
-                    campaign.txHash = hash;
-                    onCreateTransaction(campaign);
-                })
-                .once('confirmation', function (confNumber, receipt) {
-                    onConfirmation(campaign);
-                })
-                .on('error', function (error) {
-                    console.error(`Error procesando transacción en Smart Contract`, error);
-                    onError(error);
-                });
+                let promiEvent = crowdfunding.newCampaign(
+                    campaign.infoCid,
+                    //campaign.dacId,
+                    1,
+                    campaign.reviewerAddress,
+                    {
+                        from: campaign.owner.address,
+                        $extraGas: extraGas()
+                    });
 
-        } catch (error) {
-            console.error(`Error guardando campaign`, error);
-            onError(error);
-        }
+                promiEvent
+                    .once('transactionHash', function (hash) {
+                        // La transacción ha sido creada.
+                        campaign.txHash = hash;
+                        subscriber.next(campaign);
+                    })
+                    .once('confirmation', function (confNumber, receipt) {
+                        // La transacción ha sido incluida en un bloque
+                        // sin bloques de confirmación (once).
+                        // TODO Aquí debería gregarse lógica para esperar
+                        // un número determinado de bloques confirmados (on, confNumber).
+                        campaign.id = receipt.events['NewCampaign'].returnValues.id;
+                        campaign.status = Campaign.ACTIVE;
+                        subscriber.next(campaign);
+                    })
+                    .on('error', function (error) {
+                        console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
+                        subscriber.error(error);
+                    });
+            } catch (error) {
+                console.error(`Error almacenando campaign`, error);
+                subscriber.error(error);
+            }
+        });
     }
 
     /**

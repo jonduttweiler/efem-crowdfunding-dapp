@@ -80,8 +80,8 @@ React.toast = toast;
  * -> moved to data to UserProvider
  */
 class Application extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     localforage.config({
       name: 'dapp',

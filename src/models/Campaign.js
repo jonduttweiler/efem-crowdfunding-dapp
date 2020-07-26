@@ -1,9 +1,5 @@
-/* eslint-disable import/no-cycle */
-
 import BasicModel from './BasicModel';
 import CampaignService from '../services/CampaignService';
-import IpfsService from '../services/IpfsService';
-import ErrorPopup from '../components/ErrorPopup';
 import { cleanIpfsPath } from '../lib/helpers';
 
 /**
@@ -34,6 +30,7 @@ class Campaign extends BasicModel {
   constructor(data) {
     super(data);
 
+    this.clientId = data.clientId || null;
     this.communityUrl = data.communityUrl || '';
     this.status = data.status || Campaign.ACTIVE;
     this.reviewerAddress = data.reviewerAddress;
@@ -72,37 +69,6 @@ class Campaign extends BasicModel {
 
   get isPending() {
     return this.status === Campaign.PENDING || !this.mined;
-  }
-
-  /**
-   * Guarda la campaign en la blockchain.
-   *
-   * @param afterSave callback invocado una vez que la campaign
-   * ha sido guardada en la blockchain.
-   */
-  async save(onLocalSave) {
-    //let imageCid = await IpfsService.upload(this.image);
-    // Save the new image address and mark it as old
-    //this.image = imageCid;
-    //this.newImage = false;
-    // Se sube en IPFS un JSON con la información de la Campaign.
-    //let infoCid = await IpfsService.upload(this.toIpfs());
-    //this.infoCid = infoCid;
-    CampaignService.save(this, onLocalSave, function() {
-
-    });
-    /*if (this.newImage) {
-      IpfsService.upload(this.image)
-        .then(hash => {
-          // Save the new image address and mark it as old
-          this.image = hash;
-          this.newImage = false;
-        })
-        .catch(err => ErrorPopup('Failed to upload image', err))
-        .finally(() => CampaignService.save(this, afterSave));
-    } else {
-      CampaignService.save(this, afterSave);
-    }*/
   }
 
   /**

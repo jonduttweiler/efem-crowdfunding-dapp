@@ -25,7 +25,7 @@ const Campaigns = () => (
                 </p>
                 <div className="cards-grid-container">
                   {campaigns.map(campaign => (
-                    <CampaignCard key={campaign.id} campaign={campaign} />
+                    <CampaignCard key={campaign.clientId} campaign={campaign} />
                   ))}
                 </div>
               </div>

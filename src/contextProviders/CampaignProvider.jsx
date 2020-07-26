@@ -1,7 +1,7 @@
 import React, { Component, createContext } from 'react';
 import PropTypes from 'prop-types';
-
-import CampaignService from '../services/CampaignService';
+import { connect } from 'react-redux'
+import { fetchCampaigns, selectCampaigns } from '../redux/reducers/campaignsSlice'
 
 const Context = createContext();
 const { Provider, Consumer } = Context;
@@ -13,12 +13,12 @@ export { Consumer };
  * @prop children    Child REACT components
  */
 class CampaignProvider extends Component {
-  constructor() {
-    super();
-
+  constructor(props) {
+    super(props);
     this.state = {
-      campaigns: [],
-      isLoading: true,
+      campaigns: this.props.campaigns,
+      //isLoading: true,
+      isLoading: false,
       hasError: false,
       total: 0,
     };
@@ -26,13 +26,14 @@ class CampaignProvider extends Component {
     this.loadMore = this.loadMore.bind(this);
   }
 
-  componentWillMount() {
-    this.loadMore(true);
+  componentDidMount() {
+    this.props.fetchCampaigns();
+    //this.loadMore(true);
   }
 
   loadMore(init = false) {
     if (init || (!this.state.isLoading && this.state.total > this.state.campaigns.length)) {
-      this.setState({ isLoading: true }, () =>
+      /*this.setState({ isLoading: true }, () =>
         CampaignService.getCampaigns(
           this.props.step, // Limit
           this.state.campaigns.length, // Skip
@@ -45,12 +46,19 @@ class CampaignProvider extends Component {
           },
           () => this.setState({ hasError: true, isLoading: false }),
         ),
-      );
+      );*/
     }
   }
 
   render() {
-    const { campaigns, isLoading, hasError, total } = this.state;
+
+    const { campaigns } = this.props;
+    const { isLoading, hasError } = this.state;
+    // TODO Por incorporación de Redux, se fija el total
+    // como el tamaño de las campañas.
+    // Falta el desarrollo del Paginado.
+    var total = campaigns.length;
+
     const { loadMore } = this;
 
     return (
@@ -81,4 +89,12 @@ CampaignProvider.propTypes = {
 
 CampaignProvider.defaultProps = { step: 50 };
 
-export default CampaignProvider;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    campaigns: selectCampaigns(state)
+  }
+}
+
+const mapDispatchToProps = { fetchCampaigns }
+
+export default connect(mapStateToProps, mapDispatchToProps)(CampaignProvider)

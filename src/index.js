@@ -6,6 +6,12 @@ import * as serviceWorker from './serviceWorker';
 import Application from './containers/Application';
 import './styles/application.css';
 
+import { Provider } from 'react-redux'
+import configureStore from './redux/configureStore'
+
+// Creación de store de Redux.
+const store = configureStore();
+
 try {
   localForage
     .config({
@@ -21,7 +27,9 @@ try {
 
 /* global document */
 ReactDOM.render(
-  <Application />, // eslint-disable-line react/jsx-filename-extension
+  <Provider store={store}>
+    <Application />
+  </Provider>, // eslint-disable-line react/jsx-filename-extension
   document.getElementById('root'),
 );
 

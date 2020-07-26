@@ -20,7 +20,11 @@ class CampaignCard extends Component {
   }
 
   viewCampaign() {
-    history.push(`/campaigns/${this.props.campaign.id}`);
+    if(this.props.campaign.myStatus == Campaign.PENDING) {
+      React.toast.warn('Campaign is pending');
+    } else {
+      history.push(`/campaigns/${this.props.campaign.id}`);
+    }
   }
 
   render() {
