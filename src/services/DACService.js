@@ -25,24 +25,7 @@ class DACService {
    * @param id   ID of the DAC to be retrieved
    */
   static get(id) {
-    return new Promise((resolve, reject) => {
-      const cached = dacCache.getById(id);
-      if(cached){
-        resolve(cached);
-      } else {
-        crowdfundingContractApi.get(id).then(campaign => {
-          resolve(campaign);
-        });
-      }
-
-
-
-      /* dacs.find({query: {_id: id,},})
-        .then(resp => {
-          resolve(new DAC(resp.data[0]));
-        })
-        .catch(err => reject(err)); */
-    });
+    return crowdfundingContractApi.getDAC(id);
   }
 
   /**

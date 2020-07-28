@@ -3,10 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
-    username: 'Dummy User'
+    username: 'Dummy User',
+    address: "",
+    roles: []
   },
   reducers: {
-    login: (state, action) => {}
+    login: (state, action) => {},
+    web3Injected: (state, action) => { }
   },
 });
 

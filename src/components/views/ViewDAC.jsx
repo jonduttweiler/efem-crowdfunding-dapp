@@ -110,7 +110,7 @@ class ViewDAC extends Component {
     if (!dac) return <div id="view-cause-view">Failed to load dac</div>;
     return (
       <div id="view-cause-view">
-        <BackgroundImageHeader image={dac.image} height={300}>
+        <BackgroundImageHeader image={dac.imageUrl} height={300}>
           <h6>Decentralized Altruistic Community</h6>
           <h1>{dac.title}</h1>
 

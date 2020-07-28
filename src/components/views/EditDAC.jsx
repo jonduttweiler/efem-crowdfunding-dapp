@@ -12,12 +12,33 @@ import { isOwner, getTruncatedText, history } from '../../lib/helpers';
 import { checkProfile, authenticateIfPossible } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 
-import DACservice from '../../services/DACService';
 import DAC from '../../models/DAC';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
 import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
 import { CREATE_DAC_ROLE } from '../../constants/Role';
+
+import { connect } from 'react-redux'
+import { addDac, selectDAC } from '../../redux/reducers/dacsSlice';
+
+
+
+// Save dac
+const showToast = (msg, url, isSuccess = false) => {
+  const toast = url ? (
+    <p>
+      {msg}<br />
+      <a href={url} target="_blank" rel="noopener noreferrer">View transaction</a>
+    </p>
+  ) : (
+      msg
+    );
+
+  if (isSuccess) React.toast.success(toast);
+  else React.toast.info(toast);
+};
+
+
 
 /**
  * View to create or edit a DAC
@@ -48,36 +69,31 @@ class EditDAC extends Component {
     this.setImage = this.setImage.bind(this);
   }
 
+
+
+
+
   componentDidMount() {
-    
-    this.checkUser().then(() => {
-      
+    console.log("Component did mount")
+    console.log("is dac new?",this.props.isNew);
+
+    this.checkUser().then(() => {      
       if (!this.props.isNew) {
         const dacId = this.props.match.params.id;
-
-        DACservice.get(dacId).then(dac => {
+        const dac = this.props.dac;
+        if(dac){
           // The user is not an owner, hence can not change the DAC
           if (!isOwner(dac.ownerAddress, this.props.currentUser)) {
-            // TODO: Not really user friendly
-            history.goBack();
+            history.goBack();// TODO: Not really user friendly
           } else {
-            this.setState({ isLoading: false, dac });
+            this.setState({ isLoading: false, dac }); 
           }
-        })
-          .catch(err => {
-            ErrorPopup(
-              'Sadly we were unable to load the Fund. Please refresh the page and try again.',
-              err,
-            );
-          });
-      } else {
+        }
+      } else { //dac is new
         this.setState({ isLoading: false });
       }
     }).catch(err => {
-      ErrorPopup(
-        'There has been a problem loading the Fund. Please refresh the page and try again.',
-        err,
-      );
+      ErrorPopup('There has been a problem loading the Fund. Please refresh the page and try again.',err);
     });
     this.mounted = true;
   }
@@ -117,39 +133,16 @@ class EditDAC extends Component {
   }
 
   submit() {
-    // Save dac
-    const showToast = (msg, url, isSuccess = false) => {
-      const toast = url ? (
-        <p>
-          {msg}
-          <br />
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            View transaction
-          </a>
-        </p>
-      ) : (
-        msg
-      );
-
-      if (isSuccess) React.toast.success(toast);
-      else React.toast.info(toast);
-    };
-
     const afterSave = dac => {
-      const msg = `Your Fund has been saved`;
-      showToast(msg, true);
+      showToast(`Your Fund has been saved`, "", true);
       if (this.mounted) this.setState({ isSaving: false });
-      GA.trackEvent({
-        category: 'DAC',
-        action: 'updated',
-        label: dac.id,
-      });
-      history.push(`/dacs/${dac.id}`);
+      GA.trackEvent({category: 'DAC',action: 'updated',label: dac.id,});
+      history.push(`/`);
     };
-
+    
     this.setState({ isSaving: true, isBlocking: false, }, () => {
-        const dac = this.state.dac;
-        dac.save(afterSave);// Save the DAC
+        this.props.addDac(this.state.dac);
+        afterSave(this.state.dac);
       },
     );
   } //End save 
@@ -322,7 +315,7 @@ EditDAC.defaultProps = {
   isNew: false,
 };
 
-export default function EdtDAC(props) {
+function EdtDAC(props) {
   return (
     <RoleConsumer>
       { roles => {
@@ -337,3 +330,11 @@ export default function EdtDAC(props) {
     </RoleConsumer>
   );
 }
+
+const mapStateToProps = (state, props) => ({
+    dac: selectDAC(state, props.match.params.id)
+  
+});
+const mapDispatchToProps = { addDac }
+
+export default connect(mapStateToProps,mapDispatchToProps)(EdtDAC);

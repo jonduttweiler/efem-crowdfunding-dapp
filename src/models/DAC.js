@@ -1,5 +1,4 @@
 import BasicModel from './BasicModel';
-import DACService from '../services/DACService';
 import { cleanIpfsPath } from '../lib/helpers';
 
 /**
@@ -24,13 +23,17 @@ class DAC extends BasicModel {
   }
 
   constructor(data) {
-    super(data);
+    super(data); 
 
     this.communityUrl = data.communityUrl || '';
-    this.status = data.status || DAC.Active;
+    this.status = data.status || DAC.ACTIVE;
     this.ownerAddress = data.ownerAddress;
     this.requiredConfirmations = data.requiredConfirmations;
     this.commitTime = data.commitTime || 0;
+
+    this.clientId = data.clientId || null;
+    this.imageUrl = data.imageUrl;
+
   }
 
   toIpfs() {
@@ -44,26 +47,14 @@ class DAC extends BasicModel {
   }
 
   toFeathers() {
-    const dac = {
+    return {
       title: this.title,
       description: this.description,
       communityUrl: this.communityUrl,
       image: cleanIpfsPath(this.image),
       totalDonated: this.totalDonated,
       donationCount: this.donationCount,
-    };
-    return dac;
-  }
-
-
- /**
-   * Guarda la DAC en la blockchain.
-   *
-   * @param afterSave callback invocado una vez que la DAC
-   * ha sido guardada en la blockchain.
-   */
-  save(onLocalSave) {
-    DACService.save(this, onLocalSave, _ => { });
+    };     
   }
 
   get communityUrl() {

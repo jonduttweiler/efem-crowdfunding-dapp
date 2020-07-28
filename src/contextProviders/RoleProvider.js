@@ -36,7 +36,6 @@ export default class RoleProvider extends Component {
 
     async updateRolesFromService(address){
         const roles = await UserService.getRoles(address);
-        console.log(`Roles for [${address}] retrieved from blockchain ${JSON.stringify(roles)}`)
         this.setState({roles});
     }
 
