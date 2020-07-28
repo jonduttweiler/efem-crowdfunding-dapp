@@ -44,14 +44,15 @@ class IpfsService {
     return url.resolve(ipfsGateway, path);
   }
 
-  static downloadJson(path) {
+  static async downloadJson(path) {
     const { ipfsGateway } = config;
     if (!isIPFS.path(path)) throw new Error(`${path} is not a valid ipfs path`);
-    return axios({
+    const response = await axios({
       method: 'get',
       url: url.resolve(ipfsGateway, path),
       responseType: 'json'
     });
+    return response.data;
   }
 }
 
