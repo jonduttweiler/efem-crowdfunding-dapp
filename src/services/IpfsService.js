@@ -2,7 +2,7 @@ import config from '../configuration';
 import ImageTools from '../lib/ImageResizer';
 
 const isIPFS = require('is-ipfs');
-const rp = require('request-promise');
+const axios = require('axios').default;
 const url = require('url');
 
 class IpfsService {
@@ -43,13 +43,14 @@ class IpfsService {
     if (!isIPFS.path(path)) throw new Error(`${path} is not a valid ipfs path`);
     return url.resolve(ipfsGateway, path);
   }
-  
-  static download(path) {
+
+  static downloadJson(path) {
     const { ipfsGateway } = config;
     if (!isIPFS.path(path)) throw new Error(`${path} is not a valid ipfs path`);
-    return rp({
-      uri: url.resolve(ipfsGateway, path),
-      json: true,
+    return axios({
+      method: 'get',
+      url: url.resolve(ipfsGateway, path),
+      responseType: 'json'
     });
   }
 }

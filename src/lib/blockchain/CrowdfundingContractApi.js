@@ -76,7 +76,7 @@ class CrowdfundingContractApi {
         const dacOnChain = await crowdfunding.getDac(id);
         // Se obtiene la información de la Dac desde IPFS.
         const { id: _id, infoCid, status, delegate } = dacOnChain;
-        const { title, description, image, communityUrl } = await IpfsService.download(infoCid);
+        const { title, description, image, communityUrl } = await IpfsService.downloadJson(infoCid);
 
         return new DAC({
             _id,
@@ -103,7 +103,7 @@ class CrowdfundingContractApi {
                 for (let i = 0; i < ids.length; i++) {
                     var campaignOnChain = await crowdfunding.getCampaign(ids[i]);
                     // Se obtiene la información de la Campaign desde IPFS.
-                    var info = await IpfsService.download(campaignOnChain.infoCid);
+                    var info = await IpfsService.downloadJson(campaignOnChain.infoCid);
                     campaigns.push(new Campaign({
                         _id: campaignOnChain.id,
                         title: info.title,
