@@ -49,7 +49,7 @@ class BasicModel extends Model {
     this._newImage = false;
     this._owner = owner || { address: ownerAddress }; // FIXME: Check in feathers, owner should be a model
     this._ownerAddress = ownerAddress;
-    this._reviewer = reviewer;
+    //this._reviewer = reviewer;
     this._url = url;
     this._donationCount = donationCount;
     this._peopleCount = peopleCount;
@@ -137,14 +137,14 @@ class BasicModel extends Model {
     this._ownerAddress = value;
   }
 
-  get reviewer() {
+  /*get reviewer() {
     return this._reviewer;
   }
 
   set reviewer(value) {
     this.checkType(value, ['undefined', 'object'], 'reviewer');
     this._reviewer = value;
-  }
+  }*/
 
   get url() {
     return this._url;

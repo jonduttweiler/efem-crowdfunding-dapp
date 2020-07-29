@@ -23,9 +23,11 @@ import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
 import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
 import { CREATE_MILESTONE_ROLE } from '../../constants/Role';
 
-
 import MilestoneService from '../../services/MilestoneService';
-import CampaignService from '../../services/CampaignService';
+
+import { connect } from 'react-redux'
+import { selectCampaign } from '../../redux/reducers/campaignsSlice'
+import { addMilestone } from '../../redux/reducers/milestonesSlice'
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
 
@@ -64,7 +66,7 @@ class EditMilestone extends Component {
     this.checkUser()
       .then(async () => {
         this.setState({
-          campaignId: this.props.match.params.id,
+          //campaignId: this.props.match.params.id,
         });
 
         // load a single milestones (when editing)
@@ -82,9 +84,10 @@ class EditMilestone extends Component {
             }
             this.setState({
               milestone,
-              campaignTitle: milestone.campaign.title,
-              campaignReviewerAddress: milestone.campaign.reviewerAddress,
-              campaignId: milestone.campaignId,
+              //campaignTitle: milestone.campaign.title,
+              campaign: milestone.campaign,
+              //campaignReviewerAddress: milestone.campaign.reviewerAddress,
+              //campaignId: milestone.campaignId,
             });
 
             this.setState({
@@ -98,13 +101,14 @@ class EditMilestone extends Component {
           }
         } else {
           try {
-            const campaign = await CampaignService.get(this.props.match.params.id);
+            //const campaign = await CampaignService.get(this.props.match.params.id);
 
             const milestone = new Milestone();
             milestone.recipientAddress = this.props.currentUser.address;
             this.setState({
-              campaignTitle: campaign.title,
-              campaignReviewerAddress: campaign.reviewerAddress,
+              //campaignTitle: this.props.campaign.title,
+              campaign: this.props.campaign,
+              //campaignReviewerAddress: this.props.campaign.reviewerAddress,
               milestone,
             });
 
@@ -207,12 +211,14 @@ class EditMilestone extends Component {
     const { milestone } = this.state;
 
     milestone.ownerAddress = this.props.currentUser.address;
-    milestone.campaignReviewerAddress = this.state.campaignReviewerAddress;
-    milestone.campaignId = this.state.campaignId;
-    milestone.status =
+    milestone.managerAddress = this.state.campaign.manager;
+    milestone.campaignReviewerAddress = this.state.campaign.reviewer;
+    milestone.campaignId = this.state.campaign.id;
+    /*milestone.status =
       this.props.isProposed || milestone.status === Milestone.REJECTED
         ? Milestone.PROPOSED
-        : milestone.status; // make sure not to change status!
+        : milestone.status; // make sure not to change status!*/
+    milestone.status = Milestone.PENDING;
 
     this.setState(
       {
@@ -220,30 +226,26 @@ class EditMilestone extends Component {
         isBlocking: false,
       },
       () => {
-        milestone.save(
-          () => {
-            React.toast.success(
-              <p>
-                Your Milestone has been saved!
-                <br />
-              </p>,
-            );
-            GA.trackEvent({
-              category: 'Milestone',
-              action: 'updated',
-              label: this.state.id,
-            });
-            this.setState({
-              isSaving: false,
-              isBlocking: false,
-            });
-            this.props.history.goBack();
-          },
-          errorMessage => {
-            React.toast.error(errorMessage);
-            this.setState({ isSaving: false });
-          },
+
+        // Save the milestone
+        this.props.addMilestone(this.state.milestone);
+        
+        React.toast.success(
+          <p>
+            Your Milestone has been saved!
+            <br />
+          </p>,
         );
+        GA.trackEvent({
+          category: 'Milestone',
+          action: 'updated',
+          label: this.state.id,
+        });
+        this.setState({
+          isSaving: false,
+          isBlocking: false,
+        });
+        this.props.history.goBack();
       },
     );
   }
@@ -288,8 +290,10 @@ class EditMilestone extends Component {
   }
 
   render() {
-    const { isNew, isProposed, history, fiatTypes, reviewers } = this.props;
-    const { isLoading, isSaving, formIsValid, campaignTitle, isBlocking, milestone } = this.state;
+    // TODO Temporal hasta que los combos se carguen con las opciones.
+    const reviewers = ['0x36d1d3c43422EF3B1d7d23F20a25977c29BC3f0e'];
+    const { isNew, isProposed, history, fiatTypes/*, reviewers*/ } = this.props;
+    const { isLoading, isSaving, formIsValid, campaign, isBlocking, milestone } = this.state;
 
     return (
       <div id="edit-milestone-view">
@@ -300,7 +304,7 @@ class EditMilestone extends Component {
 
               {!isLoading && (
                 <div>
-                  <GoBackButton history={history} title={`Campaign: ${campaignTitle}`} />
+                  <GoBackButton history={history} title={`Campaign: ${campaign.title}`} />
 
                   <div className="form-header">
                     {isNew && !isProposed && <h3>Add a new milestone</h3>}
@@ -315,7 +319,7 @@ class EditMilestone extends Component {
                     {isNew && isProposed && <h3>Propose a Milestone</h3>}
 
                     <h6>
-                      Campaign: <strong>{getTruncatedText(campaignTitle, 100)}</strong>
+                      Campaign: <strong>{getTruncatedText(campaign.title, 100)}</strong>
                     </h6>
 
                     <p>
@@ -399,7 +403,7 @@ class EditMilestone extends Component {
                         validationErrors={{
                           isEtherAddress: 'Please select a reviewer.',
                         }}
-                        required
+                        //required
                         disabled={!isNew && !isProposed}
                       />
                     </div>
@@ -460,14 +464,14 @@ class EditMilestone extends Component {
 
                     <div className="form-group row">
                       <div className="col-6">
-                        <GoBackButton history={history} title={`Campaign: ${campaignTitle}`} />
+                        <GoBackButton history={history} title={`Campaign: ${campaign.title}`} />
                       </div>
                       <div className="col-6">
                         <LoaderButton
                           className="btn btn-success pull-right"
                           formNoValidate
                           type="submit"
-                          disabled={isSaving || !formIsValid}
+                          //disabled={isSaving || !formIsValid}
                           isLoading={isSaving}
                           loadingText="Saving..."
                         >
@@ -512,8 +516,20 @@ EditMilestone.defaultProps = {
   isProposed: false,
 };
 
-const wrapper = props => (
-  <RoleConsumer>
+const mapStateToProps = (state, ownProps) => {
+  return {
+    campaign: selectCampaign(state, ownProps.match.params.id)
+  }
+}
+
+const mapDispatchToProps = { addMilestone }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(props => {
+  return (
+    <RoleConsumer>
     {roles => {
       if (roles.includes(CREATE_MILESTONE_ROLE)) {
         return (
@@ -539,13 +555,13 @@ const wrapper = props => (
         //TODO: No es del todo correcto hacer la redireción acá. Quizas tendriamos
         //que mostrar una pantalla diciendole que no tiene permisos y la posibilidad 
         //de volver al home
-        console.log("Not allowed. CREATE_CAMPAIGN_ROLE required - Redirect to home");
+        console.log("Not allowed. CREATE_MILESTONE_ROLE required - Redirect to home");
+        // TODO Toast temporal hasta que hagamos algo más amigable.
+        React.toast.error('No autorizado');
         props.history.push("/");
         return null;
       }
     }}
   </RoleConsumer>
-
-);
-
-export default wrapper;
+  );
+})

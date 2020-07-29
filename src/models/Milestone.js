@@ -10,7 +10,7 @@ import IpfsService from '../services/IpfsService';
 /**
  * The DApp Milestone model
  */
-export default class MilestoneModel extends BasicModel {
+export default class Milestone extends BasicModel {
   constructor(data = {}) {
     super(data);
 
@@ -19,7 +19,7 @@ export default class MilestoneModel extends BasicModel {
       selectedFiatType = 'EUR',
       fiatAmount = new BigNumber('0'),
       recipientAddress = '',
-      status = MilestoneModel.IN_PROGRESS,
+      status = Milestone.IN_PROGRESS,
       projectId = undefined,
       reviewerAddress = '',
       items = [],
@@ -39,8 +39,12 @@ export default class MilestoneModel extends BasicModel {
       mined = false,
       pluginAddress = '0x0000000000000000000000000000000000000000',
       conversionRateTimestamp,
+      clientId,
+      imageUrl,
+      manager
     } = data;
 
+    this.clientId = clientId || null;
     this._selectedFiatType = selectedFiatType;
     this._maxAmount = utils.fromWei(maxAmount);
     this._fiatAmount = new BigNumber(fiatAmount);
@@ -58,6 +62,7 @@ export default class MilestoneModel extends BasicModel {
     this._pluginAddress = pluginAddress;
     this._token = token;
     this._conversionRateTimestamp = conversionRateTimestamp;
+    this.imageUrl = imageUrl;
 
     // transient
     this._campaign = campaign;
@@ -67,7 +72,9 @@ export default class MilestoneModel extends BasicModel {
     this._reviewer = reviewer;
     this._mined = mined;
 
-    this.save = this.save.bind(this);
+    // Nuevos
+    //this.campaign = campaign;
+    this.manager = manager;
   }
 
   toIpfs() {
@@ -77,7 +84,7 @@ export default class MilestoneModel extends BasicModel {
       image: cleanIpfsPath(this._image),
       items: this._items.map(i => i.toIpfs()),
       conversionRateTimestamp: this._conversionRateTimestamp,
-      selectedFiatType: this._selectedFiatType,
+      //selectedFiatType: this._selectedFiatType,
       date: this._date,
       fiatAmount: this._fiatAmount.toString(),
       conversionRate: this._conversionRate,
@@ -104,71 +111,56 @@ export default class MilestoneModel extends BasicModel {
   }
 
   /**
-   * Save the campaign to feathers and blockchain if necessary
-   *
-   * @param afterSve Callback function once the campaign has been saved to feathers
-   */
-  save(afterSave, onError) {
-    if (this.newImage) {
-      IpfsService.upload(this.image)
-        .then(hash => {
-          // Save the new image address and mark it as old
-          this.image = hash;
-          this.newImage = false;
-        })
-        .catch(err => onError('Failed to upload image', err))
-        .finally(() => MilestoneService.save(this, afterSave, onError));
-    } else {
-      MilestoneService.save(this, afterSave, onError);
-    }
-  }
-
-  /**
     get & setters
   * */
 
   static get PROPOSED() {
-    return MilestoneModel.statuses.PROPOSED;
+    return Milestone.statuses.PROPOSED;
+  }
+
+  static get ACTIVE() {
+    return Milestone.statuses.ACTIVE;
   }
 
   static get REJECTED() {
-    return MilestoneModel.statuses.REJECTED;
+    return Milestone.statuses.REJECTED;
   }
 
   static get PENDING() {
-    return MilestoneModel.statuses.PENDING;
+    return Milestone.statuses.PENDING;
   }
 
   static get IN_PROGRESS() {
-    return MilestoneModel.statuses.IN_PROGRESS;
+    return Milestone.statuses.IN_PROGRESS;
   }
 
   static get NEEDS_REVIEW() {
-    return MilestoneModel.statuses.NEEDS_REVIEW;
+    return Milestone.statuses.NEEDS_REVIEW;
   }
 
   static get COMPLETED() {
-    return MilestoneModel.statuses.COMPLETED;
+    return Milestone.statuses.COMPLETED;
   }
 
   static get CANCELED() {
-    return MilestoneModel.statuses.CANCELED;
+    return Milestone.statuses.CANCELED;
   }
 
   static get PAYING() {
-    return MilestoneModel.statuses.PAYING;
+    return Milestone.statuses.PAYING;
   }
 
   static get PAID() {
-    return MilestoneModel.statuses.PAID;
+    return Milestone.statuses.PAID;
   }
 
   static get FAILED() {
-    return MilestoneModel.statuses.FAILED;
+    return Milestone.statuses.FAILED;
   }
 
   static get statuses() {
     return {
+      ACTIVE: 'Active',
       PROPOSED: 'Proposed',
       REJECTED: 'Rejected',
       PENDING: 'Pending',
@@ -188,7 +180,7 @@ export default class MilestoneModel extends BasicModel {
 
   // eslint-disable-next-line class-methods-use-this
   get type() {
-    return MilestoneModel.type;
+    return Milestone.type;
   }
 
   get title() {
@@ -278,7 +270,7 @@ export default class MilestoneModel extends BasicModel {
   }
 
   set status(value) {
-    this.checkValue(value, Object.values(MilestoneModel.statuses), 'status');
+    this.checkValue(value, Object.values(Milestone.statuses), 'status');
     this._status = value;
   }
 
@@ -418,6 +410,10 @@ export default class MilestoneModel extends BasicModel {
   }
 
   get campaignId() {
+    return this._campaignId;
+  }
+
+  getCampaignId() {
     return this._campaignId;
   }
 

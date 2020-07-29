@@ -281,24 +281,6 @@ class MilestoneService {
   }
 
   /**
-   * Save new Milestone to the blockchain or update existing one in feathers
-   * TODO: Handle error states properly
-   *
-   * @param milestone   Milestone object to be saved
-   * @param afterSave   Callback to be triggered after the Milestone is saved in feathers
-   * @param afterMined  Callback to be triggered after the transaction is mined
-   */
-  static async save(milestone, afterSave = () => {}, onError = () => {}) {
-    try {
-      if (milestone.id) await milestones.patch(milestone.id, milestone.toFeathers());
-      else milestone.id = (await milestones.create(milestone.toFeathers()))._id;
-      afterSave(milestone);
-    } catch (err) {
-      onError('Something went wrong with saving your Milestone', err);
-    }
-  }
-
-  /**
    * Delete a proposed milestone
    *
    * @param milestone   a Milestone model

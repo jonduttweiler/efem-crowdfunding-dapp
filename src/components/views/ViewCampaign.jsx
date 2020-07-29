@@ -26,6 +26,7 @@ import ErrorBoundary from '../ErrorBoundary';
 
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
+import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
 
 /**
  * The Campaign detail view mapped to /campaing/id
@@ -40,10 +41,11 @@ class ViewCampaign extends Component {
     
     this.state = {
       isLoading: true,
-      isLoadingMilestones: true,
+      //isLoadingMilestones: true,
+      isLoadingMilestones: false,
       isLoadingDonations: true,
       donations: [],
-      milestones: [],
+      milestones: props.milestones,
       milestonesLoaded: 0,
       milestonesTotal: 0,
       milestonesPerBatch: 50,
@@ -52,7 +54,7 @@ class ViewCampaign extends Component {
       newDonations: 0,
     };
 
-    this.loadMoreMilestones = this.loadMoreMilestones.bind(this);
+    //this.loadMoreMilestones = this.loadMoreMilestones.bind(this);
     this.loadMoreDonations = this.loadMoreDonations.bind(this);
   }
 
@@ -60,10 +62,11 @@ class ViewCampaign extends Component {
 
     this.setState({
       campaign: this.props.campaign,
+      milestones: this.props.milestones,
       isLoading: false
     });
 
-    this.loadMoreMilestones(this.props.campaign.id);
+    //this.loadMoreMilestones(this.props.campaign.id);
 
     this.loadMoreDonations();
     // subscribe to donation count
@@ -98,7 +101,7 @@ class ViewCampaign extends Component {
     );
   }
 
-  loadMoreMilestones(campaignId = this.props.match.params.id) {
+  /*loadMoreMilestones(campaignId = this.props.match.params.id) {
     this.setState({ isLoadingMilestones: true }, () =>
       CampaignService.getMilestones(
         campaignId,
@@ -114,7 +117,7 @@ class ViewCampaign extends Component {
         () => this.setState({ isLoadingMilestones: false }),
       ),
     );
-  }
+  }*/
 
   removeMilestone(id) {
     checkBalance(this.props.balance)
@@ -137,11 +140,9 @@ class ViewCampaign extends Component {
   }
 
   render() {
-    const { history, currentUser, balance } = this.props;
+    const { campaign, milestones, history, currentUser, balance } = this.props;
     const {
       isLoading,
-      campaign,
-      milestones,
       donations,
       isLoadingDonations,
       isLoadingMilestones,
@@ -207,7 +208,7 @@ class ViewCampaign extends Component {
 
                     <div className="milestone-header spacer-top-50 card-view">
                       <h3>Milestones</h3>
-                      {isOwner(campaign.owner.address, currentUser) && (
+                      {isOwner(campaign.manager, currentUser) && (
                         <Link
                           className="btn btn-primary btn-sm pull-right"
                           to={`/campaigns/${campaign.id}/milestones/new`}
@@ -216,7 +217,7 @@ class ViewCampaign extends Component {
                         </Link>
                       )}
 
-                      {!isOwner(campaign.owner.address, currentUser) && currentUser && (
+                      {!isOwner(campaign.manager, currentUser) && currentUser && (
                         <Link
                           className="btn btn-primary btn-sm pull-right"
                           to={`/campaigns/${campaign.id}/milestones/propose`}
@@ -335,7 +336,8 @@ ViewCampaign.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    campaign: selectCampaign(state, ownProps.match.params.id)
+    campaign: selectCampaign(state, ownProps.match.params.id),
+    milestones: selectMilestonesByCampaign(state, ownProps.match.params.id)
   }
 }
 

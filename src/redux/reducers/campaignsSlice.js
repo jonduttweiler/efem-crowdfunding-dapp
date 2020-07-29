@@ -11,7 +11,7 @@ export const campaignsSlice = createSlice({
     },
     resetCampaigns: (state, action) => {
       // Se resguardan las Campaigns Pendientes.
-      var campaignPendings = state.filter(c => c.myStatus == Campaign.PENDING);
+      var pendings = state.filter(c => c.myStatus == Campaign.PENDING);
       state.splice(0, state.length);
       for (let i = 0; i < action.payload.length; i++) {
         // Se asigna el ID del lado cliente.
@@ -19,10 +19,7 @@ export const campaignsSlice = createSlice({
         var campaign = new Campaign(action.payload[i]);
         state.push(campaign);
       }
-      for (let i = 0; i < campaignPendings.length; i++) {
-        var campaign = campaignPendings[i];
-        state.push(campaign);        
-      }
+      pendings.forEach(c => state.push(c));
     },
     addCampaign: (state, action) => {
       // Se asigna el ID del lado cliente.
@@ -31,12 +28,10 @@ export const campaignsSlice = createSlice({
       state.push(campaign);
     },
     updateCampaignByClientId: (state, action) => {
-      var campaign = new Campaign(action.payload);
-      for (let i = 0; i < state.length; i++) {
-        if(campaign.clientId == state[i].clientId) {
-          state[i] = campaign;
-          break;
-        }        
+      let campaign = new Campaign(action.payload);
+      let index = state.findIndex(c => campaign.clientId == c.clientId);
+      if(index != -1) {
+        state[index] = campaign;
       }
     }
   },
@@ -45,14 +40,6 @@ export const campaignsSlice = createSlice({
 export const { fetchCampaigns, resetCampaigns, addCampaign, updateCampaignByClientId } = campaignsSlice.actions;
 
 export const selectCampaigns = state => state.campaigns;
-export const selectCampaign = function(state, id) {
-  for (let i = 0; i < state.campaigns.length; i++) {
-    const campaign = state.campaigns[i];
-    if(campaign.id == id) {
-      return campaign;
-    }    
-  }
-  return null;
-}
+export const selectCampaign = (state, id) => state.campaigns.find(c => c.id === id);
 
 export default campaignsSlice.reducer;

@@ -1,7 +1,7 @@
 import React, { Component, createContext } from 'react';
 import PropTypes from 'prop-types';
-
-import MilestoneService from '../services/MilestoneService';
+import { connect } from 'react-redux'
+import { fetchMilestones, selectMilestones } from '../redux/reducers/milestonesSlice'
 
 const Context = createContext();
 const { Provider, Consumer } = Context;
@@ -12,12 +12,12 @@ export { Consumer };
  * @prop children    Child REACT components
  */
 class MilestoneProvider extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      milestones: [],
-      isLoading: true,
+      milestones: props.milestones,
+      isLoading: false,
       hasError: false,
       total: 0,
     };
@@ -25,13 +25,17 @@ class MilestoneProvider extends Component {
     this.loadMore = this.loadMore.bind(this);
   }
 
+  componentDidMount() {
+    this.props.fetchMilestones();
+  }
+  
   componentWillMount() {
     this.loadMore(true);
   }
 
   loadMore(init = false) {
     if (init || (!this.state.isLoading && this.state.total > this.state.milestones.length)) {
-      this.setState({ isLoading: true }, () =>
+      /*this.setState({ isLoading: true }, () =>
         MilestoneService.getActiveMilestones(
           this.props.step, // Limit
           this.state.milestones.length, // Skip
@@ -44,13 +48,19 @@ class MilestoneProvider extends Component {
           },
           () => this.setState({ hasError: true, isLoading: false }),
         ),
-      );
+      );*/
     }
   }
 
   render() {
-    const { milestones, isLoading, hasError, total } = this.state;
+
+    const { milestones } = this.props;
+    const { isLoading, hasError } = this.state;
     const { loadMore } = this;
+    // TODO Por incorporación de Redux, se fija el total
+    // como el tamaño de los milestones.
+    // Falta el desarrollo del Paginado.
+    var total = milestones.length;
 
     return (
       <Provider
@@ -80,4 +90,13 @@ MilestoneProvider.propTypes = {
 
 MilestoneProvider.defaultProps = { step: 50 };
 
-export default MilestoneProvider;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    milestones: selectMilestones(state)
+  }
+}
+
+const mapDispatchToProps = { fetchMilestones }
+
+export default connect(mapStateToProps, mapDispatchToProps)(MilestoneProvider)
+

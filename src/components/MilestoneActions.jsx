@@ -21,6 +21,9 @@ class MilestoneActions extends Component {
     const { milestone, balance } = this.props;
 
     return (
+      <div></div>
+    )
+    return (
       <UserConsumer>
         {({ state: { currentUser } }) => (
           <Fragment>

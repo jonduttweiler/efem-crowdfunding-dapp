@@ -33,8 +33,8 @@ class Campaign extends BasicModel {
     this.clientId = data.clientId || null;
     this.communityUrl = data.communityUrl || '';
     this.status = data.status || Campaign.ACTIVE;
-    this.reviewerAddress = data.reviewerAddress;
-    this.ownerAddress = data.ownerAddress;
+    this.manager = data.manager;
+    this.reviewer = data.reviewer;
     this.commitTime = data.commitTime || 0;
     this.imageUrl = data.imageUrl;
   }
@@ -56,7 +56,6 @@ class Campaign extends BasicModel {
       description: this.description,
       communityUrl: this.communityUrl,
       image: cleanIpfsPath(this.image),
-      reviewerAddress: this.reviewerAddress,
       status: this.status,
     };
     if (!this.id) campaign.txHash = txHash;

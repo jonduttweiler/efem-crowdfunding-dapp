@@ -24,7 +24,7 @@ const Campaigns = () => (
                 </p>
                 <div className="cards-grid-container">
                   {milestones.map(milestone => (
-                    <MilestoneCard key={milestone.id} milestone={milestone} />
+                    <MilestoneCard key={milestone.clientId} milestone={milestone} />
                   ))}
                 </div>
                 {milestones.length < total && (

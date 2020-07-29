@@ -261,7 +261,7 @@ class EditCampaign extends Component {
                           validationErrors={{
                             isEtherAddress: 'Please select a reviewer.',
                           }}
-                          required
+                          //required
                           disabled={!isNew}
                         />
                       }
@@ -276,7 +276,7 @@ class EditCampaign extends Component {
                           className="btn btn-success pull-right"
                           formNoValidate
                           type="submit"
-                          disabled={isSaving || !formIsValid}
+                          //disabled={isSaving || !formIsValid}
                           isLoading={isSaving}
                           loadingText="Saving..."
                         >

@@ -8,14 +8,12 @@ import { Link } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 
 import User from 'models/User';
-import Campaign from 'models/Campaign';
 
 import MilestoneActions from 'components/MilestoneActions';
 import { getUserAvatar, getUserName } from '../../lib/helpers';
 
 import BackgroundImageHeader from '../BackgroundImageHeader';
 // import DonateButton from '../DonateButton';
-import ErrorPopup from '../ErrorPopup';
 import GoBackButton from '../GoBackButton';
 import ListDonations from '../ListDonations';
 import Loader from '../Loader';
@@ -23,6 +21,10 @@ import MilestoneConversations from '../MilestoneConversations';
 // import DelegateMultipleButton from '../DelegateMultipleButton';
 
 import MilestoneService from '../../services/MilestoneService';
+
+import { connect } from 'react-redux'
+import { selectCampaign } from '../../redux/reducers/campaignsSlice'
+import { selectMilestone } from '../../redux/reducers/milestonesSlice';
 
 /**
   Loads and shows a single milestone
@@ -32,16 +34,17 @@ import MilestoneService from '../../services/MilestoneService';
 * */
 
 class ViewMilestone extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      isLoading: true,
+      //isLoading: true,
+      isLoading: false,
       isLoadingDonations: true,
       donations: [],
       recipient: {},
-      campaign: {},
-      milestone: {},
+      campaign: props.campaign,
+      milestone: props.milestone,
       donationsTotal: 0,
       donationsPerBatch: 50,
       newDonations: 0,
@@ -53,7 +56,7 @@ class ViewMilestone extends Component {
   componentDidMount() {
     const { milestoneId } = this.props.match.params;
 
-    MilestoneService.subscribeOne(
+    /*MilestoneService.subscribeOne(
       milestoneId,
       milestone =>
         this.setState({
@@ -66,7 +69,7 @@ class ViewMilestone extends Component {
         ErrorPopup('Something went wrong with viewing the milestone. Please try a refresh.', err);
         this.setState({ isLoading: false });
       },
-    );
+    );*/
 
     this.loadMoreDonations();
     // subscribe to donation count
@@ -139,7 +142,7 @@ class ViewMilestone extends Component {
 
         {!isLoading && (
           <div>
-            <BackgroundImageHeader image={milestone.image} height={300}>
+            <BackgroundImageHeader image={milestone.imageUrl} height={300}>
               <h6>Milestone</h6>
               <h1>{milestone.title}</h1>
 
@@ -180,9 +183,9 @@ class ViewMilestone extends Component {
                     />
 
                     <center>
-                      <Link to={`/profile/${milestone.owner.address}`}>
-                        <Avatar size={50} src={getUserAvatar(milestone.owner)} round />
-                        <p className="small">{getUserName(milestone.owner)}</p>
+                      <Link to={`/profile/${milestone.manager}`}>
+                        <Avatar size={50} src={getUserAvatar(milestone.manager)} round />
+                        <p className="small">{getUserName(milestone.manager)}</p>
                       </Link>
                     </center>
 
@@ -334,4 +337,13 @@ ViewMilestone.defaultProps = {
   currentUser: undefined,
 };
 
-export default ViewMilestone;
+const mapStateToProps = (state, ownProps) => {
+  const { milestoneId } = ownProps.match.params;
+  let milestone = selectMilestone(state, milestoneId);
+  return {
+    milestone: milestone,
+    campaign: selectCampaign(state, milestone.getCampaignId()),
+  }
+}
+
+export default connect(mapStateToProps)(ViewMilestone)

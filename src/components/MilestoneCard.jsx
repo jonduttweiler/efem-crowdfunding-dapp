@@ -7,6 +7,9 @@ import User from '../models/User';
 import CardStats from './CardStats';
 import GivethLogo from '../assets/logo.svg';
 
+import { connect } from 'react-redux'
+import { selectCampaign } from '../redux/reducers/campaignsSlice'
+
 /**
  * A single milestone
  */
@@ -21,7 +24,8 @@ class MilestoneCard extends Component {
 
   viewMilestone() {
     history.push(
-      `/campaigns/${this.props.milestone.campaign._id}/milestones/${this.props.milestone._id}`,
+      //`/campaigns/${this.props.milestone.campaign._id}/milestones/${this.props.milestone._id}`,
+      `/campaigns/${this.props.campaign.id}/milestones/${this.props.milestone.id}`,
     );
   }
 
@@ -35,10 +39,17 @@ class MilestoneCard extends Component {
   }
 
   render() {
-    const { milestone, currentUser } = this.props;
+    const { milestone, campaign, currentUser } = this.props;
     const colors = ['#76318f', '#50b0cf', '#1a1588', '#2A6813', '#95d114', '#155388', '#604a7d'];
     const color = colors[Math.floor(Math.random() * colors.length)];
 
+    // TODO Ver cómo implementar esto de manera correcta.
+    if(campaign == undefined) {
+      return (
+        <div></div>
+      )
+    }
+    
     return (
       <div
         className="card milestone-card overview-card"
@@ -55,11 +66,11 @@ class MilestoneCard extends Component {
             role="button"
             tabIndex="0"
           >
-            <Avatar size={30} src={getUserAvatar(milestone.owner)} round />
-            <span className="owner-name">{getUserName(milestone.owner)}</span>
+            <Avatar size={30} src={getUserAvatar(milestone.manager)} round />
+            <span className="owner-name">{getUserName(milestone.manager)}</span>
 
-            {((milestone && milestone.owner && isOwner(milestone.ownerAddress, currentUser)) ||
-              isOwner(milestone.campaign.ownerAddress, currentUser)) &&
+            {((milestone && milestone.owner && isOwner(milestone.manager, currentUser)) ||
+              isOwner(campaign.manager, currentUser)) &&
               ['Proposed', 'Rejected', 'InProgress', 'NeedsReview'].includes(milestone.status) && (
                 <span className="pull-right">
                   <button
@@ -76,8 +87,8 @@ class MilestoneCard extends Component {
           <div
             className="card-img"
             style={{
-              backgroundColor: milestone.image ? 'white' : color,
-              backgroundImage: `url(${milestone.image || GivethLogo})`,
+              backgroundColor: milestone.imageUrl ? 'white' : color,
+              backgroundImage: `url(${milestone.imageUrl || GivethLogo})`,
             }}
           />
 
@@ -119,4 +130,10 @@ MilestoneCard.defaultProps = {
   currentUser: undefined,
 };
 
-export default MilestoneCard;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    campaign: selectCampaign(state, ownProps.milestone.getCampaignId())
+  }
+}
+
+export default connect(mapStateToProps)(MilestoneCard)

@@ -27,6 +27,7 @@ class UserService {
 
       afterSave();
     } catch (err) {
+      console.error('Error creando perfil de usuario', err);
       ErrorPopup(
         'There has been a problem creating your user profile. Please refresh the page and try again.',
       );

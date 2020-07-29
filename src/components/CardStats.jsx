@@ -10,28 +10,17 @@ import config from '../configuration';
  */
 const CardStats = ({ peopleCount, maxAmount, totalDonated, type, status, token }) => (
   <div className="row card-stats">
-    {['dac', 'campaign'].includes(type) && (
-      <div className="col-6 text-left">
-        <p>Giver(s)</p>
-        <span>
-          <i className="fa fa-male" />
-          {peopleCount}
-        </span>
-      </div>
-    )}
 
-    {type === 'milestone' && (
-      <div className="col-3 text-left">
-        <p>Giver(s)</p>
-        <span>
-          <i className="fa fa-male" />
-          {peopleCount}
-        </span>
-      </div>
-    )}
+    <div className="col text-left">
+      <p>Givers</p>
+      <span>
+        <i className="fa fa-male" />
+        {peopleCount}
+      </span>
+    </div>
 
     {['dac', 'campaign'].includes(type) && (
-      <div className="col-5 text-center card-center">
+      <div className="col text-center card-center">
         <span>
           <p>Donations</p>
           <p>{totalDonated.toFixed()}</p>
@@ -40,7 +29,7 @@ const CardStats = ({ peopleCount, maxAmount, totalDonated, type, status, token }
     )}
 
     {type === 'milestone' && (
-      <div className="col-5 text-center card-center">
+      <div className="col text-center card-center">
         {maxAmount && (
           <span>
             <p>Requested</p>
@@ -52,15 +41,14 @@ const CardStats = ({ peopleCount, maxAmount, totalDonated, type, status, token }
       </div>
     )}
 
-    {type === 'milestone' && (
-      <div className="col-4 text-right">
-        <p>status</p>
-        <span>
-          <i className="fa fa-check-circle" />
-          {status}
-        </span>
-      </div>
-    )}
+    <div className="col-4 text-right">
+      <p>Status</p>
+      <span>
+        <i className="fa fa-check-circle" />
+        {status}
+      </span>
+    </div>
+    
   </div>
 );
 
