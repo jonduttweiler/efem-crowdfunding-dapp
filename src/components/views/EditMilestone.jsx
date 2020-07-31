@@ -228,7 +228,7 @@ class EditMilestone extends Component {
       () => {
 
         // Save the milestone
-        this.props.addMilestone(this.state.milestone);
+        this.props.addMilestone(milestone);
         
         React.toast.success(
           <p>
@@ -257,7 +257,9 @@ class EditMilestone extends Component {
     milestone.description = inputs.description;
     milestone.reviewerAddress = inputs.reviewerAddress;
     milestone.recipientAddress = inputs.recipientAddress;
+    milestone.fiatAmountTarget = new BigNumber(inputs.fiatAmountTarget);
 
+    console.log('milestone.fiatAmountTarget', milestone.fiatAmountTarget);
     // if(!milestone.itemizeState) milestone.maxAmount = inputs.maxAmount;
 
     this.setState({ milestone });
@@ -430,20 +432,19 @@ class EditMilestone extends Component {
                         <div className="form-group row">
                           <div className="col-6">
                             <Input
-                              name="fiatAmount"
+                              name="fiatAmountTarget"
                               min="0"
-                              id="fiatamount-input"
+                              id="fiataAmountTarget-input"
                               type="number"
                               step="any"
-                              label={`Maximum amount in ${milestone.selectedFiatType}`}
-                              value={milestone.fiatAmount.toString()}
+                              label={`Target amount in ${milestone.selectedFiatType}`}
+                              value={milestone.fiatAmountTarget.toString()}
                               placeholder="10"
                               validations="greaterThan:0"
                               validationErrors={{
                                 greaterEqualTo: 'Minimum value must be greater than 0',
                               }}
                               disabled={milestone.projectId !== undefined}
-                              onChange={this.setMaxAmount}
                             />
                           </div>
 

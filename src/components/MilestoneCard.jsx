@@ -102,7 +102,8 @@ class MilestoneCard extends Component {
               type="milestone"
               peopleCount={milestone.peopleCount}
               totalDonated={milestone.currentBalance}
-              maxAmount={milestone.maxAmount}
+              fiatType={milestone.selectedFiatType}
+              fiatAmountTarget={milestone.fiatAmountTarget}
               milestonesCount={milestone.milestonesCount}
               status={milestone.status}
               token={milestone.token}
@@ -132,7 +133,7 @@ MilestoneCard.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    campaign: selectCampaign(state, ownProps.milestone.getCampaignId())
+    campaign: selectCampaign(state, ownProps.milestone.campaignId)
   }
 }
 

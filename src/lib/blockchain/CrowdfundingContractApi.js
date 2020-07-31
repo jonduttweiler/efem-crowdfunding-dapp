@@ -6,6 +6,7 @@ import IpfsService from '../../services/IpfsService';
 import extraGas from './extraGas';
 import { Observable } from 'rxjs'
 import web3 from 'web3';
+import BigNumber from 'bignumber.js';
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -121,6 +122,8 @@ class CrowdfundingContractApi {
         const { infoCid, status, manager, reviewer } = campaingOnChain;
         const { title, description, image, communityUrl } = await IpfsService.downloadJson(infoCid);
 
+        console.log('ync getCampaig', campaingOnChain);
+
         return new Campaign({
             _id: id,
             title: title,
@@ -157,11 +160,11 @@ class CrowdfundingContractApi {
                 campaign.infoCid = infoCid;
 
                 // Temporal hasta que exista la DAC previamente.
-                /*let receipt = await crowdfunding.newDac(campaign.infoCid,
+                let receipt = await crowdfunding.newDac(campaign.infoCid,
                   {
                     from: campaign.owner.address,
                     $extraGas: extraGas()
-                  });*/
+                  });
                 // Temporal hasta que exista la DAC previamente.
 
                 let promiEvent = crowdfunding.newCampaign(
@@ -231,9 +234,9 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const milestoneOnChain = await crowdfunding.getMilestone(id);
         // Se obtiene la información del Milestone desde IPFS.
-        const { campaignId, infoCid, status, manager, reviewer, recipient, campaignReviewer } = milestoneOnChain;
+        const { campaignId, infoCid, fiatAmountTarget, status, manager, reviewer, recipient, campaignReviewer } = milestoneOnChain;
         const { title, description, image, communityUrl } = await IpfsService.downloadJson(infoCid);
-        
+
         return new Milestone({
             _id: id,
             campaignId: campaignId,
@@ -247,7 +250,8 @@ class CrowdfundingContractApi {
             reviewer: reviewer,
             recipient: recipient,
             campaignReviewer: campaignReviewer,
-            commitTime: 0
+            commitTime: 0,
+            fiatAmountTarget: new BigNumber(fiatAmountTarget)
         });
     }
 
@@ -275,8 +279,7 @@ class CrowdfundingContractApi {
                 let promiEvent = crowdfunding.newMilestone(
                     milestone.infoCid,
                     milestone.campaignId,
-                    // TODO Tomar desde el FIAT Amount
-                    10000000000,
+                    milestone.fiatAmountTarget,
                     milestone.reviewerAddress,
                     milestone.recipientAddress,
                     milestone.campaignReviewerAddress,
@@ -334,10 +337,10 @@ class CrowdfundingContractApi {
      * @returns estado de la campaign en la dapp.
      */
     mapCampaingStatus(status) {
-        if(status == 0) {
+        if (status == 0) {
             return Campaign.ACTIVE;
         }
-        if(status == 1) {
+        if (status == 1) {
             return Campaign.CANCELED;
         }
         return Campaign.CANCELED;
@@ -351,10 +354,10 @@ class CrowdfundingContractApi {
      * @returns estado del milestone en la dapp.
      */
     mapMilestoneStatus(status) {
-        if(status == 0) {
+        if (status == 0) {
             return Milestone.ACTIVE;
         }
-        if(status == 1) {
+        if (status == 1) {
             return Milestone.CANCELED;
         }
         return Milestone.IN_PROGRESS;

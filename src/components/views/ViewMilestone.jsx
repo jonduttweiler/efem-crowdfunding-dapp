@@ -258,12 +258,12 @@ class ViewMilestone extends Component {
                         )}
 
                         <div className="form-group">
-                          <span className="label">Max amount to raise</span>
+                          <span className="label">Target amount to raise</span>
                           <small className="form-text">
                             The maximum amount that can be donated to this Milestone. Based on the
                             requested amount in fiat.
                           </small>
-                          ({milestone.fiatAmount.toString()} {milestone.selectedFiatType})
+                          ({milestone.fiatAmountTarget.toString()} {milestone.selectedFiatType})
                         </div>
 
                         <div className="form-group">
@@ -271,7 +271,7 @@ class ViewMilestone extends Component {
                           <small className="form-text">
                             The amount currently donated to this Milestone
                           </small>
-                          {milestone.currentBalance.toString()}
+                          {/*milestone.currentBalance.toString()*/}
                         </div>
 
                         <div className="form-group">
@@ -342,7 +342,7 @@ const mapStateToProps = (state, ownProps) => {
   let milestone = selectMilestone(state, milestoneId);
   return {
     milestone: milestone,
-    campaign: selectCampaign(state, milestone.getCampaignId()),
+    campaign: selectCampaign(state, milestone.campaignId),
   }
 }
 

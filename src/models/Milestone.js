@@ -1,11 +1,7 @@
 import BigNumber from 'bignumber.js';
-import { utils } from 'web3';
-
 import { getStartOfDayUTC, cleanIpfsPath } from 'lib/helpers';
 import BasicModel from './BasicModel';
 import MilestoneItemModel from './MilestoneItem';
-import MilestoneService from '../services/MilestoneService';
-import IpfsService from '../services/IpfsService';
 
 /**
  * The DApp Milestone model
@@ -15,9 +11,11 @@ export default class Milestone extends BasicModel {
     super(data);
 
     const {
-      maxAmount = '0',
-      selectedFiatType = 'EUR',
-      fiatAmount = new BigNumber('0'),
+      //maxAmount = '0',
+      selectedFiatType = 'USD',
+      //fiatAmount = new BigNumber('0'),
+      //fiatAmountTarget = new BigNumber('0'),
+      fiatAmountTarget,
       recipientAddress = '',
       status = Milestone.IN_PROGRESS,
       projectId = undefined,
@@ -46,8 +44,9 @@ export default class Milestone extends BasicModel {
 
     this.clientId = clientId || null;
     this._selectedFiatType = selectedFiatType;
-    this._maxAmount = utils.fromWei(maxAmount);
-    this._fiatAmount = new BigNumber(fiatAmount);
+    //this._maxAmount = utils.fromWei(maxAmount);
+    //this._fiatAmount = new BigNumber(fiatAmount);
+    this._fiatAmountTarget = fiatAmountTarget;
     this._recipientAddress = recipientAddress;
     this._status = status;
     this._projectId = projectId;
@@ -86,7 +85,8 @@ export default class Milestone extends BasicModel {
       conversionRateTimestamp: this._conversionRateTimestamp,
       //selectedFiatType: this._selectedFiatType,
       date: this._date,
-      fiatAmount: this._fiatAmount.toString(),
+      //fiatAmount: this._fiatAmount.toString(),
+      fiatAmountTarget: this._fiatAmountTarget.toString(),
       conversionRate: this._conversionRate,
       version: 1,
     };
@@ -105,7 +105,8 @@ export default class Milestone extends BasicModel {
       status: this._status,
       selectedFiatType: this._selectedFiatType,
       date: this._date,
-      fiatAmount: this._fiatAmount.toString(),
+      //fiatAmount: this._fiatAmount.toString(),
+      fiatAmountTarget: this._fiatAmountTarget.toString(),
       token: this._token,
     };
   }
@@ -210,7 +211,7 @@ export default class Milestone extends BasicModel {
     this._image = value;
   }
 
-  get maxAmount() {
+  /*get maxAmount() {
     // max amount is not stored in wei
     if (this.itemizeState) {
       return this.items
@@ -222,12 +223,12 @@ export default class Milestone extends BasicModel {
     }
 
     return this._maxAmount;
-  }
+  }*/
 
-  set maxAmount(value) {
+  /*set maxAmount(value) {
     this.checkType(value, ['string'], 'maxAmount');
     this._maxAmount = value;
-  }
+  }*/
 
   get selectedFiatType() {
     return this._selectedFiatType;
@@ -247,14 +248,23 @@ export default class Milestone extends BasicModel {
     this._token = value;
   }
 
-  get fiatAmount() {
+  get fiatAmountTarget() {
+    return this._fiatAmountTarget;
+  }
+
+  set fiatAmountTarget(value) {
+    this.checkInstanceOf(value, BigNumber, 'fiatAmountTarget');
+    this._fiatAmountTarget = value;
+  }
+
+  /*get fiatAmount() {
     return this._fiatAmount;
   }
 
   set fiatAmount(value) {
     this.checkInstanceOf(value, BigNumber, 'fiatAmount');
     this._fiatAmount = value;
-  }
+  }*/
 
   get recipientAddress() {
     return this._recipientAddress;
@@ -413,9 +423,9 @@ export default class Milestone extends BasicModel {
     return this._campaignId;
   }
 
-  getCampaignId() {
+  /*getCampaignId() {
     return this._campaignId;
-  }
+  }*/
 
   set conversionRateTimestamp(value) {
     this._conversionRateTimestamp = value;

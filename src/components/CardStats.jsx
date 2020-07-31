@@ -8,7 +8,13 @@ import config from '../configuration';
  *
  * TODO: Check the properties that are passed, sometimes they are number, sometimes strings...
  */
-const CardStats = ({ peopleCount, maxAmount, totalDonated, type, status, token }) => (
+const CardStats = ({ peopleCount,
+    fiatType,
+    fiatAmountTarget,
+    totalDonated,
+    type,
+    status }) => (
+      
   <div className="row card-stats">
 
     <div className="col text-left">
@@ -30,11 +36,11 @@ const CardStats = ({ peopleCount, maxAmount, totalDonated, type, status, token }
 
     {type === 'milestone' && (
       <div className="col text-center card-center">
-        {maxAmount && (
+        {fiatAmountTarget && (
           <span>
-            <p>Requested</p>
+            <p>Target</p>
             <p>
-              {maxAmount} {token.symbol}
+              {fiatAmountTarget.toString()} {fiatType}
             </p>
           </span>
         )}
@@ -56,14 +62,16 @@ CardStats.propTypes = {
   type: PropTypes.string.isRequired,
   peopleCount: PropTypes.number.isRequired,
   status: PropTypes.string,
-  maxAmount: PropTypes.string,
+  fiatType: PropTypes.string,
+  fiatAmountTarget: PropTypes.instanceOf(BigNumber),  
   totalDonated: PropTypes.instanceOf(BigNumber),
   token: PropTypes.shape(),
 };
 
 CardStats.defaultProps = {
   status: 'In Progress',
-  maxAmount: '0',
+  fiatType: 'USD',
+  fiatAmountTarget: new BigNumber('0'),
   totalDonated: new BigNumber('0'),
   token: {
     symbol: config.nativeTokenName,
