@@ -24,14 +24,13 @@ class MilestoneCard extends Component {
 
   viewMilestone() {
     history.push(
-      //`/campaigns/${this.props.milestone.campaign._id}/milestones/${this.props.milestone._id}`,
       `/campaigns/${this.props.campaign.id}/milestones/${this.props.milestone.id}`,
     );
   }
 
   viewProfile(e) {
     e.stopPropagation();
-    history.push(`/profile/${this.props.milestone.ownerAddress}`);
+    history.push(`/profile/${this.props.milestone.managerAddress}`);
   }
 
   editMilestone(e) {
@@ -66,11 +65,11 @@ class MilestoneCard extends Component {
             role="button"
             tabIndex="0"
           >
-            <Avatar size={30} src={getUserAvatar(milestone.manager)} round />
-            <span className="owner-name">{getUserName(milestone.manager)}</span>
+            <Avatar size={30} src={getUserAvatar(milestone.managerAddress)} round />
+            <span className="owner-name">{getUserName(milestone.managerAddress)}</span>
 
-            {((milestone && milestone.owner && isOwner(milestone.manager, currentUser)) ||
-              isOwner(campaign.manager, currentUser)) &&
+            {((milestone && milestone.managerAddress && isOwner(milestone.managerAddress, currentUser)) ||
+              isOwner(campaign.managerAddress, currentUser)) &&
               ['Proposed', 'Rejected', 'InProgress', 'NeedsReview'].includes(milestone.status) && (
                 <span className="pull-right">
                   <button
@@ -87,8 +86,8 @@ class MilestoneCard extends Component {
           <div
             className="card-img"
             style={{
-              backgroundColor: milestone.imageUrl ? 'white' : color,
-              backgroundImage: `url(${milestone.imageUrl || GivethLogo})`,
+              backgroundColor: milestone.imageCidUrl ? 'white' : color,
+              backgroundImage: `url(${milestone.imageCidUrl || GivethLogo})`,
             }}
           />
 
@@ -100,13 +99,9 @@ class MilestoneCard extends Component {
           <div className="card-footer">
             <CardStats
               type="milestone"
-              peopleCount={milestone.peopleCount}
-              totalDonated={milestone.currentBalance}
-              fiatType={milestone.selectedFiatType}
+              fiatType={milestone.fiatType}
               fiatAmountTarget={milestone.fiatAmountTarget}
-              milestonesCount={milestone.milestonesCount}
               status={milestone.status}
-              token={milestone.token}
             />
           </div>
         </div>
@@ -117,12 +112,12 @@ class MilestoneCard extends Component {
 
 MilestoneCard.propTypes = {
   milestone: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    campaign: PropTypes.shape().isRequired,
-    ownerAddress: PropTypes.string.isRequired,
-    owner: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    //campaign: PropTypes.shape().isRequired,
+    managerAddress: PropTypes.string.isRequired,
+    /*owner: PropTypes.shape({
       address: PropTypes.string.isRequired,
-    }).isRequired,
+    }).isRequired,*/
   }).isRequired,
   currentUser: PropTypes.instanceOf(User),
 };

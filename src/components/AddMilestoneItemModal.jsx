@@ -63,7 +63,7 @@ class AddMilestoneItemModal extends Component {
     // set values on MilestoneItem
     item.date = inputs.date.format();
     item.description = inputs.description;
-    item.selectedFiatType = inputs.fiatType;
+    item.fiatType = inputs.fiatType;
     item.fiatAmount = new BigNumber(inputs.fiatAmount);
     item.wei = utils.toWei(inputs.etherAmount);
     item.conversionRate = parseFloat(inputs.conversionRate);

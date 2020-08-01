@@ -15,16 +15,12 @@ import { isOwner, getTruncatedText } from '../../lib/helpers';
 import { authenticateIfPossible, checkProfile } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
-
 import ErrorPopup from '../ErrorPopup';
-
 import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
 import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
 import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
 import { CREATE_MILESTONE_ROLE } from '../../constants/Role';
-
 import MilestoneService from '../../services/MilestoneService';
-
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { addMilestone } from '../../redux/reducers/milestonesSlice'
@@ -63,6 +59,7 @@ class EditMilestone extends Component {
   }
 
   componentDidMount() {
+
     this.checkUser()
       .then(async () => {
         this.setState({
@@ -71,23 +68,21 @@ class EditMilestone extends Component {
 
         // load a single milestones (when editing)
         if (!this.props.isNew) {
+        
           try {
             const milestone = await MilestoneService.get(this.props.match.params.milestoneId);
 
             if (
               !(
-                isOwner(milestone.owner.address, this.props.currentUser) ||
-                isOwner(milestone.campaign.ownerAddress, this.props.currentUser)
+                isOwner(milestone.managerAddress, this.props.currentUser) ||
+                isOwner(milestone.campaign.managerAddress, this.props.currentUser)
               )
             ) {
               this.props.history.goBack();
             }
             this.setState({
               milestone,
-              //campaignTitle: milestone.campaign.title,
-              campaign: milestone.campaign,
-              //campaignReviewerAddress: milestone.campaign.reviewerAddress,
-              //campaignId: milestone.campaignId,
+              campaign: milestone.campaign
             });
 
             this.setState({
@@ -101,19 +96,13 @@ class EditMilestone extends Component {
           }
         } else {
           try {
-            //const campaign = await CampaignService.get(this.props.match.params.id);
-
             const milestone = new Milestone();
+            // El destinatario es quien crea el milestone.
             milestone.recipientAddress = this.props.currentUser.address;
             this.setState({
-              //campaignTitle: this.props.campaign.title,
-              campaign: this.props.campaign,
-              //campaignReviewerAddress: this.props.campaign.reviewerAddress,
+              isLoading: false,             
               milestone,
-            });
-
-            this.setState({
-              isLoading: false,
+              campaign: this.props.campaign
             });
           } catch (e) {
             ErrorPopup(
@@ -135,9 +124,9 @@ class EditMilestone extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.currentUser !== this.props.currentUser) {
       this.checkUser().then(() => {
-        if (
-          !isOwner(this.state.milestone.owner.address, this.props.currentUser) ||
-          !isOwner(this.state.milestone.campaign.ownerAddress, this.props.currentUser)
+        if (false
+          //!isOwner(this.state.milestone.managerAddress, this.props.currentUser) ||
+          //!isOwner(this.state.milestone.campaign.managerAddress, this.props.currentUser)
         )
           this.props.history.goBack();
       });
@@ -162,7 +151,7 @@ class EditMilestone extends Component {
 
   changeSelectedFiat(fiatType) {
     const { milestone } = this.state;
-    milestone.selectedFiatType = fiatType;
+    milestone.fiatType = fiatType;
     this.setState({ milestone });
   }
 
@@ -210,9 +199,8 @@ class EditMilestone extends Component {
   submit() {
     const { milestone } = this.state;
 
-    milestone.ownerAddress = this.props.currentUser.address;
-    milestone.managerAddress = this.state.campaign.manager;
-    milestone.campaignReviewerAddress = this.state.campaign.reviewer;
+    milestone.managerAddress = this.state.campaign.managerAddress;
+    milestone.campaignReviewerAddress = this.state.campaign.reviewerAddress;
     milestone.campaignId = this.state.campaign.id;
     /*milestone.status =
       this.props.isProposed || milestone.status === Milestone.REJECTED
@@ -252,16 +240,12 @@ class EditMilestone extends Component {
 
   mapInputs(inputs) {
     const { milestone } = this.state;
-
     milestone.title = inputs.title;
     milestone.description = inputs.description;
     milestone.reviewerAddress = inputs.reviewerAddress;
     milestone.recipientAddress = inputs.recipientAddress;
     milestone.fiatAmountTarget = new BigNumber(inputs.fiatAmountTarget);
-
-    console.log('milestone.fiatAmountTarget', milestone.fiatAmountTarget);
     // if(!milestone.itemizeState) milestone.maxAmount = inputs.maxAmount;
-
     this.setState({ milestone });
   }
 
@@ -437,14 +421,13 @@ class EditMilestone extends Component {
                               id="fiataAmountTarget-input"
                               type="number"
                               step="any"
-                              label={`Target amount in ${milestone.selectedFiatType}`}
-                              value={milestone.fiatAmountTarget.toString()}
+                              label={`Target amount in ${milestone.fiatType}`}
+                              value={milestone.fiatAmountTarget}
                               placeholder="10"
                               validations="greaterThan:0"
                               validationErrors={{
                                 greaterEqualTo: 'Minimum value must be greater than 0',
                               }}
-                              disabled={milestone.projectId !== undefined}
                             />
                           </div>
 
@@ -452,10 +435,9 @@ class EditMilestone extends Component {
                             <SelectFormsy
                               name="fiatType"
                               label="Currency"
-                              value={milestone.selectedFiatType}
+                              value={milestone.fiatType}
                               options={fiatTypes}
                               onChange={this.changeSelectedFiat}
-                              disabled={milestone.projectId !== undefined}
                               required
                             />
                           </div>

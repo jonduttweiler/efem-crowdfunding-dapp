@@ -32,10 +32,10 @@ class MilestoneItem extends React.Component {
         <td className="td-item-description">{getTruncatedText(item.description)}</td>
 
         <td className="td-item-amount-fiat">
-          {item.selectedFiatType} {item.fiatAmount.toFixed()}
+          {item.fiatType} {item.fiatAmount.toFixed()}
           <br />
           <span className="help-block">
-            {`1 ${token.name} = ${item.conversionRate} ${item.selectedFiatType}`}
+            {`1 ${token.name} = ${item.conversionRate} ${item.fiatType}`}
           </span>
         </td>
 

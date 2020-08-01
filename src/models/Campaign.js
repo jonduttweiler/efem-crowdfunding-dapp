@@ -1,11 +1,23 @@
-import BasicModel from './BasicModel';
+import Entity from './Entity';
 import CampaignService from '../services/CampaignService';
-import { cleanIpfsPath } from '../lib/helpers';
 
 /**
  * The DApp Campaign model
  */
-class Campaign extends BasicModel {
+class Campaign extends Entity {
+
+  constructor(data) {
+    super(data);
+    const {
+      managerAddress = '',
+      reviewerAddress = '',
+      status = Campaign.ACTIVE
+    } = data;
+    this._managerAddress = managerAddress;
+    this._reviewerAddress = reviewerAddress;
+    this._status = status;
+  }
+
   static get CANCELED() {
     return 'Canceled';
   }
@@ -22,44 +34,8 @@ class Campaign extends BasicModel {
     return 'campaign';
   }
 
-  // eslint-disable-next-line class-methods-use-this
   get type() {
     return Campaign.type;
-  }
-
-  constructor(data) {
-    super(data);
-
-    this.clientId = data.clientId || null;
-    this.communityUrl = data.communityUrl || '';
-    this.status = data.status || Campaign.ACTIVE;
-    this.manager = data.manager;
-    this.reviewer = data.reviewer;
-    this.commitTime = data.commitTime || 0;
-    this.imageUrl = data.imageUrl;
-  }
-
-  toIpfs() {
-    return {
-      title: this.title,
-      description: this.description,
-      communityUrl: this.communityUrl,
-      image: cleanIpfsPath(this.image),
-      version: 1,
-    };
-  }
-
-  toFeathers(txHash) {
-    const campaign = {
-      id: this.id,
-      title: this.title,
-      description: this.description,
-      communityUrl: this.communityUrl,
-      image: cleanIpfsPath(this.image),
-      status: this.status,
-    };
-    if (!this.id) campaign.txHash = txHash;
-    return campaign;
   }
 
   get isActive() {
@@ -67,7 +43,7 @@ class Campaign extends BasicModel {
   }
 
   get isPending() {
-    return this.status === Campaign.PENDING || !this.mined;
+    return this.status === Campaign.PENDING;
   }
 
   /**
@@ -81,62 +57,35 @@ class Campaign extends BasicModel {
     CampaignService.cancel(this, from, afterCreate, afterMined);
   }
 
-  get communityUrl() {
-    return this.myCommunityUrl;
+  get managerAddress() {
+    return this._managerAddress;
   }
 
-  set communityUrl(value) {
-    this.checkType(value, ['string'], 'communityUrl');
-    this.myCommunityUrl = value;
-  }
-
-  get projectId() {
-    return this.myProjectId;
-  }
-
-  set projectId(value) {
-    this.checkType(value, ['number', 'string'], 'projectId');
-    this.myProjectId = value;
-  }
-
-  get status() {
-    return this.myStatus;
-  }
-
-  set status(value) {
-    this.checkValue(value, [Campaign.PENDING, Campaign.ACTIVE, Campaign.CANCELED], 'status');
-    this.myStatus = value;
-    if (value === Campaign.PENDING) this.myOrder = 1;
-    else if (value === Campaign.ACTIVE) this.myOrder = 2;
-    else if (value === Campaign.CANCELED) this.myOrder = 3;
-    else this.myOrder = 4;
-  }
-
-  get pluginAddress() {
-    return this.myPluginAddress;
-  }
-
-  set pluginAddress(value) {
-    this.checkType(value, ['string'], 'pluginAddress');
-    this.myPluginAddress = value;
+  set managerAddress(value) {
+    this.checkType(value, ['string', 'undefined'], 'managerAddress');
+    this._managerAddress = value;
   }
 
   get reviewerAddress() {
-    return this.myReviewerAddress;
+    return this._reviewerAddress;
   }
 
   set reviewerAddress(value) {
     this.checkType(value, ['string', 'undefined'], 'reviewerAddress');
-    this.myReviewerAddress = value;
+    this._reviewerAddress = value;
   }
 
-  get commitTime() {
-    return this.myCommitTime;
+  get status() {
+    return this._status;
   }
 
-  set commitTime(value) {
-    this.checkType(value, ['number'], 'commitTime');
-    this.myCommitTime = value;
+  set status(value) {
+    this.checkValue(value, [Campaign.PENDING, Campaign.ACTIVE, Campaign.CANCELED], 'status');
+    this._status = value;
+    if (value === Campaign.PENDING) this.myOrder = 1;
+    else if (value === Campaign.ACTIVE) this.myOrder = 2;
+    else if (value === Campaign.CANCELED) this.myOrder = 3;
+    else this.myOrder = 4;
   }
 }
 

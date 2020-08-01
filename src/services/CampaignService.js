@@ -8,10 +8,8 @@ import { feathersClient } from '../lib/feathersClient';
 import Campaign from '../models/Campaign';
 import Donation from '../models/Donation';
 import ErrorPopup from '../components/ErrorPopup';
-import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 
 const campaigns = feathersClient.service('campaigns');
-const crowdfundingContractApi = new CrowdfundingContractApi();
 
 class CampaignService {
 

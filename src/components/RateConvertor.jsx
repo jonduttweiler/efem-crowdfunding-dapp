@@ -22,7 +22,7 @@ class RateConvertor extends Component {
     this.state = {
       isLoading: true,
       date: props.date,
-      selectedFiatType: props.selectedFiatType,
+      fiatType: props.fiatType,
       fiatAmount: new BigNumber(`0${props.fiatAmount}`),
       fiatAmountForm: props.fiatAmount,
       etherAmountForm: props.etherAmount,
@@ -43,7 +43,7 @@ class RateConvertor extends Component {
 
     getConversionRates(date, token.symbol).then(resp => {
       // Set rate, or if rate is undefined, use the first defined rate
-      let rate = resp.rates[this.state.selectedFiatType];
+      let rate = resp.rates[this.state.fiatType];
 
       // This rate is undefined
       if (!rate) {
@@ -54,7 +54,7 @@ class RateConvertor extends Component {
           etherAmountForm: prevState.fiatAmountForm
             ? prevState.fiatAmount.div(rate).toString()
             : '',
-          selectedFiatType: token.symbol,
+          fiatType: token.symbol,
           isLoading: false,
         }));
       } else {
@@ -72,7 +72,7 @@ class RateConvertor extends Component {
   setEtherAmount(name, value) {
     if (numberRegex.test(value)) {
       const fiatAmount = new BigNumber(`0${value}`);
-      const conversionRate = this.state.conversionRate.rates[this.state.selectedFiatType];
+      const conversionRate = this.state.conversionRate.rates[this.state.fiatType];
 
       if (conversionRate && fiatAmount.gte(0)) {
         this.setState({
@@ -87,7 +87,7 @@ class RateConvertor extends Component {
   setFiatAmount(name, value) {
     if (numberRegex.test(value)) {
       const etherAmount = new BigNumber(`0${value}`);
-      const conversionRate = this.state.conversionRate.rates[this.state.selectedFiatType];
+      const conversionRate = this.state.conversionRate.rates[this.state.fiatType];
 
       if (conversionRate && etherAmount.gte(0)) {
         this.setState({
@@ -103,7 +103,7 @@ class RateConvertor extends Component {
     const conversionRate = this.state.conversionRate.rates[fiatType];
     this.setState(prevState => ({
       etherAmountForm: prevState.fiatAmount.div(conversionRate).toString(),
-      selectedFiatType: fiatType,
+      fiatType: fiatType,
     }));
   }
 
@@ -111,7 +111,7 @@ class RateConvertor extends Component {
     const { fiatTypes, token } = this.props;
     const {
       date,
-      selectedFiatType,
+      fiatType,
       fiatAmountForm,
       etherAmountForm,
       conversionRate,
@@ -149,7 +149,7 @@ class RateConvertor extends Component {
               <div className="col-4">
                 <Input
                   type="text"
-                  label={`Amount in ${selectedFiatType}`}
+                  label={`Amount in ${fiatType}`}
                   name="fiatAmount"
                   value={fiatAmountForm}
                   validations="greaterThan:0,isNumeric"
@@ -167,7 +167,7 @@ class RateConvertor extends Component {
                 <SelectFormsy
                   name="fiatType"
                   label="Currency"
-                  value={selectedFiatType}
+                  value={fiatType}
                   options={fiatTypes}
                   allowedOptions={conversionRate && conversionRate.rates}
                   onChange={this.changeSelectedFiat}
@@ -175,8 +175,8 @@ class RateConvertor extends Component {
                     conversionRate &&
                     conversionRate.rates &&
                     `1 ${token.symbol} = ${
-                      conversionRate.rates[selectedFiatType]
-                    } ${selectedFiatType}`
+                      conversionRate.rates[fiatType]
+                    } ${fiatType}`
                   }
                   required
                   disabled={this.props.disabled}
@@ -204,7 +204,7 @@ class RateConvertor extends Component {
                 name="conversionRate"
                 value={
                   conversionRate && conversionRate.rates
-                    ? conversionRate.rates[selectedFiatType].toString()
+                    ? conversionRate.rates[fiatType].toString()
                     : '0'
                 }
               />
@@ -226,7 +226,7 @@ class RateConvertor extends Component {
 RateConvertor.propTypes = {
   getConversionRates: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
-  selectedFiatType: PropTypes.string,
+  fiatType: PropTypes.string,
   date: PropTypes.instanceOf(moment),
   fiatAmount: PropTypes.string,
   etherAmount: PropTypes.string,
@@ -236,7 +236,7 @@ RateConvertor.propTypes = {
 
 RateConvertor.defaultProps = {
   disabled: false,
-  selectedFiatType: 'EUR',
+  fiatType: 'EUR',
   date: getStartOfDayUTC().subtract(1, 'd'),
   fiatAmount: '',
   etherAmount: '',

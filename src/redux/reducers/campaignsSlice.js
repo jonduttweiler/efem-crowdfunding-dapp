@@ -11,7 +11,7 @@ export const campaignsSlice = createSlice({
     },
     resetCampaigns: (state, action) => {
       // Se resguardan las Campaigns Pendientes.
-      var pendings = state.filter(c => c.myStatus == Campaign.PENDING);
+      var pendings = state.filter(c => c.isPending);
       state.splice(0, state.length);
       for (let i = 0; i < action.payload.length; i++) {
         // Se asigna el ID del lado cliente.
@@ -40,6 +40,6 @@ export const campaignsSlice = createSlice({
 export const { fetchCampaigns, resetCampaigns, addCampaign, updateCampaignByClientId } = campaignsSlice.actions;
 
 export const selectCampaigns = state => state.campaigns;
-export const selectCampaign = (state, id) => state.campaigns.find(c => c.id === id);
+export const selectCampaign = (state, id) => state.campaigns.find(c => c.id == id);
 
 export default campaignsSlice.reducer;

@@ -69,6 +69,7 @@ CardStats.propTypes = {
 };
 
 CardStats.defaultProps = {
+  peopleCount: 0,
   status: 'In Progress',
   fiatType: 'USD',
   fiatAmountTarget: new BigNumber('0'),

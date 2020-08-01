@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import 'react-input-token/lib/style.css';
-
 import { Form, Input } from 'formsy-react-components';
 import Loader from '../Loader';
 import QuillFormsy from '../QuillFormsy';
@@ -16,11 +15,9 @@ import User from '../../models/User';
 import Campaign from '../../models/Campaign';
 import CampaignService from '../../services/CampaignService';
 import ErrorPopup from '../ErrorPopup';
-
 import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
 import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
 import { CREATE_CAMPAIGN_ROLE } from '../../constants/Role';
-
 import { connect } from 'react-redux'
 import { addCampaign, selectCampaigns } from '../../redux/reducers/campaignsSlice'
 
@@ -36,12 +33,12 @@ class EditCampaign extends Component {
     super(props);
 
     this.state = {
-      isLoading: true,
+      isLoading: false,
       isSaving: false,
       formIsValid: false,
       // Campaign model
       campaign: new Campaign({
-        owner: props.currentUser,
+        managerAddress: props.currentUser.address,
         status: Campaign.PENDING
       }),
       isBlocking: false,
@@ -59,9 +56,10 @@ class EditCampaign extends Component {
       .then(() => {
         // Load this Campaign
         if (!this.props.isNew) {
+          console.log('Esta por aca');
           CampaignService.get(this.props.match.params.id)
             .then(campaign => {
-              if (isOwner(campaign.ownerAddress, this.props.currentUser)) {
+              if (isOwner(campaign.managerAddress, this.props.currentUser)) {
                 this.setState({ campaign, isLoading: false });
               } else history.goBack();
             })
@@ -86,7 +84,7 @@ class EditCampaign extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.currentUser !== this.props.currentUser) {
       this.checkUser().then(() => {
-        if (!this.props.isNew && !isOwner(this.state.campaign.ownerAddress, this.props.currentUser))
+        if (!this.props.isNew && !isOwner(this.state.campaign.managerddress, this.props.currentUser))
           history.goBack();
       });
     }
@@ -178,9 +176,9 @@ class EditCampaign extends Component {
                     mapping={inputs => {
                       campaign.title = inputs.title;
                       campaign.description = inputs.description;
-                      campaign.communityUrl = inputs.communityUrl;
+                      campaign.url = inputs.url;
                       campaign.reviewerAddress = inputs.reviewerAddress;
-                      campaign.summary = getTruncatedText(inputs.description, 100);
+                      //campaign.summary = getTruncatedText(inputs.description, 100);
                     }}
                     onValid={() => this.toggleFormValid(true)}
                     onInvalid={() => this.toggleFormValid(false)}
@@ -235,11 +233,11 @@ class EditCampaign extends Component {
 
                     <div className="form-group">
                       <Input
-                        name="communityUrl"
-                        id="community-url"
+                        name="url"
+                        id="url"
                         label="Url to join your Community"
                         type="text"
-                        value={campaign.communityUrl}
+                        value={campaign.url}
                         placeholder="https://slack.giveth.com"
                         help="Where can people join your Community? The dapp redirects people there."
                         validations="isUrl"
@@ -314,7 +312,7 @@ EditCampaign.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    campaigns: selectCampaigns(state)
+    //campaigns: selectCampaigns(state)
   }
 }
 

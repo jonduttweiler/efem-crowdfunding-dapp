@@ -19,9 +19,7 @@ import ListDonations from '../ListDonations';
 import Loader from '../Loader';
 import MilestoneConversations from '../MilestoneConversations';
 // import DelegateMultipleButton from '../DelegateMultipleButton';
-
 import MilestoneService from '../../services/MilestoneService';
-
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestone } from '../../redux/reducers/milestonesSlice';
@@ -142,7 +140,7 @@ class ViewMilestone extends Component {
 
         {!isLoading && (
           <div>
-            <BackgroundImageHeader image={milestone.imageUrl} height={300}>
+            <BackgroundImageHeader image={milestone.imageCidUrl} height={300}>
               <h6>Milestone</h6>
               <h1>{milestone.title}</h1>
 
@@ -183,9 +181,9 @@ class ViewMilestone extends Component {
                     />
 
                     <center>
-                      <Link to={`/profile/${milestone.manager}`}>
-                        <Avatar size={50} src={getUserAvatar(milestone.manager)} round />
-                        <p className="small">{getUserName(milestone.manager)}</p>
+                      <Link to={`/profile/${milestone.managerAddress}`}>
+                        <Avatar size={50} src={getUserAvatar(milestone.managerAddress)} round />
+                        <p className="small">{getUserName(milestone.managerAddress)}</p>
                       </Link>
                     </center>
 
@@ -216,10 +214,10 @@ class ViewMilestone extends Component {
                                   <Link to={`/profile/${milestone.reviewerAddress}`}>
                                     <Avatar
                                       size={30}
-                                      src={getUserAvatar(milestone.reviewer)}
+                                      src={getUserAvatar(milestone.reviewerAddress)}
                                       round
                                     />
-                                    {getUserName(milestone.reviewer)}
+                                    {getUserName(milestone.reviewerAddress)}
                                   </Link>
                                 </td>
                               </tr>
@@ -238,8 +236,8 @@ class ViewMilestone extends Component {
                               <tr>
                                 <td className="td-user">
                                   <Link to={`/profile/${milestone.recipientAddress}`}>
-                                    <Avatar size={30} src={getUserAvatar(recipient)} round />
-                                    {getUserName(recipient)}
+                                    <Avatar size={30} src={getUserAvatar(milestone.recipientAddress)} round />
+                                    {getUserName(milestone.recipientAddress)}
                                   </Link>
                                 </td>
                               </tr>
@@ -263,7 +261,7 @@ class ViewMilestone extends Component {
                             The maximum amount that can be donated to this Milestone. Based on the
                             requested amount in fiat.
                           </small>
-                          ({milestone.fiatAmountTarget.toString()} {milestone.selectedFiatType})
+                          ({milestone.fiatAmountTarget.toString()} {milestone.fiatType})
                         </div>
 
                         <div className="form-group">

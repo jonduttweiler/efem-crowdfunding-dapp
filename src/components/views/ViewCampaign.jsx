@@ -18,12 +18,9 @@ import BackgroundImageHeader from '../BackgroundImageHeader';
 import CommunityButton from '../CommunityButton';
 import DelegateMultipleButton from '../DelegateMultipleButton';
 import ListDonations from '../ListDonations';
-
 import User from '../../models/User';
 import CampaignService from '../../services/CampaignService';
-
 import ErrorBoundary from '../ErrorBoundary';
-
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
@@ -159,7 +156,7 @@ class ViewCampaign extends Component {
 
           {!isLoading && (
             <div>
-              <BackgroundImageHeader image={campaign.imageUrl} height={300}>
+              <BackgroundImageHeader image={campaign.imageCidUrl} height={300}>
                 <h6>Campaign</h6>
                 <h1>{campaign.title}</h1>
                 {/*<DonateButton
@@ -181,8 +178,8 @@ class ViewCampaign extends Component {
                     currentUser={currentUser}
                   />
                 )}
-                {campaign.communityUrl && (
-                  <CommunityButton className="btn btn-secondary" url={campaign.communityUrl}>
+                {campaign.url && (
+                  <CommunityButton className="btn btn-secondary" url={campaign.url}>
                     Join our community
                   </CommunityButton>
                 )}
@@ -194,9 +191,9 @@ class ViewCampaign extends Component {
                     <GoBackButton to="/" title="Campaigns" />
 
                     <center>
-                      <Link to={`/profile/${campaign.owner.address}`}>
-                        <Avatar size={50} src={getUserAvatar(campaign.owner)} round />
-                        <p className="small">{getUserName(campaign.owner)}</p>
+                      <Link to={`/profile/${campaign.managerAddress}`}>
+                        <Avatar size={50} src={getUserAvatar(campaign.managerAddress)} round />
+                        <p className="small">{getUserName(campaign.managerAddress)}</p>
                       </Link>
                     </center>
 
@@ -208,7 +205,7 @@ class ViewCampaign extends Component {
 
                     <div className="milestone-header spacer-top-50 card-view">
                       <h3>Milestones</h3>
-                      {isOwner(campaign.manager, currentUser) && (
+                      {isOwner(campaign.managerAddress, currentUser) && (
                         <Link
                           className="btn btn-primary btn-sm pull-right"
                           to={`/campaigns/${campaign.id}/milestones/new`}
@@ -217,7 +214,7 @@ class ViewCampaign extends Component {
                         </Link>
                       )}
 
-                      {!isOwner(campaign.manager, currentUser) && currentUser && (
+                      {!isOwner(campaign.managerAddress, currentUser) && currentUser && (
                         <Link
                           className="btn btn-primary btn-sm pull-right"
                           to={`/campaigns/${campaign.id}/milestones/propose`}
@@ -299,12 +296,12 @@ class ViewCampaign extends Component {
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
                     <h4>Campaign Reviewer</h4>
-                    {campaign && campaign.reviewer && (
+                    {campaign && campaign.reviewerAddress && (
                       <Link to={`/profile/${campaign.reviewerAddress}`}>
-                        {getUserName(campaign.reviewer)}
+                        {getUserName(campaign.reviewerAddress)}
                       </Link>
                     )}
-                    {(!campaign || !campaign.reviewer) && <span>Unknown user</span>}
+                    {(!campaign || !campaign.reviewerAddress) && <span>Unknown user</span>}
                   </div>
                 </div>
               </div>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import { getTruncatedText, history } from '../lib/helpers';
 import CardStats from './CardStats';
 import Campaign from '../models/Campaign';
@@ -15,12 +14,11 @@ import config from '../configuration';
 class CampaignCard extends Component {
   constructor(props) {
     super(props);
-
     this.viewCampaign = this.viewCampaign.bind(this);
   }
 
   viewCampaign() {
-    if(this.props.campaign.myStatus == Campaign.PENDING) {
+    if(this.props.campaign.isPending) {
       React.toast.warn('Campaign is pending');
     } else {
       history.push(`/campaigns/${this.props.campaign.id}`);
@@ -40,11 +38,11 @@ class CampaignCard extends Component {
         tabIndex="0"
       >
         <div className="card-body">
-          <div className="card-img" style={{ backgroundImage: `url(${campaign.imageUrl})` }} />
+          <div className="card-img" style={{ backgroundImage: `url(${campaign.imageCidUrl})` }} />
 
           <div className="card-content">
             <h4 className="card-title">{getTruncatedText(campaign.title, 40)}</h4>
-            <div className="card-text">{campaign.summary}</div>
+            <div className="card-text">{getTruncatedText(campaign.description, 100)}</div>
           </div>
 
           <div className="card-footer">

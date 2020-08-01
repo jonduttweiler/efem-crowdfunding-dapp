@@ -11,7 +11,7 @@ export const milestonesSlice = createSlice({
     },
     resetMilestones: (state, action) => {
       // Se resguardan los Milestones Pendientes.
-      var pendings = state.filter(m => m.myStatus == Milestone.PENDING);
+      var pendings = state.filter(m => m.isPending);
       state.splice(0, state.length);
       for (let i = 0; i < action.payload.length; i++) {
         // Se asigna el ID del lado cliente.

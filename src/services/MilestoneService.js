@@ -337,7 +337,7 @@ class MilestoneService {
           recipientAddress,
           reviewerAddress,
           owner, // TODO change this to managerAddress. There is no owner
-          campaignReviewer,
+          campaignReviewerAddress,
           token,
         } = milestone;
         const parentProjectId = milestone.campaign.projectId;
@@ -354,7 +354,7 @@ class MilestoneService {
             parentProjectId,
             reviewerAddress,
             recipientAddress,
-            campaignReviewer.address,
+            campaignReviewerAddress,
             owner.address,
             utils.toWei(maxAmount.toFixed()),
             token.address,

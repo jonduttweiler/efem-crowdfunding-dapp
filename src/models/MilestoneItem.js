@@ -12,7 +12,7 @@ export default class MilestoneItemModel extends Model {
       date = getStartOfDayUTC().subtract(1, 'd'),
       description = '',
       image = '',
-      selectedFiatType = 'EUR',
+      fiatType = 'EUR',
       fiatAmount = new BigNumber('0'),
       wei = '',
       conversionRate = parseFloat(0),
@@ -26,7 +26,7 @@ export default class MilestoneItemModel extends Model {
     this._description = description;
     this._image = image;
     this._newImage = false;
-    this._selectedFiatType = selectedFiatType;
+    this._fiatType = fiatType;
     this._fiatAmount = new BigNumber(fiatAmount);
     this._wei = wei;
     this._conversionRate = conversionRate;
@@ -39,7 +39,7 @@ export default class MilestoneItemModel extends Model {
       date: this._date,
       description: this._description,
       image: cleanIpfsPath(this._image),
-      selectedFiatType: this._selectedFiatType,
+      fiatType: this._fiatType,
       fiatAmount: this._fiatAmount.toFixed(),
       wei: this._wei,
       conversionRate: this._conversionRate,
@@ -53,7 +53,7 @@ export default class MilestoneItemModel extends Model {
       date: this._date,
       description: this._description,
       image: cleanIpfsPath(this._image),
-      selectedFiatType: this._selectedFiatType,
+      fiatType: this._fiatType,
       fiatAmount: this._fiatAmount.toString(),
       wei: this._wei,
       conversionRate: this._conversionRate,
@@ -101,12 +101,12 @@ export default class MilestoneItemModel extends Model {
     this._newImage = value;
   }
 
-  get selectedFiatType() {
-    return this._selectedFiatType;
+  get fiatType() {
+    return this._fiatType;
   }
 
-  set selectedFiatType(value) {
-    this._selectedFiatType = value;
+  set fiatType(value) {
+    this._fiatType = value;
   }
 
   get fiatAmount() {
