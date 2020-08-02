@@ -1,10 +1,31 @@
-import BasicModel from './BasicModel';
-import { cleanIpfsPath } from '../lib/helpers';
+import Entity from './Entity';
 
 /**
  * The DApp DAC model
  */
-class DAC extends BasicModel {
+class DAC extends Entity {
+
+  constructor(data) {
+    super(data); 
+  
+    const {
+      communityUrl = '',
+      status = DAC.ACTIVE,
+      ownerAddress = '',
+      requiredConfirmations = '',
+      commitTime = '',
+    } = data;
+
+    this._communityUrl = communityUrl;
+    this._status = status;
+    this._ownerAddress = ownerAddress;
+    this._requiredConfirmations = requiredConfirmations;
+    this._commitTime = data.commitTime ;
+    this._delegateId = ownerAddress;
+
+  }
+
+  
   static get CANCELED() {
     return 'Canceled';
   }
@@ -13,84 +34,61 @@ class DAC extends BasicModel {
     return 'Active';
   }
 
+  static get PENDING() {
+    return 'Pending';
+  }
+
   static get type() {
     return 'dac';
   }
 
-  // eslint-disable-next-line class-methods-use-this
   get type() {
     return DAC.type;
   }
 
-  constructor(data) {
-    super(data); 
-
-    this.communityUrl = data.communityUrl || '';
-    this.status = data.status || DAC.ACTIVE;
-    this.ownerAddress = data.ownerAddress;
-    this.requiredConfirmations = data.requiredConfirmations;
-    this.commitTime = data.commitTime || 0;
-
-    this.clientId = data.clientId || null;
-    this.imageUrl = data.imageUrl;
-
+  get isActive() {
+    return this.status === DAC.ACTIVE;
   }
 
-  toIpfs() {
-    return {
-      title: this.title,
-      description: this.description,
-      communityUrl: this.communityUrl,
-      image: cleanIpfsPath(this.image),
-      version: 1,
-    };
+  get isPending() {
+    return this.status === DAC.PENDING;
   }
 
-  toFeathers() {
-    return {
-      title: this.title,
-      description: this.description,
-      communityUrl: this.communityUrl,
-      image: cleanIpfsPath(this.image),
-      totalDonated: this.totalDonated,
-      donationCount: this.donationCount,
-    };     
-  }
 
   get communityUrl() {
-    return this.myCommunityUrl;
+    return this._communityUrl;
   }
 
   set communityUrl(value) {
     this.checkType(value, ['string'], 'communityUrl');
-    this.myCommunityUrl = value;
+    this._communityUrl = value;
   }
 
   get delegateId() {
-    return this.myDelegateId;
+    return this._delegateId;
   }
 
   set delegateId(value) {
     this.checkType(value, ['number', 'string'], 'delegateId');
-    this.myDelegateId = value;
+    this._delegateId = value;
   }
 
   get commitTime() {
-    return this.myCommitTime;
+    return this._commitTime;
   }
 
   set commitTime(value) {
     this.checkType(value, ['number'], 'commitTime');
-    this.myCommitTime = value;
+    this._commitTime = value;
   }
 
   get status() {
-    return this.myStatus;
+    return this._status;
   }
 
   set status(value) {
     this.checkValue(value, [DAC.PENDING, DAC.ACTIVE, DAC.CANCELED], 'status');
-    this.myStatus = value;
+    this._status = value;
     if (value === DAC.PENDING) this.myOrder = 1;
     else if (value === DAC.ACTIVE) this.myOrder = 2;
     else if (value === DAC.CANCELED) this.myOrder = 3;

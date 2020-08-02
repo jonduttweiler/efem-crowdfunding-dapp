@@ -53,7 +53,7 @@ class EditDAC extends Component {
     super(props);
 
     // DAC model
-    const dac = new DAC({ owner: props.currentUser });
+    const dac = new DAC({ ownerAddress: props.currentUser.address });
 
     this.state = {
       isLoading: true,
@@ -74,8 +74,6 @@ class EditDAC extends Component {
 
 
   componentDidMount() {
-    console.log("Component did mount")
-    console.log("is dac new?",this.props.isNew);
 
     this.checkUser().then(() => {      
       if (!this.props.isNew) {
@@ -199,7 +197,6 @@ class EditDAC extends Component {
                       dac.title = inputs.title;
                       dac.description = inputs.description;
                       dac.communityUrl = inputs.communityUrl;
-                      dac.summary = getTruncatedText(inputs.description, 100);
                     }}
                     onValid={() => this.toggleFormValid(true)}
                     onInvalid={() => this.toggleFormValid(false)}

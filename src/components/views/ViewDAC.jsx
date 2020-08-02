@@ -110,7 +110,7 @@ class ViewDAC extends Component {
     if (!dac) return <div id="view-cause-view">Failed to load dac</div>;
     return (
       <div id="view-cause-view">
-        <BackgroundImageHeader image={dac.imageUrl} height={300}>
+        <BackgroundImageHeader image={dac.imageCidUrl} height={300}>
           <h6>Decentralized Altruistic Community</h6>
           <h1>{dac.title}</h1>
 
@@ -139,9 +139,9 @@ class ViewDAC extends Component {
               <GoBackButton to="/" title="Communities" />
 
               <center>
-                <Link to={`/profile/${dac.owner.address}`}>
-                  <Avatar size={50} src={getUserAvatar(dac.owner)} round />
-                  <p className="small">{getUserName(dac.owner)}</p>
+                <Link to={`/profile/${dac.ownerAddress}`}>
+                  <Avatar size={50} src={getUserAvatar(dac.ownerAddress)} round />
+                  <p className="small">{getUserName(dac.ownerAddress)}</p>
                 </Link>
               </center>
 

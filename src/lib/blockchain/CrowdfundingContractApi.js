@@ -41,11 +41,11 @@ class CrowdfundingContractApi {
                 const crowdfunding = await this.getCrowdfunding(); 
 
                 // Se almacena en IPFS toda la información de la dac.
-                dac.image = await IpfsService.upload(dac.image);
-                dac.imageUrl = await IpfsService.resolveUrl(dac.image);
+                dac.imageCid = await IpfsService.upload(dac.image);
+                dac.imageUrl = await IpfsService.resolveUrl(dac.imageCid);
                 dac.infoCid = await IpfsService.upload(dac.toIpfs());
 
-                const promiEvent = crowdfunding.newDac(dac.infoCid, { from: dac.owner.address, $extraGas: extraGas() });
+                const promiEvent = crowdfunding.newDac(dac.infoCid, { from: dac.ownerAddress, $extraGas: extraGas() });
 
                 promiEvent
                     .once('transactionHash', hash => {
@@ -75,28 +75,24 @@ class CrowdfundingContractApi {
 
     };
 
-
-
-
     /**
      * Obtiene la Dac a partir del ID especificado.
      * 
-     * @param {*} id de la Dac a obtener.
+     * @param {*} pid de la Dac a obtener.
      * @returns Dac cuyo Id coincide con el especificado.
      */
-    async getDAC(id) {
+    async getDAC(pid) {
         const crowdfunding = await this.getCrowdfunding();
-        const dacOnChain = await crowdfunding.getDac(id);
-        // Se obtiene la información de la Dac desde IPFS.
-        const { id: _id, infoCid, status, delegate } = dacOnChain;
-        const { title, description, image, communityUrl } = await IpfsService.downloadJsonJson(infoCid);
+
+        const { id, infoCid, status, delegate } = await crowdfunding.getDac(pid);
+        const { title, description, imageCid, communityUrl } = await IpfsService.downloadJson(infoCid);
 
         return new DAC({
-            _id,
+            id,
             title,
             description,
-            image,
-            imageUrl: IpfsService.resolveUrl(image),
+            imageCid,
+            imageUrl: IpfsService.resolveUrl(imageCid),
             communityUrl,
             status: this.mapDACStatus(status),
             ownerAddress: delegate,
@@ -124,18 +120,18 @@ class CrowdfundingContractApi {
             title, 
             description, 
             communityUrl, 
-            image, 
+            imageCid, 
             version
         } = dacOnIPFS;
            
                     
-        const imageUrl = IpfsService.resolveUrl(image);
+        const imageUrl = IpfsService.resolveUrl(imageCid);
 
         const dac = new DAC({
-            _id: id,
+            id,
             title,
             description,
-            image,
+            imageCid,
             imageUrl,
             communityUrl,
             status: this.mapDACStatus(status),
@@ -205,7 +201,7 @@ class CrowdfundingContractApi {
         const campaingOnChain = await crowdfunding.getCampaign(campaignId);
         // Se obtiene la información de la Campaign desde IPFS.
         const { id, infoCid, status, manager, reviewer } = campaingOnChain;
-        const { title, description, imageCid, url } = await IpfsService.downloadJsonJson(infoCid);
+        const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
 
         return new Campaign({
             id: id,
@@ -315,7 +311,7 @@ class CrowdfundingContractApi {
         const milestoneOnChain = await crowdfunding.getMilestone(milestoneId);
         // Se obtiene la información del Milestone desde IPFS.
         const { id, campaignId, infoCid, fiatAmountTarget, status, manager, reviewer, recipient, campaignReviewer } = milestoneOnChain;
-        const { title, description, imageCid, url } = await IpfsService.downloadJsonJson(infoCid);
+        const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
 
         return new Milestone({
             id: id,

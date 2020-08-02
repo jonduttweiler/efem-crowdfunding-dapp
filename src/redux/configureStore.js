@@ -34,8 +34,7 @@ export default function configureStore() {
         user: userReducer,
         campaigns: campaignsReducer,
         milestones: milestonesReducer,
-        dacs: dacsReducer,
-        campaigns: campaignsReducer
+        dacs: dacsReducer
     });
 
     const store = createStore(rootReducer, undefined, composedEnhancers)
