@@ -5,6 +5,8 @@ import userReducer from './reducers/userSlice.js'
 import dacsReducer from './reducers/dacsSlice.js'
 import campaignsReducer from './reducers/campaignsSlice.js'
 import milestonesReducer from './reducers/milestonesSlice.js'
+
+import { setUserEpic } from './epics/usersEpics';
 import { fetchDacsEpic, addDacEpic } from './epics/dacsEpics';
 import { fetchCampaignsEpic, addCampaignEpic } from './epics/campaignsEpics'
 import { fetchMilestonesEpic, addMilestoneEpic } from './epics/milestonesEpics'
@@ -15,6 +17,7 @@ import { fetchMilestonesEpic, addMilestoneEpic } from './epics/milestonesEpics'
 export default function configureStore() {
 
     const rootEpic = combineEpics(
+        setUserEpic,
         fetchDacsEpic,
         addDacEpic, 
         fetchCampaignsEpic,

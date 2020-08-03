@@ -7,6 +7,7 @@ import extraGas from './extraGas';
 import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import { ALL_ROLES } from '../../constants/Role';
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -15,12 +16,32 @@ class CrowdfundingContractApi {
 
     constructor() { }
 
+
+    getRoles(address) {
+        return new Observable(async subscriber => {
+            try {
+                const userRoles = [];
+
+                for (const rol of ALL_ROLES) {
+                    const canPerform = await this.canPerformRole(address, rol);
+                    if (canPerform) userRoles.push(rol);
+                }
+
+                subscriber.next(userRoles);
+                
+            } catch (err) {
+                subscriber.error(err);
+            }
+        });
+    }
+
+
     async canPerformRole(address, role) {
         try {
             const crowdfunding = await this.getCrowdfunding();
             const hashedRole = web3.utils.keccak256(role); 
             const response = await crowdfunding.canPerform(address, hashedRole, []);
-            console.log(address,role,response);
+            //console.log(address,role,response);
             return response;
         } catch (err) {
             console.log("Fail to invoke canPerform on smart contract:",err);

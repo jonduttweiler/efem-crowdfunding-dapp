@@ -2,19 +2,20 @@ import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import UserService from "../services/UserService";
 
+import { setUser, selectRoles } from '../redux/reducers/userSlice';
+import { connect } from 'react-redux';
+
+
 const { Provider, Consumer } = React.createContext();
 export { Consumer };
 
+
+
 /**
- * Componente que recibe como propiedad un address, y genera como valor un array con los roles asociados
+ * This component receive an address as property,
+ * and use usersSlice.setUser for get the roles a los cuales accede a través del selectRoles
  */
-export default class RoleProvider extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            roles:[] 
-        }
-    }
+class RoleProvider extends Component {
 
     componentDidUpdate(prevProps){
         //TODO: Revisar la comparación de address que hace acá
@@ -23,26 +24,20 @@ export default class RoleProvider extends Component {
         const prevAccount = prevProps.account && prevProps.account.toLowerCase(); //safe call to toLowerCase
         const currAccount = this.props.account && this.props.account.toLowerCase(); //safe call to toLowerCase
 
+        //llevar esta lógica al set user y al epic
         if(!currAccount && prevAccount){ //unlogged
-            this.setState({roles:[]})
+            //this.setState({roles:[]})
         }
         if(prevAccount === currAccount){ //No changes
             return;
         }
 
-        return this.updateRolesFromService(currAccount);
-
+        this.props.setUser({address:currAccount});
     }
-
-    async updateRolesFromService(address){
-        const roles = await UserService.getRoles(address);
-        this.setState({roles});
-    }
-
 
     render(){
         return(
-            <Provider value={this.state.roles}>
+            <Provider value={this.props.roles}>
                 {this.props.children} 
             </Provider>
         );
@@ -53,3 +48,10 @@ export default class RoleProvider extends Component {
 RoleProvider.propTypes = {
     account: PropTypes.string
 }
+
+const mapStateToProps = (state, props) => ({
+    roles: selectRoles(state)
+});
+const mapDispatchToProps = { setUser };
+
+export default connect(mapStateToProps,mapDispatchToProps)(RoleProvider);
