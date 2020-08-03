@@ -15,11 +15,10 @@ import LoaderButton from '../LoaderButton';
 import DAC from '../../models/DAC';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
-import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
-import { CREATE_DAC_ROLE } from '../../constants/Role';
 
 import { connect } from 'react-redux'
 import { addDac, selectDAC } from '../../redux/reducers/dacsSlice';
+import { selectRoles , isDelegate} from '../../redux/reducers/userSlice';
 
 
 
@@ -53,7 +52,10 @@ class EditDAC extends Component {
     super(props);
 
     // DAC model
-    const dac = new DAC({ ownerAddress: props.currentUser.address });
+    const dac = new DAC({ 
+      ownerAddress: props.currentUser && props.currentUser.address,
+      status: DAC.PENDING
+    });
 
     this.state = {
       isLoading: true,
@@ -71,8 +73,6 @@ class EditDAC extends Component {
 
 
 
-
-
   componentDidMount() {
 
     this.checkUser().then(() => {      
@@ -84,7 +84,7 @@ class EditDAC extends Component {
           if (!isOwner(dac.ownerAddress, this.props.currentUser)) {
             history.goBack();// TODO: Not really user friendly
           } else {
-            this.setState({ isLoading: false, dac }); 
+            this.setState({ isLoading: false, dac });
           }
         }
       } else { //dac is new
@@ -118,20 +118,20 @@ class EditDAC extends Component {
   checkUser() {
     if (!this.props.currentUser) { //Si no hay nadie logeado?
       history.push('/');
-      return Promise.reject();
+      return Promise.reject("Not allowed. No user logged in");
+    }
+
+    if(!this.props.isDelegate){
+      history.push('/');
+      return Promise.reject("Not allowed. User is not delegate");
     }
 
     return authenticateIfPossible(this.props.currentUser)
-      .then(() => {
-        if (!this.props.isDelegate) { //(this.props.currentUser)
-          throw new Error('not whitelisted');
-        }
-      })
-      .then(() => checkProfile(this.props.currentUser));
+          .then(() => checkProfile(this.props.currentUser));
   }
 
   submit() {
-    const afterSave = dac => {
+    const afterSave = dac => { //TODO: MOVER AL componentDidUpdate
       showToast(`Your Fund has been saved`, "", true);
       if (this.mounted) this.setState({ isSaving: false });
       GA.trackEvent({category: 'DAC',action: 'updated',label: dac.id,});
@@ -312,26 +312,12 @@ EditDAC.defaultProps = {
   isNew: false,
 };
 
-function EdtDAC(props) {
-  return (
-    <RoleConsumer>
-      { roles => {
-          if(roles.includes(CREATE_DAC_ROLE)){
-              return <EditDAC {...props} isDelegate={true} />;
-          } else {
-            console.log("Not allowed. CREATE_DAC_ROLE required - Redirect to home");
-            props.history.push("/");
-            return;
-          }
-      }}
-    </RoleConsumer>
-  );
-}
-
 const mapStateToProps = (state, props) => ({
-    dac: selectDAC(state, props.match.params.id)
+    dac: selectDAC(state, props.match.params.id),
+    roles: selectRoles(state),
+    isDelegate: isDelegate(state)
   
 });
 const mapDispatchToProps = { addDac }
 
-export default connect(mapStateToProps,mapDispatchToProps)(EdtDAC);
+export default connect(mapStateToProps,mapDispatchToProps)(EditDAC);

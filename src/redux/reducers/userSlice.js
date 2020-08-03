@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { CREATE_DAC_ROLE } from '../../constants/Role';
 
 export const userSlice = createSlice({
   name: 'user',
@@ -37,5 +38,7 @@ export const { setUser, setRoles, addRole, removeRole, clearUser } = userSlice.a
 
 export const selectUser = state => state.user.user;
 export const selectRoles = state => state.user.roles;
+
+export const isDelegate = state => state.user.roles.includes(CREATE_DAC_ROLE);
 
 export default userSlice.reducer;

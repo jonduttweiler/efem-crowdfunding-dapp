@@ -27,7 +27,7 @@ const DACs = () => (
                 </p>
                 <div className="cards-grid-container">
                   {dacs.map(dac => (
-                    <DACCard key={dac.id} dac={dac} />
+                    <DACCard key={dac.clientId || dac.id} dac={dac} />
                   ))}
                 </div>
               </div>
