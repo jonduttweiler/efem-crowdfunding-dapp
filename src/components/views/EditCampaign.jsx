@@ -15,11 +15,12 @@ import User from '../../models/User';
 import Campaign from '../../models/Campaign';
 import CampaignService from '../../services/CampaignService';
 import ErrorPopup from '../ErrorPopup';
-import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
+
 import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
-import { CREATE_CAMPAIGN_ROLE } from '../../constants/Role';
+
 import { connect } from 'react-redux'
 import { addCampaign, selectCampaigns } from '../../redux/reducers/campaignsSlice'
+import { isCampaignManager } from '../../redux/reducers/userSlice';
 
 /**
  * View to create or edit a Campaign
@@ -101,17 +102,18 @@ class EditCampaign extends Component {
   }
 
   checkUser() {
-    if (!this.props.currentUser) {
+    if (!this.props.currentUser) { 
       history.push('/');
-      return Promise.reject();
+      return Promise.reject("Not allowed. No user logged in");
     }
 
+    if(!this.props.isCampaignManager){
+      history.push('/');
+      return Promise.reject("Not allowed. User is not campaign manager");
+    }
+
+
     return authenticateIfPossible(this.props.currentUser)
-      .then(() => {
-        if (!this.props.isCampaignManager) {
-          throw new Error('not whitelisted');
-        }
-      })
       .then(() => checkProfile(this.props.currentUser));
   }
 
@@ -310,41 +312,26 @@ EditCampaign.defaultProps = {
   isNew: false,
 };
 
+
+function EditCmpn(props) {
+  return (
+    <RolesListProvider>
+      <RolesListConsumer>
+        {({ reviewers }) => <EditCampaign {...props} reviewers={reviewers} isCampaignManager={props.isCampaignManager} />}
+      </RolesListConsumer>
+    </RolesListProvider>
+  );
+
+}
+
+
 const mapStateToProps = (state, ownProps) => {
   return {
     //campaigns: selectCampaigns(state)
+    isCampaignManager: isCampaignManager(state)
   }
 }
 
 const mapDispatchToProps = { addCampaign }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(function EditCmpn(props) {
-  return (
-    <RoleConsumer>
-      {
-        roles => {
-          if (roles.includes(CREATE_CAMPAIGN_ROLE)) {
-            return (
-              <RolesListProvider>
-                <RolesListConsumer>
-                  { ({ reviewers }) => <EditCampaign {...props} reviewers={reviewers} isCampaignManager={true} />}
-                </RolesListConsumer>
-              </RolesListProvider>
-
-            );
-          } else {
-            //TODO: No es del todo correcto hacer la redireción acá. Quizas tendriamos
-            //que mostrar una pantalla diciendole que no tiene permisos y la posibilidad 
-            //de volver al home
-            console.log("Not allowed. CREATE_CAMPAIGN_ROLE required - Redirect to home");
-            props.history.push("/");
-            return null;
-          }
-        }
-      }
-    </RoleConsumer>
-  );
-})
+export default connect(mapStateToProps,mapDispatchToProps)(EditCmpn)

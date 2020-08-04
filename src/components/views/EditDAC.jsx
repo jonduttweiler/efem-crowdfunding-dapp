@@ -8,7 +8,7 @@ import Loader from '../Loader';
 import QuillFormsy from '../QuillFormsy';
 import FormsyImageUploader from '../FormsyImageUploader';
 import GoBackButton from '../GoBackButton';
-import { isOwner, getTruncatedText, history } from '../../lib/helpers';
+import { isOwner, history } from '../../lib/helpers';
 import { checkProfile, authenticateIfPossible } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 
@@ -77,7 +77,7 @@ class EditDAC extends Component {
 
     this.checkUser().then(() => {      
       if (!this.props.isNew) {
-        const dacId = this.props.match.params.id;
+
         const dac = this.props.dac;
         if(dac){
           // The user is not an owner, hence can not change the DAC

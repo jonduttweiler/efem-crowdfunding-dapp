@@ -17,13 +17,15 @@ import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
 import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
-import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
+
 import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
-import { CREATE_MILESTONE_ROLE } from '../../constants/Role';
 import MilestoneService from '../../services/MilestoneService';
+
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
+import { isCampaignManager } from '../../redux/reducers/userSlice';
 import { addMilestone } from '../../redux/reducers/milestonesSlice'
+
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
 
@@ -168,7 +170,12 @@ class EditMilestone extends Component {
   checkUser() {
     if (!this.props.currentUser) {
       this.props.history.push('/');
-      return Promise.reject();
+      return Promise.reject("Not allowed. No user logged in");
+    }
+
+    if(!this.props.isCampaignManager){
+      this.props.history.push('/');
+      return Promise.reject("Not allowed. User is not able to create milestones");
     }
 
     return authenticateIfPossible(this.props.currentUser)
@@ -499,52 +506,34 @@ EditMilestone.defaultProps = {
   isProposed: false,
 };
 
+const EdtMilestone = props => (
+  <RolesListProvider>
+    <RolesListConsumer>
+      {({ reviewers }) => (
+        <WhiteListConsumer>
+          {({ state: { tokenWhitelist, fiatWhitelist } }) => (
+            <EditMilestone
+              {...props}
+              tokenWhitelist={tokenWhitelist}
+              fiatTypes={fiatWhitelist.map(f => ({ value: f, title: f }))}
+              reviewers={reviewers}
+              isCampaignManager={props.isCampaignManager}
+            />
+          )}
+        </WhiteListConsumer>
+      )}
+    </RolesListConsumer>
+  </RolesListProvider>
+);
+
+
 const mapStateToProps = (state, ownProps) => {
   return {
-    campaign: selectCampaign(state, ownProps.match.params.id)
+    campaign: selectCampaign(state, ownProps.match.params.id),
+    isCampaignManager: isCampaignManager(state)
   }
 }
 
 const mapDispatchToProps = { addMilestone }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(props => {
-  return (
-    <RoleConsumer>
-    {roles => {
-      if (roles.includes(CREATE_MILESTONE_ROLE)) {
-        return (
-          <RolesListProvider>
-            <RolesListConsumer>
-              {({ reviewers }) => (
-                <WhiteListConsumer>
-                  {({ state: { tokenWhitelist, fiatWhitelist } }) => (
-                    <EditMilestone
-                      {...props}
-                      tokenWhitelist={tokenWhitelist}
-                      fiatTypes={fiatWhitelist.map(f => ({ value: f, title: f }))}
-                      reviewers={reviewers}
-                      isCampaignManager={roles.includes(CREATE_MILESTONE_ROLE)/* isCampaignManager es lo mismo?*/}
-                    />
-                  )}
-                </WhiteListConsumer>
-              )}
-            </RolesListConsumer>
-          </RolesListProvider>
-        )
-      } else {
-        //TODO: No es del todo correcto hacer la redireción acá. Quizas tendriamos
-        //que mostrar una pantalla diciendole que no tiene permisos y la posibilidad 
-        //de volver al home
-        console.log("Not allowed. CREATE_MILESTONE_ROLE required - Redirect to home");
-        // TODO Toast temporal hasta que hagamos algo más amigable.
-        React.toast.error('No autorizado');
-        props.history.push("/");
-        return null;
-      }
-    }}
-  </RoleConsumer>
-  );
-})
+export default connect(mapStateToProps,mapDispatchToProps)(EdtMilestone);

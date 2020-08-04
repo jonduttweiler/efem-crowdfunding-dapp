@@ -50,7 +50,6 @@ import UserProvider, { Consumer as UserConsumer } from '../contextProviders/User
 import ConversionRateProvider from '../contextProviders/ConversionRateProvider';
 import Web3Provider, { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 import WhiteListProvider, { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProvider';
-import RoleProvider, { Consumer as RoleConsumer } from '../contextProviders/RoleProvider';
 
 import '../lib/validators';
 
@@ -144,7 +143,6 @@ class Application extends Component {
                               <UserProvider account={account} onLoaded={this.userLoaded}>
                                 <UserConsumer>
                                   {({ state: { currentUser, hasError } }) => (
-                                    <RoleProvider account = {account}>
                                       <Router history={history}>
                                         <div>
                                           {GA.init() && <GA.RouteTracker />}
@@ -490,7 +488,6 @@ class Application extends Component {
                                           />
                                         </div>
                                       </Router>
-                                    </RoleProvider>
                                   )}
                                 </UserConsumer>
                               </UserProvider>
