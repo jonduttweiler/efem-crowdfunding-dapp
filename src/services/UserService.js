@@ -19,12 +19,12 @@ class UserService {
 
         // Se carga la cuenta del usuario desde la wallet
 
-        //const account = await walletApi.getAccount();
-        //console.log(account)
-        //user.account = account;
-        subscriber.next(user);
+     /*    const account = await walletApi.getAccount();
+        console.log(account)
+        user.account = account;
+        subscriber.next(user); */
 
-        const address = user.account.address;
+        const address = user.address; 
 
         if (address) {
 
