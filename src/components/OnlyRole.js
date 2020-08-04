@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
-import { Consumer as RoleConsumer } from "../contextProviders/RoleProvider";
+import { connect } from 'react-redux';
+import { selectRoles } from '../redux/reducers/userSlice';
 
-
-//TODO: considerar multiples roles
-export default class OnlyRole extends Component {
+class OnlyRole extends Component {
 
     render() {
-        return (
-            <RoleConsumer>
-                {roles => {
-                    if (roles.includes(this.props.role)) {
-                        return this.props.children;
-                    } else {
-                        return null;
-                    }
-                }
-                }
-            </RoleConsumer>
-        );
+        const currentRoles = this.props.currentRoles;
+        const allowToRol = this.props.role;
+
+        if (currentRoles.includes(allowToRol)) {
+            return this.props.children;
+        } else {
+            return null;
+        }
     }
 }
+
+const mapStateToProps = (state, ownProps) => ({currentRoles: selectRoles(state)});
+
+export default connect(mapStateToProps,{})(OnlyRole);

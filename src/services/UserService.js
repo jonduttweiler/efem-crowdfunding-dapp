@@ -3,10 +3,6 @@ import { feathersClient } from '../lib/feathersClient';
 import ErrorPopup from '../components/ErrorPopup';
 import IpfsService from './IpfsService';
 
-import { ALL_ROLES } from '../constants/Role';
-import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
-
-const crowdfundingContractApi = new CrowdfundingContractApi();
 const users = feathersClient.service('users');
 
 class UserService {
@@ -33,23 +29,6 @@ class UserService {
       );
     }
   }
-
-  //Checks in the smart contract for which roles can peform a user
-  //TODO: implement cache
-  static async getRoles(address){
-
-    const userRoles = [];
-
-    for(const rol of ALL_ROLES){
-      const canPerform = await crowdfundingContractApi.canPerformRole(address,rol);
-      if(canPerform) {
-        userRoles.push(rol);
-      }
-    }
-
-    return userRoles;
-  }
-
 
 }
 

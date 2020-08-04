@@ -8,6 +8,7 @@ import extraGas from './extraGas';
 import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import { ALL_ROLES } from '../../constants/Role';
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -16,14 +17,35 @@ class CrowdfundingContractApi {
 
     constructor() { }
 
+
+    getRoles(address) {
+        return new Observable(async subscriber => {
+            try {
+                const userRoles = [];
+
+                for (const rol of ALL_ROLES) {
+                    const canPerform = await this.canPerformRole(address, rol);
+                    if (canPerform) userRoles.push(rol);
+                }
+
+                subscriber.next(userRoles);
+                
+            } catch (err) {
+                subscriber.error(err);
+            }
+        });
+    }
+
+
     async canPerformRole(address, role) {
         try {
             const crowdfunding = await this.getCrowdfunding();
-            const hashedRole = web3.utils.keccak256(role);
-            return await crowdfunding.canPerform(address, hashedRole, []);;
+            const hashedRole = web3.utils.keccak256(role); 
+            const response = await crowdfunding.canPerform(address, hashedRole, []);
+            //console.log(address,role,response);
+            return response;
         } catch (err) {
-            console.log("Fail to invoke canPerform on smart contract");
-            console.log(err);
+            console.log("Fail to invoke canPerform on smart contract:",err);
             return false;
         }
     }
@@ -35,60 +57,140 @@ class CrowdfundingContractApi {
      * @param {*} onConfirmation 
      * @param {*} onError
      */
-    async saveDAC(dac, onCreateTransaction, onConfirmation, onError) {
-        const crowdfunding = await this.getCrowdfunding(); //Esto puede ponerse como variable de instancia??
+    saveDAC(dac) {
+        return new Observable(async subscriber => {
+            try {
+                const crowdfunding = await this.getCrowdfunding(); 
 
-        console.log("Saving dac on CrowdfundingContractApi");
+                // Se almacena en IPFS toda la información de la dac.
+                dac.imageCid = await IpfsService.upload(dac.image);
+                dac.imageUrl = await IpfsService.resolveUrl(dac.imageCid);
+                dac.infoCid = await IpfsService.upload(dac.toIpfs());
 
-        // Se almacena en IPFS toda la información de la dac.
-        dac.image = await IpfsService.upload(dac.image);
-        dac.imageUrl = await IpfsService.resolveUrl(dac.image);
-        dac.infoCid = await IpfsService.upload(dac.toIpfs());
-        console.log(dac.infoCid);
-        console.log("owner:" + dac.owner.address)
+                const promiEvent = crowdfunding.newDac(dac.infoCid, { from: dac.ownerAddress, $extraGas: extraGas() });
 
-        const promiEvent = crowdfunding.newDac(dac.infoCid, { from: dac.owner.address, $extraGas: extraGas() });
+                promiEvent
+                    .once('transactionHash', hash => {
+                        console.log("La transacción ha sido creada. txHash:",hash);
+                        dac.txHash = hash;
+                        subscriber.next(dac);
+                    })
+                    .once('confirmation', function (confNumber, receipt) {
+                        console.log("DAC creation confimed",receipt);
+                        dac.id = receipt.events['NewDac'].returnValues.id;
+                        dac.status = DAC.ACTIVE;
+                        subscriber.next(dac);
+                    })
 
-        promiEvent
-            .once('transactionHash', function (hash) {
-                dac.txHash = hash;
-                onCreateTransaction(dac);
-            })
-            .once('confirmation', function (confNumber, receipt) {
-                onConfirmation(dac);
-            })
-            .on('error', function (error) {
-                console.error(`Error procesando transacción en Smart Contract`, error);
+                    .on('error', function (error) {
+                        console.error(`Error procesando transacción de almacenamiento de dac.`, error);
+                        subscriber.error(error);
+                    });
+
+            } catch (error) {
                 console.log(error);
-                onError(error);
-            });
-    }
+                subscriber.error(error);
+            }
+        });
+
+
+
+    };
 
     /**
      * Obtiene la Dac a partir del ID especificado.
      * 
-     * @param {*} id de la Dac a obtener.
+     * @param {*} pid de la Dac a obtener.
      * @returns Dac cuyo Id coincide con el especificado.
      */
-    async getDAC(id) {
+    async getDAC(pid) {
         const crowdfunding = await this.getCrowdfunding();
-        const dacOnChain = await crowdfunding.getDac(id);
-        // Se obtiene la información de la Dac desde IPFS.
-        const { id: _id, infoCid, status, delegate } = dacOnChain;
-        const { title, description, image, communityUrl } = await IpfsService.downloadJson(infoCid);
+
+        const { id, infoCid, status, delegate } = await crowdfunding.getDac(pid);
+        const { title, description, imageCid, communityUrl } = await IpfsService.downloadJson(infoCid);
 
         return new DAC({
-            _id,
+            id,
             title,
             description,
-            image,
-            imageUrl: IpfsService.resolveUrl(image),
+            imageCid,
+            imageUrl: IpfsService.resolveUrl(imageCid),
             communityUrl,
             status: this.mapDACStatus(status),
             ownerAddress: delegate,
             commitTime: 0
         });
     }
+
+    //get data of dac from blockchain and ipfs
+    //Returns Promise<DAC>
+    //Podriamos pasar esta funcion a otro archivo
+    async _getDac(crowdfunding,pid){
+        const dacOnChain = await crowdfunding.getDac(pid);
+        const {
+            id,
+            idIndex,
+            infoCid,
+            delegate,
+            campaignIds,
+            budgetIds,
+            status
+        } = dacOnChain;
+      
+        const dacOnIPFS = await IpfsService.downloadJson(infoCid);
+        const {
+            title, 
+            description, 
+            communityUrl, 
+            imageCid, 
+            version
+        } = dacOnIPFS;
+           
+                    
+        const imageUrl = IpfsService.resolveUrl(imageCid);
+
+        const dac = new DAC({
+            id,
+            title,
+            description,
+            imageCid,
+            imageUrl,
+            communityUrl,
+            status: this.mapDACStatus(status),
+            ownerAddress: delegate,
+            commitTime: 0
+
+        });
+        
+        return dac;
+    }
+
+    /**
+     * Obtiene todas las Dacs desde el Smart Contract.
+     */
+    getDacs() {
+        return new Observable(async subscriber => {
+            try {
+                const crowdfunding = await this.getCrowdfunding();
+                const ids = await crowdfunding.getDacIds();
+                const dacs = [];
+                
+                if(ids.length>0){
+                    for (let i = 0; i < ids.length; i++) {
+                        const dac = await this._getDac(crowdfunding,ids[i]);
+                        dacs.push(dac);
+                    }
+    
+                    subscriber.next(dacs);
+                } else {
+                    subscriber.next([]);
+                }
+            } catch (error) {
+                subscriber.error(error);
+            }
+        });
+    }
+
 
     /**
      * Obtiene todas las Campaigns desde el Smart Contract.

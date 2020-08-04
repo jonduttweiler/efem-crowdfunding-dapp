@@ -12,12 +12,32 @@ import { isOwner, getTruncatedText, history } from '../../lib/helpers';
 import { checkProfile, authenticateIfPossible } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 
-import DACservice from '../../services/DACService';
 import DAC from '../../models/DAC';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
-import { Consumer as RoleConsumer } from '../../contextProviders/RoleProvider';
-import { CREATE_DAC_ROLE } from '../../constants/Role';
+
+import { connect } from 'react-redux'
+import { addDac, selectDAC } from '../../redux/reducers/dacsSlice';
+import { selectRoles , isDelegate} from '../../redux/reducers/userSlice';
+
+
+
+// Save dac
+const showToast = (msg, url, isSuccess = false) => {
+  const toast = url ? (
+    <p>
+      {msg}<br />
+      <a href={url} target="_blank" rel="noopener noreferrer">View transaction</a>
+    </p>
+  ) : (
+      msg
+    );
+
+  if (isSuccess) React.toast.success(toast);
+  else React.toast.info(toast);
+};
+
+
 
 /**
  * View to create or edit a DAC
@@ -32,7 +52,10 @@ class EditDAC extends Component {
     super(props);
 
     // DAC model
-    const dac = new DAC({ owner: props.currentUser });
+    const dac = new DAC({ 
+      ownerAddress: props.currentUser && props.currentUser.address,
+      status: DAC.PENDING
+    });
 
     this.state = {
       isLoading: true,
@@ -48,36 +71,27 @@ class EditDAC extends Component {
     this.setImage = this.setImage.bind(this);
   }
 
+
+
   componentDidMount() {
-    
-    this.checkUser().then(() => {
-      
+
+    this.checkUser().then(() => {      
       if (!this.props.isNew) {
         const dacId = this.props.match.params.id;
-
-        DACservice.get(dacId).then(dac => {
+        const dac = this.props.dac;
+        if(dac){
           // The user is not an owner, hence can not change the DAC
           if (!isOwner(dac.ownerAddress, this.props.currentUser)) {
-            // TODO: Not really user friendly
-            history.goBack();
+            history.goBack();// TODO: Not really user friendly
           } else {
             this.setState({ isLoading: false, dac });
           }
-        })
-          .catch(err => {
-            ErrorPopup(
-              'Sadly we were unable to load the Fund. Please refresh the page and try again.',
-              err,
-            );
-          });
-      } else {
+        }
+      } else { //dac is new
         this.setState({ isLoading: false });
       }
     }).catch(err => {
-      ErrorPopup(
-        'There has been a problem loading the Fund. Please refresh the page and try again.',
-        err,
-      );
+      ErrorPopup('There has been a problem loading the Fund. Please refresh the page and try again.',err);
     });
     this.mounted = true;
   }
@@ -104,52 +118,29 @@ class EditDAC extends Component {
   checkUser() {
     if (!this.props.currentUser) { //Si no hay nadie logeado?
       history.push('/');
-      return Promise.reject();
+      return Promise.reject("Not allowed. No user logged in");
+    }
+
+    if(!this.props.isDelegate){
+      history.push('/');
+      return Promise.reject("Not allowed. User is not delegate");
     }
 
     return authenticateIfPossible(this.props.currentUser)
-      .then(() => {
-        if (!this.props.isDelegate) { //(this.props.currentUser)
-          throw new Error('not whitelisted');
-        }
-      })
-      .then(() => checkProfile(this.props.currentUser));
+          .then(() => checkProfile(this.props.currentUser));
   }
 
   submit() {
-    // Save dac
-    const showToast = (msg, url, isSuccess = false) => {
-      const toast = url ? (
-        <p>
-          {msg}
-          <br />
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            View transaction
-          </a>
-        </p>
-      ) : (
-        msg
-      );
-
-      if (isSuccess) React.toast.success(toast);
-      else React.toast.info(toast);
-    };
-
-    const afterSave = dac => {
-      const msg = `Your Fund has been saved`;
-      showToast(msg, true);
+    const afterSave = dac => { //TODO: MOVER AL componentDidUpdate
+      showToast(`Your Fund has been saved`, "", true);
       if (this.mounted) this.setState({ isSaving: false });
-      GA.trackEvent({
-        category: 'DAC',
-        action: 'updated',
-        label: dac.id,
-      });
-      history.push(`/dacs/${dac.id}`);
+      GA.trackEvent({category: 'DAC',action: 'updated',label: dac.id,});
+      history.push(`/`);
     };
-
+    
     this.setState({ isSaving: true, isBlocking: false, }, () => {
-        const dac = this.state.dac;
-        dac.save(afterSave);// Save the DAC
+        this.props.addDac(this.state.dac);
+        afterSave(this.state.dac);
       },
     );
   } //End save 
@@ -206,7 +197,6 @@ class EditDAC extends Component {
                       dac.title = inputs.title;
                       dac.description = inputs.description;
                       dac.communityUrl = inputs.communityUrl;
-                      dac.summary = getTruncatedText(inputs.description, 100);
                     }}
                     onValid={() => this.toggleFormValid(true)}
                     onInvalid={() => this.toggleFormValid(false)}
@@ -322,18 +312,12 @@ EditDAC.defaultProps = {
   isNew: false,
 };
 
-export default function EdtDAC(props) {
-  return (
-    <RoleConsumer>
-      { roles => {
-          if(roles.includes(CREATE_DAC_ROLE)){
-              return <EditDAC {...props} isDelegate={true} />;
-          } else {
-            console.log("Not allowed. CREATE_DAC_ROLE required - Redirect to home");
-            props.history.push("/");
-            return;
-          }
-      }}
-    </RoleConsumer>
-  );
-}
+const mapStateToProps = (state, props) => ({
+    dac: selectDAC(state, props.match.params.id),
+    roles: selectRoles(state),
+    isDelegate: isDelegate(state)
+  
+});
+const mapDispatchToProps = { addDac }
+
+export default connect(mapStateToProps,mapDispatchToProps)(EditDAC);

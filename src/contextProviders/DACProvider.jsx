@@ -1,7 +1,7 @@
 import React, { Component, createContext } from 'react';
 import PropTypes from 'prop-types';
-
-import DACService from '../services/DACService';
+import { connect } from 'react-redux'
+import { fetchDacs, selectDACs } from '../redux/reducers/dacsSlice';
 
 const Context = createContext();
 const { Provider, Consumer } = Context;
@@ -13,11 +13,11 @@ export { Consumer };
  * @prop children    Child REACT components
  */
 class DACProvider extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      dacs: [],
+      dacs: this.props.dacs, //Con redux el dacs ni siquiera es parte del estado
       isLoading: true,
       hasError: false,
       total: 0,
@@ -25,14 +25,16 @@ class DACProvider extends Component {
 
     this.loadMore = this.loadMore.bind(this);
   }
+  
 
-  componentWillMount() {
-    this.loadMore(true);
+  componentDidMount() {
+    this.props.fetchDacs();
+    //this.loadMore(true);
   }
 
   loadMore(init = false) {
     if (init || (!this.state.isLoading && this.state.total > this.state.dacs.length)) {
-      this.setState({ isLoading: true }, () =>
+  /*     this.setState({ isLoading: true }, () =>
         DACService.getDACs(
           this.props.step, // Limit
           this.state.dacs.length, // Skip
@@ -45,12 +47,15 @@ class DACProvider extends Component {
           },
           () => this.setState({ hasError: true, isLoading: false }),
         ),
-      );
+      ); */
     }
   }
 
   render() {
-    const { dacs, isLoading, hasError, total } = this.state;
+    const { dacs } = this.props; // using redux
+    const isLoading = false; //TODO: get from redux
+    const hasError = false; //TODO: get from redux
+    //const { isLoading, hasError, /*total*/ } = this.state;
     const { loadMore } = this;
 
     return (
@@ -60,8 +65,8 @@ class DACProvider extends Component {
             dacs,
             isLoading,
             hasError,
-            total,
-            canLoadMore: total > dacs.length,
+            total: dacs.length, //TODO: allow pagination
+            canLoadMore: false,//TODO: allow pagination
           },
           actions: {
             loadMore,
@@ -81,4 +86,11 @@ DACProvider.propTypes = {
 
 DACProvider.defaultProps = { step: 50 };
 
-export default DACProvider;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    dacs: selectDACs(state)
+  }
+}
+const mapDispatchToProps = { fetchDacs }
+
+export default connect(mapStateToProps, mapDispatchToProps)(DACProvider);
