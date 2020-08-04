@@ -8,6 +8,9 @@ export const userSlice = createSlice({
     roles: []
   },
   reducers: {
+    loadUser: (state, action) => {
+      // Se obtiene el estado actual.
+    },
     setAddress: (state, action) => {
       //TODO: Implement
     },
