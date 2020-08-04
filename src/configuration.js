@@ -32,7 +32,7 @@ const configurations = {
       useGoogleAnalytics: true,
       useHotjar: false,
     },
-    nativeTokenName: 'ETH',
+    nativeTokenName: 'RBTC',
   },
   rsk_testnet: {
     title: 'RSK Testnet',
@@ -51,7 +51,7 @@ const configurations = {
       useGoogleAnalytics: true,
       useHotjar: false,
     },
-    nativeTokenName: 'BTC',
+    nativeTokenName: 'RBTC',
   },
   rsk_mainnet: {
     title: 'RSK MainNet',
@@ -70,7 +70,7 @@ const configurations = {
       useGoogleAnalytics: true,
       useHotjar: false,
     },
-    nativeTokenName: 'BTC',
+    nativeTokenName: 'RBTC',
   },
 };
 

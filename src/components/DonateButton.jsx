@@ -19,6 +19,9 @@ import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 import SelectFormsy from './SelectFormsy';
 import { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProvider';
 import DAC from '../models/DAC';
+import { connect } from 'react-redux'
+import { addDonation } from '../redux/reducers/donationsSlice'
+import Donation from '../models/Donation';
 
 const POLL_DELAY_TOKENS = 2000;
 
@@ -54,7 +57,9 @@ class DonateButton extends React.Component {
         value: t.address,
         title: t.name,
       })),
-      selectedToken: props.model.type === 'milestone' ? modelToken : props.tokenWhitelist[0],
+      //selectedToken: props.model.type === 'milestone' ? modelToken : props.tokenWhitelist[0],
+      selectedToken: modelToken,
+      donation: new Donation({})
     };
 
     this.submit = this.submit.bind(this);
@@ -86,12 +91,13 @@ class DonateButton extends React.Component {
     const { selectedToken } = this.state;
     const { NativeTokenBalance, model } = this.props;
 
-    const balance =
+    return new BigNumber(1);
+    /*const balance =
       selectedToken.symbol === config.nativeTokenName ? NativeTokenBalance : selectedToken.balance;
 
     if (model.maxDonation && balance.gt(model.maxDonation)) return model.maxDonation;
 
-    return new BigNumber(utils.fromWei(balance.toFixed()));
+    return new BigNumber(utils.fromWei(balance.toFixed()));*/
   }
 
   pollToken() {
@@ -160,15 +166,35 @@ class DonateButton extends React.Component {
   }
 
   donate(model) {
+   
+
     const { currentUser } = this.props;
     const { adminId } = this.props.model;
     const { selectedToken } = this.state;
 
     const amount = utils.toWei(model.amount);
     const isDonationInToken = selectedToken.symbol !== config.nativeTokenName;
-    const tokenAddress = isDonationInToken ? selectedToken.address : 0;
+    // TODO Cambiar
+    const tokenAddress = isDonationInToken ? selectedToken.address : '0X0000000000000000000000000000000000000000';
 
-    const _makeDonationTx = async () => {
+     // Nuevo
+     const { donation } = this.state;
+     donation.entityId = 2;
+     donation.tokenAddress = tokenAddress;
+     donation.amount = amount;
+     // Nuevo
+
+    this.props.addDonation(this.state.donation);
+
+    this.closeDialog();
+
+    React.toast.info(
+      <p>
+        Awesome! Your donation is pending...
+      </p>,
+    );
+
+    /*const _makeDonationTx = async () => {
       let txData = {
         from: currentUser.address,
         donateToAdminId: adminId,
@@ -256,7 +282,7 @@ class DonateButton extends React.Component {
         });
     } else {
       _makeDonationTx();
-    }
+    }*/
   }
 
   render() {
@@ -276,8 +302,9 @@ class DonateButton extends React.Component {
       display: 'inline-block',
     };
 
-    const balance =
-      selectedToken.symbol === config.nativeTokenName ? NativeTokenBalance : selectedToken.balance;
+    /*const balance =
+      selectedToken.symbol === config.nativeTokenName ? NativeTokenBalance : selectedToken.balance;*/
+    const balance = new BigNumber(1000);
 
     return (
       <span style={style}>
@@ -457,7 +484,18 @@ DonateButton.defaultProps = {
   currentUser: undefined,
 };
 
-export default function DonBtn(props) {
+const mapStateToProps = (state, ownProps) => {
+  return {
+    //campaigns: selectCampaigns(state)
+  }
+}
+
+const mapDispatchToProps = { addDonation }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(function DonBtn(props) {
   return (
     <WhiteListConsumer>
       {({ state: { tokenWhitelist } }) => (
@@ -475,4 +513,4 @@ export default function DonBtn(props) {
       )}
     </WhiteListConsumer>
   );
-}
+})

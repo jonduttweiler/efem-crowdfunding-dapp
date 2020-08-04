@@ -1,6 +1,7 @@
 import DAC from '../../models/DAC';
 import Campaign from '../../models/Campaign';
 import Milestone from '../../models/Milestone';
+import Donation from '../../models/Donation';
 import getNetwork from './getNetwork';
 import IpfsService from '../../services/IpfsService';
 import extraGas from './extraGas';
@@ -155,11 +156,11 @@ class CrowdfundingContractApi {
                 campaign.infoCid = infoCid;
 
                 // Temporal hasta que exista la DAC previamente.
-                /*let receipt = await crowdfunding.newDac(campaign.infoCid,
+                let receipt = await crowdfunding.newDac(campaign.infoCid,
                   {
                     from: campaign.managerAddress,
                     $extraGas: extraGas()
-                  });*/
+                  });
                 // Temporal hasta que exista la DAC previamente.
 
                 let promiEvent = crowdfunding.newCampaign(
@@ -307,6 +308,98 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Obtiene todas las Donaciones desde el Smart Contract.
+     */
+    getDonations() {
+        return new Observable(async subscriber => {
+            try {
+                let crowdfunding = await this.getCrowdfunding();
+                let ids = await crowdfunding.getDonationIds();
+                let donations = [];
+                for (let i = 0; i < ids.length; i++) {
+                    let donation = await this.getDonation(ids[i]);
+                    donations.push(donation);
+                }
+                subscriber.next(donations);
+            } catch (error) {
+                subscriber.error(error);
+            }
+        });
+    }
+
+    /**
+     * Obtiene la Donación a partir del ID especificado.
+     * 
+     * @param donationId de la Donación a obtener.
+     * @returns Donación cuyo Id coincide con el especificado.
+     */
+    async getDonation(donationId) {
+        const crowdfunding = await this.getCrowdfunding();
+        const donationOnChain = await crowdfunding.getDonation(donationId);
+        // Se obtiene la información de la Donación desde IPFS.
+        const { id, giver, token, amount, amountRemainding, entityId, budgetId, status } = donationOnChain;
+
+        return new Donation({
+            id: id,
+            giverAddress: giver,
+            tokenAddress: token,
+            amount: amount,
+            amountRemainding: amountRemainding,
+            entityId: entityId,
+            budgetId: budgetId,
+            status: this.mapDonationStatus(status)
+        });
+    }
+
+    /**
+     * Almacena una Donacón en el Smart Contarct.
+     * 
+     * @param donation a almacenar.
+     */
+    saveDonation(donation) {
+
+        return new Observable(async subscriber => {
+
+            try {
+                let crowdfunding = await this.getCrowdfunding();
+
+                let promiEvent = crowdfunding.donate(
+                    donation.entityId,
+                    donation.tokenAddress,
+                    donation.amount,
+                    {
+                        from: donation.giverAddress,
+                        value: donation.amount,
+                        $extraGas: extraGas()
+                    });
+
+                promiEvent
+                    .once('transactionHash', function (hash) {
+                        // La transacción ha sido creada.
+                        donation.txHash = hash;
+                        subscriber.next(donation);
+                    })
+                    .once('confirmation', function (confNumber, receipt) {
+                        // La transacción ha sido incluida en un bloque
+                        // sin bloques de confirmación (once).
+                        // TODO Aquí debería agregarse lógica para esperar
+                        // un número determinado de bloques confirmados (on, confNumber).
+                        donation.id = receipt.events['NewDonation'].returnValues.id;
+                        donation.status = Donation.AVAILABLE;
+                        subscriber.next(donation);
+                    })
+                    .on('error', function (error) {
+                        console.error(`Error procesando transacción de almacenamiento de donación.`, error);
+                        subscriber.error(error);
+                    });
+            } catch (error) {
+                console.error(`Error almacenando donación`, error);
+                subscriber.error(error);
+            }
+        });
+    }
+
+    /**
      * Realiza el mapping de los estados de las dac en el
      * smart contract con los estados en la dapp.
      * 
@@ -353,6 +446,21 @@ class CrowdfundingContractApi {
         }
         return Milestone.IN_PROGRESS;
     }
+
+    /**
+     * Realiza el mapping de los estados de las donación en el
+     * smart contract con los estados en la dapp.
+     * 
+     * @param status de la donación en el smart contract.
+     * @returns estado de la donación en la dapp.
+     */
+    mapDonationStatus(status) {
+        if (status == 0) {
+            return Donation.AVAILABLE;
+        }
+        return Donation.CANCELED;
+    }
+
 
     async getCrowdfunding() {
         const network = await getNetwork();

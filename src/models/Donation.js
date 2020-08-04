@@ -10,9 +10,14 @@ import Campaign from './Campaign';
 /* eslint no-underscore-dangle: 0 */
 
 /**
- * The DApp donation model
+ * Modelo de donación de Dapp.
  */
 class Donation extends Model {
+
+  static get AVAILABLE() {
+    return 'Available';
+  }
+
   static get PENDING() {
     return 'Pending';
   }
@@ -51,6 +56,7 @@ class Donation extends Model {
 
   static get statuses() {
     return [
+      Donation.AVAILABLE,
       Donation.PENDING,
       Donation.PAYING,
       Donation.PAID,
@@ -65,9 +71,30 @@ class Donation extends Model {
 
   constructor(data) {
     super(data);
+    const {
+      id,
+      clientId,
+      giverAddress = '',
+      tokenAddress = '',
+      amount,
+      amountRemainding,
+      entityId,
+      budgetId,     
+      status = Donation.PENDING
+    } = data;
 
-    this._id = data._id;
-    this._amount = new BigNumber(utils.fromWei(data.amount));
+    this._id = id;
+    // ID utilizado solamente del lado cliente
+    this._clientId = clientId;
+    this._giverAddress = giverAddress;
+    this._tokenAddress = tokenAddress;
+    this._amount = amount;
+    this._amountRemainding = amountRemainding;
+    this._entityId = entityId;
+    this._budgetId = budgetId;
+    this._status = status;
+
+    /*this._amount = new BigNumber(utils.fromWei(data.amount));
     this._amountRemaining = new BigNumber(utils.fromWei(data.amountRemaining || ''));
     this._pendingAmountRemaining = new BigNumber(utils.fromWei(data.pendingAmountRemaining || ''));
     this._commitTime = data.commitTime;
@@ -94,7 +121,7 @@ class Donation extends Model {
     this._txHash = data.txHash;
     this._updatedAt = data.updatedAt;
     this._isReturn = data.isReturn;
-    this._token = data.token;
+    this._token = data.token;*/
 
     /**
      * Get the URL, name and type of the entity to which this donation has been donated to
@@ -103,7 +130,7 @@ class Donation extends Model {
      * name {string} Title of the entity
      * type {string} Type of the entity - one of DAC, CAMPAIGN, MILESTONE or GIVER
      */
-    const donatedTo = {
+   /* const donatedTo = {
       url: '/',
       name: '',
       type: '',
@@ -137,7 +164,92 @@ class Donation extends Model {
       donatedTo.name = this._ownerEntity.name || this._ownerEntity.address;
       donatedTo.type = 'GIVER';
     }
-    this._donatedTo = donatedTo;
+    this._donatedTo = donatedTo;*/
+  }
+
+  get isPending() {
+    return this.status === Donation.PENDING;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  set id(value) {
+    this.checkType(value, ['string'], 'id');
+    this._id = value;
+  }
+
+  get clientId() {
+    return this._clientId;
+  }
+
+  set clientId(value) {
+    this.checkType(value, ['undefined', 'string'], 'clientId');
+    this._clientId = value;
+  }
+
+  get amount() {
+    return this._amount;
+  }
+
+  set amount(value) {
+    this.checkType(value, ['string'], 'amount');
+    this._amount = value;
+  }
+
+  get amountRemainding() {
+    return this._amountRemaining;
+  }
+
+  set amountRemainding(value) {
+    this.checkInstanceOf(value, BigNumber, 'amountRemainding');
+    this._amountRemainding = value;
+  }
+
+  get giverAddress() {
+    return this._giverAddress;
+  }
+
+  set giverAddress(value) {
+    this.checkType(value, ['string'], 'giverAddress');
+    this._giverAddress = value;
+  }
+
+  get tokenAddress() {
+    return this._tokenAddress;
+  }
+
+  set tokenAddress(value) {
+    this.checkType(value, ['string'], 'tokenAddress');
+    this._tokenAddress = value;
+  }
+
+  get entityId() {
+    return this._entityId;
+  }
+
+  set entityId(value) {
+    this.checkType(value, ['number'], 'entityId');
+    this._entityId = value;
+  }
+
+  get budgetId() {
+    return this._budgetId;
+  }
+
+  set budgetId(value) {
+    this.checkType(value, ['string'], 'budgetId');
+    this._budgetId = value;
+  }
+
+  get status() {
+    return this._status;
+  }
+
+  set status(value) {
+    this.checkValue(value, Donation.statuses, 'status');
+    this._status = value;
   }
 
   get statusDescription() {
@@ -231,44 +343,7 @@ class Donation extends Model {
     );
   }
 
-  get isPending() {
-    return (
-      this._status === Donation.PENDING ||
-      (this._pendingAmountRemaining && this._pendingAmountRemaining.toFixed() !== '0') ||
-      !this._mined
-    );
-  }
-
-  get id() {
-    return this._id;
-  }
-
-  set id(value) {
-    this.checkType(value, ['string'], 'id');
-    this._id = value;
-  }
-
-  get amount() {
-    return this._amount;
-  }
-
-  set amount(value) {
-    this.checkType(value, ['string'], 'amount');
-    this._amount = value;
-  }
-
-  get amountRemaining() {
-    if (this._pendingAmountRemaining && this._pendingAmountRemaining.toFixed() !== '0') {
-      return this._pendingAmountRemaining;
-    }
-    return this._amountRemaining;
-  }
-
-  set amountRemaining(value) {
-    this.checkInstanceOf(value, BigNumber, 'amountRemaining');
-    this._amountRemaining = value;
-  }
-
+ 
   set pendingAmountRemaining(value) {
     this.checkInstanceOf(value, BigNumber, 'pendingAmountRemaining');
     if (this._pendingAmountRemaining) {
@@ -338,15 +413,6 @@ class Donation extends Model {
   set giver(value) {
     this.checkType(value, ['object', 'undefined'], 'giver');
     this._giver = value;
-  }
-
-  get giverAddress() {
-    return this._giverAddress;
-  }
-
-  set giverAddress(value) {
-    this.checkType(value, ['string'], 'giverAddress');
-    this._giverAddress = value;
   }
 
   get intendedProjectId() {
@@ -448,15 +514,6 @@ class Donation extends Model {
   set requiredConfirmations(value) {
     this.checkType(value, ['number'], 'requiredConfirmations');
     this._requiredConfirmations = value;
-  }
-
-  get status() {
-    return this._status;
-  }
-
-  set status(value) {
-    this.checkValue(value, Donation.statuses, 'status');
-    this._status = value;
   }
 
   get txHash() {

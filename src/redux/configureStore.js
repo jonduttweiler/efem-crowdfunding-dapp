@@ -4,8 +4,10 @@ import loggerMiddleware from './middlewares/logger'
 import userReducer from './reducers/userSlice.js'
 import campaignsReducer from './reducers/campaignsSlice.js'
 import milestonesReducer from './reducers/milestonesSlice.js'
+import donationsReducer from './reducers/donationsSlice.js'
 import { fetchCampaignsEpic, addCampaignEpic } from './epics/campaignsEpics'
 import { fetchMilestonesEpic, addMilestoneEpic } from './epics/milestonesEpics'
+import { fetchDonationsEpic, addDonationEpic } from './epics/donationsEpics'
 
 /**
  * Configuración del Store de Redux.
@@ -16,7 +18,9 @@ export default function configureStore() {
         fetchCampaignsEpic,
         addCampaignEpic,
         fetchMilestonesEpic,
-        addMilestoneEpic);
+        addMilestoneEpic,
+        fetchDonationsEpic,
+        addDonationEpic);
     const epicMiddleware = createEpicMiddleware();
 
     const middlewares = [loggerMiddleware, epicMiddleware]
@@ -28,7 +32,8 @@ export default function configureStore() {
     const rootReducer = combineReducers({
         user: userReducer,
         campaigns: campaignsReducer,
-        milestones: milestonesReducer
+        milestones: milestonesReducer,
+        donations: donationsReducer
     });
 
     const store = createStore(rootReducer, undefined, composedEnhancers)
