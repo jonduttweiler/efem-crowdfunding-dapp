@@ -1,36 +1,44 @@
 import { feathersClient } from '../lib/feathersClient';
+import { Observable } from 'rxjs';
 
-import ErrorPopup from '../components/ErrorPopup';
 import IpfsService from './IpfsService';
+import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
+import ErrorPopup from '../components/ErrorPopup';
 
-const users = feathersClient.service('users');
+const crowdfundingContractApi = new CrowdfundingContractApi();
+const feathersUserService = feathersClient.service('users');
 
 class UserService {
 
   loadUser(user) {
+    console.log("load user!",user);
 
-    return new Observable(subscriber => {
+    return new Observable(async subscriber => {
 
       try {
 
         // Se carga la cuenta del usuario desde la wallet
-        const account = await walletApi.getAccount();
-        user.account = account;
+
+        //const account = await walletApi.getAccount();
+        //console.log(account)
+        //user.account = account;
         subscriber.next(user);
 
-        if (user.account.address) {
+        const address = user.account.address;
 
-          // Se carga la información del usuario desde Feathers
-          const info = await feathersApi.getUserInfo(user.account.address);
+        if (address) {
+
+   /*        // Si tiene un perfil registrado lo buscamos en feathers
+          const info = await feathersUserService.getUserInfo(address);
           user.name = info.name;
           user.email = info.email;
-          // . . .
+          //cargar avatar...
           subscriber.next(user);
-
-          // Se cargan los roles del usuario desde el smart constract
-          const roles = await crowdfundingContractApi.getRoles(user.account.address);
-          user.roles = roles;
-          subscriber.next(user);
+          */
+         // Se cargan los roles del usuario desde el smart constract
+         const roles = await crowdfundingContractApi.getRoles(address); 
+         user.roles = roles;
+         subscriber.next(user);
         }
 
       } catch (e) {
@@ -46,7 +54,7 @@ class UserService {
    * @param afterSave   Callback to be triggered after the user is saved in feathers
    */
   static async save(user, afterSave = () => { }) {
-    try {
+ /*    try {
       user.profileHash = await IpfsService.upload(user.toIpfs());
     } catch (err) {
       ErrorPopup('Failed to upload profile to ipfs');
@@ -60,7 +68,7 @@ class UserService {
       ErrorPopup(
         'There has been a problem creating your user profile. Please refresh the page and try again.',
       );
-    }
+    } */
   }
 
 }

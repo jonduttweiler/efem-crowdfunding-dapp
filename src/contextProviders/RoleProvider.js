@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
-import UserService from "../services/UserService";
 
-import { setUser, selectRoles } from '../redux/reducers/userSlice';
+import { loadUser, selectRoles } from '../redux/reducers/userSlice';
 import { connect } from 'react-redux';
 
 
 const { Provider, Consumer } = React.createContext();
 export { Consumer };
-
-
 
 /**
  * This component receive an address as property,
@@ -32,7 +29,7 @@ class RoleProvider extends Component {
             return;
         }
 
-        this.props.setUser({address:currAccount});
+        this.props.loadUser({address:currAccount});
     }
 
     render(){
@@ -52,6 +49,6 @@ RoleProvider.propTypes = {
 const mapStateToProps = (state, props) => ({
     roles: selectRoles(state)
 });
-const mapDispatchToProps = { setUser };
+const mapDispatchToProps = { loadUser };
 
 export default connect(mapStateToProps,mapDispatchToProps)(RoleProvider);
