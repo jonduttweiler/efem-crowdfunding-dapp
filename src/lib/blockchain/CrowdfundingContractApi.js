@@ -18,22 +18,19 @@ class CrowdfundingContractApi {
     constructor() { }
 
 
-    getRoles(address) {
-        return new Observable(async subscriber => {
-            try {
-                const userRoles = [];
+    async getRoles(address) {
+        try {
+            const userRoles = [];
 
-                for (const rol of ALL_ROLES) {
-                    const canPerform = await this.canPerformRole(address, rol);
-                    if (canPerform) userRoles.push(rol);
-                }
-
-                subscriber.next(userRoles);
-                
-            } catch (err) {
-                subscriber.error(err);
+            for (const rol of ALL_ROLES) {
+                const canPerform = await this.canPerformRole(address, rol);
+                if (canPerform) userRoles.push(rol);
             }
-        });
+            return userRoles;
+
+        } catch (err) {
+            console.log(err)
+        }
     }
 
 

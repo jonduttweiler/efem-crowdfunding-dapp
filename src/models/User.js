@@ -191,8 +191,7 @@ class User extends Model {
   }
 
   set roles(value) {
-    //this.checkType(value, ['boolean'], 'authenticated');
-    this._reoles = value;
+    this._roles = value;
   }
 
   get balance() {
@@ -200,7 +199,7 @@ class User extends Model {
   }
 
   set balance(value) {
-    this.checkType(value, ['undefined', 'number'], 'balance');
+    this.checkInstanceOf(value, BigNumber, 'balance');
     this._balance = value;
   }
 }

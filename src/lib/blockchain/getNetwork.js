@@ -55,6 +55,9 @@ export default async () => {
   // Definición de Smart Contract de Crowdfunding
   network.crowdfunding = new Crowdfunding(web3, network.crowdfundingAddress);
 
+  console.log(`%ccrowdfudingAddress: ${network.crowdfundingAddress}`,"color:white;font-weight:bold");
+
+
   //network.liquidPledging = new LiquidPledging(web3, network.liquidPledgingAddress);
   //network.lppCampaignFactory = new LPPCampaignFactory(web3, network.lppCampaignFactoryAddress);
   /*network.lppCappedMilestoneFactory = new LPPCappedMilestoneFactory(

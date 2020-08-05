@@ -3,15 +3,14 @@ import PropTypes from 'prop-types';
 
 // import CommunityButton from './CommunityButton';
 import User from '../models/User';
-import { Consumer as RoleConsumer } from '../contextProviders/RoleProvider';
+
+import { connect } from 'react-redux';
+import { isDelegate, isCampaignManager } from '../redux/reducers/userSlice';
 
 import OnlyRole from '../components/OnlyRole';
 
-import {
-  CREATE_DAC_ROLE,
-  CREATE_CAMPAIGN_ROLE
-  } from "../constants/Role";
-  
+import { CREATE_DAC_ROLE, CREATE_CAMPAIGN_ROLE } from "../constants/Role";
+
 
 /**
  * The join Giveth community top-bar
@@ -105,7 +104,7 @@ class JoinGivethCommunity extends Component {
       >
         <div className="vertical-align">
           <center>
-            <h3><br/></h3>
+            <h3><br /></h3>
             <OnlyRole role={CREATE_DAC_ROLE}>
               <button type="button" className="btn btn-info" onClick={() => this.createDAC()}>
                 Create a Fund
@@ -137,16 +136,14 @@ JoinGivethCommunity.defaultProps = {
   currentUser: undefined,
 };
 
-export default function JoinCom(props) {
-  return (
-    <RoleConsumer>
-      { roles => (
-        <JoinGivethCommunity
-          {...props} //history && currentUser
-          isDelegate={roles.includes(CREATE_DAC_ROLE)}
-          isCampaignManager={roles.includes(CREATE_CAMPAIGN_ROLE)} 
-        />
-      )}
-    </RoleConsumer>
-  );
-}
+
+
+
+
+const mapStateToProps = (state, props) => ({
+  isDelegate: isDelegate(state),
+  isCampaignManager: isCampaignManager(state)
+});
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(JoinGivethCommunity);

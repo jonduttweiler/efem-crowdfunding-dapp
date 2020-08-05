@@ -1,6 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { CREATE_DAC_ROLE } from '../../constants/Role';
 import User from '../../models/User';
+import {
+  CREATE_DAC_ROLE,
+  CREATE_CAMPAIGN_ROLE,
+  CREATE_MANAGER_ROLE,
+  CREATE_MILESTONE_ROLE
+} from '../../constants/Role';
 
 export const userSlice = createSlice({
   name: 'user',
@@ -12,37 +17,32 @@ export const userSlice = createSlice({
       // A case reducer on a non-draftable value must not return undefined
       return state;
     },
-    setAddress: (state, action) => {
-      //TODO: Implement
-    },
     setUser: (state, action) => {
-      state = new User(action.payload);
+      //No se puede asignar directamente state = action.payload; 
+      const { name, address, email, avatar, link, roles, balance } = action.payload;
+      state.name = name;
+      state.address = address;
+      state.email = email;
+      state.avatar = avatar;
+      state.link = link;
+      state.roles = roles;
+      state.balance = balance;
       return state;
     },
-    setRoles: (state, action) => {
-      const newRoles = action.payload;
-      if (state && Array.isArray(newRoles)) state.roles = newRoles;
-    },
-    addRole: (state, action) => {
-      const newRole = action.payload;
-      if (state) state.roles.push(newRole);
-    },
-    removeRole: (state, action) => {
-      const toRemoveRole = action.payload;
-      //TODO: FIND AND REMOVE
-    },
     clearUser: (state, action) => {
-      //state.user = {};
-      state = new User({});
+      state = new User();
+      return state;
     }
   },
 });
 
-export const { loadUser, setUser, setRoles, addRole, removeRole, clearUser } = userSlice.actions;
+export const { loadUser, setUser, clearUser } = userSlice.actions;
 
 export const selectUser = state => state.user;
 export const selectRoles = state => state.user.roles;
 
 export const isDelegate = state => state.user.roles.includes(CREATE_DAC_ROLE);
+export const isCampaignManager = state => state.user.roles.includes(CREATE_CAMPAIGN_ROLE);
+export const isMilestoneManager = state => state.user.roles.includes(CREATE_MILESTONE_ROLE);
 
 export default userSlice.reducer;

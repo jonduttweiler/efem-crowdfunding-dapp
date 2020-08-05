@@ -6,6 +6,9 @@ import getWeb3 from '../lib/blockchain/getWeb3';
 import pollEvery from '../lib/pollEvery';
 import config from '../configuration';
 
+import { loadUser } from '../redux/reducers/userSlice';
+import { connect } from 'react-redux';
+
 const POLL_DELAY_ACCOUNT = 1000;
 const POLL_DELAY_NETWORK = 2000;
 
@@ -98,6 +101,15 @@ class Web3Provider extends Component {
     this.enableProvider = this.enableProvider.bind(this);
   }
 
+
+  /*componentDidUpdate(prevProps, prevState){
+    if(prevState.account != this.state.account){
+      this.props.loadUser({address: this.state.account});
+    }
+  }*/
+
+
+
   componentWillMount() {
     getWeb3().then(web3 => {
       this.setState({
@@ -142,7 +154,7 @@ class Web3Provider extends Component {
         title: 'Web3 Connection Error',
         content: React.swal.msg(
           <p>
-            Unable to connect to the web3 provider. Please check if your MataMask or other wallet is
+            Unable to connect to the web3 provider. Please check if your MetaMask or other wallet is
             connected to a valid network. If so try and restart your browser or open the DApp in
             private window.
           </p>,
@@ -202,6 +214,7 @@ class Web3Provider extends Component {
     } catch (e) {
       // ignore
     }
+
     this.setState({ isEnabled, account, balance }, () => this.props.onLoaded());
   }
 
@@ -247,4 +260,11 @@ Web3Provider.propTypes = {
 Web3Provider.defaultProps = {};
 
 export { Consumer };
-export default Web3Provider;
+
+
+const mapStateToProps = (state, props) => ({});
+const mapDispatchToProps = { loadUser };
+
+export default connect(mapStateToProps,mapDispatchToProps)(Web3Provider);
+
+
