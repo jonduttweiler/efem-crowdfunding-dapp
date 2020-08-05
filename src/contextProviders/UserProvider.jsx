@@ -9,10 +9,14 @@ import ErrorPopup from '../components/ErrorPopup';
 
 // models
 import User from '../models/User';
+import { connect } from 'react-redux'
+import { loadUser } from '../redux/reducers/userSlice';
 
 const Context = createContext();
 const { Provider, Consumer } = Context;
 export { Consumer };
+
+
 
 // TO DO: This is the minimum transaction view required to:
 // create a DAC / Campaign / Milestone / Profile
@@ -45,7 +49,9 @@ class UserProvider extends Component {
   }
 
   componentDidMount() {
+    this.props.loadUser();
     this.getUserData(this.props.account);
+    
   }
 
   componentDidUpdate(prevProps) {
@@ -175,4 +181,12 @@ UserProvider.defaultProps = {
   account: undefined,
 };
 
-export default UserProvider;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    
+  }
+}
+
+const mapDispatchToProps = { loadUser }
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProvider)

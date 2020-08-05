@@ -32,10 +32,12 @@ class RoleProvider extends Component {
             return;
         }
 
-        this.props.setUser({address:currAccount});
+        //this.props.setUser({address:currAccount});
     }
 
     render(){
+
+        console.log('this.props.roles', this.props.roles);
         return(
             <Provider value={this.props.roles}>
                 {this.props.children} 

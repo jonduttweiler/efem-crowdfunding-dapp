@@ -3,9 +3,10 @@ import IpfsService from '../services/IpfsService';
 import UserService from '../services/UserService';
 import ErrorPopup from '../components/ErrorPopup';
 import { cleanIpfsPath } from '../lib/helpers';
+import BigNumber from 'bignumber.js';
 
 /**
- * The DApp User model
+ * Modelo de User en Dapp.
  *
  * @attribute address       Ethereum address of the user
  * @attribute avatar        URL to user avatar
@@ -18,22 +19,35 @@ import { cleanIpfsPath } from '../lib/helpers';
  * @attribute authenticated If the user is authenticated w/ feathers
  */
 class User extends Model {
-  constructor(data) {
+
+  constructor(data = {}) {
     super(data);
 
     this.authenticated = false;
 
+    const {
+      address = '',
+      name = '',
+      avatar = '',
+      email = '',
+      giverId,
+      linkedin,
+      url,
+      roles = [],
+      balance = new BigNumber(0)
+    } = data;
+
     if (data) {
-      this._address = data.address;
-      this._avatar = data.avatar;
-      this._commitTime = data.commitTime;
-      this._email = data.email;
-      this._giverId = data.giverId;
-      this._linkedin = data.linkedin;
-      this._name = data.name;
-      this._updatedAt = data.updatedAt;
-      this._url = data.url;
+      this._address = address;
+      this._name = name;
+      this._avatar = avatar;
+      this._email = email;
+      this._giverId = giverId;
+      this._linkedin = linkedin;
+      this._url = url;
       this._authenticated = data.authenticated || false;
+      this._roles = roles;
+      this._balance = balance;
     }
   }
 
@@ -109,15 +123,6 @@ class User extends Model {
     this._newAvatar = value;
   }
 
-  get commitTime() {
-    return this._commitTime;
-  }
-
-  set commitTime(value) {
-    this.checkType(value, ['undefined', 'number'], 'commitTime');
-    this._commitTime = value;
-  }
-
   get email() {
     return this._email;
   }
@@ -179,6 +184,24 @@ class User extends Model {
   set authenticated(value) {
     this.checkType(value, ['boolean'], 'authenticated');
     this._authenticated = value;
+  }
+
+  get roles() {
+    return this._roles;
+  }
+
+  set roles(value) {
+    //this.checkType(value, ['boolean'], 'authenticated');
+    this._reoles = value;
+  }
+
+  get balance() {
+    return this._balance;
+  }
+
+  set balance(value) {
+    this.checkType(value, ['undefined', 'number'], 'balance');
+    this._balance = value;
   }
 }
 

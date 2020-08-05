@@ -21,6 +21,7 @@ import { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProv
 import DAC from '../models/DAC';
 import { connect } from 'react-redux'
 import { addDonation } from '../redux/reducers/donationsSlice'
+import { selectUser } from '../redux/reducers/userSlice'
 import Donation from '../models/Donation';
 
 const POLL_DELAY_TOKENS = 2000;
@@ -59,7 +60,8 @@ class DonateButton extends React.Component {
       })),
       //selectedToken: props.model.type === 'milestone' ? modelToken : props.tokenWhitelist[0],
       selectedToken: modelToken,
-      donation: new Donation({})
+      donation: new Donation(),
+      user: props.user
     };
 
     this.submit = this.submit.bind(this);
@@ -88,10 +90,10 @@ class DonateButton extends React.Component {
   }
 
   getMaxAmount() {
-    const { selectedToken } = this.state;
+    const { selectedToken, user } = this.state;
     const { NativeTokenBalance, model } = this.props;
 
-    return new BigNumber(1);
+    return user.balance;
     /*const balance =
       selectedToken.symbol === config.nativeTokenName ? NativeTokenBalance : selectedToken.balance;
 
@@ -487,6 +489,7 @@ DonateButton.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
   return {
     //campaigns: selectCampaigns(state)
+    user: selectUser(state)
   }
 }
 

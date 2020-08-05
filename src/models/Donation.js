@@ -69,7 +69,7 @@ class Donation extends Model {
     ];
   }
 
-  constructor(data) {
+  constructor(data = {}) {
     super(data);
     const {
       id,

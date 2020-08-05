@@ -1,36 +1,42 @@
 import { feathersClient } from '../lib/feathersClient';
-
+import { Observable } from 'rxjs'
 import ErrorPopup from '../components/ErrorPopup';
 import IpfsService from './IpfsService';
+import WalletApi from '../lib/blockchain/WalletApi';
+import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 
+const walletApi = new WalletApi();
+const crowdfundingContractApi = new CrowdfundingContractApi();
 const users = feathersClient.service('users');
 
 class UserService {
 
   loadUser(user) {
 
-    return new Observable(subscriber => {
-
+    return new Observable(async subscriber => {
       try {
-
         // Se carga la cuenta del usuario desde la wallet
-        const account = await walletApi.getAccount();
-        user.account = account;
+        user.address = await walletApi.getAccountAddress();
         subscriber.next(user);
 
-        if (user.account.address) {
+        if (user.address) {
+
+          // Se obtiene el balance del usuario.
+          user.balance = await walletApi.getBalance(user.address);
+          subscriber.next(user);
 
           // Se carga la información del usuario desde Feathers
-          const info = await feathersApi.getUserInfo(user.account.address);
+          /*const info = await feathersApi.getUserInfo(user.address);
           user.name = info.name;
           user.email = info.email;
           // . . .
           subscriber.next(user);
-
+*/
           // Se cargan los roles del usuario desde el smart constract
-          const roles = await crowdfundingContractApi.getRoles(user.account.address);
-          user.roles = roles;
-          subscriber.next(user);
+          crowdfundingContractApi.getRoles(user.address).subscribe(roles => {
+            user.roles = roles;
+            subscriber.next(user);
+          });          
         }
 
       } catch (e) {
