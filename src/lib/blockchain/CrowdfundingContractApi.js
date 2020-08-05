@@ -147,7 +147,7 @@ class CrowdfundingContractApi {
         const imageUrl = IpfsService.resolveUrl(imageCid);
 
         const dac = new DAC({
-            id,
+            id: parseInt(id),
             title,
             description,
             imageCid,
@@ -223,7 +223,7 @@ class CrowdfundingContractApi {
         const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
 
         return new Campaign({
-            id: id,
+            id: parseInt(id),
             title: title,
             description: description,
             imageCid: imageCid,
@@ -333,8 +333,8 @@ class CrowdfundingContractApi {
         const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
 
         return new Milestone({
-            id: id,
-            campaignId: campaignId,
+            id: parseInt(id),
+            campaignId: parseInt(campaignId),
             title: title,
             description: description,
             imageCid: imageCid,
@@ -439,13 +439,13 @@ class CrowdfundingContractApi {
         const { id, giver, token, amount, amountRemainding, entityId, budgetId, status } = donationOnChain;
 
         return new Donation({
-            id: id,
+            id: parseInt(id),
             giverAddress: giver,
             tokenAddress: token,
             amount: amount,
             amountRemainding: amountRemainding,
-            entityId: entityId,
-            budgetId: budgetId,
+            entityId: parseInt(entityId),
+            budgetId: parseInt(budgetId),
             status: this.mapDonationStatus(status)
         });
     }

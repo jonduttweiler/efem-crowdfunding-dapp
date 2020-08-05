@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
  * Modelo de User en Dapp.
  *
  * @attribute address       Ethereum address of the user
+ * @attribute balance       Balance de la cuenta del usuario medida en Wei.
  * @attribute avatar        URL to user avatar
  * @attribute commitTime
  * @attribute email         Email address of the user

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
 import BigNumber from 'bignumber.js';
-import { utils } from 'web3';
 import { Form, Input } from 'formsy-react-components';
 import Slider from 'react-rangeslider';
 import GA from 'lib/GoogleAnalytics';
@@ -23,6 +22,7 @@ import { connect } from 'react-redux'
 import { addDonation } from '../redux/reducers/donationsSlice'
 import { selectUser } from '../redux/reducers/userSlice'
 import Donation from '../models/Donation';
+import Web3Utils from '../utils/Web3Utils';
 
 const POLL_DELAY_TOKENS = 2000;
 
@@ -69,7 +69,7 @@ class DonateButton extends React.Component {
   }
 
   componentDidMount() {
-    this.pollToken();
+    //this.pollToken();
   }
 
   componentWillUnmount() {
@@ -79,7 +79,7 @@ class DonateButton extends React.Component {
   setToken(address) {
     const selectedToken = this.props.tokenWhitelist.find(t => t.address === address);
     selectedToken.balance = new BigNumber('0'); // FIXME: There should be a balance provider handling all of this...
-    this.setState({ selectedToken }, () => this.pollToken());
+    //this.setState({ selectedToken }, () => this.pollToken());
   }
 
   setAmount(amount) {
@@ -89,20 +89,15 @@ class DonateButton extends React.Component {
     }
   }
 
-  getMaxAmount() {
-    const { selectedToken, user } = this.state;
-    const { NativeTokenBalance, model } = this.props;
-
-    return user.balance;
-    /*const balance =
-      selectedToken.symbol === config.nativeTokenName ? NativeTokenBalance : selectedToken.balance;
-
-    if (model.maxDonation && balance.gt(model.maxDonation)) return model.maxDonation;
-
-    return new BigNumber(utils.fromWei(balance.toFixed()));*/
+  /**
+   * Establece el número máximo de Ether a donar.
+   */
+  getMaxEtherAmountToDonate() {
+    const { user } = this.state;
+    return Web3Utils.weiToEther(user.balance);
   }
 
-  pollToken() {
+  /*pollToken() {
     const { selectedToken } = this.state;
     const { isCorrectNetwork, currentUser } = this.props;
 
@@ -140,7 +135,7 @@ class DonateButton extends React.Component {
       }),
       POLL_DELAY_TOKENS,
     )();
-  }
+  }*/
 
   toggleFormValid(state) {
     this.setState({ formIsValid: state });
@@ -157,7 +152,7 @@ class DonateButton extends React.Component {
   openDialog() {
     this.setState({
       modalVisible: true,
-      amount: this.getMaxAmount().toString(),
+      amount: this.getMaxEtherAmountToDonate().toString(),
       formIsValid: false,
     });
   }
@@ -171,17 +166,16 @@ class DonateButton extends React.Component {
    
 
     const { currentUser } = this.props;
-    const { adminId } = this.props.model;
+    const { entityId } = this.props.model;
     const { selectedToken } = this.state;
-
-    const amount = utils.toWei(model.amount);
+    const amount = Web3Utils.etherToWei(model.amount);
     const isDonationInToken = selectedToken.symbol !== config.nativeTokenName;
     // TODO Cambiar
     const tokenAddress = isDonationInToken ? selectedToken.address : '0X0000000000000000000000000000000000000000';
 
      // Nuevo
      const { donation } = this.state;
-     donation.entityId = 2;
+     donation.entityId = entityId;
      donation.tokenAddress = tokenAddress;
      donation.amount = amount;
      // Nuevo
@@ -296,17 +290,16 @@ class DonateButton extends React.Component {
       modalVisible,
       tokenWhitelistOptions,
       selectedToken,
+      user
     } = this.state;
 
-    const maxAmount = this.getMaxAmount();
+    const maxAmount = this.getMaxEtherAmountToDonate();
 
     const style = {
       display: 'inline-block',
     };
 
-    /*const balance =
-      selectedToken.symbol === config.nativeTokenName ? NativeTokenBalance : selectedToken.balance;*/
-    const balance = new BigNumber(1000);
+    const balance = user.balance;
 
     return (
       <span style={style}>
@@ -381,7 +374,7 @@ class DonateButton extends React.Component {
                 )}
                 {/* TODO: remove this b/c the wallet provider will contain this info */}
                 {config.homeNetworkName} {selectedToken.symbol} balance:&nbsp;
-                <em>{utils.fromWei(balance ? balance.toFixed() : '')}</em>
+                <em>{Web3Utils.weiToEther(balance).toString()}</em>
               </div>
             )}
 
@@ -465,10 +458,9 @@ class DonateButton extends React.Component {
 
 const modelTypes = PropTypes.shape({
   type: PropTypes.string.isRequired,
-  adminId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  id: PropTypes.string.isRequired,
+  //adminId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  entityId: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
-  campaignId: PropTypes.string,
   token: PropTypes.shape({}),
   maxDonation: PropTypes.instanceOf(BigNumber),
 });

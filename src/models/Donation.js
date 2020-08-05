@@ -76,8 +76,8 @@ class Donation extends Model {
       clientId,
       giverAddress = '',
       tokenAddress = '',
-      amount,
-      amountRemainding,
+      amount = new BigNumber(0),
+      amountRemainding = new BigNumber(0),
       entityId,
       budgetId,     
       status = Donation.PENDING
@@ -194,7 +194,7 @@ class Donation extends Model {
   }
 
   set amount(value) {
-    this.checkType(value, ['string'], 'amount');
+    this.checkInstanceOf(value, BigNumber, 'amount');
     this._amount = value;
   }
 

@@ -58,7 +58,6 @@ class ViewCampaign extends Component {
   }
 
   componentDidMount() {
-
     this.setState({
       campaign: this.props.campaign,
       milestones: this.props.milestones,
@@ -165,7 +164,7 @@ class ViewCampaign extends Component {
                   model={{
                     type: Campaign.type,
                     title: campaign.title,
-                    id: campaign.id,
+                    entityId: campaign.id,
                     token: { symbol: config.nativeTokenName },
                     adminId: campaign.projectId,
                   }}

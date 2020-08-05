@@ -3,6 +3,7 @@ const {
   REACT_APP_DECIMALS = 8, // optional
   REACT_APP_FEATHERJS_CONNECTION_URL,
   REACT_APP_NODE_CONNECTION_URL,
+  REACT_APP_CROWDFUNDING_ADDRESS,
   REACT_APP_LIQUIDPLEDGING_ADDRESS,
   REACT_APP_CAMPAIGN_FACTORY_ADDRESS,
   REACT_APP_CAPPED_MILESTONE_FACTORY_ADDRESS,
@@ -86,6 +87,7 @@ if (configurations[REACT_APP_ENVIRONMENT] === undefined)
 const config = Object.assign({}, configurations[REACT_APP_ENVIRONMENT]);
 
 // Overwrite the environment values with parameters
+config.crowdfundingAddress = REACT_APP_CROWDFUNDING_ADDRESS || config.crowdfundingAddress;
 config.liquidPledgingAddress = REACT_APP_LIQUIDPLEDGING_ADDRESS || config.liquidPledgingAddress;
 config.campaignFactoryAddress =
   REACT_APP_CAMPAIGN_FACTORY_ADDRESS || config.lppCampaignFactoryAddress;
