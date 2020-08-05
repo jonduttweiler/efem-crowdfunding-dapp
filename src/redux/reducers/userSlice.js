@@ -17,17 +17,9 @@ export const userSlice = createSlice({
       // A case reducer on a non-draftable value must not return undefined
       return state;
     },
-    setUser: (state, action) => {
-      //No se puede asignar directamente state = action.payload; 
+    setUser: (state, action) => {//No se puede asignar directamente state = action.payload; 
       const { name, address, email, avatar, link, roles, balance } = action.payload;
-      state.name = name;
-      state.address = address;
-      state.email = email;
-      state.avatar = avatar;
-      state.link = link;
-      state.roles = roles;
-      state.balance = balance;
-      return state;
+      return new User({ name, address, email, avatar, link, roles, balance });
     },
     clearUser: (state, action) => {
       state = new User();
