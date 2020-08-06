@@ -6,10 +6,9 @@ import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 
-const users = feathersClient.service('users');
 const walletApi = new WalletApi();
 const crowdfundingContractApi = new CrowdfundingContractApi();
-const feathersUserService = feathersClient.service('users');
+
 
 class UserService {
 
@@ -30,17 +29,19 @@ class UserService {
           user.balance = new BigNumber(balance);
           subscriber.next(user);
 
-          // Si tiene un perfil registrado lo buscamos en feathers
-          /*const info = await feathersUserService.getUserInfo(address);
-          user.name = info.name;
-          user.email = info.email;
-          //cargar avatar...
-          subscriber.next(user);*/
+          feathersClient.service('/users').get(address).then(userdata => {
+            const { name, email, avatar } = userdata;
+            user.name = name;
+            user.email = email;
+            user.avatar = avatar;
+            subscriber.next(user);
+          });
 
           // Se cargan los roles del usuario desde el smart constract
-          let roles = await crowdfundingContractApi.getRoles(address);
-          user.roles = roles;
-          subscriber.next(user);
+          crowdfundingContractApi.getRoles(address).then(roles => {
+            user.roles = roles;
+            subscriber.next(user);
+          });
         }
       } catch (e) {
         subscriber.error(e);
@@ -61,7 +62,7 @@ class UserService {
          ErrorPopup('Failed to upload profile to ipfs');
        }
        try {
-         await users.patch(user.address, user.toFeathers());
+         await feathersClient.service('/users').patch(user.address, user.toFeathers());
    
          afterSave();
        } catch (err) {
