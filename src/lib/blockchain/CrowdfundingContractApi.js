@@ -436,14 +436,23 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const donationOnChain = await crowdfunding.getDonation(donationId);
         // Se obtiene la información de la Donación desde IPFS.
-        const { id, giver, token, amount, amountRemainding, entityId, budgetId, status } = donationOnChain;
+        const { id, 
+            giver, 
+            token, 
+            amount, 
+            amountRemainding, 
+            createdAt, 
+            entityId, 
+            budgetId, 
+            status } = donationOnChain;
 
         return new Donation({
             id: parseInt(id),
             giverAddress: giver,
             tokenAddress: token,
-            amount: amount,
-            amountRemainding: amountRemainding,
+            amount: new BigNumber(amount),
+            amountRemainding: new BigNumber(amountRemainding),
+            createdAt: createdAt,
             entityId: parseInt(entityId),
             budgetId: parseInt(budgetId),
             status: this.mapDonationStatus(status)

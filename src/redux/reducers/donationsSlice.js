@@ -39,7 +39,8 @@ export const donationsSlice = createSlice({
 
 export const { fetchDonations, resetDonations, addDonation, updateDonationByClientId } = donationsSlice.actions;
 
+export const selectDonation = (state, id) => state.donations.find(d => d.id === id);
 export const selectDonations = state => state.donations;
-export const selectDonation = (state, id) => state.donations.find(c => c.id == id);
+export const selectDonationsByEntity = (state, entityId) => state.donations.filter(d => d.entityId === entityId);
 
 export default donationsSlice.reducer;

@@ -34,6 +34,12 @@ const configurations = {
       useHotjar: false,
     },
     nativeTokenName: 'RBTC',
+    tokens: {
+      // Token Nativo
+      '0x0000000000000000000000000000000000000000': {
+        symbol: 'RBTC'
+      }
+    }
   },
   rsk_testnet: {
     title: 'RSK Testnet',
@@ -53,6 +59,12 @@ const configurations = {
       useHotjar: false,
     },
     nativeTokenName: 'RBTC',
+    tokens: {
+      // Token Nativo
+      '0x0000000000000000000000000000000000000000': {
+        symbol: 'RBTC'
+      }
+    }
   },
   rsk_mainnet: {
     title: 'RSK MainNet',
@@ -72,6 +84,12 @@ const configurations = {
       useHotjar: false,
     },
     nativeTokenName: 'RBTC',
+    tokens: {
+      // Token Nativo
+      '0x0000000000000000000000000000000000000000': {
+        symbol: 'RBTC'
+      }
+    }
   },
 };
 

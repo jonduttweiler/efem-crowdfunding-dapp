@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { utils } from 'web3';
-
+import moment from 'moment';
 import Model from './Model';
 import { getTruncatedText } from '../lib/helpers';
 import Milestone from './Milestone';
@@ -78,6 +78,7 @@ class Donation extends Model {
       tokenAddress = '',
       amount = new BigNumber(0),
       amountRemainding = new BigNumber(0),
+      createdAt = moment().unix(),
       entityId,
       budgetId,     
       status = Donation.PENDING
@@ -90,6 +91,7 @@ class Donation extends Model {
     this._tokenAddress = tokenAddress;
     this._amount = amount;
     this._amountRemainding = amountRemainding;
+    this._createdAt = createdAt;
     this._entityId = entityId;
     this._budgetId = budgetId;
     this._status = status;
@@ -255,7 +257,9 @@ class Donation extends Model {
   get statusDescription() {
     switch (this._status) {
       case Donation.PENDING:
-        return 'pending successful transaction';
+        return 'Pendiente';
+      case Donation.AVAILABLE:
+        return 'Disponible';
       case Donation.TO_APPROVE:
         return 'proposed delegation';
       case Donation.WAITING:

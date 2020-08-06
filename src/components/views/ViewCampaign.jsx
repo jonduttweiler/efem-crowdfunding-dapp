@@ -26,6 +26,7 @@ import ErrorBoundary from '../ErrorBoundary';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
+import { selectDonationsByEntity } from '../../redux/reducers/donationsSlice';
 
 /**
  * The Campaign detail view mapped to /campaing/id
@@ -165,8 +166,7 @@ class ViewCampaign extends Component {
                     type: Campaign.type,
                     title: campaign.title,
                     entityId: campaign.id,
-                    token: { symbol: config.nativeTokenName },
-                    adminId: campaign.projectId,
+                    token: { symbol: config.nativeTokenName }
                   }}
                   currentUser={currentUser}
                   history={history}
@@ -275,7 +275,7 @@ class ViewCampaign extends Component {
                     <Balances entity={campaign} />
 
                     <ListDonations
-                      donations={donations}
+                      entityId={campaign.id}
                       isLoading={isLoadingDonations}
                       total={donationsTotal}
                       loadMore={this.loadMoreDonations}
@@ -335,7 +335,8 @@ ViewCampaign.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
   return {
     campaign: selectCampaign(state, ownProps.match.params.id),
-    milestones: selectMilestonesByCampaign(state, ownProps.match.params.id)
+    milestones: selectMilestonesByCampaign(state, ownProps.match.params.id),
+    donations: selectDonationsByEntity(state, ownProps.match.params.id)
   }
 }
 
