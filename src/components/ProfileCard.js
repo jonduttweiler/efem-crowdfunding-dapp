@@ -20,7 +20,6 @@ class ProfileCard extends Component {  //va a recibir como prop un address
     }
     
     shouldComponentUpdate(nextProps, nextState){
-        console.log(nextProps.address);
         if(this.state != nextState) return true;
         
         if(this.props.address === nextProps.address){
@@ -31,14 +30,12 @@ class ProfileCard extends Component {  //va a recibir como prop un address
     
     
     async componentDidUpdate(prevProps, prevState){
-      console.log("componentDidUpdate");
       if(this.props.address !== prevProps.address){
         this.loadUser();
       }
     }
 
     async loadUser(){
-        console.log("load user")
         const user = await getUser(this.props.address);
         if (user) this.setState({ user })
     }
