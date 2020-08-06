@@ -6,9 +6,6 @@ import getWeb3 from '../lib/blockchain/getWeb3';
 import pollEvery from '../lib/pollEvery';
 import config from '../configuration';
 
-import { loadUser } from '../redux/reducers/userSlice';
-import { connect } from 'react-redux';
-
 const POLL_DELAY_ACCOUNT = 1000;
 const POLL_DELAY_NETWORK = 2000;
 
@@ -100,14 +97,6 @@ class Web3Provider extends Component {
 
     this.enableProvider = this.enableProvider.bind(this);
   }
-
-
-  /*componentDidUpdate(prevProps, prevState){
-    if(prevState.account != this.state.account){
-      this.props.loadUser({address: this.state.account});
-    }
-  }*/
-
 
 
   componentWillMount() {
@@ -261,10 +250,6 @@ Web3Provider.defaultProps = {};
 
 export { Consumer };
 
-
-const mapStateToProps = (state, props) => ({});
-const mapDispatchToProps = { loadUser };
-
-export default connect(mapStateToProps,mapDispatchToProps)(Web3Provider);
+export default Web3Provider;
 
 
