@@ -8,16 +8,14 @@ import config from '../configuration';
 import Loader from './Loader';
 import { getUserName, getUserAvatar } from '../lib/helpers';
 import Donation from '../models/Donation';
-import Web3Utils from '../utils/Web3Utils';
-
+import MoneyAmount from './MoneyAmount';
 import { connect } from 'react-redux'
 import { fetchDonations, selectDonationsByEntity } from '../redux/reducers/donationsSlice'
 
 /**
- * Shows a table of donations for a given type (dac, campaign, milestone)
  * Presenta una tabla de donaciones para una entidad.
  */
-class ListDonations extends Component {
+class TableDonations extends Component {
 
   constructor(props) {
     super(props);
@@ -30,19 +28,18 @@ class ListDonations extends Component {
     this.props.fetchDonations();
   }
 
+  loadMore() {
+
+  }
+
   render() {
-    const { donations, isLoading, loadMore, total, newDonations, useAmountRemainding } = this.props;
+    const { donations, isLoading, total, useAmountRemainding } = this.props;
     //const { donations } = this.state;
     const hasProposedDelegation = donations.some(d => d.intendedProjectId);
     return (
       <div>
         <div>
           <h2 style={{ display: 'inline-block' }}>Donations</h2>
-          {newDonations > 0 && (
-            <span className="badge badge-primary ml-2 mb-2" style={{ verticalAlign: 'middle' }}>
-              {newDonations} new
-            </span>
-          )}
         </div>
 
         <div className="dashboard-table-view">
@@ -78,8 +75,8 @@ class ListDonations extends Component {
                       </td>
 
                       <td className="td-donations-amount">
-                        {useAmountRemainding ? Web3Utils.weiToEther(d.amountRemainding).toString() : Web3Utils.weiToEther(d.amount).toString()}{' '}
-                        {(config.tokens[d.tokenAddress] && config.tokens[d.tokenAddress].symbol) || 'RBTC'}
+                        {/*useAmountRemainding ? Web3Utils.weiToEther(d.amountRemainding).toFixed(4) : Web3Utils.weiToEther(d.amount).toFixed(4)*/}
+                        <MoneyAmount amount={d.amount} tokenAddress={d.tokenAddress}/>
                       </td>
 
                       {config.etherscan ? (
@@ -110,7 +107,7 @@ class ListDonations extends Component {
                   <button
                     type="button"
                     className="btn btn-info"
-                    onClick={() => loadMore()}
+                    onClick={() => this.loadMore}
                     disabled={isLoading}
                   >
                     {isLoading && (
@@ -134,18 +131,17 @@ class ListDonations extends Component {
   }
 }
 
-ListDonations.propTypes = {
+TableDonations.propTypes = {
   donations: PropTypes.arrayOf(PropTypes.instanceOf(Donation)).isRequired,
   isLoading: PropTypes.bool.isRequired,
   total: PropTypes.number.isRequired,
-  loadMore: PropTypes.func.isRequired,
-  newDonations: PropTypes.number,
   useAmountRemainding: PropTypes.bool,
 };
 
-ListDonations.defaultProps = {
-  newDonations: 0,
+TableDonations.defaultProps = {
   useAmountRemainding: false,
+  total: 0,
+  isLoading: false
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -156,4 +152,4 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = { fetchDonations }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListDonations)
+export default connect(mapStateToProps, mapDispatchToProps)(TableDonations)

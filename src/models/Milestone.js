@@ -114,7 +114,7 @@ export default class Milestone extends Entity {
   }
 
   set campaignId(value) {
-    this.checkType(value, ['string'], 'campaignId');
+    this.checkType(value, ['number'], 'campaignId');
     this._campaignId = value;
   }
 

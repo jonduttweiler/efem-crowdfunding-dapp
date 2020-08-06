@@ -45,7 +45,7 @@ class Entity extends Model {
   }
 
   set id(value) {
-    this.checkType(value, ['undefined', 'string'], 'id');
+    this.checkType(value, ['undefined', 'number'], 'id');
     this._id = value;
   }
 

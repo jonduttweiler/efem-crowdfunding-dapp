@@ -11,7 +11,7 @@ import Loader from '../Loader';
 import GoBackButton from '../GoBackButton';
 import BackgroundImageHeader from '../BackgroundImageHeader';
 // import DonateButton from '../DonateButton';
-import ListDonations from '../ListDonations';
+import TableDonations from '../TableDonations';
 import CommunityButton from '../CommunityButton';
 import { getUserName, getUserAvatar } from '../../lib/helpers';
 import DACService from '../../services/DACService';
@@ -173,7 +173,7 @@ class ViewDAC extends Component {
             <div className="col-md-8 m-auto">
               <Balances entity={dac} />
 
-              <ListDonations
+              <TableDonations
                 donations={donations}
                 isLoading={isLoadingDonations}
                 total={donationsTotal}

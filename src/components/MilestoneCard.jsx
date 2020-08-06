@@ -112,7 +112,7 @@ class MilestoneCard extends Component {
 
 MilestoneCard.propTypes = {
   milestone: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     //campaign: PropTypes.shape().isRequired,
     managerAddress: PropTypes.string.isRequired,
     /*owner: PropTypes.shape({

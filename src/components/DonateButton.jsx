@@ -7,13 +7,9 @@ import Slider from 'react-rangeslider';
 import GA from 'lib/GoogleAnalytics';
 import { Link } from 'react-router-dom';
 
-import getNetwork from '../lib/blockchain/getNetwork';
 import User from '../models/User';
-import pollEvery from '../lib/pollEvery';
 import LoaderButton from './LoaderButton';
-import ErrorPopup from './ErrorPopup';
 import config from '../configuration';
-import DonationService from '../services/DonationService';
 import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 import SelectFormsy from './SelectFormsy';
 import { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProvider';
@@ -23,8 +19,7 @@ import { addDonation } from '../redux/reducers/donationsSlice'
 import { selectUser } from '../redux/reducers/userSlice'
 import Donation from '../models/Donation';
 import Web3Utils from '../utils/Web3Utils';
-
-const POLL_DELAY_TOKENS = 2000;
+import MoneyAmount from './MoneyAmount';
 
 const modalStyles = {
   content: {
@@ -68,14 +63,6 @@ class DonateButton extends React.Component {
     this.openDialog = this.openDialog.bind(this);
   }
 
-  componentDidMount() {
-    //this.pollToken();
-  }
-
-  componentWillUnmount() {
-    if (this.stopPolling) this.stopPolling();
-  }
-
   setToken(address) {
     const selectedToken = this.props.tokenWhitelist.find(t => t.address === address);
     selectedToken.balance = new BigNumber('0'); // FIXME: There should be a balance provider handling all of this...
@@ -97,46 +84,6 @@ class DonateButton extends React.Component {
     return Web3Utils.weiToEther(user.balance);
   }
 
-  /*pollToken() {
-    const { selectedToken } = this.state;
-    const { isCorrectNetwork, currentUser } = this.props;
-
-    // stop existing poll
-    if (this.stopPolling) {
-      this.stopPolling();
-      this.stopPolling = undefined;
-    }
-    // Native token balance is provided by the Web3Provider
-    if (selectedToken.symbol === config.nativeTokenName) return;
-
-    this.stopPolling = pollEvery(
-      () => ({
-        request: async () => {
-          try {
-            const { tokens } = await getNetwork();
-            const contract = tokens[selectedToken.address];
-
-            // we are only interested in homeNetwork token balances
-            if (!isCorrectNetwork || !currentUser || !currentUser.address || !contract) {
-              return new BigNumber(0);
-            }
-
-            return new BigNumber(await contract.methods.balanceOf(currentUser.address).call());
-          } catch (e) {
-            return new BigNumber(0);
-          }
-        },
-        onResult: balance => {
-          if (!selectedToken.balance.eq(balance)) {
-            selectedToken.balance = balance;
-            this.setState({ selectedToken });
-          }
-        },
-      }),
-      POLL_DELAY_TOKENS,
-    )();
-  }*/
-
   toggleFormValid(state) {
     this.setState({ formIsValid: state });
   }
@@ -152,7 +99,8 @@ class DonateButton extends React.Component {
   openDialog() {
     this.setState({
       modalVisible: true,
-      amount: this.getMaxEtherAmountToDonate().toString(),
+      //amount: this.getMaxEtherAmountToDonate().toString(),
+      amount: new BigNumber(0),
       formIsValid: false,
     });
   }
@@ -162,127 +110,34 @@ class DonateButton extends React.Component {
     this.setState({ isSaving: true });
   }
 
+  /**
+   * Realiza la donación del usuario.
+   * 
+   * En esta versión solamente se puede donar en el Token Nativo (RBTC).
+   */
   donate(model) {
-   
 
-    const { currentUser } = this.props;
+    const { donation, user, selectedToken } = this.state;
     const { entityId } = this.props.model;
-    const { selectedToken } = this.state;
     const amount = Web3Utils.etherToWei(model.amount);
-    const isDonationInToken = selectedToken.symbol !== config.nativeTokenName;
-    // TODO Cambiar
-    const tokenAddress = isDonationInToken ? selectedToken.address : '0X0000000000000000000000000000000000000000';
+    // Utilizado cuando se implemente la donación en otros tokens.
+    const isDonationInToken = selectedToken.symbol !== config.nativeToken.symbol;
+    const tokenAddress = isDonationInToken ? selectedToken.address : config.nativeToken.address;
 
-     // Nuevo
-     const { donation } = this.state;
-     donation.entityId = entityId;
-     donation.tokenAddress = tokenAddress;
-     donation.amount = amount;
-     // Nuevo
+    donation.entityId = entityId;
+    donation.tokenAddress = tokenAddress;
+    donation.amount = amount;
+    donation.giverAddress = user.address;
 
     this.props.addDonation(this.state.donation);
 
+    React.toast.info(<p>Gracias! Su donación está pendiente de confirmar</p>);
+
     this.closeDialog();
-
-    React.toast.info(
-      <p>
-        Awesome! Your donation is pending...
-      </p>,
-    );
-
-    /*const _makeDonationTx = async () => {
-      let txData = {
-        from: currentUser.address,
-        donateToAdminId: adminId,
-        token: selectedToken,
-        amount,
-        donateTo: this.props.model,
-      };
-      if (currentUser.giverId > 0) {
-        // Donating on behalf of logged in DApp user
-        // if user already exists
-        txData = Object.assign({}, txData, {
-          giverUser: currentUser,
-          giverId: currentUser.giverId,
-        });
-      } else {
-        // create the user as a giver
-        txData = Object.assign({}, txData, {
-          giverUser: currentUser,
-          giverId: currentUser.giverId,
-          addGiver: true,
-        });
-      }
-
-      DonationService.createLPDonation(
-        Object.assign({}, txData, {
-          onCreated: txUrl => {
-            this.closeDialog();
-            this.setState({
-              modalVisible: false,
-              isSaving: false,
-            });
-
-            GA.trackEvent({
-              category: 'Donation',
-              action: 'donated',
-              label: txUrl,
-            });
-
-            React.toast.info(
-              <p>
-                Awesome! Your donation is pending...
-                <br />
-                <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  View transaction
-                </a>
-              </p>,
-            );
-          },
-          onSuccess: txUrl => {
-            React.toast.success(
-              <p>
-                Woot! Woot! Donation received. You are awesome!
-                <br />
-                <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  View transaction
-                </a>
-              </p>,
-            );
-          },
-          onError: err => {
-            ErrorPopup('Something went wrong with rejecting the proposed milestone', err);
-            this.setState({
-              isSaving: false,
-            });
-          },
-        }),
-      );
-    };
-
-    // if donating in token, first approve transfer of token by LiquidPledging by creating an allowance
-    if (isDonationInToken) {
-      DonationService.approveERC20tokenTransfer(tokenAddress, currentUser.address, amount)
-        .then(() => _makeDonationTx())
-        .catch(err => {
-          this.setState({
-            isSaving: false,
-          });
-
-          if (err.message !== 'cancelled') {
-            ErrorPopup(
-              'Something went wrong with your donation. Could not approve token allowance.',
-              err,
-            );
-          }
-        });
-    } else {
-      _makeDonationTx();
-    }*/
   }
 
   render() {
-    const { model, currentUser, NativeTokenBalance, validProvider, isCorrectNetwork } = this.props;
+    const { model, currentUser, validProvider, isCorrectNetwork } = this.props;
     const {
       amount,
       formIsValid,
@@ -365,7 +220,7 @@ class DonateButton extends React.Component {
                     name="token"
                     id="token-select"
                     label="Make your donation in"
-                    helpText={`Select ${config.nativeTokenName} or the token you want to donate`}
+                    helpText={`Select ${config.nativeToken.name} or the token you want to donate`}
                     value={selectedToken.address}
                     options={tokenWhitelistOptions}
                     onChange={address => this.setToken(address)}
@@ -374,7 +229,7 @@ class DonateButton extends React.Component {
                 )}
                 {/* TODO: remove this b/c the wallet provider will contain this info */}
                 {config.homeNetworkName} {selectedToken.symbol} balance:&nbsp;
-                <em>{Web3Utils.weiToEther(balance).toString()}</em>
+                <MoneyAmount amount={balance} tokenAddress={config.nativeToken.address}/>
               </div>
             )}
 
@@ -390,8 +245,8 @@ class DonateButton extends React.Component {
                   step={maxAmount.toNumber() / 10}
                   value={Number(amount)}
                   labels={{
-                    0: '0',
-                    [maxAmount.toFixed()]: maxAmount.toFixed(),
+                    0: <MoneyAmount amount={0} tokenAddress={config.nativeToken.address}/>,
+                    [maxAmount.toFixed()]: <MoneyAmount amount={balance} tokenAddress={config.nativeToken.address}/>,
                   }}
                   tooltip={false}
                   onChange={newAmount => this.setState({ amount: newAmount.toString() })}
@@ -414,7 +269,7 @@ class DonateButton extends React.Component {
                   greaterThan: `Please enter value greater than 0 ${selectedToken.symbol}`,
                   lessOrEqualTo: `This donation exceeds your wallet balance or the milestone max amount: ${maxAmount.toFixed()} ${
                     selectedToken.symbol
-                  }.`,
+                    }.`,
                 }}
                 autoFocus
               />
@@ -468,7 +323,6 @@ const modelTypes = PropTypes.shape({
 DonateButton.propTypes = {
   model: modelTypes.isRequired,
   currentUser: PropTypes.instanceOf(User),
-  NativeTokenBalance: PropTypes.instanceOf(BigNumber).isRequired,
   validProvider: PropTypes.bool.isRequired,
   isCorrectNetwork: PropTypes.bool.isRequired,
   tokenWhitelist: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -480,7 +334,6 @@ DonateButton.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    //campaigns: selectCampaigns(state)
     user: selectUser(state)
   }
 }
@@ -497,7 +350,6 @@ export default connect(
         <Web3Consumer>
           {({ state: { isCorrectNetwork, validProvider, balance } }) => (
             <DonateButton
-              NativeTokenBalance={balance}
               validProvider={validProvider}
               isCorrectNetwork={isCorrectNetwork}
               tokenWhitelist={tokenWhitelist}

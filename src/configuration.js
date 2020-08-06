@@ -34,10 +34,20 @@ const configurations = {
       useHotjar: false,
     },
     nativeTokenName: 'RBTC',
+    nativeToken: {
+      name: 'RBTC',
+      symbol: 'RBTC',
+      address: '0x0000000000000000000000000000000000000000'
+    },
+    fiat: {
+      symbol: 'USD',
+      showDecimals: 2
+    },
     tokens: {
       // Token Nativo
       '0x0000000000000000000000000000000000000000': {
-        symbol: 'RBTC'
+        symbol: 'RBTC',
+        showDecimals: 4
       }
     }
   },
@@ -59,10 +69,20 @@ const configurations = {
       useHotjar: false,
     },
     nativeTokenName: 'RBTC',
+    nativeToken: {
+      name: 'RBTC',
+      symbol: 'RBTC',
+      address: '0x0000000000000000000000000000000000000000'
+    },
+    fiat: {
+      symbol: 'USD',
+      showDecimals: 2
+    },
     tokens: {
       // Token Nativo
       '0x0000000000000000000000000000000000000000': {
-        symbol: 'RBTC'
+        symbol: 'RBTC',
+        showDecimals: 4
       }
     }
   },
@@ -84,10 +104,20 @@ const configurations = {
       useHotjar: false,
     },
     nativeTokenName: 'RBTC',
+    nativeToken: {
+      name: 'RBTC',
+      symbol: 'RBTC',
+      address: '0x0000000000000000000000000000000000000000'
+    },
+    fiat: {
+      symbol: 'USD',
+      showDecimals: 2
+    },
     tokens: {
       // Token Nativo
       '0x0000000000000000000000000000000000000000': {
-        symbol: 'RBTC'
+        symbol: 'RBTC',
+        showDecimals: 4
       }
     }
   },

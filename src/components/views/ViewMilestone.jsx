@@ -13,13 +13,15 @@ import MilestoneActions from 'components/MilestoneActions';
 import { getUserAvatar, getUserName } from '../../lib/helpers';
 
 import BackgroundImageHeader from '../BackgroundImageHeader';
-// import DonateButton from '../DonateButton';
+import DonateButton from '../DonateButton';
 import GoBackButton from '../GoBackButton';
-import ListDonations from '../ListDonations';
+import TableDonations from '../TableDonations';
 import Loader from '../Loader';
 import MilestoneConversations from '../MilestoneConversations';
 // import DelegateMultipleButton from '../DelegateMultipleButton';
 import MilestoneService from '../../services/MilestoneService';
+import Milestone from '../../models/Milestone';
+import config from '../../configuration';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestone } from '../../redux/reducers/milestonesSlice';
@@ -149,6 +151,15 @@ class ViewMilestone extends Component {
               <p>Campaign: {campaign.title} </p>
 
               <div className="milestone-actions">
+                {<DonateButton
+                  model={{
+                    type: Milestone.type,
+                    title: milestone.title,
+                    entityId: milestone.id,
+                    token: { symbol: config.nativeTokenName }
+                  }}
+                  currentUser={currentUser}
+                />}
                 {/*this.isActiveMilestone() && (
                   <Fragment>
                     {currentUser && (
@@ -299,14 +310,7 @@ class ViewMilestone extends Component {
 
               <div className="row spacer-top-50 spacer-bottom-50">
                 <div className="col-md-8 m-auto">
-                  <ListDonations
-                    donations={donations}
-                    isLoading={isLoadingDonations}
-                    total={donationsTotal}
-                    loadMore={this.loadMoreDonations}
-                    newDonations={newDonations}
-                    useAmountRemaining
-                  />
+                  <TableDonations entityId={milestone.id}/>
                 </div>
               </div>
             </div>

@@ -74,7 +74,7 @@ class CrowdfundingContractApi {
                     })
                     .once('confirmation', function (confNumber, receipt) {
                         console.log("DAC creation confimed",receipt);
-                        dac.id = receipt.events['NewDac'].returnValues.id;
+                        dac.id = parseInt(receipt.events['NewDac'].returnValues.id);
                         dac.status = DAC.ACTIVE;
                         subscriber.next(dac);
                     })
@@ -284,7 +284,7 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería gregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        campaign.id = receipt.events['NewCampaign'].returnValues.id;
+                        campaign.id = parseInt(receipt.events['NewCampaign'].returnValues.id);
                         campaign.status = Campaign.ACTIVE;
                         subscriber.next(campaign);
                     })
@@ -391,7 +391,7 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        milestone.id = receipt.events['NewMilestone'].returnValues.id;
+                        milestone.id = parseInt(receipt.events['NewMilestone'].returnValues.id);
                         milestone.status = Milestone.ACTIVE;
                         subscriber.next(milestone);
                     })

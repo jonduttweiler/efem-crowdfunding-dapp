@@ -19,14 +19,12 @@ import Campaign from '../../models/Campaign';
 import config from '../../configuration';
 import CommunityButton from '../CommunityButton';
 import DelegateMultipleButton from '../DelegateMultipleButton';
-import ListDonations from '../ListDonations';
+import TableDonations from '../TableDonations';
 import User from '../../models/User';
-import CampaignService from '../../services/CampaignService';
 import ErrorBoundary from '../ErrorBoundary';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
-import { selectDonationsByEntity } from '../../redux/reducers/donationsSlice';
 
 /**
  * The Campaign detail view mapped to /campaing/id
@@ -41,21 +39,12 @@ class ViewCampaign extends Component {
     
     this.state = {
       isLoading: true,
-      //isLoadingMilestones: true,
       isLoadingMilestones: false,
-      isLoadingDonations: true,
-      donations: [],
       milestones: props.milestones,
       milestonesLoaded: 0,
       milestonesTotal: 0,
-      milestonesPerBatch: 50,
-      donationsTotal: 0,
-      donationsPerBatch: 50,
-      newDonations: 0,
+      milestonesPerBatch: 50
     };
-
-    //this.loadMoreMilestones = this.loadMoreMilestones.bind(this);
-    this.loadMoreDonations = this.loadMoreDonations.bind(this);
   }
 
   componentDidMount() {
@@ -64,59 +53,7 @@ class ViewCampaign extends Component {
       milestones: this.props.milestones,
       isLoading: false
     });
-
-    //this.loadMoreMilestones(this.props.campaign.id);
-
-    this.loadMoreDonations();
-    // subscribe to donation count
-    this.donationsObserver = CampaignService.subscribeNewDonations(
-      this.props.campaign.id,
-      newDonations =>
-        this.setState({
-          newDonations,
-        }),
-      () => this.setState({ newDonations: 0 }),
-    );
   }
-
-  componentWillUnmount() {
-    if (this.donationsObserver) this.donationsObserver.unsubscribe();
-  }
-
-  loadMoreDonations() {
-    this.setState({ isLoadingDonations: true }, () =>
-      CampaignService.getDonations(
-        this.props.match.params.id,
-        this.state.donationsPerBatch,
-        this.state.donations.length,
-        (donations, donationsTotal) =>
-          this.setState(prevState => ({
-            donations: prevState.donations.concat(donations),
-            isLoadingDonations: false,
-            donationsTotal,
-          })),
-        () => this.setState({ isLoadingDonations: false }),
-      ),
-    );
-  }
-
-  /*loadMoreMilestones(campaignId = this.props.match.params.id) {
-    this.setState({ isLoadingMilestones: true }, () =>
-      CampaignService.getMilestones(
-        campaignId,
-        this.state.milestonesPerBatch,
-        this.state.milestonesLoaded,
-        (milestones, milestonesTotal) =>
-          this.setState(prevState => ({
-            milestones: prevState.milestones.concat(milestones),
-            isLoadingMilestones: false,
-            milestonesTotal,
-            milestonesLoaded: prevState.milestonesLoaded + milestones.length,
-          })),
-        () => this.setState({ isLoadingMilestones: false }),
-      ),
-    );
-  }*/
 
   removeMilestone(id) {
     checkBalance(this.props.balance)
@@ -142,13 +79,9 @@ class ViewCampaign extends Component {
     const { campaign, milestones, history, currentUser, balance } = this.props;
     const {
       isLoading,
-      donations,
-      isLoadingDonations,
       isLoadingMilestones,
       milestonesLoaded,
-      milestonesTotal,
-      donationsTotal,
-      newDonations,
+      milestonesTotal
     } = this.state;
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
     return (
@@ -169,7 +102,6 @@ class ViewCampaign extends Component {
                     token: { symbol: config.nativeTokenName }
                   }}
                   currentUser={currentUser}
-                  history={history}
                 />}
                 {currentUser && currentUser.authenticated && (
                   <DelegateMultipleButton
@@ -240,10 +172,10 @@ class ViewCampaign extends Component {
                             <MilestoneCard
                               milestone={m}
                               currentUser={currentUser}
-                              key={m._id}
+                              key={m.clientId}
                               history={history}
                               balance={balance}
-                              removeMilestone={() => this.removeMilestone(m._id)}
+                              removeMilestone={() => this.removeMilestone(m.clientId)}
                             />
                           ))}
                         </Masonry>
@@ -273,25 +205,7 @@ class ViewCampaign extends Component {
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
                     <Balances entity={campaign} />
-
-                    <ListDonations
-                      entityId={campaign.id}
-                      isLoading={isLoadingDonations}
-                      total={donationsTotal}
-                      loadMore={this.loadMoreDonations}
-                      newDonations={newDonations}
-                    />
-                    {/*<DonateButton
-                      model={{
-                        type: Campaign.type,
-                        title: campaign.title,
-                        id: campaign.id,
-                        adminId: campaign.projectId,
-                        token: { symbol: config.nativeTokenName },
-                      }}
-                      currentUser={currentUser}
-                      history={history}
-                    />*/}
+                    <TableDonations entityId={campaign.id}/>
                   </div>
                 </div>
                 <div className="row spacer-top-50 spacer-bottom-50">
@@ -335,8 +249,7 @@ ViewCampaign.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
   return {
     campaign: selectCampaign(state, ownProps.match.params.id),
-    milestones: selectMilestonesByCampaign(state, ownProps.match.params.id),
-    donations: selectDonationsByEntity(state, ownProps.match.params.id)
+    milestones: selectMilestonesByCampaign(state, ownProps.match.params.id)
   }
 }
 
