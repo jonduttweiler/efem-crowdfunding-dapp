@@ -13,9 +13,10 @@ import BackgroundImageHeader from '../BackgroundImageHeader';
 // import DonateButton from '../DonateButton';
 import ListDonations from '../ListDonations';
 import CommunityButton from '../CommunityButton';
-import { getUserName, getUserAvatar } from '../../lib/helpers';
+
 import DACService from '../../services/DACService';
 import CampaignCard from '../CampaignCard';
+import ProfileCard from '../ProfileCard';
 
 /**
  * The DAC detail view mapped to /dac/id
@@ -43,23 +44,7 @@ class ViewDAC extends Component {
 
   componentDidMount() {
     const dacId = this.props.match.params.id;
-
-    // Get the Campaign
-    DACService.get(dacId)
-      .then(dac => {
-        this.setState({ dac, isLoading: false });
-
-        this.campaignObserver = DACService.subscribeCampaigns(
-          dac.delegateId,
-          campaigns => this.setState({ campaigns, isLoadingCampaigns: false }),
-          () => this.setState({ isLoadingCampaigns: false }), // TODO: inform user of error
-        );
-      })
-      .catch(e => {
-        console.error(e);
-        this.setState({ isLoading: false });
-      }); // TODO: inform user of error
-
+    this.loadDac(dacId);
     this.loadMoreDonations();
     // subscribe to donation count
     this.donationsObserver = DACService.subscribeNewDonations(
@@ -72,6 +57,24 @@ class ViewDAC extends Component {
     );
   }
 
+  async loadDac(dacId){
+    try{
+      const dac = await DACService.get(dacId);
+      this.setState({ dac, isLoading: false});
+
+      this.campaignObserver = DACService.subscribeCampaigns( //Busca las campaigns usando el delegateId???
+        dac.delegateId,
+        campaigns => this.setState({ campaigns, isLoadingCampaigns: false }),
+        () => this.setState({ isLoadingCampaigns: false }), // TODO: inform user of error
+      );
+
+    } catch (err) {
+      console.error(err);
+      this.setState({ isLoading: false });// TODO: inform user of error
+    }
+
+  }
+  
   componentWillUnmount() {
     if (this.donationsObserver) this.donationsObserver.unsubscribe();
     if (this.campaignObserver) this.campaignObserver.unsubscribe();
@@ -106,6 +109,7 @@ class ViewDAC extends Component {
       donationsTotal,
       newDonations,
     } = this.state;
+    
     if (isLoading) return <Loader className="fixed" />;
     if (!dac) return <div id="view-cause-view">Failed to load dac</div>;
     return (
@@ -138,12 +142,14 @@ class ViewDAC extends Component {
             <div className="col-md-8 m-auto">
               <GoBackButton to="/" title="Communities" />
 
-              <center>
+         {/*      <center>
                 <Link to={`/profile/${dac.ownerAddress}`}>
-                  <Avatar size={50} src={getUserAvatar(dac.ownerAddress)} round />
-                  <p className="small">{getUserName(dac.ownerAddress)}</p>
+                  <Avatar size={50} src={avatar} round />
+                  <p className="small">{name}</p>
                 </Link>
-              </center>
+              </center> */}
+              
+              <ProfileCard address={dac.ownerAddress}/>
 
               <div className="card content-card">
                 <div className="card-body content">{ReactHtmlParser(dac.description)}</div>
