@@ -5,6 +5,7 @@ import WalletApi from '../lib/blockchain/WalletApi';
 import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
+import User from '../models/User';
 
 const walletApi = new WalletApi();
 const crowdfundingContractApi = new CrowdfundingContractApi();
@@ -73,6 +74,11 @@ class UserService {
        } */
   }
 
+}
+
+export async function getUser(address) {
+    const userdata = await feathersClient.service('/users').get(address);
+    return new User({...userdata});
 }
 
 export default UserService;
