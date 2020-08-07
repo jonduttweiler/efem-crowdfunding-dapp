@@ -184,7 +184,9 @@ class ViewMilestone extends Component {
                       styleName="inline"
                       title={`Campaign: ${campaign.title}`}
                     />
+
                     <ProfileCard address={milestone.managerAddress}/>
+
                     <div className="card content-card">
                       <div className="card-body content">{this.renderDescription()}</div>
                     </div>

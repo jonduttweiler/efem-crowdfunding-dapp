@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import Avatar from 'react-avatar';
+
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import ReactHtmlParser from 'react-html-parser';
 import BigNumber from 'bignumber.js';
@@ -121,7 +121,7 @@ class ViewCampaign extends Component {
                 <div className="row">
                   <div className="col-md-8 m-auto">
                     <GoBackButton to="/" title="Campaigns" />
-
+                    
                     <ProfileCard address={campaign.managerAddress}/>
 
                     <div className="card content-card ">
