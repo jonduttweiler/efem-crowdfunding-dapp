@@ -8,7 +8,7 @@ import config from '../configuration';
 import Loader from './Loader';
 import { getUserName, getUserAvatar } from '../lib/helpers';
 import Donation from '../models/Donation';
-import MoneyAmount from './MoneyAmount';
+import CryptoAmount from './CryptoAmount';
 import { connect } from 'react-redux'
 import { fetchDonations, selectDonationsByEntity } from '../redux/reducers/donationsSlice'
 
@@ -76,7 +76,7 @@ class TableDonations extends Component {
 
                       <td className="td-donations-amount">
                         {/*useAmountRemainding ? Web3Utils.weiToEther(d.amountRemainding).toFixed(4) : Web3Utils.weiToEther(d.amount).toFixed(4)*/}
-                        <MoneyAmount amount={d.amount} tokenAddress={d.tokenAddress}/>
+                        <CryptoAmount amount={d.amount} tokenAddress={d.tokenAddress}/>
                       </td>
 
                       {config.etherscan ? (

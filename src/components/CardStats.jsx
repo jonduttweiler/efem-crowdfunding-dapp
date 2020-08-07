@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import config from '../configuration';
-import MoneyAmount from './MoneyAmount';
+import FiatAmount from './FiatAmount';
 
 /**
  * Shows the statistics on DACs, Campaigns and milestonesCount
@@ -41,7 +41,7 @@ const CardStats = ({ peopleCount,
           <span>
             <p>Target</p>
             <p>
-              <MoneyAmount amount={fiatAmountTarget}/>
+              <FiatAmount amount={fiatAmountTarget}/>
             </p>
           </span>
         )}

@@ -20,7 +20,7 @@ import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListP
 
 import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
 import MilestoneService from '../../services/MilestoneService';
-
+import FiatUtils from '../../utils/FiatUtils';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { isCampaignManager } from '../../redux/reducers/userSlice';
@@ -251,7 +251,7 @@ class EditMilestone extends Component {
     milestone.description = inputs.description;
     milestone.reviewerAddress = inputs.reviewerAddress;
     milestone.recipientAddress = inputs.recipientAddress;
-    milestone.fiatAmountTarget = new BigNumber(inputs.fiatAmountTarget);
+    milestone.fiatAmountTarget = FiatUtils.dollarToCent(new BigNumber(inputs.fiatAmountTarget));
     // if(!milestone.itemizeState) milestone.maxAmount = inputs.maxAmount;
     this.setState({ milestone });
   }

@@ -107,7 +107,7 @@ class CrowdfundingContractApi {
         const { title, description, imageCid, communityUrl } = await IpfsService.downloadJson(infoCid);
 
         return new DAC({
-            id,
+            id: parseInt(id),
             title,
             description,
             imageCid,

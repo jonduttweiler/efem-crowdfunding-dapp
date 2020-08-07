@@ -10,12 +10,14 @@ import Balances from 'components/Balances';
 import Loader from '../Loader';
 import GoBackButton from '../GoBackButton';
 import BackgroundImageHeader from '../BackgroundImageHeader';
-// import DonateButton from '../DonateButton';
+import DonateButton from '../DonateButton';
 import TableDonations from '../TableDonations';
 import CommunityButton from '../CommunityButton';
 import { getUserName, getUserAvatar } from '../../lib/helpers';
 import DACService from '../../services/DACService';
 import CampaignCard from '../CampaignCard';
+import config from '../../configuration';
+import DAC from '../../models/DAC';
 
 /**
  * The DAC detail view mapped to /dac/id
@@ -114,18 +116,15 @@ class ViewDAC extends Component {
           <h6>Decentralized Altruistic Community</h6>
           <h1>{dac.title}</h1>
 
-          {/*<DonateButton
-                model={{
-                  type: DAC.type,
-                  title: dac.title,
-                  id: dac.id,
-                  token: { symbol: config.nativeTokenName },
-                  adminId: dac.delegateId,
-                }}
-                currentUser={currentUser}
-                commmunityUrl={dac.communityUrl}
-                history={history}
-              />*/}
+          {<DonateButton
+            model={{
+              type: DAC.type,
+              title: dac.title,
+              entityId: dac.id,
+              token: { symbol: config.nativeTokenName }
+            }}
+          />}
+
           {dac.communityUrl && (
             <CommunityButton className="btn btn-secondary" url={dac.communityUrl}>
               Join our community
@@ -172,14 +171,7 @@ class ViewDAC extends Component {
           <div className="row spacer-top-50 spacer-bottom-50">
             <div className="col-md-8 m-auto">
               <Balances entity={dac} />
-
-              <TableDonations
-                donations={donations}
-                isLoading={isLoadingDonations}
-                total={donationsTotal}
-                loadMore={this.loadMoreDonations}
-                newDonations={newDonations}
-              />
+              <TableDonations entityId={dac.id}/>
               {/*<DonateButton
                     model={{
                       type: DAC.type,

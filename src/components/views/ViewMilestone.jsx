@@ -25,6 +25,7 @@ import config from '../../configuration';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestone } from '../../redux/reducers/milestonesSlice';
+import FiatAmount from '../FiatAmount';
 
 /**
   Loads and shows a single milestone
@@ -272,7 +273,7 @@ class ViewMilestone extends Component {
                             The maximum amount that can be donated to this Milestone. Based on the
                             requested amount in fiat.
                           </small>
-                          ({milestone.fiatAmountTarget.toString()} {milestone.fiatType})
+                          <FiatAmount amount={milestone.fiatAmountTarget}/>
                         </div>
 
                         <div className="form-group">

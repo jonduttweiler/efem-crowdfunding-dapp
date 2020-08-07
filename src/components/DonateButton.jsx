@@ -19,7 +19,7 @@ import { addDonation } from '../redux/reducers/donationsSlice'
 import { selectUser } from '../redux/reducers/userSlice'
 import Donation from '../models/Donation';
 import Web3Utils from '../utils/Web3Utils';
-import MoneyAmount from './MoneyAmount';
+import CryptoAmount from './CryptoAmount';
 
 const modalStyles = {
   content: {
@@ -137,7 +137,7 @@ class DonateButton extends React.Component {
   }
 
   render() {
-    const { model, currentUser, validProvider, isCorrectNetwork } = this.props;
+    const { model, validProvider, isCorrectNetwork } = this.props;
     const {
       amount,
       formIsValid,
@@ -188,7 +188,7 @@ class DonateButton extends React.Component {
                 Please install <a href="https://metamask.io/">MetaMask</a> to donate
               </div>
             )}
-            {isCorrectNetwork && currentUser && (
+            {isCorrectNetwork && (
               <p>
                 {model.type.toLowerCase() === DAC.type && (
                   <span>
@@ -206,14 +206,14 @@ class DonateButton extends React.Component {
               </p>
             )}
 
-            {validProvider && !currentUser && (
+            {/*validProvider && !currentUser && (
               <div className="alert alert-warning">
                 <i className="fa fa-exclamation-triangle" />
                 It looks like your Provider is locked or you need to enable it.
               </div>
-            )}
+            )*/}
 
-            {validProvider && isCorrectNetwork && currentUser && (
+            {validProvider && isCorrectNetwork && (
               <div>
                 {model.type !== 'milestone' && (
                   <SelectFormsy
@@ -229,7 +229,7 @@ class DonateButton extends React.Component {
                 )}
                 {/* TODO: remove this b/c the wallet provider will contain this info */}
                 {config.homeNetworkName} {selectedToken.symbol} balance:&nbsp;
-                <MoneyAmount amount={balance} tokenAddress={config.nativeToken.address}/>
+                <CryptoAmount amount={balance} />
               </div>
             )}
 
@@ -245,8 +245,8 @@ class DonateButton extends React.Component {
                   step={maxAmount.toNumber() / 10}
                   value={Number(amount)}
                   labels={{
-                    0: <MoneyAmount amount={0} tokenAddress={config.nativeToken.address}/>,
-                    [maxAmount.toFixed()]: <MoneyAmount amount={balance} tokenAddress={config.nativeToken.address}/>,
+                    0: <CryptoAmount amount={0}/>,
+                    [maxAmount.toFixed()]: <CryptoAmount amount={balance}/>,
                   }}
                   tooltip={false}
                   onChange={newAmount => this.setState({ amount: newAmount.toString() })}
@@ -282,7 +282,7 @@ class DonateButton extends React.Component {
               </small>
             </p>
 
-            {validProvider && currentUser && maxAmount.toNumber() !== 0 && balance !== '0' && (
+            {validProvider && maxAmount.toNumber() !== 0 && balance !== '0' && (
               <LoaderButton
                 className="btn btn-success"
                 formNoValidate
@@ -322,14 +322,13 @@ const modelTypes = PropTypes.shape({
 
 DonateButton.propTypes = {
   model: modelTypes.isRequired,
-  currentUser: PropTypes.instanceOf(User),
   validProvider: PropTypes.bool.isRequired,
   isCorrectNetwork: PropTypes.bool.isRequired,
   tokenWhitelist: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 DonateButton.defaultProps = {
-  currentUser: undefined,
+
 };
 
 const mapStateToProps = (state, ownProps) => {
