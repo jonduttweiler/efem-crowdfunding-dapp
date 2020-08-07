@@ -37,12 +37,12 @@ class CrowdfundingContractApi {
     async canPerformRole(address, role) {
         try {
             const crowdfunding = await this.getCrowdfunding();
-            const hashedRole = web3.utils.keccak256(role); 
+            const hashedRole = web3.utils.keccak256(role);
             const response = await crowdfunding.canPerform(address, hashedRole, []);
             //console.log(address,role,response);
             return response;
         } catch (err) {
-            console.log("Fail to invoke canPerform on smart contract:",err);
+            console.log("Fail to invoke canPerform on smart contract:", err);
             return false;
         }
     }
@@ -57,7 +57,7 @@ class CrowdfundingContractApi {
     saveDAC(dac) {
         return new Observable(async subscriber => {
             try {
-                const crowdfunding = await this.getCrowdfunding(); 
+                const crowdfunding = await this.getCrowdfunding();
 
                 // Se almacena en IPFS toda la información de la dac.
                 dac.imageCid = await IpfsService.upload(dac.image);
@@ -68,12 +68,12 @@ class CrowdfundingContractApi {
 
                 promiEvent
                     .once('transactionHash', hash => {
-                        console.log("La transacción ha sido creada. txHash:",hash);
+                        console.log("La transacción ha sido creada. txHash:", hash);
                         dac.txHash = hash;
                         subscriber.next(dac);
                     })
                     .once('confirmation', function (confNumber, receipt) {
-                        console.log("DAC creation confimed",receipt);
+                        console.log("DAC creation confimed", receipt);
                         dac.id = parseInt(receipt.events['NewDac'].returnValues.id);
                         dac.status = DAC.ACTIVE;
                         subscriber.next(dac);
@@ -103,7 +103,7 @@ class CrowdfundingContractApi {
     async getDAC(pid) {
         const crowdfunding = await this.getCrowdfunding();
 
-        const { id, infoCid, status, delegate } = await crowdfunding.getDac(pid);
+        const { id, infoCid, donationIds, status, delegate } = await crowdfunding.getDac(pid);
         const { title, description, imageCid, communityUrl } = await IpfsService.downloadJson(infoCid);
 
         return new DAC({
@@ -113,6 +113,7 @@ class CrowdfundingContractApi {
             imageCid,
             imageUrl: IpfsService.resolveUrl(imageCid),
             communityUrl,
+            donationIds: donationIds,
             status: this.mapDACStatus(status),
             ownerAddress: delegate,
             commitTime: 0
@@ -122,28 +123,29 @@ class CrowdfundingContractApi {
     //get data of dac from blockchain and ipfs
     //Returns Promise<DAC>
     //Podriamos pasar esta funcion a otro archivo
-    async _getDac(crowdfunding,pid){
+    async _getDac(crowdfunding, pid) {
         const dacOnChain = await crowdfunding.getDac(pid);
         const {
             id,
             idIndex,
             infoCid,
+            donationIds,
             delegate,
             campaignIds,
             budgetIds,
             status
         } = dacOnChain;
-      
+
         const dacOnIPFS = await IpfsService.downloadJson(infoCid);
         const {
-            title, 
-            description, 
-            communityUrl, 
-            imageCid, 
+            title,
+            description,
+            communityUrl,
+            imageCid,
             version
         } = dacOnIPFS;
-           
-                    
+
+
         const imageUrl = IpfsService.resolveUrl(imageCid);
 
         const dac = new DAC({
@@ -153,12 +155,13 @@ class CrowdfundingContractApi {
             imageCid,
             imageUrl,
             communityUrl,
+            donationIds,
             status: this.mapDACStatus(status),
             ownerAddress: delegate,
             commitTime: 0
 
         });
-        
+
         return dac;
     }
 
@@ -171,13 +174,13 @@ class CrowdfundingContractApi {
                 const crowdfunding = await this.getCrowdfunding();
                 const ids = await crowdfunding.getDacIds();
                 const dacs = [];
-                
-                if(ids.length>0){
+
+                if (ids.length > 0) {
                     for (let i = 0; i < ids.length; i++) {
-                        const dac = await this._getDac(crowdfunding,ids[i]);
+                        const dac = await this._getDac(crowdfunding, ids[i]);
                         dacs.push(dac);
                     }
-    
+
                     subscriber.next(dacs);
                 } else {
                     subscriber.next([]);
@@ -219,7 +222,7 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const campaingOnChain = await crowdfunding.getCampaign(campaignId);
         // Se obtiene la información de la Campaign desde IPFS.
-        const { id, infoCid, status, manager, reviewer } = campaingOnChain;
+        const { id, infoCid, donationIds, status, manager, reviewer } = campaingOnChain;
         const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
 
         return new Campaign({
@@ -227,7 +230,8 @@ class CrowdfundingContractApi {
             title: title,
             description: description,
             imageCid: imageCid,
-            url: url,            
+            url: url,
+            donationIds: donationIds,
             managerAddress: manager,
             reviewerAddress: reviewer,
             status: this.mapCampaingStatus(status)
@@ -256,10 +260,10 @@ class CrowdfundingContractApi {
 
                 // Temporal hasta que exista la DAC previamente.
                 let receipt = await crowdfunding.newDac(campaign.infoCid,
-                  {
-                    from: campaign.managerAddress,
-                    $extraGas: extraGas()
-                  });
+                    {
+                        from: campaign.managerAddress,
+                        $extraGas: extraGas()
+                    });
                 // Temporal hasta que exista la DAC previamente.
 
                 let promiEvent = crowdfunding.newCampaign(
@@ -329,7 +333,7 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const milestoneOnChain = await crowdfunding.getMilestone(milestoneId);
         // Se obtiene la información del Milestone desde IPFS.
-        const { id, campaignId, infoCid, fiatAmountTarget, status, manager, reviewer, recipient, campaignReviewer } = milestoneOnChain;
+        const { id, campaignId, infoCid, fiatAmountTarget, donationIds, status, manager, reviewer, recipient, campaignReviewer } = milestoneOnChain;
         const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
 
         return new Milestone({
@@ -340,10 +344,11 @@ class CrowdfundingContractApi {
             imageCid: imageCid,
             url: url,
             fiatAmountTarget: new BigNumber(fiatAmountTarget),
+            donationIds: donationIds,
             managerAddress: manager,
             reviewerAddress: reviewer,
             campaignReviewerAddress: campaignReviewer,
-            recipientAddress: recipient,           
+            recipientAddress: recipient,
             status: this.mapMilestoneStatus(status)
         });
     }
@@ -427,6 +432,27 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Obtiene todas las Donaciones desde el Smart Contract que coinciden con los
+     * IDs especificados.
+     * 
+     * @param ids IDs de las donaciones a obtener.
+     */
+    getDonationsByIds(ids) {
+        return new Observable(async subscriber => {
+            try {
+                let donations = [];
+                for (let i = 0; i < ids.length; i++) {
+                    let donation = await this.getDonation(ids[i]);
+                    donations.push(donation);
+                }
+                subscriber.next(donations);
+            } catch (error) {
+                subscriber.error(error);
+            }
+        });
+    }
+
+    /**
      * Obtiene la Donación a partir del ID especificado.
      * 
      * @param donationId de la Donación a obtener.
@@ -436,14 +462,14 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const donationOnChain = await crowdfunding.getDonation(donationId);
         // Se obtiene la información de la Donación desde IPFS.
-        const { id, 
-            giver, 
-            token, 
-            amount, 
-            amountRemainding, 
-            createdAt, 
-            entityId, 
-            budgetId, 
+        const { id,
+            giver,
+            token,
+            amount,
+            amountRemainding,
+            createdAt,
+            entityId,
+            budgetId,
             status } = donationOnChain;
 
         return new Donation({
@@ -492,7 +518,7 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        donation.id = receipt.events['NewDonation'].returnValues.id;
+                        donation.id = parseInt(receipt.events['NewDonation'].returnValues.id);
                         donation.status = Donation.AVAILABLE;
                         subscriber.next(donation);
                     })

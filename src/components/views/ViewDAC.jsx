@@ -120,8 +120,7 @@ class ViewDAC extends Component {
             model={{
               type: DAC.type,
               title: dac.title,
-              entityId: dac.id,
-              token: { symbol: config.nativeTokenName }
+              entityId: dac.id
             }}
           />}
 
@@ -171,18 +170,7 @@ class ViewDAC extends Component {
           <div className="row spacer-top-50 spacer-bottom-50">
             <div className="col-md-8 m-auto">
               <Balances entity={dac} />
-              <TableDonations entityId={dac.id}/>
-              {/*<DonateButton
-                    model={{
-                      type: DAC.type,
-                      title: dac.title,
-                      id: dac.id,
-                      token: { symbol: config.nativeTokenName },
-                      adminId: dac.delegateId,
-                    }}
-                    currentUser={currentUser}
-                    history={history}
-                  />*/}
+              <TableDonations entity={dac}/>
             </div>
           </div>
         </div>

@@ -16,6 +16,7 @@ class Entity extends Model {
     image = '',
     // TODO Configurar una imágen adecuada por defecto.
     imageCid = '/ipfs/QmVmEhSg7juZjL3MAdhTSfaK4Q4E8mBnSXhawPgfxD3Pcz',
+    donationIds = [],
     createdAt,
   } = {}) {
     super();
@@ -28,6 +29,7 @@ class Entity extends Model {
     this._url = url;
     this._image = image;
     this._imageCid = imageCid;
+    this._donationIds = donationIds;
     this._createdAt = createdAt;
   }
 
@@ -119,8 +121,20 @@ class Entity extends Model {
     this._txHash = value;
   }
 
+  get donationIds() {
+    return this._donationIds;
+  }
+
+  set donationIds(value) {
+    this._donationIds = value;
+  }
+
   get createdAt() {
     return this._createdAt;
+  }
+
+  set createdAt(value) {
+    this._createdAt = value;
   }
 }
 

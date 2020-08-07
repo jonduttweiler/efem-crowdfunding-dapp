@@ -19,9 +19,7 @@ class FiatAmount extends Component {
         let amount = FiatUtils.centToDollar(this.props.amount).toFixed(amountConfig.showDecimals);
         let symbol = amountConfig.symbol;
         return (
-            <spam>
-                {amount}{' '}{symbol}
-            </spam>
+            <span>{amount}{' '}{symbol}</span>
         );
     }
 }

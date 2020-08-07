@@ -11,7 +11,7 @@ import { loadUserEpic } from './epics/usersEpics';
 import { fetchDacsEpic, addDacEpic } from './epics/dacsEpics';
 import { fetchCampaignsEpic, addCampaignEpic } from './epics/campaignsEpics'
 import { fetchMilestonesEpic, addMilestoneEpic } from './epics/milestonesEpics'
-import { fetchDonationsEpic, addDonationEpic } from './epics/donationsEpics'
+import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic } from './epics/donationsEpics'
 
 /**
  * Configuración del Store de Redux.
@@ -21,12 +21,13 @@ export default function configureStore() {
     const rootEpic = combineEpics(
         loadUserEpic,
         fetchDacsEpic,
-        addDacEpic, 
+        addDacEpic,
         fetchCampaignsEpic,
         addCampaignEpic,
         fetchMilestonesEpic,
         addMilestoneEpic,
         fetchDonationsEpic,
+        fetchDonationsByIdsEpic,
         addDonationEpic);
 
     const epicMiddleware = createEpicMiddleware();
@@ -42,7 +43,7 @@ export default function configureStore() {
         dacs: dacsReducer,
         campaigns: campaignsReducer,
         milestones: milestonesReducer,
-        donations: donationsReducer        
+        donations: donationsReducer
     });
 
     const store = createStore(rootReducer, undefined, composedEnhancers)

@@ -4,10 +4,7 @@ import Modal from 'react-modal';
 import BigNumber from 'bignumber.js';
 import { Form, Input } from 'formsy-react-components';
 import Slider from 'react-rangeslider';
-import GA from 'lib/GoogleAnalytics';
 import { Link } from 'react-router-dom';
-
-import User from '../models/User';
 import LoaderButton from './LoaderButton';
 import config from '../configuration';
 import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
@@ -40,21 +37,16 @@ class DonateButton extends React.Component {
   constructor(props) {
     super(props);
 
-    // set initial balance
-    const modelToken = props.model.token;
-    modelToken.balance = new BigNumber(0);
-
     this.state = {
       isSaving: false,
       formIsValid: false,
-      amount: '0',
+      amountText: '0',
       modalVisible: false,
       tokenWhitelistOptions: props.tokenWhitelist.map(t => ({
         value: t.address,
         title: t.name,
       })),
-      //selectedToken: props.model.type === 'milestone' ? modelToken : props.tokenWhitelist[0],
-      selectedToken: modelToken,
+      selectedToken: config.nativeToken,
       donation: new Donation(),
       user: props.user
     };
@@ -67,13 +59,6 @@ class DonateButton extends React.Component {
     const selectedToken = this.props.tokenWhitelist.find(t => t.address === address);
     selectedToken.balance = new BigNumber('0'); // FIXME: There should be a balance provider handling all of this...
     //this.setState({ selectedToken }, () => this.pollToken());
-  }
-
-  setAmount(amount) {
-    if (!Number.isNaN(parseFloat(amount))) {
-      // protecting against overflow occuring when BigNumber receives something that results in NaN
-      this.setState({ amount: new BigNumber(amount.toFixed().replace(',', '.')) });
-    }
   }
 
   /**
@@ -91,7 +76,7 @@ class DonateButton extends React.Component {
   closeDialog() {
     this.setState({
       modalVisible: false,
-      amount: '0',
+      amountText: '0',
       formIsValid: false,
     });
   }
@@ -99,8 +84,7 @@ class DonateButton extends React.Component {
   openDialog() {
     this.setState({
       modalVisible: true,
-      //amount: this.getMaxEtherAmountToDonate().toString(),
-      amount: new BigNumber(0),
+      amountText: '0',
       formIsValid: false,
     });
   }
@@ -139,7 +123,7 @@ class DonateButton extends React.Component {
   render() {
     const { model, validProvider, isCorrectNetwork } = this.props;
     const {
-      amount,
+      amountText,
       formIsValid,
       isSaving,
       modalVisible,
@@ -243,13 +227,13 @@ class DonateButton extends React.Component {
                   min={0}
                   max={maxAmount.toNumber()}
                   step={maxAmount.toNumber() / 10}
-                  value={Number(amount)}
+                  value={Number(amountText)}
                   labels={{
-                    0: <CryptoAmount amount={0}/>,
+                    0: <CryptoAmount amount={new BigNumber(0)}/>,
                     [maxAmount.toFixed()]: <CryptoAmount amount={balance}/>,
                   }}
                   tooltip={false}
-                  onChange={newAmount => this.setState({ amount: newAmount.toString() })}
+                  onChange={newAmount => this.setState({ amountText: newAmount.toString() })}
                 />
               </div>
             )}
@@ -259,8 +243,8 @@ class DonateButton extends React.Component {
                 name="amount"
                 id="amount-input"
                 type="number"
-                value={amount}
-                onChange={(name, newAmount) => this.setState({ amount: newAmount })}
+                value={amountText}
+                onChange={(name, newAmount) => this.setState({ amountText: newAmount })}
                 validations={{
                   lessOrEqualTo: maxAmount.toNumber(),
                   greaterThan: 0,

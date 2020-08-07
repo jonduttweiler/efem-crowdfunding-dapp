@@ -156,8 +156,7 @@ class ViewMilestone extends Component {
                   model={{
                     type: Milestone.type,
                     title: milestone.title,
-                    entityId: milestone.id,
-                    token: { symbol: config.nativeTokenName }
+                    entityId: milestone.id
                   }}
                   currentUser={currentUser}
                 />}
@@ -311,7 +310,7 @@ class ViewMilestone extends Component {
 
               <div className="row spacer-top-50 spacer-bottom-50">
                 <div className="col-md-8 m-auto">
-                  <TableDonations entityId={milestone.id}/>
+                  <TableDonations entity={milestone}/>
                 </div>
               </div>
             </div>

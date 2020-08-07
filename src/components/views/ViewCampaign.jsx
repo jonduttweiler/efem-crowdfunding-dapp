@@ -98,8 +98,7 @@ class ViewCampaign extends Component {
                   model={{
                     type: Campaign.type,
                     title: campaign.title,
-                    entityId: campaign.id,
-                    token: { symbol: config.nativeTokenName }
+                    entityId: campaign.id
                   }}
                   currentUser={currentUser}
                 />}
@@ -205,7 +204,7 @@ class ViewCampaign extends Component {
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
                     <Balances entity={campaign} />
-                    <TableDonations entityId={campaign.id}/>
+                    <TableDonations entity={campaign}/>
                   </div>
                 </div>
                 <div className="row spacer-top-50 spacer-bottom-50">

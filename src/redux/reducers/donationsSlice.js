@@ -21,6 +21,32 @@ export const donationsSlice = createSlice({
       }
       pendings.forEach(c => state.push(c));
     },
+    fetchDonationsByIds: (state, action) => {
+      // Solo se obtiene el estado actual.
+    },
+    /**
+     * Incorpora las donaciones al estado global.
+     */
+    mergeDonations: (state, action) => {
+      for (let i = 0; i < action.payload.length; i++) {
+        // Se asigna el ID del lado cliente.
+        action.payload[i].clientId = nanoid();
+        var donation = new Donation(action.payload[i]);
+        let replaced = false;
+        for (let j = 0; j < state.length; j++) {
+          // Se compara por su ID porque lo comparten aquellas
+          // donaciones que están en la persistidas.
+          if (state[j].id == donation.id) {
+            state[j] = donation;
+            replaced = true;
+            break;
+          }
+        }
+        if (!replaced) {
+          state.push(donation);
+        }
+      }
+    },
     addDonation: (state, action) => {
       // Se asigna el ID del lado cliente.
       action.payload.clientId = nanoid();
@@ -30,14 +56,19 @@ export const donationsSlice = createSlice({
     updateDonationByClientId: (state, action) => {
       let donation = new Donation(action.payload);
       let index = state.findIndex(d => donation.clientId == d.clientId);
-      if(index != -1) {
+      if (index != -1) {
         state[index] = donation;
       }
     }
   },
 });
 
-export const { fetchDonations, resetDonations, addDonation, updateDonationByClientId } = donationsSlice.actions;
+export const { fetchDonations,
+  resetDonations,
+  fetchDonationsByIds,
+  mergeDonations,
+  addDonation,
+  updateDonationByClientId } = donationsSlice.actions;
 
 export const selectDonation = (state, id) => state.donations.find(d => d.id === id);
 export const selectDonations = state => state.donations;

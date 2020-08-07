@@ -178,7 +178,7 @@ class Donation extends Model {
   }
 
   set id(value) {
-    this.checkType(value, ['string'], 'id');
+    this.checkType(value, ['number'], 'id');
     this._id = value;
   }
 

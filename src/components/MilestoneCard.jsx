@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from 'react-avatar';
-
 import { getTruncatedText, isOwner, getUserAvatar, getUserName, history } from '../lib/helpers';
 import User from '../models/User';
 import CardStats from './CardStats';
 import GivethLogo from '../assets/logo.svg';
+import Milestone from '../models/Milestone';
 
 import { connect } from 'react-redux'
 import { selectCampaign } from '../redux/reducers/campaignsSlice'
@@ -23,9 +23,13 @@ class MilestoneCard extends Component {
   }
 
   viewMilestone() {
-    history.push(
-      `/campaigns/${this.props.campaign.id}/milestones/${this.props.milestone.id}`,
-    );
+    if(this.props.milestone.isPending) {
+      React.toast.warn('Milestone is pending');
+    } else {
+      history.push(
+        `/campaigns/${this.props.campaign.id}/milestones/${this.props.milestone.id}`,
+      );
+    }
   }
 
   viewProfile(e) {
@@ -111,14 +115,7 @@ class MilestoneCard extends Component {
 }
 
 MilestoneCard.propTypes = {
-  milestone: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    //campaign: PropTypes.shape().isRequired,
-    managerAddress: PropTypes.string.isRequired,
-    /*owner: PropTypes.shape({
-      address: PropTypes.string.isRequired,
-    }).isRequired,*/
-  }).isRequired,
+  milestone: PropTypes.instanceOf(Milestone).isRequired,
   currentUser: PropTypes.instanceOf(User),
 };
 

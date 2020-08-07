@@ -21,6 +21,22 @@ export const fetchDonationsEpic = action$ => action$.pipe(
 )
 
 /**
+ * Epic que reacciona a la acción de obtención de donaciones locales por sus IDs,
+ * busca las donaciones en el smart contract y envía la acción de
+ * merge en las donaciones locales.
+ * 
+ * @param action$ de Redux.
+ */
+export const fetchDonationsByIdsEpic = action$ => action$.pipe(
+  ofType('donations/fetchDonationsByIds'),
+  mergeMap(action => crowdfundingContractApi.getDonationsByIds(action.payload)),
+  map(donations => ({
+    type: 'donations/mergeDonations',
+    payload: donations
+  }))
+)
+
+/**
  * Epic que reacciona a la acción de almacenamiento de donación local,
  * almacena la donación en el smart contract y envía la acción de
  * actualizar la donación local.

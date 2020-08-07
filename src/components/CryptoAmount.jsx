@@ -20,9 +20,7 @@ class CryptoAmount extends Component {
         let amount = Web3Utils.weiToEther(this.props.amount).toFixed(amountConfig.showDecimals);
         let symbol = amountConfig.symbol;
         return (
-            <spam>
-                {amount}{' '}{symbol}
-            </spam>
+            <span>{amount}{' '}{symbol}</span>
         );
     }
 }

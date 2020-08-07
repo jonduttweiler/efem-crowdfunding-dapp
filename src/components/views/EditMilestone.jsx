@@ -429,7 +429,6 @@ class EditMilestone extends Component {
                               type="number"
                               step="any"
                               label={`Target amount in ${milestone.fiatType}`}
-                              value={milestone.fiatAmountTarget}
                               placeholder="10"
                               validations="greaterThan:0"
                               validationErrors={{
