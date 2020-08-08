@@ -30,19 +30,10 @@
       &.td-user {
         min-width: 80px;
 
-        .sb-avatar {
-          display: inline-block !important;
-          margin-right: 24px;
-        }
-
         p {
           margin-bottom: 0;
         }
       }
-    }
-
-    .sb-avatar {
-      margin-right: 5px;
     }
   }
 
@@ -79,9 +70,5 @@
 
   .details-card {
     padding: 20px;
-  }
-
-  .sb-avatar {
-    display: block !important;
   }
 }

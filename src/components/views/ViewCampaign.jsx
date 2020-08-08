@@ -11,12 +11,11 @@ import { feathersClient } from '../../lib/feathersClient';
 import Loader from '../Loader';
 import MilestoneCard from '../MilestoneCard';
 import GoBackButton from '../GoBackButton';
-import { isOwner, getUserName, getUserAvatar } from '../../lib/helpers';
+import { isOwner, getUserName } from '../../lib/helpers';
 import { checkBalance } from '../../lib/middleware';
 import BackgroundImageHeader from '../BackgroundImageHeader';
 import DonateButton from '../DonateButton';
 import Campaign from '../../models/Campaign';
-import config from '../../configuration';
 import CommunityButton from '../CommunityButton';
 import DelegateMultipleButton from '../DelegateMultipleButton';
 import TableDonations from '../TableDonations';
@@ -25,6 +24,7 @@ import ErrorBoundary from '../ErrorBoundary';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
+import ProfileCard from '../ProfileCard';
 
 /**
  * The Campaign detail view mapped to /campaing/id
@@ -122,12 +122,7 @@ class ViewCampaign extends Component {
                   <div className="col-md-8 m-auto">
                     <GoBackButton to="/" title="Campaigns" />
 
-                    <center>
-                      <Link to={`/profile/${campaign.managerAddress}`}>
-                        <Avatar size={50} src={getUserAvatar(campaign.managerAddress)} round />
-                        <p className="small">{getUserName(campaign.managerAddress)}</p>
-                      </Link>
-                    </center>
+                    <ProfileCard address={campaign.managerAddress}/>
 
                     <div className="card content-card ">
                       <div className="card-body content">
@@ -210,12 +205,7 @@ class ViewCampaign extends Component {
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
                     <h4>Campaign Reviewer</h4>
-                    {campaign && campaign.reviewerAddress && (
-                      <Link to={`/profile/${campaign.reviewerAddress}`}>
-                        {getUserName(campaign.reviewerAddress)}
-                      </Link>
-                    )}
-                    {(!campaign || !campaign.reviewerAddress) && <span>Unknown user</span>}
+                    <ProfileCard address={campaign.reviewerAddress}/>
                   </div>
                 </div>
               </div>

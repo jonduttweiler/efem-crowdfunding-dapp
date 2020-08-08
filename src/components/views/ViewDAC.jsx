@@ -13,10 +13,8 @@ import BackgroundImageHeader from '../BackgroundImageHeader';
 import DonateButton from '../DonateButton';
 import TableDonations from '../TableDonations';
 import CommunityButton from '../CommunityButton';
-
 import DACService from '../../services/DACService';
 import CampaignCard from '../CampaignCard';
-import config from '../../configuration';
 import DAC from '../../models/DAC';
 import ProfileCard from '../ProfileCard';
 

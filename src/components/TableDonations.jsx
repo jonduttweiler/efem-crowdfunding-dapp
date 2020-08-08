@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import Avatar from 'react-avatar';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
-
 import config from '../configuration';
 import Loader from './Loader';
-import { getUserName, getUserAvatar } from '../lib/helpers';
+import ProfileCard from './ProfileCard';
 import Donation from '../models/Donation';
 import CryptoAmount from './CryptoAmount';
 import { connect } from 'react-redux'
@@ -53,8 +50,8 @@ class TableDonations extends Component {
                     <th className="td-date">Date</th>
                     <th>Status</th>
                     <th className="td-donations-amount">Amount</th>
-                    <th className="td-tx-address">Giver address</th>
-                    <th className="td-user">Giver profile</th>
+                    <th className="td-user">Giver</th>
+                    <th className="td-tx-address"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -80,6 +77,10 @@ class TableDonations extends Component {
                         <CryptoAmount amount={d.amount} tokenAddress={d.tokenAddress}/>
                       </td>
 
+                      <td className="td-user">
+                        <ProfileCard address={d.giverAddress}/>
+                      </td>
+
                       {config.etherscan ? (
                         <td className="td-tx-address">
                           <a href={`${config.etherscan}address/${d.giverAddress}`}>
@@ -89,16 +90,6 @@ class TableDonations extends Component {
                       ) : (
                           <td className="td-tx-address">{d.giverAddress}</td>
                         )}
-
-                      <td className="td-user">
-                        {d.giver && (
-                          <Link to={`/profile/${d.giver.address}`}>
-                            <Avatar size={30} src={getUserAvatar(d.giver)} round />
-                            <span> {getUserName(d.giver)}</span>
-                          </Link>
-                        )}
-                      </td>
-
                     </tr>
                   ))}
                 </tbody>

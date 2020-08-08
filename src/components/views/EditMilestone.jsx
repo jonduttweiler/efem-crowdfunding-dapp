@@ -207,6 +207,10 @@ class EditMilestone extends Component {
     const { milestone } = this.state;
 
     milestone.managerAddress = this.state.campaign.managerAddress;
+    /**
+     * Adaptar según la selección del combo de reviewers
+     */
+    milestone.reviewerAddress = this.state.campaign.managerAddress;
     milestone.campaignReviewerAddress = this.state.campaign.reviewerAddress;
     milestone.campaignId = this.state.campaign.id;
     /*milestone.status =

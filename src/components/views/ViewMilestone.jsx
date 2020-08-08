@@ -2,16 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import moment from 'moment';
-import Avatar from 'react-avatar';
 import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
-import { Link } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
-
 import User from 'models/User';
-
 import MilestoneActions from 'components/MilestoneActions';
-import { getUserAvatar, getUserName } from '../../lib/helpers';
-
 import BackgroundImageHeader from '../BackgroundImageHeader';
 import DonateButton from '../DonateButton';
 import GoBackButton from '../GoBackButton';
@@ -21,11 +15,11 @@ import MilestoneConversations from '../MilestoneConversations';
 // import DelegateMultipleButton from '../DelegateMultipleButton';
 import MilestoneService from '../../services/MilestoneService';
 import Milestone from '../../models/Milestone';
-import config from '../../configuration';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestone } from '../../redux/reducers/milestonesSlice';
 import FiatAmount from '../FiatAmount';
+import ProfileCard from '../ProfileCard';
 
 /**
   Loads and shows a single milestone
@@ -190,14 +184,7 @@ class ViewMilestone extends Component {
                       styleName="inline"
                       title={`Campaign: ${campaign.title}`}
                     />
-
-                    <center>
-                      <Link to={`/profile/${milestone.managerAddress}`}>
-                        <Avatar size={50} src={getUserAvatar(milestone.managerAddress)} round />
-                        <p className="small">{getUserName(milestone.managerAddress)}</p>
-                      </Link>
-                    </center>
-
+                    <ProfileCard address={milestone.managerAddress}/>
                     <div className="card content-card">
                       <div className="card-body content">{this.renderDescription()}</div>
                     </div>
@@ -212,48 +199,21 @@ class ViewMilestone extends Component {
                       <h4>Details</h4>
 
                       <div className="card details-card">
-                        <div className="form-group">
+                        <div>
                           <span className="label">Reviewer</span>
                           <small className="form-text">
                             This person will review the actual completion of the Milestone
                           </small>
-
-                          <table className="table-responsive">
-                            <tbody>
-                              <tr>
-                                <td className="td-user">
-                                  <Link to={`/profile/${milestone.reviewerAddress}`}>
-                                    <Avatar
-                                      size={30}
-                                      src={getUserAvatar(milestone.reviewerAddress)}
-                                      round
-                                    />
-                                    {getUserName(milestone.reviewerAddress)}
-                                  </Link>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                          <ProfileCard address={milestone.reviewerAddress}/>
                         </div>
+                        
 
                         <div className="form-group">
                           <span className="label">Recipient</span>
                           <small className="form-text">
                             Where the funds go after successful completion of the Milestone
                           </small>
-
-                          <table className="table-responsive">
-                            <tbody>
-                              <tr>
-                                <td className="td-user">
-                                  <Link to={`/profile/${milestone.recipientAddress}`}>
-                                    <Avatar size={30} src={getUserAvatar(milestone.recipientAddress)} round />
-                                    {getUserName(milestone.recipientAddress)}
-                                  </Link>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                          <ProfileCard address={milestone.recipientAddress}/>
                         </div>
 
                         {milestone.date && (

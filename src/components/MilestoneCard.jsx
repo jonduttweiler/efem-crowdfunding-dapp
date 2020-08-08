@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Avatar from 'react-avatar';
-import { getTruncatedText, isOwner, getUserAvatar, getUserName, history } from '../lib/helpers';
+import { getTruncatedText, isOwner, history } from '../lib/helpers';
 import User from '../models/User';
 import CardStats from './CardStats';
 import GivethLogo from '../assets/logo.svg';
 import Milestone from '../models/Milestone';
-
+import ProfileCard from './ProfileCard';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../redux/reducers/campaignsSlice'
 
@@ -69,8 +68,7 @@ class MilestoneCard extends Component {
             role="button"
             tabIndex="0"
           >
-            <Avatar size={30} src={getUserAvatar(milestone.managerAddress)} round />
-            <span className="owner-name">{getUserName(milestone.managerAddress)}</span>
+            <ProfileCard address={milestone.managerAddress}/>
 
             {((milestone && milestone.managerAddress && isOwner(milestone.managerAddress, currentUser)) ||
               isOwner(campaign.managerAddress, currentUser)) &&
