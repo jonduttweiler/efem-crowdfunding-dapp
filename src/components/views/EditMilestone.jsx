@@ -23,8 +23,8 @@ import MilestoneService from '../../services/MilestoneService';
 import FiatUtils from '../../utils/FiatUtils';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
-import { isCampaignManager } from '../../redux/reducers/userSlice';
-import { addMilestone } from '../../redux/reducers/milestonesSlice'
+import { isCampaignManager, selectUser } from '../../redux/reducers/userSlice';
+import { addMilestone } from '../../redux/reducers/milestonesSlice';
 
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
@@ -76,8 +76,8 @@ class EditMilestone extends Component {
 
             if (
               !(
-                isOwner(milestone.managerAddress, this.props.currentUser) ||
-                isOwner(milestone.campaign.managerAddress, this.props.currentUser)
+                isOwner(milestone.managerAddress, this.props.user) ||
+                isOwner(milestone.campaign.managerAddress, this.props.user)
               )
             ) {
               this.props.history.goBack();
@@ -100,7 +100,7 @@ class EditMilestone extends Component {
           try {
             const milestone = new Milestone();
             // El destinatario es quien crea el milestone.
-            milestone.recipientAddress = this.props.currentUser.address;
+            milestone.recipientAddress = this.props.user.address;
             this.setState({
               isLoading: false,             
               milestone,
@@ -124,11 +124,11 @@ class EditMilestone extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.currentUser !== this.props.currentUser) {
+    if (prevProps.user !== this.props.user) {
       this.checkUser().then(() => {
         if (false
-          //!isOwner(this.state.milestone.managerAddress, this.props.currentUser) ||
-          //!isOwner(this.state.milestone.campaign.managerAddress, this.props.currentUser)
+          //!isOwner(this.state.milestone.managerAddress, this.props.user) ||
+          //!isOwner(this.state.milestone.campaign.managerAddress, this.props.user)
         )
           this.props.history.goBack();
       });
@@ -149,6 +149,7 @@ class EditMilestone extends Component {
   setImage(image) {
     const { milestone } = this.state;
     milestone.image = image;
+    this.setState({ milestone });
   }
 
   changeSelectedFiat(fiatType) {
@@ -168,7 +169,7 @@ class EditMilestone extends Component {
   }
 
   checkUser() {
-    if (!this.props.currentUser) {
+    if (!this.props.user) {
       this.props.history.push('/');
       return Promise.reject("Not allowed. No user logged in");
     }
@@ -178,17 +179,17 @@ class EditMilestone extends Component {
       return Promise.reject("Not allowed. User is not able to create milestones");
     }
 
-    return authenticateIfPossible(this.props.currentUser)
+    return authenticateIfPossible(this.props.user)
       .then(() => {
         if (
           this.props.isNew &&
           !this.props.isProposed &&
-          !this.props.isCampaignManager/* (this.props.currentUser) */
+          !this.props.isCampaignManager/* (this.props.user) */
         ) {
           throw new Error('not whitelisted');
         }
       })
-      .then(() => checkProfile(this.props.currentUser));
+      .then(() => checkProfile(this.props.user));
   }
 
   toggleItemize() {
@@ -484,7 +485,7 @@ class EditMilestone extends Component {
 }
 
 EditMilestone.propTypes = {
-  currentUser: PropTypes.instanceOf(User),
+  user: PropTypes.instanceOf(User),
   history: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
@@ -504,7 +505,7 @@ EditMilestone.propTypes = {
 };
 
 EditMilestone.defaultProps = {
-  currentUser: undefined,
+  user: undefined,
   isNew: false,
   isProposed: false,
 };
@@ -532,6 +533,7 @@ const EdtMilestone = props => (
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    user: selectUser(state),
     campaign: selectCampaign(state, ownProps.match.params.id),
     isCampaignManager: isCampaignManager(state)
   }

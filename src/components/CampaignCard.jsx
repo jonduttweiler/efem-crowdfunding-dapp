@@ -48,11 +48,8 @@ class CampaignCard extends Component {
           <div className="card-footer">
             <CardStats
               type="campaign"
-              peopleCount={campaign.peopleCount}
-              totalDonated={campaign.totalDonationCount}
-              currentBalance={campaign.currentBalance}
               status={campaign.status}
-              token={{ symbol: config.nativeTokenName, decimals: 18 }}
+              donations={campaign.donationsCount}
             />
           </div>
         </div>

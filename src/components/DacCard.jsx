@@ -49,11 +49,8 @@ class DacCard extends Component {
           <div className="card-footer">
             <CardStats
               type="dac"
-              peopleCount={dac.peopleCount}
-              totalDonated={dac.totalDonationCount}
-              currentBalance={dac.currentBalance}
               status={dac.status}
-              token={{ symbol: config.nativeTokenName, decimals: 18 }}
+              donations={dac.donationsCount}
             />
           </div>
         </div>

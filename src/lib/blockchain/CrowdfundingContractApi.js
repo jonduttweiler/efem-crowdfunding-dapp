@@ -258,14 +258,6 @@ class CrowdfundingContractApi {
                 let infoCid = await IpfsService.upload(campaign.toIpfs());
                 campaign.infoCid = infoCid;
 
-                // Temporal hasta que exista la DAC previamente.
-                let receipt = await crowdfunding.newDac(campaign.infoCid,
-                    {
-                        from: campaign.managerAddress,
-                        $extraGas: extraGas()
-                    });
-                // Temporal hasta que exista la DAC previamente.
-
                 let promiEvent = crowdfunding.newCampaign(
                     campaign.infoCid,
                     //campaign.dacId,

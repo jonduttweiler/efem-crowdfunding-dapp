@@ -6,8 +6,8 @@ import moment from 'moment';
 import DefaultAvatar from '../assets/avatar-100.svg';
 import config from '../configuration';
 
-export const isOwner = (address, currentUser) =>
-  address !== undefined && currentUser !== undefined && currentUser.address === address;
+export const isOwner = (address, user) =>
+  address !== undefined && user !== undefined && user.address === address;
 
 export const getTruncatedText = (text = '', maxLength = 45) => {
   const txt = text

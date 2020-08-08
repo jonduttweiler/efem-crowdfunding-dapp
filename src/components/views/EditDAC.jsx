@@ -18,7 +18,7 @@ import ErrorPopup from '../ErrorPopup';
 
 import { connect } from 'react-redux'
 import { addDac, selectDAC } from '../../redux/reducers/dacsSlice';
-import { selectRoles , isDelegate} from '../../redux/reducers/userSlice';
+import { selectRoles , isDelegate, selectUser} from '../../redux/reducers/userSlice';
 
 
 
@@ -53,7 +53,7 @@ class EditDAC extends Component {
 
     // DAC model
     const dac = new DAC({ 
-      ownerAddress: props.currentUser && props.currentUser.address,
+      ownerAddress: props.user && props.user.address,
       status: DAC.PENDING
     });
 
@@ -81,7 +81,7 @@ class EditDAC extends Component {
         const dac = this.props.dac;
         if(dac){
           // The user is not an owner, hence can not change the DAC
-          if (!isOwner(dac.ownerAddress, this.props.currentUser)) {
+          if (!isOwner(dac.ownerAddress, this.props.user)) {
             history.goBack();// TODO: Not really user friendly
           } else {
             this.setState({ isLoading: false, dac });
@@ -97,9 +97,9 @@ class EditDAC extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.currentUser !== this.props.currentUser) {
+    if (prevProps.user !== this.props.user) {
       this.checkUser().then(() => {
-        if (!this.props.isNew && !isOwner(this.state.dac.ownerAddress, this.props.currentUser))
+        if (!this.props.isNew && !isOwner(this.state.dac.ownerAddress, this.props.user))
           history.goBack();
       });
     }
@@ -116,7 +116,7 @@ class EditDAC extends Component {
   }
 
   checkUser() {
-    if (!this.props.currentUser) { //Si no hay nadie logeado?
+    if (!this.props.user) { //Si no hay nadie logeado?
       history.push('/');
       return Promise.reject("Not allowed. No user logged in");
     }
@@ -126,8 +126,8 @@ class EditDAC extends Component {
       return Promise.reject("Not allowed. User is not delegate");
     }
 
-    return authenticateIfPossible(this.props.currentUser)
-          .then(() => checkProfile(this.props.currentUser));
+    return authenticateIfPossible(this.props.user)
+          .then(() => checkProfile(this.props.user));
   }
 
   submit() {
@@ -297,7 +297,7 @@ class EditDAC extends Component {
 }
 
 EditDAC.propTypes = {
-  currentUser: PropTypes.instanceOf(User),
+  user: PropTypes.instanceOf(User),
   isNew: PropTypes.bool,
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -308,15 +308,15 @@ EditDAC.propTypes = {
 };
 
 EditDAC.defaultProps = {
-  currentUser: undefined,
+  user: undefined,
   isNew: false,
 };
 
 const mapStateToProps = (state, props) => ({
+    user: selectUser(state),
     dac: selectDAC(state, props.match.params.id),
     roles: selectRoles(state),
     isDelegate: isDelegate(state)
-  
 });
 const mapDispatchToProps = { addDac }
 

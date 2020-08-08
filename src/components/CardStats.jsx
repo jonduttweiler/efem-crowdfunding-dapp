@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-import config from '../configuration';
 import FiatAmount from './FiatAmount';
 
 /**
@@ -9,40 +8,25 @@ import FiatAmount from './FiatAmount';
  *
  * TODO: Check the properties that are passed, sometimes they are number, sometimes strings...
  */
-const CardStats = ({ peopleCount,
-    fiatType,
+const CardStats = ({
     fiatAmountTarget,
-    totalDonated,
+    donations,
     type,
     status }) => (
       
   <div className="row card-stats">
 
     <div className="col text-left">
-      <p>Givers</p>
-      <span>
-        <i className="fa fa-male" />
-        {peopleCount}
-      </span>
+      <p>Donations</p>
+      <p>{donations}</p>
     </div>
-
-    {['dac', 'campaign'].includes(type) && (
-      <div className="col text-center card-center">
-        <span>
-          <p>Donations</p>
-          <p>{totalDonated.toFixed()}</p>
-        </span>
-      </div>
-    )}
 
     {type === 'milestone' && (
       <div className="col text-center card-center">
         {fiatAmountTarget && (
           <span>
             <p>Target</p>
-            <p>
-              <FiatAmount amount={fiatAmountTarget}/>
-            </p>
+            <FiatAmount amount={fiatAmountTarget}/>
           </span>
         )}
       </div>
@@ -61,23 +45,15 @@ const CardStats = ({ peopleCount,
 
 CardStats.propTypes = {
   type: PropTypes.string.isRequired,
-  peopleCount: PropTypes.number.isRequired,
   status: PropTypes.string,
-  fiatType: PropTypes.string,
   fiatAmountTarget: PropTypes.instanceOf(BigNumber),  
-  totalDonated: PropTypes.instanceOf(BigNumber),
-  token: PropTypes.shape(),
+  donations: PropTypes.number.isRequired
 };
 
 CardStats.defaultProps = {
-  peopleCount: 0,
   status: 'In Progress',
-  fiatType: 'USD',
   fiatAmountTarget: new BigNumber('0'),
-  totalDonated: new BigNumber('0'),
-  token: {
-    symbol: config.nativeTokenName,
-  },
+  donations: 0
 };
 
 export default CardStats;

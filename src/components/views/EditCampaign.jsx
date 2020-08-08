@@ -19,8 +19,8 @@ import ErrorPopup from '../ErrorPopup';
 import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
 
 import { connect } from 'react-redux'
-import { addCampaign, selectCampaigns } from '../../redux/reducers/campaignsSlice'
-import { isCampaignManager } from '../../redux/reducers/userSlice';
+import { addCampaign } from '../../redux/reducers/campaignsSlice'
+import { isCampaignManager, selectUser } from '../../redux/reducers/userSlice';
 
 /**
  * View to create or edit a Campaign
@@ -39,7 +39,7 @@ class EditCampaign extends Component {
       formIsValid: false,
       // Campaign model
       campaign: new Campaign({
-        managerAddress: props.currentUser.address,
+        managerAddress: props.user.address,
         status: Campaign.PENDING
       }),
       isBlocking: false,
@@ -327,7 +327,7 @@ function EditCmpn(props) {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    //campaigns: selectCampaigns(state)
+    user: selectUser(state),
     isCampaignManager: isCampaignManager(state)
   }
 }

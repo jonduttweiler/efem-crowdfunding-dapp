@@ -136,6 +136,13 @@ class Entity extends Model {
   set createdAt(value) {
     this._createdAt = value;
   }
+
+  /**
+   * Obtiene la cantidad de donaciones a la entidad.
+   */
+  get donationsCount() {
+    return this._donationIds.length;
+  }
 }
 
 export default Entity;
