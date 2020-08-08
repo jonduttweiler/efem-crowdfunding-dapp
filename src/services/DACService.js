@@ -9,10 +9,10 @@ import Donation from '../models/Donation';
 import ErrorPopup from '../components/ErrorPopup';
 
 import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
-import DacCache from './cache/DacCache';
+
 
 const crowdfundingContractApi = new CrowdfundingContractApi();
-const dacCache = new DacCache();
+
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
 
@@ -159,7 +159,7 @@ class DACService {
   }
 
   /**
-   * Get the user's DACs
+   * Get the user's DACs ??
    *
    * @param userAddress   Address of the user whose DAC list should be retrieved
    * @param skipPages     Amount of pages to skip
@@ -188,31 +188,6 @@ class DACService {
       }, onError);
   }
 
-    /**
-   * Almacena la nueva dac de manera local y en un storage remoto.
-   *
-   * @param dac    DAC object to be saved
-   * @param onSaveLocal invocado una vez que la dac ha sido almacenada localmente.
-   * @param onSaveRemote invocado una vez que la dac ha sido almacenada remotamente.
-   */
-  static async save(dac, onSaveLocal = () => {}, onSaveRemote = () => {}) {
-
-    await crowdfundingContractApi.saveDAC(
-      dac,
-      // Guardado local
-      function(dac) {
-        dacCache.save(dac);
-        onSaveLocal(dac);
-      },
-      // Confirmación de guardado Remoto
-      function(dac) {
-        dacCache.updateByTxHash(dac);
-        onSaveRemote(dac);
-      },
-      function(error) {
-        ErrorPopup(`Something went wrong with saving the DAC`);
-      });
-  }
 }
 
 export default DACService;

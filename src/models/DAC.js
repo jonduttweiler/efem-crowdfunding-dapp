@@ -68,6 +68,11 @@ class DAC extends Entity {
     return this._delegateId;
   }
 
+
+  get ownerAddress() {
+    return this._ownerAddress; //or delegate 
+  }
+
   set delegateId(value) {
     this.checkType(value, ['number', 'string'], 'delegateId');
     this._delegateId = value;

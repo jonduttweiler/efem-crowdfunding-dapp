@@ -2,9 +2,14 @@ import React, { Component } from 'react';
 import Avatar from 'react-avatar';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 
-import { Consumer as UserConsumer } from '../contextProviders/UserProvider';
 import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 import { history } from '../lib/helpers';
+
+import { connect } from 'react-redux';
+import { selectUser } from '../redux/reducers/userSlice';
+
+
+
 
 const signUpSwal = () => {
   React.swal({
@@ -46,162 +51,161 @@ class MainMenu extends Component {
   render() {
     const { showMobileMenu } = this.state;
 
+    const { currentUser } = this.props;
+    const authenticated = currentUser && currentUser.authenticated;
+
     return (
       <Web3Consumer>
         {({ state: { validProvider, isEnabled, failedToLoad }, actions: { enableProvider } }) => (
-          <UserConsumer>
-            {({ state }) => (
-              <div>
-                <nav
-                  id="main-menu"
-                  className={`navbar navbar-expand-lg fixed-top ${showMobileMenu ? 'show' : ''} `}
-                >
-                  <button
-                    className="navbar-toggler navbar-toggler-right"
-                    type="button"
-                    onClick={() => this.toggleMobileMenu()}
-                  >
-                    <i
-                      className={`navbar-toggler-icon fa ${
-                        showMobileMenu ? 'fa-close' : 'fa-bars'
-                      }`}
-                    />
-                  </button>
+          <div>
+            <nav
+              id="main-menu"
+              className={`navbar navbar-expand-lg fixed-top ${showMobileMenu ? 'show' : ''} `}
+            >
+              <button
+                className="navbar-toggler navbar-toggler-right"
+                type="button"
+                onClick={() => this.toggleMobileMenu()}
+              >
+                <i className={`navbar-toggler-icon fa ${showMobileMenu ? 'fa-close' : 'fa-bars'}`}/>
+              </button>
 
-                  <div
-                    className={`collapse navbar-collapse ${showMobileMenu ? 'show' : ''} `}
-                    id="navbarSupportedContent"
-                  >
-                    <ul className="navbar-nav mr-auto">
-                      <Link className="navbar-brand" to="/">
-                        <img src="/img/logo.svg" width="40px" alt="B4H logo" />
-                      </Link>
+              <div
+                className={`collapse navbar-collapse ${showMobileMenu ? 'show' : ''} `}
+                id="navbarSupportedContent"
+              >
+                <ul className="navbar-nav mr-auto">
+                  <Link className="navbar-brand" to="/">
+                    <img src="/img/logo.svg" width="40px" alt="B4H logo" />
+                  </Link>
 
-                      <NavLink className="nav-link" to="/">
-                        Explore
+                  <NavLink className="nav-link" to="/">
+                    Explore
                       </NavLink>
 
-                      {validProvider && state.currentUser && state.currentUser.authenticated && (
-                        <li className="nav-item dropdown">
-                          <NavLink
-                            className="nav-link dropdown-toggle"
-                            id="navbarDropdownDashboard"
-                            to="/dashboard"
-                            disabled={!state.currentUser}
-                            activeClassName="active"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                          >
-                            Manage
+                  {validProvider && authenticated && (
+                    <li className="nav-item dropdown">
+                      <NavLink
+                        className="nav-link dropdown-toggle"
+                        id="navbarDropdownDashboard"
+                        to="/dashboard"
+                        disabled={!currentUser}
+                        activeClassName="active"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        Manage
                           </NavLink>
-                          <div
-                            className={`dropdown-menu ${showMobileMenu ? 'show' : ''} `}
-                            aria-labelledby="navbarDropdownDashboard"
-                          >
-                            <NavLink className="dropdown-item" to="/my-milestones">
-                              Milestones
+                      <div
+                        className={`dropdown-menu ${showMobileMenu ? 'show' : ''} `}
+                        aria-labelledby="navbarDropdownDashboard"
+                      >
+                        <NavLink className="dropdown-item" to="/my-milestones">
+                          Milestones
                             </NavLink>
-                            <NavLink className="dropdown-item" to="/donations">
-                              Donations
+                        <NavLink className="dropdown-item" to="/donations">
+                          Donations
                             </NavLink>
-                            <NavLink className="dropdown-item" to="/delegations">
-                              Delegations
+                        <NavLink className="dropdown-item" to="/delegations">
+                          Delegations
                             </NavLink>
-                            <NavLink className="dropdown-item" to="/my-dacs">
-                              Funds
+                        <NavLink className="dropdown-item" to="/my-dacs">
+                          Funds
                             </NavLink>
-                            <NavLink className="dropdown-item" to="/my-campaigns">
-                              Campaigns
+                        <NavLink className="dropdown-item" to="/my-campaigns">
+                          Campaigns
                             </NavLink>
-                          </div>
-                        </li>
-                      )}
-                    </ul>
+                      </div>
+                    </li>
+                  )}
+                </ul>
 
-                    {/*
+                {/*
             <form id="search-form" className="form-inline my-2 my-lg-0">
               <input className="form-control mr-sm-2" type="text" placeholder="E.g. save the whales"/>
               <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Find</button>
             </form>
           */}
 
-                    <ul className="navbar-nav">
-                      {validProvider && !failedToLoad && !isEnabled && (
-                        <button
-                          type="button"
-                          className="btn btn-outline-success btn-sm"
-                          onClick={() => enableProvider()}
-                        >
-                          Enable Web3
-                        </button>
-                      )}
-                      {validProvider && !failedToLoad && isEnabled && !state.currentUser && (
-                        <small className="text-muted">Please unlock MetaMask</small>
-                      )}
-                      {!validProvider && (
-                        <button
-                          type="button"
-                          className="btn btn-outline-info btn-sm"
-                          onClick={signUpSwal}
-                        >
-                          Sign Up!
-                        </button>
-                      )}
+                <ul className="navbar-nav">
+                  {validProvider && !failedToLoad && !isEnabled && (
+                    <button
+                      type="button"
+                      className="btn btn-outline-success btn-sm"
+                      onClick={() => enableProvider()}
+                    >
+                      Enable Web3
+                    </button>
+                  )}
+                  {validProvider && !failedToLoad && isEnabled && !currentUser && (
+                    <small className="text-muted">Please unlock MetaMask</small>
+                  )}
+                  {!validProvider && (
+                    <button
+                      type="button"
+                      className="btn btn-outline-info btn-sm"
+                      onClick={signUpSwal}
+                    >
+                      Sign Up!
+                    </button>
+                  )}
 
-                      {state.currentUser && (
-                        <li className="nav-item dropdown">
-                          <Link
-                            className="nav-link dropdown-toggle"
-                            id="navbarDropdownYou"
-                            to="/"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                          >
-                            {state.currentUser.avatar && (
-                              <Avatar
-                                className="menu-avatar"
-                                size={30}
-                                src={state.currentUser.avatar}
-                                round
-                              />
-                            )}
+                  {currentUser && (
+                    <li className="nav-item dropdown">
+                      <Link
+                        className="nav-link dropdown-toggle"
+                        id="navbarDropdownYou"
+                        to="/"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        {currentUser.avatar && (
+                          <Avatar
+                            className="menu-avatar"
+                            size={30}
+                            src={currentUser.avatar}
+                            round
+                          />
+                        )}
 
-                            {state.currentUser.name && <span>{state.currentUser.name}</span>}
+                        {currentUser.name && <span>{currentUser.name}</span>}
 
-                            {!state.currentUser.name && <span>Hi, you!</span>}
-                          </Link>
-                          <div
-                            className={`dropdown-menu dropdown-profile ${
-                              showMobileMenu ? 'show' : ''
-                            }`}
-                            aria-labelledby="navbarDropdownYou"
-                          >
-                            <NavLink className="dropdown-item" to="/profile">
-                              {state.currentUser.authenticated && <span>Profile</span>}
-                              {!state.currentUser.authenticated && <span>Register</span>}
-                            </NavLink>
-                            {/* <NavLink className="dropdown-item" to="/wallet">
+                        {!currentUser.name && <span>Hi, you!</span>}
+                      </Link>
+                      <div
+                        className={`dropdown-menu dropdown-profile ${showMobileMenu ? 'show' : ''}`}
+                        aria-labelledby="navbarDropdownYou"
+                      >
+                        <NavLink className="dropdown-item" to="/profile">
+                          {currentUser.authenticated && <span>Profile</span>}
+                          {!currentUser.authenticated && <span>Register</span>}
+                        </NavLink>
+                        {/* <NavLink className="dropdown-item" to="/wallet">
                               Wallet
                             </NavLink> */}
-                          </div>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                </nav>
+                      </div>
+                    </li>
+                  )}
+                </ul>
               </div>
-            )}
-          </UserConsumer>
+            </nav>
+          </div>
         )}
       </Web3Consumer>
     );
   }
 }
 
-export default withRouter(MainMenu);
+const mapStateToProps = (state, ownProps) => ({
+  currentUser: selectUser(state)
+});
+const mapDispatchToProps = { };
+
+const MainMenuConnected = connect(mapStateToProps,mapDispatchToProps)(MainMenu);
+
+export default withRouter(MainMenuConnected);
 
 MainMenu.propTypes = {};
-
 MainMenu.defaultProps = {};
