@@ -7,6 +7,7 @@ import { history } from '../lib/helpers';
 
 import { connect } from 'react-redux';
 import { selectUser } from '../redux/reducers/userSlice';
+import MainMenuDropdown from './MainMenuDropdown';
 
 
 
@@ -52,8 +53,10 @@ class MainMenu extends Component {
     const { showMobileMenu } = this.state;
 
     const { currentUser } = this.props;
+    //when is authenticated? when firms with metamask?? or when is registered and we get the data from feathers?
     const authenticated = currentUser && currentUser.authenticated;
-
+    const registered =  currentUser && currentUser.registered || false;
+    
     return (
       <Web3Consumer>
         {({ state: { validProvider, isEnabled, failedToLoad }, actions: { enableProvider } }) => (
@@ -81,52 +84,19 @@ class MainMenu extends Component {
 
                   <NavLink className="nav-link" to="/">
                     Explore
-                      </NavLink>
+                  </NavLink>
 
-                  {validProvider && authenticated && (
-                    <li className="nav-item dropdown">
-                      <NavLink
-                        className="nav-link dropdown-toggle"
-                        id="navbarDropdownDashboard"
-                        to="/dashboard"
-                        disabled={!currentUser}
-                        activeClassName="active"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        Manage
-                          </NavLink>
-                      <div
-                        className={`dropdown-menu ${showMobileMenu ? 'show' : ''} `}
-                        aria-labelledby="navbarDropdownDashboard"
-                      >
-                        <NavLink className="dropdown-item" to="/my-milestones">
-                          Milestones
-                            </NavLink>
-                        <NavLink className="dropdown-item" to="/donations">
-                          Donations
-                            </NavLink>
-                        <NavLink className="dropdown-item" to="/delegations">
-                          Delegations
-                            </NavLink>
-                        <NavLink className="dropdown-item" to="/my-dacs">
-                          Funds
-                            </NavLink>
-                        <NavLink className="dropdown-item" to="/my-campaigns">
-                          Campaigns
-                            </NavLink>
-                      </div>
-                    </li>
+                  {validProvider &&  ( /*authenticated */
+                    <MainMenuDropdown currentUser={currentUser} showMobileMenu={showMobileMenu}/>
                   )}
                 </ul>
 
                 {/*
-            <form id="search-form" className="form-inline my-2 my-lg-0">
-              <input className="form-control mr-sm-2" type="text" placeholder="E.g. save the whales"/>
-              <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Find</button>
-            </form>
-          */}
+                  <form id="search-form" className="form-inline my-2 my-lg-0">
+                    <input className="form-control mr-sm-2" type="text" placeholder="E.g. save the whales"/>
+                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Find</button>
+                  </form>
+                */}
 
                 <ul className="navbar-nav">
                   {validProvider && !failedToLoad && !isEnabled && (
@@ -179,8 +149,7 @@ class MainMenu extends Component {
                         aria-labelledby="navbarDropdownYou"
                       >
                         <NavLink className="dropdown-item" to="/profile">
-                          {currentUser.authenticated && <span>Profile</span>}
-                          {!currentUser.authenticated && <span>Register</span>}
+                          {registered ? <span>Profile</span> : <span>Register</span>} 
                         </NavLink>
                         {/* <NavLink className="dropdown-item" to="/wallet">
                               Wallet
