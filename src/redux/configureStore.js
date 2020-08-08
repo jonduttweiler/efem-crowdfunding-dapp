@@ -7,7 +7,7 @@ import campaignsReducer from './reducers/campaignsSlice.js'
 import milestonesReducer from './reducers/milestonesSlice.js'
 import donationsReducer from './reducers/donationsSlice.js'
 
-import { loadUserEpic } from './epics/usersEpics';
+import { loadUserEpic, newUserEpic } from './epics/usersEpics';
 import { fetchDacsEpic, addDacEpic } from './epics/dacsEpics';
 import { fetchCampaignsEpic, addCampaignEpic } from './epics/campaignsEpics'
 import { fetchMilestonesEpic, addMilestoneEpic } from './epics/milestonesEpics'
@@ -19,6 +19,7 @@ import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic } from './
 export default function configureStore() {
 
     const rootEpic = combineEpics(
+        newUserEpic,
         loadUserEpic,
         fetchDacsEpic,
         addDacEpic,

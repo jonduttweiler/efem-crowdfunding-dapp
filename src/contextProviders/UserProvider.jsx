@@ -56,9 +56,15 @@ class UserProvider extends Component {
 
   componentDidUpdate(prevProps) {
     const { currentUser } = this.state;
-
     const { account } = this.props;
-    if ((account && !currentUser) || (currentUser && account !== prevProps.account)) {
+    const { account: prevAccount } = prevProps;
+
+    if(account != prevAccount){
+      console.log("Load user with account:",account);
+      this.props.loadUser();
+    }
+    
+    if ((account && !currentUser) || (currentUser && account !== prevAccount)) { 
       this.getUserData(account);
     }
   }

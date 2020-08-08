@@ -1,7 +1,4 @@
 import Model from './Model';
-import IpfsService from '../services/IpfsService';
-import UserService from '../services/UserService';
-import ErrorPopup from '../components/ErrorPopup';
 import { cleanIpfsPath } from '../lib/helpers';
 import BigNumber from 'bignumber.js';
 
@@ -24,8 +21,6 @@ class User extends Model {
   constructor(data = {}) {
     super(data);
 
-    this.authenticated = false;
-
     const {
       address = '',
       name = '',
@@ -35,7 +30,9 @@ class User extends Model {
       linkedin,
       url,
       roles = [],
-      balance = new BigNumber(0)
+      balance = new BigNumber(0),
+      authenticated = false,
+      registered = false, //exists on mongodb?
     } = data;
 
     if (data) {
@@ -46,9 +43,10 @@ class User extends Model {
       this._giverId = giverId;
       this._linkedin = linkedin;
       this._url = url;
-      this._authenticated = data.authenticated || false;
       this._roles = roles;
       this._balance = balance;
+      this._authenticated = authenticated;
+      this._registered = registered;
     }
   }
 
@@ -75,21 +73,6 @@ class User extends Model {
       user._txHash = txHash;
     }
     return user;
-  }
-
-  save(onSave) {
-    if (this._newAvatar) {
-      IpfsService.upload(this._newAvatar)
-        .then(hash => {
-          // Save the new avatar
-          this._avatar = hash;
-          delete this._newAvatar;
-        })
-        .catch(err => ErrorPopup('Failed to upload avatar', err))
-        .finally(() => UserService.save(this, onSave));
-    } else {
-      UserService.save(this, onSave);
-    }
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -187,6 +170,14 @@ class User extends Model {
     this._authenticated = value;
   }
 
+  get registered() {
+    return this._registered;
+  }
+
+  set registered(value) {
+    this.checkType(value, ['boolean'], 'registered');
+    this._registered = value;
+  }
   get roles() {
     return this._roles;
   }

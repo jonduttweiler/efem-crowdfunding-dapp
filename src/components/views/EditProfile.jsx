@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import { Form, Input } from 'formsy-react-components';
@@ -11,6 +10,27 @@ import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
 import { history } from '../../lib/helpers';
 
+import { connect } from 'react-redux';
+import { saveUser, isSaved, selectUser } from '../../redux/reducers/userSlice';
+
+
+
+const showToast = (msg, url, isSuccess = false) => {
+  const toast = url ? (
+    <p>
+      {msg}<br />
+      <a href={url} target="_blank" rel="noopener noreferrer">View transaction</a>
+    </p>
+  ) : (msg);
+
+  if (isSuccess) React.toast.success(toast);
+  else React.toast.info(toast);
+};
+ 
+
+
+
+
 /**
  * The edit user profile view mapped to /profile/
  *
@@ -20,12 +40,12 @@ class EditProfile extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isLoading: true,
-      isSaving: false,
+    const user = props.currentUser ? new User(props.currentUser) : new User(); 
 
-      // user model
-      user: props.currentUser ? new User(props.currentUser) : new User(),
+    this.state = {
+      isLoading: false,
+      isSaving: false,
+      user: user,
       isPristine: true,
     };
 
@@ -36,68 +56,46 @@ class EditProfile extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    isLoggedIn(this.props.currentUser)
+ /*    isLoggedIn(this.props.currentUser)
       .then(() => this.setState({ isLoading: false }))
       .catch(err => {
         if (err === 'noBalance') history.goBack();
         else {
-          this.setState({
-            isLoading: false,
-          });
+          this.setState({isLoading: false});
         }
-      });
+      });  */
   }
+
+  componentDidUpdate(prevProps, prevState){
+
+    if (prevProps.currentUser != this.props.currentUser) {
+      this.setState({ user: this.props.currentUser })
+    } 
+
+    if(this.props.isSaved && this.state.isSaving){
+      const msg = 'Your profile has been updated';
+      showToast(msg, "",true);
+  
+      if (this.mounted) this.setState({ isSaving: false });
+      GA.trackEvent({category: 'User',action: 'updated',label: this.props.currentUser.address,});
+    }
+  }
+
 
   componentWillUnmount() {
     this.mounted = false;
   }
 
   setImage(image) {
-    const { user } = this.state;
+    const { currentUser: user } = this.props;
     user.newAvatar = image;
     this.setState({ user, isPristine: false });
   }
 
   submit() {
-    // Save user profile
-    const showToast = (msg, url, isSuccess = false) => {
-      const toast = url ? (
-        <p>
-          {msg}
-          <br />
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            View transaction
-          </a>
-        </p>
-      ) : (
-        msg
-      );
-
-      if (isSuccess) React.toast.success(toast);
-      else React.toast.info(toast);
-    };
-
-    const afterSave = () => {
-      const msg = 'Your profile has been updated';
-      showToast(msg, true);
-
-      if (this.mounted) this.setState({ isSaving: false });
-      GA.trackEvent({
-        category: 'User',
-        action: 'updated',
-        label: this.state.user.address,
-      });
-    };
-
-    this.setState(
-      {
-        isSaving: true,
-      },
-      () => {
-        // Save the User
-        this.state.user.save(afterSave);
-      },
-    );
+    this.setState({ isSaving: true, }, _ => { 
+      this.props.saveUser(this.state.user);
+    }); 
   }
 
   togglePristine(currentValues, isChanged) {
@@ -105,6 +103,7 @@ class EditProfile extends Component {
   }
 
   render() {
+    
     const { isLoading, isSaving, user, isPristine } = this.state;
     const { currentUser } = this.props;
 
@@ -223,12 +222,13 @@ class EditProfile extends Component {
   }
 }
 
-EditProfile.propTypes = {
-  currentUser: PropTypes.instanceOf(User),
-};
 
-EditProfile.defaultProps = {
-  currentUser: undefined,
-};
+const mapStateToProps = (state,ownProps) => {
+  return {
+    currentUser: selectUser(state),
+    isSaved: isSaved(state)
+  };
+}
+const mapDispatchToProps = { saveUser } //or updateUser
 
-export default EditProfile;
+export default connect(mapStateToProps,mapDispatchToProps)(EditProfile);

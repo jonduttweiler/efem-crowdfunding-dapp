@@ -12,3 +12,10 @@ export const loadUserEpic = (action$, state$) => action$.pipe(
   }),
   map(user => ({ type: 'user/setUser', payload: user }))
 )
+
+export const newUserEpic = (action$) => action$.pipe(
+  ofType('user/saveUser'),
+  mergeMap(action => userService.save(action.payload)),
+  map(user => ({ type: 'user/endSave', payload: user }))
+)
+

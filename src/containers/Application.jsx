@@ -398,8 +398,6 @@ class Application extends Component {
                                                   render={props => (
                                                     <EditProfile
                                                       key={currentUser ? currentUser.id : 0}
-                                                      currentUser={currentUser}
-                                                      balance={balance}
                                                       isCorrectNetwork={isCorrectNetwork}
                                                       {...props}
                                                     />
