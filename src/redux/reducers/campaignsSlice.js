@@ -40,6 +40,7 @@ export const campaignsSlice = createSlice({
 export const { fetchCampaigns, resetCampaigns, addCampaign, updateCampaignByClientId } = campaignsSlice.actions;
 
 export const selectCampaigns = state => state.campaigns;
-export const selectCampaign = (state, id) => state.campaigns.find(c => c.id == id);
+export const selectCampaign = (state, id) => state.campaigns.find(c => c.id === id);
+export const selectCampaignsByDac = (state, dacId) => state.campaigns.filter(c => c.dacIds.includes(dacId));
 
 export default campaignsSlice.reducer;

@@ -6,13 +6,15 @@ import CampaignService from '../services/CampaignService';
  */
 class Campaign extends Entity {
 
-  constructor(data) {
+  constructor(data = {}) {
     super(data);
     const {
+      dacIds = [],
       managerAddress = '',
       reviewerAddress = '',
       status = Campaign.ACTIVE
     } = data;
+    this._dacIds = dacIds;
     this._managerAddress = managerAddress;
     this._reviewerAddress = reviewerAddress;
     this._status = status;
@@ -55,6 +57,14 @@ class Campaign extends Entity {
    */
   cancel(from, afterCreate, afterMined) {
     CampaignService.cancel(this, from, afterCreate, afterMined);
+  }
+
+  get dacIds() {
+    return this._dacIds;
+  }
+
+  set dacIds(value) {
+    this._dacIds = value;
   }
 
   get managerAddress() {

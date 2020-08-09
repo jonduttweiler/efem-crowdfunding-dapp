@@ -15,9 +15,16 @@ export const DACsSlice = createSlice({
       //Las dacs se obtienen a traves del epic
     },
     resetDacs:(state, action) => {
-      const dacsOnChain = action.payload;
-      const pendingsDacs = state.filter(c => c.isPending);
-      return dacsOnChain.concat(pendingsDacs);
+      // Se resguardan las DACs Pendientes.
+      var pendings = state.filter(d => d.isPending);
+      state.splice(0, state.length);
+      for (let i = 0; i < action.payload.length; i++) {
+        // Se asigna el ID del lado cliente.
+        action.payload[i].clientId = nanoid();
+        var dac = new DAC(action.payload[i]);
+        state.push(dac);
+      }
+      pendings.forEach(d => state.push(d));
     },
     updateDacByClientId: (state, action) => {
       const updatedDac = new DAC(action.payload);

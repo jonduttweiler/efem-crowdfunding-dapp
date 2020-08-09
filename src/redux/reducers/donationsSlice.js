@@ -73,5 +73,6 @@ export const { fetchDonations,
 export const selectDonation = (state, id) => state.donations.find(d => d.id === id);
 export const selectDonations = state => state.donations;
 export const selectDonationsByEntity = (state, entityId) => state.donations.filter(d => d.entityId === entityId);
+export const selectDonationsByIds = (state, donationIds) => state.donations.filter(d => donationIds.includes(d.id));
 
 export default donationsSlice.reducer;

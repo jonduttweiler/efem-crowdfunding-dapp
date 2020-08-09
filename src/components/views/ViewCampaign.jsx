@@ -24,6 +24,7 @@ import ErrorBoundary from '../ErrorBoundary';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
+import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 import ProfileCard from '../ProfileCard';
 
 /**
@@ -38,7 +39,7 @@ class ViewCampaign extends Component {
     super(props);
     
     this.state = {
-      isLoading: true,
+      isLoading: false,
       isLoadingMilestones: false,
       milestones: props.milestones,
       milestonesLoaded: 0,
@@ -53,6 +54,17 @@ class ViewCampaign extends Component {
       milestones: this.props.milestones,
       isLoading: false
     });
+  }
+
+  componentDidMount() {
+    this.props.fetchDonationsByIds(this.props.campaign.donationIds);
+  }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (JSON.stringify(this.props.campaign.donationIds) !== JSON.stringify(prevProps.campaign.donationIds)) {
+      this.props.fetchDonationsByIds(this.props.campaign.donationIds);
+    }
   }
 
   removeMilestone(id) {
@@ -76,7 +88,7 @@ class ViewCampaign extends Component {
   }
 
   render() {
-    const { campaign, milestones, history, currentUser, balance } = this.props;
+    const { campaign, milestones, donations, history, currentUser, balance } = this.props;
     const {
       isLoading,
       isLoadingMilestones,
@@ -94,7 +106,7 @@ class ViewCampaign extends Component {
               <BackgroundImageHeader image={campaign.imageCidUrl} height={300}>
                 <h6>Campaign</h6>
                 <h1>{campaign.title}</h1>
-                {<DonateButton
+                {campaign.id && <DonateButton
                   model={{
                     type: Campaign.type,
                     title: campaign.title,
@@ -199,7 +211,7 @@ class ViewCampaign extends Component {
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
                     <Balances entity={campaign} />
-                    <TableDonations entity={campaign}/>
+                    <TableDonations donations={donations}/>
                   </div>
                 </div>
                 <div className="row spacer-top-50 spacer-bottom-50">
@@ -233,13 +245,20 @@ ViewCampaign.propTypes = {
 
 ViewCampaign.defaultProps = {
   currentUser: undefined,
+  campaign: new Campaign(),
+  milestones: [],
+  donations: []
 };
 
 const mapStateToProps = (state, ownProps) => {
+  const campaignId = parseInt(ownProps.match.params.id);
   return {
-    campaign: selectCampaign(state, ownProps.match.params.id),
-    milestones: selectMilestonesByCampaign(state, ownProps.match.params.id)
+    campaign: selectCampaign(state, campaignId),
+    milestones: selectMilestonesByCampaign(state, campaignId),
+    donations: selectDonationsByEntity(state, campaignId)
   }
 }
 
-export default connect(mapStateToProps)(ViewCampaign)
+const mapDispatchToProps = { fetchDonationsByIds }
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewCampaign)

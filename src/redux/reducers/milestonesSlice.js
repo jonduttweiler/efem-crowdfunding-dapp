@@ -39,8 +39,8 @@ export const milestonesSlice = createSlice({
 
 export const { fetchMilestones, resetMilestones, addMilestone, updateMilestoneByClientId } = milestonesSlice.actions;
 
-export const selectMilestone = (state, id) => state.milestones.find(m => m.id == id);
+export const selectMilestone = (state, id) => state.milestones.find(m => m.id === id);
 export const selectMilestones = state => state.milestones;
-export const selectMilestonesByCampaign = (state, campaignId) => state.milestones.filter(m => m.campaignId == campaignId);
+export const selectMilestonesByCampaign = (state, campaignId) => state.milestones.filter(m => m.campaignId === campaignId);
 
 export default milestonesSlice.reducer;

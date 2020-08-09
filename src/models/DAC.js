@@ -5,7 +5,7 @@ import Entity from './Entity';
  */
 class DAC extends Entity {
 
-  constructor(data) {
+  constructor(data = {}) {
     super(data); 
   
     const {

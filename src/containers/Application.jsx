@@ -52,6 +52,10 @@ import Web3Provider, { Consumer as Web3Consumer } from '../contextProviders/Web3
 import WhiteListProvider, { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProvider';
 
 import '../lib/validators';
+import { connect } from 'react-redux'
+import { fetchDacs } from '../redux/reducers/dacsSlice'
+import { fetchCampaigns } from '../redux/reducers/campaignsSlice'
+import { fetchMilestones } from '../redux/reducers/milestonesSlice'
 
 /* global document */
 /**
@@ -94,6 +98,12 @@ class Application extends Component {
     this.web3Loaded = this.web3Loaded.bind(this);
     this.userLoaded = this.userLoaded.bind(this);
     this.whiteListLoaded = this.whiteListLoaded.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.fetchDacs();
+    this.props.fetchCampaigns();
+    this.props.fetchMilestones();
   }
 
   web3Loaded() {
@@ -507,4 +517,16 @@ class Application extends Component {
   }
 }
 
-export default Application;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    
+  }
+}
+
+const mapDispatchToProps = {
+  fetchDacs,
+  fetchCampaigns,
+  fetchMilestones
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Application)

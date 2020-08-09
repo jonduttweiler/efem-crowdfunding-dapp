@@ -113,7 +113,7 @@ class CrowdfundingContractApi {
             imageCid,
             imageUrl: IpfsService.resolveUrl(imageCid),
             communityUrl,
-            donationIds: donationIds,
+            donationIds: donationIds.map(e => parseInt(e)),
             status: this.mapDACStatus(status),
             ownerAddress: delegate,
             commitTime: 0
@@ -155,7 +155,7 @@ class CrowdfundingContractApi {
             imageCid,
             imageUrl,
             communityUrl,
-            donationIds,
+            donationIds: donationIds.map(e => parseInt(e)),
             status: this.mapDACStatus(status),
             ownerAddress: delegate,
             commitTime: 0
@@ -222,7 +222,7 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const campaingOnChain = await crowdfunding.getCampaign(campaignId);
         // Se obtiene la información de la Campaign desde IPFS.
-        const { id, infoCid, donationIds, status, manager, reviewer } = campaingOnChain;
+        const { id, infoCid, dacIds, donationIds, status, manager, reviewer } = campaingOnChain;
         const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
 
         return new Campaign({
@@ -231,7 +231,8 @@ class CrowdfundingContractApi {
             description: description,
             imageCid: imageCid,
             url: url,
-            donationIds: donationIds,
+            dacIds: dacIds.map(e => parseInt(e)),
+            donationIds: donationIds.map(e => parseInt(e)),
             managerAddress: manager,
             reviewerAddress: reviewer,
             status: this.mapCampaingStatus(status)
@@ -336,7 +337,7 @@ class CrowdfundingContractApi {
             imageCid: imageCid,
             url: url,
             fiatAmountTarget: new BigNumber(fiatAmountTarget),
-            donationIds: donationIds,
+            donationIds: donationIds.map(e => parseInt(e)),
             managerAddress: manager,
             reviewerAddress: reviewer,
             campaignReviewerAddress: campaignReviewer,
