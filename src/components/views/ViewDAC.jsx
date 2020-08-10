@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
-
-import { Link } from 'react-router-dom';
-import Avatar from 'react-avatar';
 import ReactHtmlParser from 'react-html-parser';
-
 import Balances from 'components/Balances';
 import Loader from '../Loader';
 import GoBackButton from '../GoBackButton';
@@ -13,10 +9,13 @@ import BackgroundImageHeader from '../BackgroundImageHeader';
 import DonateButton from '../DonateButton';
 import TableDonations from '../TableDonations';
 import CommunityButton from '../CommunityButton';
-import DACService from '../../services/DACService';
 import CampaignCard from '../CampaignCard';
 import DAC from '../../models/DAC';
 import ProfileCard from '../ProfileCard';
+import { connect } from 'react-redux'
+import { selectDAC } from '../../redux/reducers/dacsSlice'
+import { selectCampaignsByDac } from '../../redux/reducers/campaignsSlice';
+import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 
 /**
  * The DAC detail view mapped to /dac/id
@@ -29,85 +28,28 @@ class ViewDAC extends Component {
     super();
 
     this.state = {
-      isLoading: true,
-      isLoadingDonations: true,
-      isLoadingCampaigns: true,
-      campaigns: [],
-      donations: [],
-      donationsTotal: 0,
-      donationsPerBatch: 50,
-      newDonations: 0,
+      isLoading: false,
+      campaigns: []
     };
-
-    this.loadMoreDonations = this.loadMoreDonations.bind(this);
   }
 
   componentDidMount() {
-    const dacId = this.props.match.params.id;
-    this.loadDac(dacId);
-    this.loadMoreDonations();
-    // subscribe to donation count
-    this.donationsObserver = DACService.subscribeNewDonations(
-      dacId,
-      newDonations =>
-        this.setState({
-          newDonations,
-        }),
-      () => this.setState({ newDonations: 0 }),
-    );
+    this.props.fetchDonationsByIds(this.props.dac.donationIds);
   }
 
-  async loadDac(dacId){
-    try{
-      const dac = await DACService.get(dacId);
-      this.setState({ dac, isLoading: false});
-
-      this.campaignObserver = DACService.subscribeCampaigns( //Busca las campaigns usando el delegateId???
-        dac.delegateId,
-        campaigns => this.setState({ campaigns, isLoadingCampaigns: false }),
-        () => this.setState({ isLoadingCampaigns: false }), // TODO: inform user of error
-      );
-
-    } catch (err) {
-      console.error(err);
-      this.setState({ isLoading: false });// TODO: inform user of error
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (JSON.stringify(this.props.dac.donationIds) !== JSON.stringify(prevProps.dac.donationIds)) {
+      this.props.fetchDonationsByIds(this.props.dac.donationIds);
     }
-
-  }
-  
-  componentWillUnmount() {
-    if (this.donationsObserver) this.donationsObserver.unsubscribe();
-    if (this.campaignObserver) this.campaignObserver.unsubscribe();
-  }
-
-  loadMoreDonations() {
-    this.setState({ isLoadingDonations: true }, () =>
-      DACService.getDonations(
-        this.props.match.params.id,
-        this.state.donationsPerBatch,
-        this.state.donations.length,
-        (donations, donationsTotal) =>
-          this.setState(prevState => ({
-            donations: prevState.donations.concat(donations),
-            isLoadingDonations: false,
-            donationsTotal,
-          })),
-        () => this.setState({ isLoadingDonations: false }),
-      ),
-    );
   }
 
   render() {
-    const { balance, history } = this.props;
+    const { dac, donations, balance, history } = this.props;
     const {
       isLoading,
-      donations,
-      dac,
-      isLoadingDonations,
       campaigns,
       isLoadingCampaigns,
-      donationsTotal,
-      newDonations,
     } = this.state;
     
     if (isLoading) return <Loader className="fixed" />;
@@ -118,7 +60,7 @@ class ViewDAC extends Component {
           <h6>Decentralized Altruistic Community</h6>
           <h1>{dac.title}</h1>
 
-          {<DonateButton
+          {dac.id && <DonateButton
             model={{
               type: DAC.type,
               title: dac.title,
@@ -167,7 +109,7 @@ class ViewDAC extends Component {
           <div className="row spacer-top-50 spacer-bottom-50">
             <div className="col-md-8 m-auto">
               <Balances entity={dac} />
-              <TableDonations entity={dac}/>
+              <TableDonations donations={donations}/>
             </div>
           </div>
         </div>
@@ -189,6 +131,18 @@ ViewDAC.propTypes = {
   balance: PropTypes.instanceOf(BigNumber).isRequired,
 };
 
-ViewDAC.defaultProps = {};
+ViewDAC.defaultProps = {
+  dac: new DAC(),
+};
 
-export default ViewDAC;
+const mapStateToProps = (state, ownProps) => {
+  const dacId = parseInt(ownProps.match.params.id);
+  return {
+    dac: selectDAC(state, dacId),
+    donations: selectDonationsByEntity(state, dacId)
+  }
+}
+
+const mapDispatchToProps = { fetchDonationsByIds }
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewDAC)

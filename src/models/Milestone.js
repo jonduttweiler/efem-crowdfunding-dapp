@@ -12,7 +12,7 @@ export default class Milestone extends Entity {
     const {
       campaignId,
       fiatType = 'USD',
-      fiatAmountTarget,
+      fiatAmountTarget = new BigNumber(),
       managerAddress = '',
       reviewerAddress = '',
       campaignReviewerAddress,

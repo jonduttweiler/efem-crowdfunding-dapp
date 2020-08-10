@@ -532,9 +532,10 @@ const EdtMilestone = props => (
 
 
 const mapStateToProps = (state, ownProps) => {
+  const campaignId = parseInt(ownProps.match.params.id);
   return {
     user: selectUser(state),
-    campaign: selectCampaign(state, ownProps.match.params.id),
+    campaign: selectCampaign(state, campaignId),
     isCampaignManager: isCampaignManager(state)
   }
 }

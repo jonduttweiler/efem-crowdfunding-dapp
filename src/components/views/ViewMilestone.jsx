@@ -20,6 +20,9 @@ import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestone } from '../../redux/reducers/milestonesSlice';
 import FiatAmount from '../FiatAmount';
 import ProfileCard from '../ProfileCard';
+import Campaign from '../../models/Campaign';
+import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
+
 
 /**
   Loads and shows a single milestone
@@ -44,59 +47,17 @@ class ViewMilestone extends Component {
       donationsPerBatch: 50,
       newDonations: 0,
     };
-
-    this.loadMoreDonations = this.loadMoreDonations.bind(this);
   }
 
   componentDidMount() {
-    const { milestoneId } = this.props.match.params;
-
-    /*MilestoneService.subscribeOne(
-      milestoneId,
-      milestone =>
-        this.setState({
-          milestone,
-          isLoading: false,
-          campaign: new Campaign(milestone.campaign),
-          recipient: milestone.recipient,
-        }),
-      err => {
-        ErrorPopup('Something went wrong with viewing the milestone. Please try a refresh.', err);
-        this.setState({ isLoading: false });
-      },
-    );*/
-
-    this.loadMoreDonations();
-    // subscribe to donation count
-    this.donationsObserver = MilestoneService.subscribeNewDonations(
-      milestoneId,
-      newDonations =>
-        this.setState({
-          newDonations,
-        }),
-      () => this.setState({ newDonations: 0 }),
-    );
+    this.props.fetchDonationsByIds(this.props.milestone.donationIds);
   }
-
-  componentWillUnmount() {
-    this.donationsObserver.unsubscribe();
-  }
-
-  loadMoreDonations() {
-    this.setState({ isLoadingDonations: true }, () =>
-      MilestoneService.getDonations(
-        this.props.match.params.milestoneId,
-        this.state.donationsPerBatch,
-        this.state.donations.length,
-        (donations, donationsTotal) =>
-          this.setState(prevState => ({
-            donations: prevState.donations.concat(donations),
-            isLoadingDonations: false,
-            donationsTotal,
-          })),
-        () => this.setState({ isLoadingDonations: false }),
-      ),
-    );
+  
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (JSON.stringify(this.props.milestone.donationIds) !== JSON.stringify(prevProps.milestone.donationIds)) {
+      this.props.fetchDonationsByIds(this.props.milestone.donationIds);
+    }
   }
 
   isActiveMilestone() {
@@ -104,7 +65,7 @@ class ViewMilestone extends Component {
   }
 
   renderDescription() {
-    return ReactHtmlParser(this.state.milestone.description, {
+    return ReactHtmlParser(this.props.milestone.description, {
       transform(node, index) {
         if (node.attribs && node.attribs.class === 'ql-video') {
           return (
@@ -119,13 +80,14 @@ class ViewMilestone extends Component {
   }
 
   render() {
-    const { history, currentUser, balance } = this.props;
+    const { donations,history, currentUser, balance, campaign, milestone } = this.props;
+    
     const {
       isLoading,
-      donations,
+      
       isLoadingDonations,
-      campaign,
-      milestone,
+      //campaign,
+      //milestone,
       recipient,
       donationsTotal,
       newDonations,
@@ -146,7 +108,7 @@ class ViewMilestone extends Component {
               <p>Campaign: {campaign.title} </p>
 
               <div className="milestone-actions">
-                {<DonateButton
+                {milestone.id && <DonateButton
                   model={{
                     type: Milestone.type,
                     title: milestone.title,
@@ -272,7 +234,7 @@ class ViewMilestone extends Component {
 
               <div className="row spacer-top-50 spacer-bottom-50">
                 <div className="col-md-8 m-auto">
-                  <TableDonations entity={milestone}/>
+                  <TableDonations donations={donations}/>
                 </div>
               </div>
             </div>
@@ -299,15 +261,26 @@ ViewMilestone.propTypes = {
 
 ViewMilestone.defaultProps = {
   currentUser: undefined,
+  milestone: new Milestone(),
+  campaign: new Campaign(),
+  donations: []
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const { milestoneId } = ownProps.match.params;
-  let milestone = selectMilestone(state, milestoneId);
-  return {
-    milestone: milestone,
-    campaign: selectCampaign(state, milestone.campaignId),
+  const reduxProps = {
+    milestone: undefined,
+    campaign: undefined,
+    donations: []
   }
+  const  milestoneId = parseInt(ownProps.match.params.milestoneId);
+  reduxProps.milestone = selectMilestone(state, milestoneId);
+  if(reduxProps.milestone) {
+    reduxProps.campaign = selectCampaign(state, reduxProps.milestone.campaignId);
+  }
+  reduxProps.donations = selectDonationsByEntity(state, milestoneId);
+  return reduxProps;
 }
 
-export default connect(mapStateToProps)(ViewMilestone)
+const mapDispatchToProps = { fetchDonationsByIds }
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewMilestone)

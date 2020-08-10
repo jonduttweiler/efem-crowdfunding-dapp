@@ -6,8 +6,6 @@ import Loader from './Loader';
 import ProfileCard from './ProfileCard';
 import Donation from '../models/Donation';
 import CryptoAmount from './CryptoAmount';
-import { connect } from 'react-redux'
-import { fetchDonationsByIds, selectDonationsByEntity } from '../redux/reducers/donationsSlice'
 
 /**
  * Presenta una tabla de donaciones para una entidad.
@@ -21,18 +19,14 @@ class TableDonations extends Component {
     };
   }
 
-  componentWillMount() {
-    // Se cargan las donaciones de la entity.
-    this.props.fetchDonationsByIds(this.props.entity.donationIds);
-  }
-
   loadMore() {
 
   }
 
   render() {
+
     const { donations, isLoading, total, useAmountRemainding } = this.props;
-    //const { donations } = this.state;
+
     const hasProposedDelegation = donations.some(d => d.intendedProjectId);
     return (
       <div>
@@ -136,12 +130,4 @@ TableDonations.defaultProps = {
   isLoading: false
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    donations: selectDonationsByEntity(state, ownProps.entity.id)
-  }
-}
-
-const mapDispatchToProps = { fetchDonationsByIds }
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableDonations)
+export default TableDonations;
