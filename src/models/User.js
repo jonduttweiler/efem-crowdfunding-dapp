@@ -2,6 +2,13 @@ import Model from './Model';
 import { cleanIpfsPath } from '../lib/helpers';
 import BigNumber from 'bignumber.js';
 
+import {
+  CREATE_DAC_ROLE,
+  CREATE_CAMPAIGN_ROLE,
+  CREATE_MANAGER_ROLE,
+  CREATE_MILESTONE_ROLE
+} from '../constants/Role';
+
 /**
  * Modelo de User en Dapp.
  *
@@ -193,6 +200,16 @@ class User extends Model {
   set balance(value) {
     this.checkInstanceOf(value, BigNumber, 'balance');
     this._balance = value;
+  }
+
+  isDelegate() {
+    return this.roles.includes(CREATE_DAC_ROLE);
+  }
+  isCampaignManager() {
+    return this.roles.includes(CREATE_CAMPAIGN_ROLE);
+  }
+  isMilestoneManager() {
+    return this.roles.includes(CREATE_MILESTONE_ROLE);
   }
 }
 

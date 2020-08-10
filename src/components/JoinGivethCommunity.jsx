@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import User from '../models/User';
 
 import { connect } from 'react-redux';
-import { isDelegate, isCampaignManager } from '../redux/reducers/userSlice';
+import { selectUser } from '../redux/reducers/userSlice';
 
 import OnlyRole from '../components/OnlyRole';
 
@@ -141,8 +141,8 @@ JoinGivethCommunity.defaultProps = {
 
 
 const mapStateToProps = (state, props) => ({
-  isDelegate: isDelegate(state),
-  isCampaignManager: isCampaignManager(state)
+  isDelegate: selectUser(state).isDelegate(),
+  isCampaignManager: selectUser(state).isCampaignManager()
 });
 const mapDispatchToProps = {};
 

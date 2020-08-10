@@ -23,7 +23,7 @@ import MilestoneService from '../../services/MilestoneService';
 import FiatUtils from '../../utils/FiatUtils';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
-import { isCampaignManager, selectUser } from '../../redux/reducers/userSlice';
+import { selectUser } from '../../redux/reducers/userSlice';
 import { addMilestone } from '../../redux/reducers/milestonesSlice';
 
 
@@ -536,7 +536,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     user: selectUser(state),
     campaign: selectCampaign(state, campaignId),
-    isCampaignManager: isCampaignManager(state)
+    isCampaignManager: selectUser(state).isCampaignManager()
   }
 }
 

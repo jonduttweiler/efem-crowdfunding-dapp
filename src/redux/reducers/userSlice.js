@@ -1,11 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import User from '../../models/User';
-import {
-  CREATE_DAC_ROLE,
-  CREATE_CAMPAIGN_ROLE,
-  CREATE_MANAGER_ROLE,
-  CREATE_MILESTONE_ROLE
-} from '../../constants/Role';
+
 
 export const userSlice = createSlice({
   name: 'user',
@@ -50,10 +45,5 @@ export const selectRoles = state => state.user.roles;
 
 
 export const isSaved = state => state.user.isSaved;
-
-
-export const isDelegate = state => state.user.roles.includes(CREATE_DAC_ROLE);
-export const isCampaignManager = state => state.user.roles.includes(CREATE_CAMPAIGN_ROLE);
-export const isMilestoneManager = state => state.user.roles.includes(CREATE_MILESTONE_ROLE);
 
 export default userSlice.reducer;

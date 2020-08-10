@@ -20,7 +20,7 @@ import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextP
 
 import { connect } from 'react-redux'
 import { addCampaign } from '../../redux/reducers/campaignsSlice'
-import { isCampaignManager, selectUser } from '../../redux/reducers/userSlice';
+import { selectUser } from '../../redux/reducers/userSlice';
 
 /**
  * View to create or edit a Campaign
@@ -328,7 +328,7 @@ function EditCmpn(props) {
 const mapStateToProps = (state, ownProps) => {
   return {
     user: selectUser(state),
-    isCampaignManager: isCampaignManager(state)
+    isCampaignManager: selectUser(state).isCampaignManager()
   }
 }
 
