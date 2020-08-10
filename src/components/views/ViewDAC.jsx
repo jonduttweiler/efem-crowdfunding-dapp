@@ -80,7 +80,7 @@ class ViewDAC extends Component {
             <div className="col-md-8 m-auto">
               <GoBackButton to="/" title="Communities" />
 
-              <ProfileCard address={dac.ownerAddress}/>
+              <ProfileCard address={dac.delegateAddress}/>
               
               <div className="card content-card">
                 <div className="card-body content">{ReactHtmlParser(dac.description)}</div>

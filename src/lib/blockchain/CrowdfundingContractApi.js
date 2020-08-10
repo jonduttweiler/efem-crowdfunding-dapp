@@ -64,7 +64,7 @@ class CrowdfundingContractApi {
                 dac.imageUrl = await IpfsService.resolveUrl(dac.imageCid);
                 dac.infoCid = await IpfsService.upload(dac.toIpfs());
 
-                const promiEvent = crowdfunding.newDac(dac.infoCid, { from: dac.ownerAddress, $extraGas: extraGas() });
+                const promiEvent = crowdfunding.newDac(dac.infoCid, { from: dac.delegateAddress, $extraGas: extraGas() });
 
                 promiEvent
                     .once('transactionHash', hash => {
@@ -115,7 +115,7 @@ class CrowdfundingContractApi {
             communityUrl,
             donationIds: donationIds.map(e => parseInt(e)),
             status: this.mapDACStatus(status),
-            ownerAddress: delegate,
+            delegateAddress: delegate,
             commitTime: 0
         });
     }
@@ -157,7 +157,7 @@ class CrowdfundingContractApi {
             communityUrl,
             donationIds: donationIds.map(e => parseInt(e)),
             status: this.mapDACStatus(status),
-            ownerAddress: delegate,
+            delegateAddress: delegate,
             commitTime: 0
 
         });

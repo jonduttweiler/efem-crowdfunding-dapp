@@ -11,17 +11,17 @@ class DAC extends Entity {
     const {
       communityUrl = '',
       status = DAC.ACTIVE,
-      ownerAddress = '',
+      delegateAddress = '',
       requiredConfirmations = '',
       commitTime = '',
     } = data;
 
     this._communityUrl = communityUrl;
     this._status = status;
-    this._ownerAddress = ownerAddress;
+    this._delegateAddress = delegateAddress;
     this._requiredConfirmations = requiredConfirmations;
     this._commitTime = data.commitTime ;
-    this._delegateId = ownerAddress;
+    this._delegateId = delegateAddress;
 
   }
 
@@ -64,13 +64,13 @@ class DAC extends Entity {
     this._communityUrl = value;
   }
 
+
+  get delegateAddress() {
+    return this._delegateAddress;
+  }
+  
   get delegateId() {
     return this._delegateId;
-  }
-
-
-  get ownerAddress() {
-    return this._ownerAddress; //or delegate 
   }
 
   set delegateId(value) {

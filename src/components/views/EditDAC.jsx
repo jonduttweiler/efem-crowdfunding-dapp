@@ -53,7 +53,7 @@ class EditDAC extends Component {
 
     // DAC model
     const dac = new DAC({ 
-      ownerAddress: props.user && props.user.address,
+      delegateAddress: props.user && props.user.address,
       status: DAC.PENDING
     });
 
@@ -81,7 +81,7 @@ class EditDAC extends Component {
         const dac = this.props.dac;
         if(dac){
           // The user is not an owner, hence can not change the DAC
-          if (!isOwner(dac.ownerAddress, this.props.user)) {
+          if (!isOwner(dac.delegateAddress, this.props.user)) {
             history.goBack();// TODO: Not really user friendly
           } else {
             this.setState({ isLoading: false, dac });
@@ -99,7 +99,7 @@ class EditDAC extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.user !== this.props.user) {
       this.checkUser().then(() => {
-        if (!this.props.isNew && !isOwner(this.state.dac.ownerAddress, this.props.user))
+        if (!this.props.isNew && !isOwner(this.state.dac.delegateAddress, this.props.user))
           history.goBack();
       });
     }
