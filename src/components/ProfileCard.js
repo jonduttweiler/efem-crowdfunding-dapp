@@ -43,11 +43,14 @@ class ProfileCard extends Component {  //va a recibir como prop un address
     render(){
         const user = this.state.user;
 
+        const namePosition = this.props.namePosition;
+        const descriptionClass = namePosition === "left" || namePosition === "right" ? "" : "small";
+
         return(
-            <div style={{textAlign:"center"}}>
-                <Link to={`/profile/${user.address}`}>
-                <Avatar size={50} src={user.avatar} round />
-                <p className="small">{user.name}</p>
+            <div>
+                <Link className={`profile-card ${namePosition}`} to={`/profile/${user.address}`}> 
+                    <Avatar size={50} src={user.avatar} round />
+                    <p className={`description ${descriptionClass}`}>{user.name}</p>
                 </Link>
             </div>
         );
@@ -56,7 +59,12 @@ class ProfileCard extends Component {  //va a recibir como prop un address
 
 ProfileCard.propTypes = {
     address: PropTypes.string,
-  };
+    namePosition: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+};
+
+ProfileCard.defaultProps = {
+    namePosition: 'bottom'
+};
   
 
 export default ProfileCard;
