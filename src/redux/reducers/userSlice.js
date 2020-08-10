@@ -27,6 +27,13 @@ export const userSlice = createSlice({
     },
     endSave: (state, action) => {
       state.isSaved = true;
+      
+      const { address, email, name, avatar } = action.payload;
+      state.address = address;
+      state.email = email;
+      state.name = name;
+      state.avatar = avatar;
+      
       return state;
     },
     clearUser: (state, action) => {
