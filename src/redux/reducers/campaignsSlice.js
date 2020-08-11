@@ -29,7 +29,7 @@ export const campaignsSlice = createSlice({
     },
     updateCampaignByClientId: (state, action) => {
       let campaign = new Campaign(action.payload);
-      let index = state.findIndex(c => campaign.clientId == c.clientId);
+      let index = state.findIndex(c => campaign.clientId === c.clientId);
       if(index != -1) {
         state[index] = campaign;
       }

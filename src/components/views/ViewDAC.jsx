@@ -45,10 +45,9 @@ class ViewDAC extends Component {
   }
 
   render() {
-    const { dac, donations, balance, history } = this.props;
+    const { dac, campaigns, donations, balance, history } = this.props;
     const {
       isLoading,
-      campaigns,
       isLoadingCampaigns,
     } = this.state;
     
@@ -139,6 +138,7 @@ const mapStateToProps = (state, ownProps) => {
   const dacId = parseInt(ownProps.match.params.id);
   return {
     dac: selectDAC(state, dacId),
+    campaigns: selectCampaignsByDac(state, dacId),
     donations: selectDonationsByEntity(state, dacId)
   }
 }

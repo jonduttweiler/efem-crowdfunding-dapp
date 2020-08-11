@@ -64,6 +64,9 @@ class CrowdfundingContractApi {
                 dac.imageUrl = await IpfsService.resolveUrl(dac.imageCid);
                 dac.infoCid = await IpfsService.upload(dac.toIpfs());
 
+                let thisApi = this;
+                let clientId = dac.clientId;
+
                 const promiEvent = crowdfunding.newDac(dac.infoCid, { from: dac.delegateAddress, $extraGas: extraGas() });
 
                 promiEvent
@@ -74,9 +77,11 @@ class CrowdfundingContractApi {
                     })
                     .once('confirmation', function (confNumber, receipt) {
                         console.log("DAC creation confimed", receipt);
-                        dac.id = parseInt(receipt.events['NewDac'].returnValues.id);
-                        dac.status = DAC.ACTIVE;
-                        subscriber.next(dac);
+                        let id = parseInt(receipt.events['NewDac'].returnValues.id);
+                        thisApi._getDac(crowdfunding, id).then(dac => {
+                            dac.clientId = clientId;
+                            subscriber.next(dac);
+                        });
                     })
 
                     .on('error', function (error) {
@@ -259,6 +264,9 @@ class CrowdfundingContractApi {
                 let infoCid = await IpfsService.upload(campaign.toIpfs());
                 campaign.infoCid = infoCid;
 
+                let thisApi = this;
+                let clientId = campaign.clientId;
+
                 let promiEvent = crowdfunding.newCampaign(
                     campaign.infoCid,
                     //campaign.dacId,
@@ -281,9 +289,11 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería gregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        campaign.id = parseInt(receipt.events['NewCampaign'].returnValues.id);
-                        campaign.status = Campaign.ACTIVE;
-                        subscriber.next(campaign);
+                        let id = parseInt(receipt.events['NewCampaign'].returnValues.id);
+                        thisApi.getCampaign(id).then(campaign => {
+                            campaign.clientId = clientId;
+                            subscriber.next(campaign);
+                        });
                     })
                     .on('error', function (error) {
                         console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
@@ -366,6 +376,9 @@ class CrowdfundingContractApi {
                 let infoCid = await IpfsService.upload(milestone.toIpfs());
                 milestone.infoCid = infoCid;
 
+                let thisApi = this;
+                let clientId = milestone.clientId;
+
                 let promiEvent = crowdfunding.newMilestone(
                     milestone.infoCid,
                     milestone.campaignId,
@@ -389,9 +402,11 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        milestone.id = parseInt(receipt.events['NewMilestone'].returnValues.id);
-                        milestone.status = Milestone.ACTIVE;
-                        subscriber.next(milestone);
+                        let id = parseInt(receipt.events['NewMilestone'].returnValues.id);
+                        thisApi.getMilestone(id).then(milestone => {
+                            milestone.clientId = clientId;
+                            subscriber.next(milestone);
+                        });
                     })
                     .on('error', function (error) {
                         console.error(`Error procesando transacción de almacenamiento de milestone.`, error);
@@ -490,6 +505,9 @@ class CrowdfundingContractApi {
             try {
                 let crowdfunding = await this.getCrowdfunding();
 
+                let thisApi = this;
+                let clientId = donation.clientId;
+
                 let promiEvent = crowdfunding.donate(
                     donation.entityId,
                     donation.tokenAddress,
@@ -511,9 +529,11 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        donation.id = parseInt(receipt.events['NewDonation'].returnValues.id);
-                        donation.status = Donation.AVAILABLE;
-                        subscriber.next(donation);
+                        let id = parseInt(receipt.events['NewDonation'].returnValues.id);
+                        thisApi.getDonation(id).then(donation => {
+                            donation.clientId = clientId;
+                            subscriber.next(donation);
+                        });
                     })
                     .on('error', function (error) {
                         console.error(`Error procesando transacción de almacenamiento de donación.`, error);
