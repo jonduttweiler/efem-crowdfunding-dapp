@@ -35,7 +35,10 @@ export const milestonesSlice = createSlice({
       }
     },
     withdraw: (state, action) => {
-      
+      let index = state.findIndex(c => action.payload.clientId == c.clientId);
+      if(index != -1) {
+        state[index].status = Milestone.PAYING;
+      }
     }
   },
 });

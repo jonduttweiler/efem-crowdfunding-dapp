@@ -1,73 +1,13 @@
 import BigNumber from 'bignumber.js';
-import { utils } from 'web3';
 import moment from 'moment';
 import Model from './Model';
-import { getTruncatedText } from '../lib/helpers';
-import Milestone from './Milestone';
-import Campaign from './Campaign';
-// import User from './User';
-
-/* eslint no-underscore-dangle: 0 */
+import StatusUtils from '../utils/StatusUtils';
+import Status from './Status';
 
 /**
  * Modelo de donación de Dapp.
  */
 class Donation extends Model {
-
-  static get AVAILABLE() {
-    return 'Available';
-  }
-
-  static get PENDING() {
-    return 'Pending';
-  }
-
-  static get TO_APPROVE() {
-    return 'ToApprove';
-  }
-
-  static get WAITING() {
-    return 'Waiting';
-  }
-
-  static get COMMITTED() {
-    return 'Committed';
-  }
-
-  static get PAYING() {
-    return 'Paying';
-  }
-
-  static get PAID() {
-    return 'Paid';
-  }
-
-  static get CANCELED() {
-    return 'Canceled';
-  }
-
-  static get REJECTED() {
-    return 'Rejected';
-  }
-
-  static get FAILED() {
-    return 'Failed';
-  }
-
-  static get statuses() {
-    return [
-      Donation.AVAILABLE,
-      Donation.PENDING,
-      Donation.PAYING,
-      Donation.PAID,
-      Donation.TO_APPROVE,
-      Donation.WAITING,
-      Donation.COMMITTED,
-      Donation.CANCELED,
-      Donation.REJECTED,
-      Donation.FAILED,
-    ];
-  }
 
   constructor(data = {}) {
     super(data);
@@ -169,8 +109,24 @@ class Donation extends Model {
     this._donatedTo = donatedTo;*/
   }
 
+  static get PENDING() {
+    return StatusUtils.build('Pending', true);
+  }
+
+  static get AVAILABLE() {
+    return StatusUtils.build('Available');
+  }
+
+  static get SPENT() {
+    return StatusUtils.build('Spent');
+  }
+
+  static get RETURNED() {
+    return StatusUtils.build('Returned');
+  }
+
   get isPending() {
-    return this.status === Donation.PENDING;
+    return this.status.name === Donation.PENDING.name;
   }
 
   get id() {
@@ -250,7 +206,7 @@ class Donation extends Model {
   }
 
   set status(value) {
-    this.checkValue(value, Donation.statuses, 'status');
+    this.checkInstanceOf(value, Status, 'status');
     this._status = value;
   }
 

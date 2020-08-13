@@ -6,6 +6,7 @@ import Loader from './Loader';
 import ProfileCard from './ProfileCard';
 import Donation from '../models/Donation';
 import CryptoAmount from './CryptoAmount';
+import StatusIndicator from './StatusIndicator';
 
 /**
  * Presenta una tabla de donaciones para una entidad.
@@ -57,13 +58,7 @@ class TableDonations extends Component {
                       </td>
                       
                       <td>
-                        {d.isPending && (
-                          <span>
-                            <i className="fa fa-circle-o-notch fa-spin" />
-                          &nbsp;
-                          </span>
-                        )}
-                        {d.statusDescription}
+                        <StatusIndicator status={d.status}></StatusIndicator>
                       </td>
 
                       <td className="td-donations-amount">

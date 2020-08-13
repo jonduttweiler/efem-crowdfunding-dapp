@@ -107,11 +107,10 @@ class ViewCampaign extends Component {
                 <h6>Campaign</h6>
                 <h1>{campaign.title}</h1>
                 {campaign.id && <DonateButton
-                  model={{
-                    type: Campaign.type,
-                    title: campaign.title,
-                    entityId: campaign.id
-                  }}
+                    entityType={Campaign.type}                    
+                    entityId={campaign.id}
+                    title={campaign.title}
+                    enabled={campaign.receiveFunds}
                 />}
                 {currentUser && currentUser.authenticated && (
                   <DelegateMultipleButton

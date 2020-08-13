@@ -60,11 +60,10 @@ class ViewDAC extends Component {
           <h1>{dac.title}</h1>
 
           {dac.id && <DonateButton
-            model={{
-              type: DAC.type,
-              title: dac.title,
-              entityId: dac.id
-            }}
+            entityType={DAC.type}
+            entityId={dac.id}
+            title={dac.title}
+            enabled={dac.receiveFunds}
           />}
 
           {dac.communityUrl && (

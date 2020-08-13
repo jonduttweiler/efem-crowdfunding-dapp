@@ -1,5 +1,7 @@
 import Entity from './Entity';
 import CampaignService from '../services/CampaignService';
+import StatusUtils from '../utils/StatusUtils';
+import Status from './Status';
 
 /**
  * The DApp Campaign model
@@ -12,7 +14,7 @@ class Campaign extends Entity {
       dacIds = [],
       managerAddress = '',
       reviewerAddress = '',
-      status = Campaign.ACTIVE
+      status = Campaign.PENDING
     } = data;
     this._dacIds = dacIds;
     this._managerAddress = managerAddress;
@@ -20,16 +22,20 @@ class Campaign extends Entity {
     this._status = status;
   }
 
-  static get CANCELED() {
-    return 'Canceled';
+  static get PENDING() {
+    return StatusUtils.build('Pending', true);
   }
 
   static get ACTIVE() {
-    return 'Active';
+    return StatusUtils.build('Active');
   }
 
-  static get PENDING() {
-    return 'Pending';
+  static get CANCELLED() {
+    return StatusUtils.build('Cancelled');
+  }
+
+  static get FINISHED() {
+    return StatusUtils.build('Finished');
   }
 
   static get type() {
@@ -41,11 +47,11 @@ class Campaign extends Entity {
   }
 
   get isActive() {
-    return this.status === Campaign.ACTIVE;
+    return this.status.name === Campaign.ACTIVE.name;
   }
 
   get isPending() {
-    return this.status === Campaign.PENDING;
+    return this.status.name === Campaign.PENDING.name;
   }
 
   /**
@@ -90,12 +96,15 @@ class Campaign extends Entity {
   }
 
   set status(value) {
-    this.checkValue(value, [Campaign.PENDING, Campaign.ACTIVE, Campaign.CANCELED], 'status');
+    this.checkInstanceOf(value, Status, 'status');
     this._status = value;
-    if (value === Campaign.PENDING) this.myOrder = 1;
-    else if (value === Campaign.ACTIVE) this.myOrder = 2;
-    else if (value === Campaign.CANCELED) this.myOrder = 3;
-    else this.myOrder = 4;
+  }
+
+  /**
+   * Determina si la entidad recibe fondos o no.
+   */
+  get receiveFunds() {
+    return this.isActive;
   }
 }
 

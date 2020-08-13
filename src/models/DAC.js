@@ -1,4 +1,6 @@
 import Entity from './Entity';
+import StatusUtils from '../utils/StatusUtils';
+import Status from './Status';
 
 /**
  * The DApp DAC model
@@ -6,36 +8,34 @@ import Entity from './Entity';
 class DAC extends Entity {
 
   constructor(data = {}) {
-    super(data); 
-  
+    super(data);
+
     const {
       communityUrl = '',
-      status = DAC.ACTIVE,
+      status = DAC.PENDING,
       delegateAddress = '',
-      requiredConfirmations = '',
-      commitTime = '',
+      requiredConfirmations = ''
     } = data;
 
     this._communityUrl = communityUrl;
     this._status = status;
     this._delegateAddress = delegateAddress;
     this._requiredConfirmations = requiredConfirmations;
-    this._commitTime = data.commitTime ;
+    this._commitTime = data.commitTime;
     this._delegateId = delegateAddress;
 
   }
 
-  
-  static get CANCELED() {
-    return 'Canceled';
+  static get PENDING() {
+    return StatusUtils.build('Pending', true);
   }
 
   static get ACTIVE() {
-    return 'Active';
+    return StatusUtils.build('Active');
   }
 
-  static get PENDING() {
-    return 'Pending';
+  static get CANCELLED() {
+    return StatusUtils.build('Cancelled');
   }
 
   static get type() {
@@ -47,13 +47,12 @@ class DAC extends Entity {
   }
 
   get isActive() {
-    return this.status === DAC.ACTIVE;
+    return this.status.name === DAC.ACTIVE.name;
   }
 
   get isPending() {
-    return this.status === DAC.PENDING;
+    return this.status.name === DAC.PENDING.name;
   }
-
 
   get communityUrl() {
     return this._communityUrl;
@@ -68,7 +67,7 @@ class DAC extends Entity {
   get delegateAddress() {
     return this._delegateAddress;
   }
-  
+
   get delegateId() {
     return this._delegateId;
   }
@@ -92,12 +91,15 @@ class DAC extends Entity {
   }
 
   set status(value) {
-    this.checkValue(value, [DAC.PENDING, DAC.ACTIVE, DAC.CANCELED], 'status');
+    this.checkInstanceOf(value, Status, 'status');
     this._status = value;
-    if (value === DAC.PENDING) this.myOrder = 1;
-    else if (value === DAC.ACTIVE) this.myOrder = 2;
-    else if (value === DAC.CANCELED) this.myOrder = 3;
-    else this.myOrder = 4;
+  }
+
+  /**
+   * Determina si la entidad recibe fondos o no.
+   */
+  get receiveFunds() {
+    return this.isActive;
   }
 }
 

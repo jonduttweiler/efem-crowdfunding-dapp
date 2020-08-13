@@ -102,7 +102,7 @@ class DonateButton extends React.Component {
   donate(model) {
 
     const { donation, user, selectedToken } = this.state;
-    const { entityId } = this.props.model;
+    const { entityId } = this.props;
     const amount = Web3Utils.etherToWei(model.amount);
     // Utilizado cuando se implemente la donación en otros tokens.
     const isDonationInToken = selectedToken.symbol !== config.nativeToken.symbol;
@@ -121,7 +121,7 @@ class DonateButton extends React.Component {
   }
 
   render() {
-    const { model, validProvider, isCorrectNetwork } = this.props;
+    const { entityType, title, validProvider, isCorrectNetwork, enabled } = this.props;
     const {
       amountText,
       formIsValid,
@@ -139,17 +139,22 @@ class DonateButton extends React.Component {
     };
 
     const balance = user.balance;
+    const disableButton = !enabled;
+    console.log('disableButton', disableButton);
 
     return (
       <span style={style}>
-        <button type="button" className="btn btn-success" onClick={this.openDialog}>
+        <button type="button"
+            className="btn btn-success"
+            onClick={this.openDialog}
+            disabled={disableButton}>
           Donate
         </button>
         <Modal
           isOpen={modalVisible}
           onRequestClose={() => this.closeDialog()}
           shouldCloseOnOverlayClick={false}
-          contentLabel={`Support this ${model.type}!`}
+          contentLabel={`Support this ${entityType}!`}
           style={modalStyles}
         >
           <Form
@@ -163,7 +168,7 @@ class DonateButton extends React.Component {
             layout="vertical"
           >
             <h3>
-              Donate to support <em>{model.title}</em>
+              Donate to support <em>{title}</em>
             </h3>
 
             {!validProvider && (
@@ -174,15 +179,15 @@ class DonateButton extends React.Component {
             )}
             {isCorrectNetwork && (
               <p>
-                {model.type.toLowerCase() === DAC.type && (
+                {entityType.toLowerCase() === DAC.type && (
                   <span>
                     You&apos;re pledging: as long as the Fund owner does not lock your money you can
                     take it back any time.
                   </span>
                 )}
-                {model.type.toLowerCase() !== DAC.type && (
+                {entityType.toLowerCase() !== DAC.type && (
                   <span>
-                    You&apos;re committing your funds to this {model.type}, if you have filled out
+                    You&apos;re committing your funds to this {entityType}, if you have filled out
                     contact information in your <Link to="/profile">Profile</Link> you will be
                     notified about how your funds are spent
                   </span>
@@ -199,7 +204,7 @@ class DonateButton extends React.Component {
 
             {validProvider && isCorrectNetwork && (
               <div>
-                {model.type !== 'milestone' && (
+                {entityType !== 'milestone' && (
                   <SelectFormsy
                     name="token"
                     id="token-select"
@@ -208,7 +213,7 @@ class DonateButton extends React.Component {
                     value={selectedToken.address}
                     options={tokenWhitelistOptions}
                     onChange={address => this.setToken(address)}
-                    disabled={model.type === 'milestone'}
+                    disabled={entityType === 'milestone'}
                   />
                 )}
                 {/* TODO: remove this b/c the wallet provider will contain this info */}
@@ -295,20 +300,18 @@ class DonateButton extends React.Component {
   }
 }
 
-const modelTypes = PropTypes.shape({
-  type: PropTypes.string.isRequired,
-  //adminId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+DonateButton.propTypes = {
+
+  validProvider: PropTypes.bool.isRequired,
+  isCorrectNetwork: PropTypes.bool.isRequired,
+  tokenWhitelist: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+
+  entityType: PropTypes.string.isRequired,
   entityId: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   token: PropTypes.shape({}),
   maxDonation: PropTypes.instanceOf(BigNumber),
-});
-
-DonateButton.propTypes = {
-  model: modelTypes.isRequired,
-  validProvider: PropTypes.bool.isRequired,
-  isCorrectNetwork: PropTypes.bool.isRequired,
-  tokenWhitelist: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  enabled: PropTypes.bool.isRequired
 };
 
 DonateButton.defaultProps = {

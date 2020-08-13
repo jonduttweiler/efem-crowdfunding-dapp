@@ -2,6 +2,8 @@ import Entity from './Entity';
 import BigNumber from 'bignumber.js';
 import { getStartOfDayUTC } from 'lib/helpers';
 import MilestoneItemModel from './MilestoneItem';
+import StatusUtils from '../utils/StatusUtils';
+import Status from './Status';
 
 /**
  * Modelo Milestone de Dapp.
@@ -17,7 +19,7 @@ export default class Milestone extends Entity {
       reviewerAddress = '',
       campaignReviewerAddress,
       recipientAddress = '',
-      status = Milestone.IN_PROGRESS,
+      status = Milestone.PENDING,
       items = [],
       date = getStartOfDayUTC().subtract(1, 'd')
     } = data;
@@ -54,81 +56,52 @@ export default class Milestone extends Entity {
     return user && user.address === this.recipientAddress;
   }
 
-  static get PROPOSED() {
-    return Milestone.statuses.PROPOSED;
+  static get PENDING() {
+    return StatusUtils.build('Pending', true);
   }
 
   static get ACTIVE() {
-    return Milestone.statuses.ACTIVE;
-  }
-
-  static get APPROVED() {
-    return Milestone.statuses.APPROVED;
-  }
-
-  static get REJECTED() {
-    return Milestone.statuses.REJECTED;
-  }
-
-  static get PENDING() {
-    return Milestone.statuses.PENDING;
-  }
-
-  static get IN_PROGRESS() {
-    return Milestone.statuses.IN_PROGRESS;
-  }
-
-  static get NEEDS_REVIEW() {
-    return Milestone.statuses.NEEDS_REVIEW;
-  }
-
-  static get COMPLETED() {
-    return Milestone.statuses.COMPLETED;
+    return StatusUtils.build('Active');
   }
 
   static get CANCELLED() {
-    return Milestone.statuses.CANCELLED;
+    return StatusUtils.build('Cancelled');
+  }
+
+  static get COMPLETED() {
+    return StatusUtils.build('Completed');
+  }
+
+  static get APPROVED() {
+    return StatusUtils.build('Approved');
+  }
+
+  static get REJECTED() {
+    return StatusUtils.build('Rejected');
   }
 
   static get PAYING() {
-    return Milestone.statuses.PAYING;
+    return StatusUtils.build('Paying', true);
   }
 
   static get PAID() {
-    return Milestone.statuses.PAID;
-  }
-
-  static get FAILED() {
-    return Milestone.statuses.FAILED;
-  }
-
-  static get statuses() {
-    return {
-      PENDING: 'Pending', // Only Dapp
-      ACTIVE: 'Active',
-      CANCELLED: 'Canceled',
-      COMPLETED: 'Completed',
-      APPROVED: 'Approved',
-      REJECTED: 'Rejected',      
-      PAYING: 'Paying', // Only Dapp
-      PAID: 'Paid',
-      FAILED: 'Failed', // Deprecated
-      PROPOSED: 'Proposed', // Deprecated
-      IN_PROGRESS: 'InProgress', // Deprecated
-      NEEDS_REVIEW: 'NeedsReview' // Deprecated
-    };
+    return StatusUtils.build('Paid');
   }
 
   get isPending() {
-    return this.status === Milestone.PENDING;
+    return this.status.name === Milestone.PENDING.name;
+  }
+
+  get isActive() {
+    return this.status.name === Milestone.ACTIVE.name;
   }
 
   get isCompleted() {
-    return this.status === Milestone.COMPLETED;
+    return this.status.name === Milestone.COMPLETED.name;
   }
 
   get isApproved() {
-    return this.status === Milestone.APPROVED;
+    return this.status.name === Milestone.APPROVED.name;
   }
 
   static get type() {
@@ -208,7 +181,7 @@ export default class Milestone extends Entity {
   }
 
   set status(value) {
-    this.checkValue(value, Object.values(Milestone.statuses), 'status');
+    this.checkInstanceOf(value, Status, 'status');
     this._status = value;
   }
 
@@ -239,5 +212,12 @@ export default class Milestone extends Entity {
   set date(value) {
     this.checkIsMoment(value, 'date');
     this._date = value;
+  }
+
+  /**
+   * Determina si la entidad recibe fondos o no.
+   */
+  get receiveFunds() {
+    return this.isActive || this.isCompleted || this.isApproved;
   }
 }

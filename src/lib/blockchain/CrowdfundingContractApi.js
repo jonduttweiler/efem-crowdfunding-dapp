@@ -121,7 +121,7 @@ class CrowdfundingContractApi {
             imageUrl: IpfsService.resolveUrl(imageCid),
             communityUrl,
             donationIds: donationIds.map(e => parseInt(e)),
-            status: this.mapDACStatus(status),
+            status: this.mapDACStatus(parseInt(status)),
             delegateAddress: delegate,
             commitTime: 0
         });
@@ -163,7 +163,7 @@ class CrowdfundingContractApi {
             imageUrl,
             communityUrl,
             donationIds: donationIds.map(e => parseInt(e)),
-            status: this.mapDACStatus(status),
+            status: this.mapDACStatus(parseInt(status)),
             delegateAddress: delegate,
             commitTime: 0
 
@@ -491,7 +491,7 @@ class CrowdfundingContractApi {
             createdAt: createdAt,
             entityId: parseInt(entityId),
             budgetId: parseInt(budgetId),
-            status: this.mapDonationStatus(status)
+            status: this.mapDonationStatus(parseInt(status))
         });
     }
 
@@ -581,8 +581,11 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        let id = parseInt(receipt.events['NewMilestone'].returnValues.id);
-                        subscriber.next(milestone);
+                        let milestoneId = parseInt(receipt.events['Withdraw'].returnValues.milestoneId);
+                        thisApi.getMilestone(milestoneId).then(milestone => {
+                            milestone.clientId = clientId;
+                            subscriber.next(milestone);
+                        });
                     })
                     .on('error', function (error) {
                         console.error(`Error procesando transacción de retiro de fondos de milestone.`, error);
@@ -609,7 +612,7 @@ class CrowdfundingContractApi {
     mapDACStatus(status) {
         switch (status) {
             case 0: return DAC.ACTIVE;
-            case 1: return DAC.CANCELED;
+            case 1: return DAC.CANCELLED;
         }
     }
 
@@ -623,7 +626,7 @@ class CrowdfundingContractApi {
     mapCampaingStatus(status) {
         switch (status) {
             case 0: return Campaign.ACTIVE;
-            case 1: return Campaign.CANCELED;
+            case 1: return Campaign.CANCELLED;
         }
     }
 
@@ -653,10 +656,11 @@ class CrowdfundingContractApi {
      * @returns estado de la donación en la dapp.
      */
     mapDonationStatus(status) {
-        if (status == 0) {
-            return Donation.AVAILABLE;
+        switch (status) {
+            case 0: return Donation.AVAILABLE;
+            case 1: return Donation.SPENT;
+            case 2: return Donation.RETURNED;
         }
-        return Donation.CANCELED;
     }
 
 

@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-
 import Milestone from '../models/Milestone';
 import User from 'models/User';
 import { connect } from 'react-redux'
@@ -13,23 +12,18 @@ class WithdrawMilestoneFundsButton extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      withdrawStarted: false
-    };
     this.withdraw = this.withdraw.bind(this);
   }
 
   async withdraw() {
-    const { milestone, user } = this.props;
+    const { milestone } = this.props;
     this.props.withdraw(milestone);
     React.toast.success(<p>El pago ha sido iniciado</p>);
   }
 
   render() {
     const { milestone, user } = this.props;
-    const { withdrawStarted } = this.state;
-    let showButton = !paymentStarted
-      && (milestone.isRecipient(user) || milestone.isManager(user))
+    let showButton = (milestone.isRecipient(user) || milestone.isManager(user))
       && milestone.isApproved;
     let buttonLabel = milestone.isRecipient(user) ? 'Retirar' : 'Desembolsar';
     return (

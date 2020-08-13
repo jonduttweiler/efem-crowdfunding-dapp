@@ -20,6 +20,7 @@ import { selectMilestone } from '../../redux/reducers/milestonesSlice';
 import FiatAmount from '../FiatAmount';
 import ProfileCard from '../ProfileCard';
 import Campaign from '../../models/Campaign';
+import StatusIndicator from '../StatusIndicator';
 import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 import { selectUser } from '../../redux/reducers/userSlice';
 
@@ -109,11 +110,10 @@ class ViewMilestone extends Component {
 
               <div className="milestone-actions">
                 {milestone.id && <DonateButton
-                  model={{
-                    type: Milestone.type,
-                    title: milestone.title,
-                    entityId: milestone.id
-                  }}
+                  entityType={Milestone.type}                 
+                  entityId={milestone.id}
+                  title={milestone.title}
+                  enabled={milestone.receiveFunds}
                 />}
                 {/*this.isActiveMilestone() && (
                   <Fragment>
@@ -217,14 +217,13 @@ class ViewMilestone extends Component {
                         <div className="form-group">
                           <span className="label">Status</span>
                           <br />
-                          {milestone.status}
+                          <StatusIndicator status={milestone.status}></StatusIndicator>
                         </div>
                       </div>
                     </div>
 
                     <div className="col-md-6">
                       <h4>Status updates</h4>
-
                       <MilestoneConversations milestone={milestone} balance={balance} />
                     </div>
                   </div>

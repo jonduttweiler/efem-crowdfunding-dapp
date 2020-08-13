@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import FiatAmount from './FiatAmount';
+import Status from '../models/Status';
+import StatusIndicator from './StatusIndicator';
 
 /**
  * Shows the statistics on DACs, Campaigns and milestonesCount
@@ -34,10 +36,7 @@ const CardStats = ({
 
     <div className="col-4 text-right">
       <p>Status</p>
-      <span>
-        <i className="fa fa-check-circle" />
-        {status}
-      </span>
+      <StatusIndicator status={status}></StatusIndicator>
     </div>
     
   </div>
@@ -45,7 +44,7 @@ const CardStats = ({
 
 CardStats.propTypes = {
   type: PropTypes.string.isRequired,
-  status: PropTypes.string,
+  status: PropTypes.instanceOf(Status),  
   fiatAmountTarget: PropTypes.instanceOf(BigNumber),  
   donations: PropTypes.number.isRequired
 };
