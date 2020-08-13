@@ -16,11 +16,10 @@ import Campaign from '../../models/Campaign';
 import CampaignService from '../../services/CampaignService';
 import ErrorPopup from '../ErrorPopup';
 
-import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
-
 import { connect } from 'react-redux'
 import { addCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectUser } from '../../redux/reducers/userSlice';
+import { loadUsersRoles, milestoneManagers } from '../../redux/reducers/usersRolesSlice';
 
 /**
  * View to create or edit a Campaign
@@ -52,6 +51,8 @@ class EditCampaign extends Component {
   }
 
   componentDidMount() {
+    this.props.loadUsersRoles();
+
     this.mounted = true;
     this.checkUser()
       .then(() => {
@@ -256,7 +257,7 @@ class EditCampaign extends Component {
                           helpText="This person or smart contract will be reviewing your Campaign to increase trust for Givers."
                           value={campaign.reviewerAddress}
                           cta="--- Select a reviewer ---"
-                          options={reviewers}
+                          options={reviewers.map(reviewer => ({ ...reviewer, title: reviewer.name, value: reviewer.address }))}
                           validations="isEtherAddress"
                           validationErrors={{
                             isEtherAddress: 'Please select a reviewer.',
@@ -313,25 +314,14 @@ EditCampaign.defaultProps = {
 };
 
 
-function EditCmpn(props) {
-  return (
-    <RolesListProvider>
-      <RolesListConsumer>
-        {({ reviewers }) => <EditCampaign {...props} reviewers={reviewers} isCampaignManager={props.isCampaignManager} />}
-      </RolesListConsumer>
-    </RolesListProvider>
-  );
-
-}
-
-
 const mapStateToProps = (state, ownProps) => {
   return {
     user: selectUser(state),
-    isCampaignManager: selectUser(state).isCampaignManager()
+    isCampaignManager: selectUser(state).isCampaignManager(),
+    reviewers: milestoneManagers(state)
   }
 }
 
-const mapDispatchToProps = { addCampaign }
+const mapDispatchToProps = { addCampaign, loadUsersRoles }
 
-export default connect(mapStateToProps,mapDispatchToProps)(EditCmpn)
+export default connect(mapStateToProps,mapDispatchToProps)(EditCampaign)
