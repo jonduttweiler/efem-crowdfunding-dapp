@@ -34,11 +34,11 @@ export default function configureStore() {
         fetchDonationsByIdsEpic,
         addDonationEpic,
         loadUsersRolesEpic
-        );
+    );
 
     const epicMiddleware = createEpicMiddleware();
 
-    const middlewares = [/* loggerMiddleware ,*/ epicMiddleware]
+    const middlewares = [loggerMiddleware, epicMiddleware]
     const middlewareEnhancer = applyMiddleware(...middlewares)
 
     const enhancers = [middlewareEnhancer]

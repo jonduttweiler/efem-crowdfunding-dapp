@@ -140,7 +140,6 @@ class DonateButton extends React.Component {
 
     const balance = user.balance;
     const disableButton = !enabled;
-    console.log('disableButton', disableButton);
 
     return (
       <span style={style}>
