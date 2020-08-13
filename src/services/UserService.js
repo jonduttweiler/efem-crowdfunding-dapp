@@ -88,6 +88,13 @@ class UserService {
     });
   }
 
+  getUsersRoles(){
+    return new Observable(async subscriber => {
+        const users = await getUsersWithRoles();
+        subscriber.next(users);
+    })
+  }
+
   async _updateAvatar(user) {
     if (user._newAvatar) {
       try {
@@ -125,6 +132,16 @@ async function getRoles(address) {
   } catch (err) {
       console.log(err)
   }
+}
+
+export async function getUsersWithRoles() {
+  const usersWithRoles = [];
+  const {data: users} = await feathersClient.service("users").find();
+  for (const user of users) {
+    const roles = await getRoles(user.address);
+    usersWithRoles.push(new User({ ...user, roles }));
+  }
+  return usersWithRoles;
 }
 
 export default UserService;
