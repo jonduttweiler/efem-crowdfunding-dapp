@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { utils } from 'web3';
 import { authenticateIfPossible } from 'lib/middleware';
 import { feathersClient } from '../lib/feathersClient';
-
+import web3 from 'web3';
 import ErrorPopup from '../components/ErrorPopup';
 
 // models
@@ -17,13 +17,20 @@ const { Provider, Consumer } = Context;
 export { Consumer };
 
 
-
 // TO DO: This is the minimum transaction view required to:
 // create a DAC / Campaign / Milestone / Profile
 React.minimumWalletBalance = 0.000005;
 React.minimumWalletBalanceInWei = new BigNumber(
   utils.toWei(new BigNumber(React.minimumWalletBalance).toString()),
 );
+
+
+function areDistinctAccounts(account1,account2){
+  const keccakAccount1 = account1 && web3.utils.keccak256(account1);
+  const keccakAccount2 = account2 && web3.utils.keccak256(account2);
+  return keccakAccount1 !== keccakAccount2;
+}
+
 
 /**
  * This container holds the application and its routes.
@@ -48,24 +55,18 @@ class UserProvider extends Component {
     React.signIn = this.signIn;
   }
 
-  componentDidMount() {
-    this.props.loadUser();
-    this.getUserData(this.props.account);
-    
-  }
-
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { currentUser } = this.state;
-    const { account } = this.props;
+    const { account: currentAccount } = this.props;
     const { account: prevAccount } = prevProps;
 
-    if(account != prevAccount){
-      console.log("Load user with account:",account);
+    if (areDistinctAccounts(currentAccount,prevAccount)) {
+      console.log("Load user with account:", currentAccount);
       this.props.loadUser();
     }
-    
-    if ((account && !currentUser) || (currentUser && account !== prevAccount)) { 
-      this.getUserData(account);
+
+    if ((currentAccount && !currentUser) || (currentUser && currentAccount !== prevAccount)) {
+      this.getUserData(currentAccount);
     }
   }
 
@@ -73,7 +74,7 @@ class UserProvider extends Component {
     if (this.userSubscriber) this.userSubscriber.unsubscribe();
   }
 
-  async getUserData(address) {
+  async getUserData(address) { //TODO: replazar esto por una llamada al user service
     if (this.userSubscriber) this.userSubscriber.unsubscribe();
 
     return new Promise((resolve, reject) => {
