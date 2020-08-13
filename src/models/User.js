@@ -5,8 +5,9 @@ import BigNumber from 'bignumber.js';
 import {
   CREATE_DAC_ROLE,
   CREATE_CAMPAIGN_ROLE,
-  CREATE_MANAGER_ROLE,
-  CREATE_MILESTONE_ROLE
+  CREATE_MILESTONE_ROLE,
+  REVIEW_CAMPAIGN_ROLE,
+  REVIEW_MILESTONE_ROLE
 } from '../constants/Role';
 
 /**
@@ -210,6 +211,12 @@ class User extends Model {
   }
   isMilestoneManager() {
     return this.roles.includes(CREATE_MILESTONE_ROLE);
+  }
+  isCampaignReviewer() {
+    return this.roles.includes(REVIEW_CAMPAIGN_ROLE);
+  }
+  isMilestoneReviewer() {
+    return this.roles.includes(REVIEW_MILESTONE_ROLE);
   }
 }
 

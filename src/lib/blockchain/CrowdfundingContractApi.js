@@ -8,7 +8,7 @@ import extraGas from './extraGas';
 import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import { ALL_ROLES } from '../../constants/Role';
+
 
 //const getRevertReason = require('eth-revert-reason')
 
@@ -18,22 +18,6 @@ import { ALL_ROLES } from '../../constants/Role';
 class CrowdfundingContractApi {
 
     constructor() { }
-
-
-    async getRoles(address) {
-        try {
-            const userRoles = [];
-
-            for (const rol of ALL_ROLES) {
-                const canPerform = await this.canPerformRole(address, rol);
-                if (canPerform) userRoles.push(rol);
-            }
-            return userRoles;
-
-        } catch (err) {
-            console.log(err)
-        }
-    }
 
 
     async canPerformRole(address, role) {
