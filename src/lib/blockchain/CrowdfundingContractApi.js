@@ -10,6 +10,8 @@ import web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { ALL_ROLES } from '../../constants/Role';
 
+//const getRevertReason = require('eth-revert-reason')
+
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
  */
@@ -240,7 +242,7 @@ class CrowdfundingContractApi {
             donationIds: donationIds.map(e => parseInt(e)),
             managerAddress: manager,
             reviewerAddress: reviewer,
-            status: this.mapCampaingStatus(status)
+            status: this.mapCampaingStatus(parseInt(status))
         });
     }
 
@@ -352,7 +354,7 @@ class CrowdfundingContractApi {
             reviewerAddress: reviewer,
             campaignReviewerAddress: campaignReviewer,
             recipientAddress: recipient,
-            status: this.mapMilestoneStatus(status)
+            status: this.mapMilestoneStatus(parseInt(status))
         });
     }
 
@@ -547,6 +549,57 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Retiro de fondos de un milestone.
+     * 
+     * @param milestone desde el cual se retiran los fondos.
+     */
+    milestoneWithdraw(milestone) {
+
+        return new Observable(async subscriber => {
+
+            try {
+                let crowdfunding = await this.getCrowdfunding();
+
+                let thisApi = this;
+                let clientId = milestone.clientId;
+
+                let promiEvent = crowdfunding.withdraw(
+                    milestone.id,
+                    {
+                        from: milestone.recipientAddress,
+                        $extraGas: extraGas()
+                    });
+
+                promiEvent
+                    .once('transactionHash', function (hash) {
+                        // La transacción ha sido creada.
+                        milestone.txHash = hash;
+                        subscriber.next(milestone);
+                    })
+                    .once('confirmation', function (confNumber, receipt) {
+                        // La transacción ha sido incluida en un bloque
+                        // sin bloques de confirmación (once).
+                        // TODO Aquí debería agregarse lógica para esperar
+                        // un número determinado de bloques confirmados (on, confNumber).
+                        let id = parseInt(receipt.events['NewMilestone'].returnValues.id);
+                        subscriber.next(milestone);
+                    })
+                    .on('error', function (error) {
+                        console.error(`Error procesando transacción de retiro de fondos de milestone.`, error);
+                        //let reason = await getRevertReason(milestone.txHash); // 'I accidentally killed it.'
+                        //console.log(reason);
+                        subscriber.error(error);
+                    })/*.catch(revertReason => {
+                        console.log('revertReason', revertReason);
+                    })*/;
+            } catch (error) {
+                console.error(`Error retirando fondos de milestone`, error);
+                subscriber.error(error);
+            }
+        });
+    }
+
+    /**
      * Realiza el mapping de los estados de las dac en el
      * smart contract con los estados en la dapp.
      * 
@@ -568,13 +621,10 @@ class CrowdfundingContractApi {
      * @returns estado de la campaign en la dapp.
      */
     mapCampaingStatus(status) {
-        if (status == 0) {
-            return Campaign.ACTIVE;
+        switch (status) {
+            case 0: return Campaign.ACTIVE;
+            case 1: return Campaign.CANCELED;
         }
-        if (status == 1) {
-            return Campaign.CANCELED;
-        }
-        return Campaign.CANCELED;
     }
 
     /**
@@ -585,13 +635,14 @@ class CrowdfundingContractApi {
      * @returns estado del milestone en la dapp.
      */
     mapMilestoneStatus(status) {
-        if (status == 0) {
-            return Milestone.ACTIVE;
+        switch (status) {
+            case 0: return Milestone.ACTIVE;
+            case 1: return Milestone.CANCELLED;
+            case 2: return Milestone.COMPLETED;
+            case 3: return Milestone.APPROVED;
+            case 4: return Milestone.REJECTED;
+            case 5: return Milestone.PAID;
         }
-        if (status == 1) {
-            return Milestone.CANCELED;
-        }
-        return Milestone.IN_PROGRESS;
     }
 
     /**

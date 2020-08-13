@@ -112,7 +112,6 @@ class ViewCampaign extends Component {
                     title: campaign.title,
                     entityId: campaign.id
                   }}
-                  currentUser={currentUser}
                 />}
                 {currentUser && currentUser.authenticated && (
                   <DelegateMultipleButton

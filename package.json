@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@acdi/efem-crowdfunding": "1.0.0-alfa.8",
+    "@acdi/efem-crowdfunding": "1.0.0-alfa.9",
     "@feathersjs/authentication-client": "^1.0.11",
     "@feathersjs/client": "^3.7.8",
     "@feathersjs/commons": "^4.0.0",
@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^1.4.0",
     "axios": "^0.19.2",
     "bignumber.js": "^8.0.2",
+    //"eth-revert-reason": "^1.0.3",
     "ethereumjs-abi": "^0.6.5",
     "feathers-hooks-common": "^4.20.2",
     "feathers-reactive": "^0.7.2",
@@ -56,7 +57,7 @@
     "rxjs": "^6.6.0",
     "socket.io-client": "^2.0.4",
     "sweetalert": "^2.0",
-    "web3": "1.0.0-beta.35",
+    "web3": "1.2.11",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {

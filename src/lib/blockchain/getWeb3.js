@@ -49,5 +49,7 @@ export default () =>
       }
     }
 
+    //newWeb3.eth.handleRevert = true;
+
     resolve(newWeb3);
   });

@@ -12,67 +12,67 @@ import ReproposeRejectedMilestoneButton from 'components/ReproposeRejectedMilest
 import RequestMarkMilestoneCompleteButton from 'components/RequestMarkMilestoneCompleteButton';
 import CancelMilestoneButton from 'components/CancelMilestoneButton';
 import ApproveRejectMilestoneCompletionButtons from 'components/ApproveRejectMilestoneCompletionButtons';
-import WithdrawMilestoneFundsButton from 'components/WithdrawMilestoneFundsButton';
+import WithdrawMilestoneFundsButton from './WithdrawMilestoneFundsButton';
 import EditMilestoneButton from 'components/EditMilestoneButton';
 import { Consumer as UserConsumer } from '../contextProviders/UserProvider';
 
 class MilestoneActions extends Component {
   render() {
-    const { milestone, balance } = this.props;
+    const { milestone, user, balance } = this.props;
 
     return (
-      <div></div>
-    )
-    return (
-      <UserConsumer>
-        {({ state: { currentUser } }) => (
-          <Fragment>
-            <AcceptRejectProposedMilestoneButtons
-              milestone={milestone}
-              balance={balance}
-              currentUser={currentUser}
-            />
+      <Fragment>
+        {/*
+        <AcceptRejectProposedMilestoneButtons
+          milestone={milestone}
+          balance={balance}
+          currentUser={currentUser}/>
+        */}
 
-            <ReproposeRejectedMilestoneButton milestone={milestone} currentUser={currentUser} />
+        {/*
+        <ReproposeRejectedMilestoneButton milestone={milestone} currentUser={currentUser} />
+        */}
 
-            <RequestMarkMilestoneCompleteButton
-              milestone={milestone}
-              balance={balance}
-              currentUser={currentUser}
-            />
+        {/*
+        <RequestMarkMilestoneCompleteButton
+          milestone={milestone}
+          balance={balance}
+          currentUser={currentUser}/>
+        */}
 
-            <CancelMilestoneButton
-              milestone={milestone}
-              balance={balance}
-              currentUser={currentUser}
-            />
+        {/*
+        <CancelMilestoneButton
+          milestone={milestone}
+          balance={balance}
+          currentUser={currentUser}/>
+        */}
 
-            <DeleteProposedMilestoneButton
-              milestone={milestone}
-              balance={balance}
-              currentUser={currentUser}
-            />
+        {/*
+          <DeleteProposedMilestoneButton
+          milestone={milestone}
+          balance={balance}
+          currentUser={currentUser}/>
+        */}
 
-            <ApproveRejectMilestoneCompletionButtons
-              milestone={milestone}
-              balance={balance}
-              currentUser={currentUser}
-            />
+        {/*
+        <ApproveRejectMilestoneCompletionButtons
+          milestone={milestone}
+          balance={balance}
+          currentUser={currentUser}/>
+        */}
 
-            <WithdrawMilestoneFundsButton
-              milestone={milestone}
-              balance={balance}
-              currentUser={currentUser}
-            />
+        <WithdrawMilestoneFundsButton
+          milestone={milestone}
+          balance={balance}
+          user={user}/>
 
-            <EditMilestoneButton
-              milestone={milestone}
-              balance={balance}
-              currentUser={currentUser}
-            />
-          </Fragment>
-        )}
-      </UserConsumer>
+        {/*
+        <EditMilestoneButton
+          milestone={milestone}
+          balance={balance}
+          currentUser={currentUser}/>
+        */}
+      </Fragment>
     );
   }
 }

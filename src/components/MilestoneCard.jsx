@@ -68,7 +68,7 @@ class MilestoneCard extends Component {
             role="button"
             tabIndex="0"
           >
-            <ProfileCard address={milestone.managerAddress}/>
+            <ProfileCard address={milestone.managerAddress} namePosition="right"/>
 
             {((milestone && milestone.managerAddress && isOwner(milestone.managerAddress, currentUser)) ||
               isOwner(campaign.managerAddress, currentUser)) &&

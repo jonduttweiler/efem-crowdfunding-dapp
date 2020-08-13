@@ -72,7 +72,7 @@ class TableDonations extends Component {
                       </td>
 
                       <td className="td-user">
-                        <ProfileCard address={d.giverAddress}/>
+                        <ProfileCard address={d.giverAddress} namePosition="right"/>
                       </td>
 
                       {config.etherscan ? (

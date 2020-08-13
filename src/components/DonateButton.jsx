@@ -190,7 +190,7 @@ class DonateButton extends React.Component {
               </p>
             )}
 
-            {/*validProvider && !currentUser && (
+            {/*validProvider && !user && (
               <div className="alert alert-warning">
                 <i className="fa fa-exclamation-triangle" />
                 It looks like your Provider is locked or you need to enable it.

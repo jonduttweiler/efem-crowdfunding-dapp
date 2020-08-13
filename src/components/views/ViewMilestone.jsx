@@ -5,7 +5,7 @@ import moment from 'moment';
 import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
 import BigNumber from 'bignumber.js';
 import User from 'models/User';
-import MilestoneActions from 'components/MilestoneActions';
+import MilestoneActions from '../MilestoneActions';
 import BackgroundImageHeader from '../BackgroundImageHeader';
 import DonateButton from '../DonateButton';
 import GoBackButton from '../GoBackButton';
@@ -13,7 +13,6 @@ import TableDonations from '../TableDonations';
 import Loader from '../Loader';
 import MilestoneConversations from '../MilestoneConversations';
 // import DelegateMultipleButton from '../DelegateMultipleButton';
-import MilestoneService from '../../services/MilestoneService';
 import Milestone from '../../models/Milestone';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
@@ -22,6 +21,7 @@ import FiatAmount from '../FiatAmount';
 import ProfileCard from '../ProfileCard';
 import Campaign from '../../models/Campaign';
 import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
+import { selectUser } from '../../redux/reducers/userSlice';
 
 
 /**
@@ -80,7 +80,7 @@ class ViewMilestone extends Component {
   }
 
   render() {
-    const { donations,history, currentUser, balance, campaign, milestone } = this.props;
+    const { donations,history, user, balance, campaign, milestone } = this.props;
     
     const {
       isLoading,
@@ -114,16 +114,15 @@ class ViewMilestone extends Component {
                     title: milestone.title,
                     entityId: milestone.id
                   }}
-                  currentUser={currentUser}
                 />}
                 {/*this.isActiveMilestone() && (
                   <Fragment>
-                    {currentUser && (
+                    {user && (
                       <DelegateMultipleButton
                         milestone={milestone}
                         campaign={campaign}
                         balance={balance}
-                        currentUser={currentUser}
+                        user={user}
                       />
                     )}
                   </Fragment>
@@ -131,8 +130,8 @@ class ViewMilestone extends Component {
 
                 {/* Milestone actions */}
 
-                {currentUser && currentUser.authenticated && (
-                  <MilestoneActions milestone={milestone} balance={balance} />
+                {user && (
+                  <MilestoneActions milestone={milestone} user={user} balance={balance} />
                 )}
               </div>
             </BackgroundImageHeader>
@@ -168,7 +167,7 @@ class ViewMilestone extends Component {
                           <small className="form-text">
                             This person will review the actual completion of the Milestone
                           </small>
-                          <ProfileCard address={milestone.reviewerAddress}/>
+                          <ProfileCard address={milestone.reviewerAddress} namePosition="right"/>
                         </div>
                         
 
@@ -177,7 +176,7 @@ class ViewMilestone extends Component {
                           <small className="form-text">
                             Where the funds go after successful completion of the Milestone
                           </small>
-                          <ProfileCard address={milestone.recipientAddress}/>
+                          <ProfileCard address={milestone.recipientAddress} namePosition="right"/>
                         </div>
 
                         {milestone.date && (
@@ -250,7 +249,7 @@ ViewMilestone.propTypes = {
     goBack: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
   }).isRequired,
-  currentUser: PropTypes.instanceOf(User),
+  user: PropTypes.instanceOf(User),
   balance: PropTypes.instanceOf(BigNumber).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -260,7 +259,7 @@ ViewMilestone.propTypes = {
 };
 
 ViewMilestone.defaultProps = {
-  currentUser: undefined,
+  user: undefined,
   milestone: new Milestone(),
   campaign: new Campaign(),
   donations: []
@@ -268,11 +267,13 @@ ViewMilestone.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   const reduxProps = {
+    user: undefined,
     milestone: undefined,
     campaign: undefined,
     donations: []
   }
-  const  milestoneId = parseInt(ownProps.match.params.milestoneId);
+  reduxProps.user = selectUser(state);
+  const milestoneId = parseInt(ownProps.match.params.milestoneId);
   reduxProps.milestone = selectMilestone(state, milestoneId);
   if(reduxProps.milestone) {
     reduxProps.campaign = selectCampaign(state, reduxProps.milestone.campaignId);

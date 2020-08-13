@@ -1,62 +1,62 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import MilestoneService from 'services/MilestoneService';
-import Milestone from 'models/Milestone';
+import Milestone from '../models/Milestone';
 import User from 'models/User';
-import { isLoggedIn } from 'lib/middleware';
+import { connect } from 'react-redux'
+import { withdraw } from '../redux/reducers/milestonesSlice';
 
+/**
+ * Boton de retiro de fondos del Milestone
+ */
 class WithdrawMilestoneFundsButton extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      withdrawStarted: false
+    };
+    this.withdraw = this.withdraw.bind(this);
+  }
+
   async withdraw() {
-    const { milestone, currentUser } = this.props;
-
-    try {
-      await isLoggedIn(currentUser, false);
-    } catch (e) {
-      return;
-    }
-
-    MilestoneService.withdraw({
-      milestone,
-      from: currentUser.address,
-      onConfirmation: () => {
-        React.toast.info(<p>The milestone withdraw has been confirmed</p>);
-      },
-      onError: err => {
-        React.swal({
-          title: 'Oh no!',
-          content: React.swal.msg('Failed to update withdraw', err),
-          icon: 'error',
-        });
-      },
-    });
+    const { milestone, user } = this.props;
+    this.props.withdraw(milestone);
+    React.toast.success(<p>El pago ha sido iniciado</p>);
   }
 
   render() {
-    const { milestone, currentUser } = this.props;
-
+    const { milestone, user } = this.props;
+    const { withdrawStarted } = this.state;
+    let showButton = !paymentStarted
+      && (milestone.isRecipient(user) || milestone.isManager(user))
+      && milestone.isApproved;
+    let buttonLabel = milestone.isRecipient(user) ? 'Retirar' : 'Desembolsar';
     return (
       <Fragment>
-        {currentUser &&
-          [milestone.recipientAddress, milestone.ownerAddress].includes(currentUser.address) &&
-          milestone.status === Milestone.COMPLETED && (
-            <button
-              type="button"
-              className="btn btn-success btn-sm"
-              onClick={() => this.withdraw()}
-            >
-              <i className="fa fa-usd" />{' '}
-              {milestone.recipientAddress === currentUser.address ? 'Collect' : 'Disburse'}
-            </button>
-          )}
+        {showButton && (
+          <button
+            type="button"
+            className="btn btn-success btn-sm"
+            onClick={() => this.withdraw()}>
+            <i className="fa fa-usd" />{' '}{buttonLabel}
+          </button>
+        )}
       </Fragment>
     );
   }
 }
 
 WithdrawMilestoneFundsButton.propTypes = {
-  currentUser: PropTypes.instanceOf(User).isRequired,
+  user: PropTypes.instanceOf(User).isRequired,
   milestone: PropTypes.instanceOf(Milestone).isRequired,
 };
 
-export default WithdrawMilestoneFundsButton;
+const mapStateToProps = (state, ownProps) => {
+  return {
+  }
+}
+
+const mapDispatchToProps = { withdraw }
+
+export default connect(mapStateToProps, mapDispatchToProps)(WithdrawMilestoneFundsButton);

@@ -33,11 +33,19 @@ export const milestonesSlice = createSlice({
       if(index != -1) {
         state[index] = milestone;
       }
+    },
+    withdraw: (state, action) => {
+      
     }
   },
 });
 
-export const { fetchMilestones, resetMilestones, addMilestone, updateMilestoneByClientId } = milestonesSlice.actions;
+export const {
+  fetchMilestones, 
+  resetMilestones, 
+  addMilestone, 
+  updateMilestoneByClientId, 
+  withdraw } = milestonesSlice.actions;
 
 export const selectMilestone = (state, id) => state.milestones.find(m => m.id === id);
 export const selectMilestones = state => state.milestones;

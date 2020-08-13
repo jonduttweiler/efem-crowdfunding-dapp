@@ -35,3 +35,17 @@ export const addMilestoneEpic = action$ => action$.pipe(
     payload: milestone
   }))
 )
+
+/**
+ * Retiro de fondos de un Milestone
+ * 
+ * @param action$ de Redux.
+ */
+export const milestoneWithdrawEpic = action$ => action$.pipe(
+  ofType('milestones/withdraw'),
+  mergeMap(action => crowdfundingContractApi.milestoneWithdraw(action.payload)),
+  map(milestone => ({
+    type: 'milestones/updateMilestoneByClientId',
+    payload: milestone
+  }))
+)

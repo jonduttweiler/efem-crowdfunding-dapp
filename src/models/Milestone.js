@@ -36,12 +36,34 @@ export default class Milestone extends Entity {
     this._date = getStartOfDayUTC(date);
   }
 
+  /**
+   * Determina si el usuario es el manager del Milestone.
+   * 
+   * @param user a determinar si es el manager del milestone.
+   */
+  isManager(user) {
+    return user && user.address === this.managerAddress;
+  }
+
+  /**
+   * Determina si el usuario es el recipient del Milestone.
+   * 
+   * @param user a determinar si es el recipient del milestone.
+   */
+  isRecipient(user) {
+    return user && user.address === this.recipientAddress;
+  }
+
   static get PROPOSED() {
     return Milestone.statuses.PROPOSED;
   }
 
   static get ACTIVE() {
     return Milestone.statuses.ACTIVE;
+  }
+
+  static get APPROVED() {
+    return Milestone.statuses.APPROVED;
   }
 
   static get REJECTED() {
@@ -64,8 +86,8 @@ export default class Milestone extends Entity {
     return Milestone.statuses.COMPLETED;
   }
 
-  static get CANCELED() {
-    return Milestone.statuses.CANCELED;
+  static get CANCELLED() {
+    return Milestone.statuses.CANCELLED;
   }
 
   static get PAYING() {
@@ -82,22 +104,31 @@ export default class Milestone extends Entity {
 
   static get statuses() {
     return {
+      PENDING: 'Pending', // Only Dapp
       ACTIVE: 'Active',
-      PROPOSED: 'Proposed',
-      REJECTED: 'Rejected',
-      PENDING: 'Pending',
-      IN_PROGRESS: 'InProgress',
-      NEEDS_REVIEW: 'NeedsReview',
+      CANCELLED: 'Canceled',
       COMPLETED: 'Completed',
-      CANCELED: 'Canceled',
-      PAYING: 'Paying',
+      APPROVED: 'Approved',
+      REJECTED: 'Rejected',      
+      PAYING: 'Paying', // Only Dapp
       PAID: 'Paid',
-      FAILED: 'Failed',
+      FAILED: 'Failed', // Deprecated
+      PROPOSED: 'Proposed', // Deprecated
+      IN_PROGRESS: 'InProgress', // Deprecated
+      NEEDS_REVIEW: 'NeedsReview' // Deprecated
     };
   }
 
   get isPending() {
     return this.status === Milestone.PENDING;
+  }
+
+  get isCompleted() {
+    return this.status === Milestone.COMPLETED;
+  }
+
+  get isApproved() {
+    return this.status === Milestone.APPROVED;
   }
 
   static get type() {
