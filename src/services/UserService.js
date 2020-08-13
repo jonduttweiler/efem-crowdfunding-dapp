@@ -6,6 +6,7 @@ import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import User from '../models/User';
+import { ALL_ROLES } from '../constants/Role';
 
 const walletApi = new WalletApi();
 const crowdfundingContractApi = new CrowdfundingContractApi();
@@ -48,7 +49,7 @@ class UserService {
           });
 
           // Se cargan los roles del usuario desde el smart constract
-          crowdfundingContractApi.getRoles(address).then(roles => {
+          getRoles(address).then(roles => {
             user.roles = roles;
             subscriber.next(user);
           });
@@ -107,11 +108,23 @@ async function _uploadUserToIPFS(user) {
   }
 }
 
-
-
 export async function getUser(address) {
     const userdata = await feathersClient.service('/users').get(address);
     return new User({...userdata});
+}
+
+async function getRoles(address) {
+  try {
+      const userRoles = [];
+      for (const rol of ALL_ROLES) {
+          const canPerform = await crowdfundingContractApi.canPerformRole(address, rol);
+          if (canPerform) userRoles.push(rol);
+      }
+      return userRoles;
+
+  } catch (err) {
+      console.log(err)
+  }
 }
 
 export default UserService;
