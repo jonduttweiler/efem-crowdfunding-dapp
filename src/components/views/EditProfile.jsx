@@ -27,10 +27,6 @@ const showToast = (msg, url, isSuccess = false) => {
   else React.toast.info(toast);
 };
  
-
-
-
-
 /**
  * The edit user profile view mapped to /profile/
  *
@@ -43,7 +39,7 @@ class EditProfile extends Component {
     const user = props.currentUser ? new User(props.currentUser) : new User(); 
 
     this.state = {
-      isLoading: false,
+      isLoading: true,
       isSaving: false,
       user: user,
       isPristine: true,
@@ -56,14 +52,15 @@ class EditProfile extends Component {
 
   componentDidMount() {
     this.mounted = true;
- /*    isLoggedIn(this.props.currentUser)
+    isLoggedIn(this.props.currentUser)
       .then(() => this.setState({ isLoading: false }))
       .catch(err => {
-        if (err === 'noBalance') history.goBack();
-        else {
-          this.setState({isLoading: false});
+        if (err === 'noBalance') {
+          history.goBack();
+        } else {
+          this.setState({ isLoading: false });
         }
-      });  */
+      });
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -91,15 +88,15 @@ class EditProfile extends Component {
     user.newAvatar = image;
     this.setState({ user, isPristine: false });
   }
-
+  
+  togglePristine(currentValues, isChanged) {
+    this.setState({ isPristine: !isChanged });
+  }
+  
   submit() {
     this.setState({ isSaving: true, }, _ => { 
       this.props.saveUser(this.state.user);
     }); 
-  }
-
-  togglePristine(currentValues, isChanged) {
-    this.setState({ isPristine: !isChanged });
   }
 
   render() {
