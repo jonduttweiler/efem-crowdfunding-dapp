@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'formsy-react-components';
-
 import GA from 'lib/GoogleAnalytics';
 import Loader from '../Loader';
 import QuillFormsy from '../QuillFormsy';
@@ -11,11 +10,9 @@ import GoBackButton from '../GoBackButton';
 import { isOwner, history } from '../../lib/helpers';
 import { checkProfile, authenticateIfPossible } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
-
 import DAC from '../../models/DAC';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
-
 import { connect } from 'react-redux'
 import { addDac, selectDAC } from '../../redux/reducers/dacsSlice';
 import { selectRoles , selectUser} from '../../redux/reducers/userSlice';
@@ -132,7 +129,6 @@ class EditDAC extends Component {
 
   submit() {
     const afterSave = dac => { //TODO: MOVER AL componentDidUpdate
-      showToast(`Your Fund has been saved`, "", true);
       if (this.mounted) this.setState({ isSaving: false });
       GA.trackEvent({category: 'DAC',action: 'updated',label: dac.id,});
       history.push(`/`);

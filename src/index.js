@@ -1,16 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import localForage from 'localforage';
-
 import * as serviceWorker from './serviceWorker';
 import Application from './containers/Application';
 import './styles/application.css';
-
 import { Provider } from 'react-redux'
-import configureStore from './redux/configureStore'
-
-// Creación de store de Redux.
-const store = configureStore();
+import { store } from './redux/store'
 
 try {
   localForage

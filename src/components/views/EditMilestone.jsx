@@ -229,13 +229,6 @@ class EditMilestone extends Component {
 
         // Save the milestone
         this.props.addMilestone(milestone);
-        
-        React.toast.success(
-          <p>
-            Your Milestone has been saved!
-            <br />
-          </p>,
-        );
         GA.trackEvent({
           category: 'Milestone',
           action: 'updated',

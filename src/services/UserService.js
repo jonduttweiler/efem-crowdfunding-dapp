@@ -1,16 +1,12 @@
 import { feathersClient } from '../lib/feathersClient';
 import ErrorPopup from '../components/ErrorPopup';
 import IpfsService from './IpfsService';
-import WalletApi from '../lib/blockchain/WalletApi';
-import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
+import walletApi from '../lib/blockchain/WalletApi';
+import crowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import User from '../models/User';
 import { ALL_ROLES } from '../constants/Role';
-
-const walletApi = new WalletApi();
-const crowdfundingContractApi = new CrowdfundingContractApi();
-
 
 class UserService {
 

@@ -18,7 +18,6 @@ class WithdrawMilestoneFundsButton extends Component {
   async withdraw() {
     const { milestone } = this.props;
     this.props.withdraw(milestone);
-    React.toast.success(<p>El pago ha sido iniciado</p>);
   }
 
   render() {

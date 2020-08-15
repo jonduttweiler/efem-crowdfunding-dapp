@@ -5,14 +5,8 @@ import { feathersClient } from '../lib/feathersClient';
 import DAC from '../models/DAC';
 import Campaign from '../models/Campaign';
 import Donation from '../models/Donation';
-
 import ErrorPopup from '../components/ErrorPopup';
-
-import CrowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
-
-
-const crowdfundingContractApi = new CrowdfundingContractApi();
-
+import crowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
 

@@ -56,6 +56,7 @@ import { connect } from 'react-redux'
 import { fetchDacs } from '../redux/reducers/dacsSlice'
 import { fetchCampaigns } from '../redux/reducers/campaignsSlice'
 import { fetchMilestones } from '../redux/reducers/milestonesSlice'
+import MessageViewer from '../components/MessageViewer';
 
 /* global document */
 /**
@@ -122,6 +123,7 @@ class Application extends Component {
     const { web3Loading, userLoading, whiteListLoading } = this.state;
     return (
       <ErrorBoundary>
+        <MessageViewer></MessageViewer>
         {/* Header stuff goes here */}
         {config.analytics.useHotjar && window.location.origin.includes('beta') && (
           <Helmet>

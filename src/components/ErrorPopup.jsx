@@ -88,9 +88,14 @@ export default (shortDescription, error) => {
     });
   } else {
     React.swal({
+      title: "Algo no salió bien",
+      text: shortDescription,
+      icon: "error",
+    });
+    /*React.swal({
       title: 'Oh no!',
       content: React.swal.msg(<p>{shortDescription}</p>),
       icon: 'error',
-    });
+    });*/
   }
 };

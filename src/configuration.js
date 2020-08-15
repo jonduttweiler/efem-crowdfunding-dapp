@@ -27,7 +27,7 @@ const configurations = {
     etherscan: 'https://explorer.testnet.rsk.co/', // this won't work, only here so we can see links during development
     feathersConnection: 'http://localhost:3030',
     ipfsGateway: 'http://localhost:8080/ipfs/',
-    sendErrors: false,
+    sendErrors: true,
     analytics: {
       ga_UA: 'UA-136337883-3',
       useGoogleAnalytics: true,
@@ -62,7 +62,7 @@ const configurations = {
     etherscan: 'https://explorer.testnet.rsk.co/',
     feathersConnection: 'https://testnet.feathers.b4h.world',
     ipfsGateway: 'https://testnet.ipfs.b4h.world/ipfs/',
-    sendErrors: false,
+    sendErrors: true,
     analytics: {
       ga_UA: 'UA-136337883-2',
       useGoogleAnalytics: true,
@@ -153,6 +153,6 @@ config.networkName = REACT_APP_NETWORK_NAME || config.networkName;
 config.nodeId = (REACT_APP_NODE_ID && Number.parseInt(REACT_APP_NODE_ID, 10)) || config.nodeId;
 config.nativeTokenName = REACT_APP_NATIVE_TOKEN_NAME || config.nativeTokenName;
 
-config.sendErrors = ['develop', 'release', 'beta', 'rsk_testnet'].includes(REACT_APP_ENVIRONMENT);
+//config.sendErrors = ['develop', 'release', 'beta', 'rsk_testnet'].includes(REACT_APP_ENVIRONMENT);
 
 export default config;

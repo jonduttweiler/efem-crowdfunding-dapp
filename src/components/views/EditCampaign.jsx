@@ -120,7 +120,7 @@ class EditCampaign extends Component {
 
   submit() {
     const afterSave = campaign => {
-      React.toast.success('Your Campaign has been saved!');
+      //React.toast.success('Your Campaign has been saved!');
       history.push(`/`);
     };
 

@@ -40,4 +40,4 @@ class WalletApi {
     }
 }
 
-export default WalletApi;
+export default new WalletApi();

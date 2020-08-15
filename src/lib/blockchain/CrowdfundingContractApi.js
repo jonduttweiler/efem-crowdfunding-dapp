@@ -8,9 +8,7 @@ import extraGas from './extraGas';
 import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
-
-
-//const getRevertReason = require('eth-revert-reason')
+import messageUtils from '../../utils/MessageUtils'
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -18,7 +16,6 @@ import BigNumber from 'bignumber.js';
 class CrowdfundingContractApi {
 
     constructor() { }
-
 
     async canPerformRole(address, role) {
         try {
@@ -60,6 +57,7 @@ class CrowdfundingContractApi {
                         console.log("La transacción ha sido creada. txHash:", hash);
                         dac.txHash = hash;
                         subscriber.next(dac);
+                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la DAC' });
                     })
                     .once('confirmation', function (confNumber, receipt) {
                         console.log("DAC creation confimed", receipt);
@@ -67,17 +65,27 @@ class CrowdfundingContractApi {
                         thisApi._getDac(crowdfunding, id).then(dac => {
                             dac.clientId = clientId;
                             subscriber.next(dac);
+                            messageUtils.addMessageSuccess({
+                                title: 'Felicitaciones!',
+                                text: `La DAC ${dac.title} ha sido confirmada`
+                            });
                         });
                     })
 
                     .on('error', function (error) {
                         console.error(`Error procesando transacción de almacenamiento de dac.`, error);
                         subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error creando la DAC ${dac.title}`
+                        });
                     });
 
             } catch (error) {
                 console.log(error);
                 subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error creando la DAC ${dac.title}`
+                });
             }
         });
 
@@ -269,6 +277,7 @@ class CrowdfundingContractApi {
                         // La transacción ha sido creada.
                         campaign.txHash = hash;
                         subscriber.next(campaign);
+                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la campaign' });
                     })
                     .once('confirmation', function (confNumber, receipt) {
                         // La transacción ha sido incluida en un bloque
@@ -279,15 +288,25 @@ class CrowdfundingContractApi {
                         thisApi.getCampaign(id).then(campaign => {
                             campaign.clientId = clientId;
                             subscriber.next(campaign);
+                            messageUtils.addMessageSuccess({
+                                title: 'Felicitaciones!',
+                                text: `La campaign ${campaign.title} ha sido confirmada`
+                            });
                         });
                     })
                     .on('error', function (error) {
                         console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
                         subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error creando la campaign ${campaign.title}`
+                        });
                     });
             } catch (error) {
                 console.error(`Error almacenando campaign`, error);
                 subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error creando la campaign ${campaign.title}`
+                });
             }
         });
     }
@@ -382,6 +401,7 @@ class CrowdfundingContractApi {
                         // La transacción ha sido creada.
                         milestone.txHash = hash;
                         subscriber.next(milestone);
+                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear el milestone' });
                     })
                     .once('confirmation', function (confNumber, receipt) {
                         // La transacción ha sido incluida en un bloque
@@ -392,15 +412,25 @@ class CrowdfundingContractApi {
                         thisApi.getMilestone(id).then(milestone => {
                             milestone.clientId = clientId;
                             subscriber.next(milestone);
+                            messageUtils.addMessageSuccess({
+                                title: 'Felicitaciones!',
+                                text: `El milestone ${milestone.title} ha sido confirmado`
+                            });
                         });
                     })
                     .on('error', function (error) {
                         console.error(`Error procesando transacción de almacenamiento de milestone.`, error);
                         subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error creando el milestone ${milestone.title}`
+                        });
                     });
             } catch (error) {
                 console.error(`Error almacenando milestone`, error);
                 subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error creando el milestone ${milestone.title}`
+                });
             }
         });
     }
@@ -509,6 +539,7 @@ class CrowdfundingContractApi {
                         // La transacción ha sido creada.
                         donation.txHash = hash;
                         subscriber.next(donation);
+                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la donación' });
                     })
                     .once('confirmation', function (confNumber, receipt) {
                         // La transacción ha sido incluida en un bloque
@@ -519,15 +550,25 @@ class CrowdfundingContractApi {
                         thisApi.getDonation(id).then(donation => {
                             donation.clientId = clientId;
                             subscriber.next(donation);
+                            messageUtils.addMessageSuccess({
+                                title: 'Gracias por tu ayuda!',
+                                text: `La donación ha sido confirmada`
+                            });
                         });
                     })
                     .on('error', function (error) {
                         console.error(`Error procesando transacción de almacenamiento de donación.`, error);
                         subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error creando la donación`
+                        });
                     });
             } catch (error) {
                 console.error(`Error almacenando donación`, error);
                 subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error creando la donación`
+                });
             }
         });
     }
@@ -559,6 +600,7 @@ class CrowdfundingContractApi {
                         // La transacción ha sido creada.
                         milestone.txHash = hash;
                         subscriber.next(milestone);
+                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para retirar los fondos del milestone' });
                     })
                     .once('confirmation', function (confNumber, receipt) {
                         // La transacción ha sido incluida en un bloque
@@ -569,6 +611,10 @@ class CrowdfundingContractApi {
                         thisApi.getMilestone(milestoneId).then(milestone => {
                             milestone.clientId = clientId;
                             subscriber.next(milestone);
+                            messageUtils.addMessageSuccess({
+                                title: 'Felicitaciones!',
+                                text: `Los fondos del milestone ${milestone.title} han sido retirados`
+                            });
                         });
                     })
                     .on('error', function (error) {
@@ -576,12 +622,18 @@ class CrowdfundingContractApi {
                         //let reason = await getRevertReason(milestone.txHash); // 'I accidentally killed it.'
                         //console.log(reason);
                         subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error retirando los fondos del milestone ${milestone.title}`
+                        });
                     })/*.catch(revertReason => {
                         console.log('revertReason', revertReason);
                     })*/;
             } catch (error) {
                 console.error(`Error retirando fondos de milestone`, error);
                 subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error retirando los fondos del milestone ${milestone.title}`
+                });
             }
         });
     }
@@ -655,4 +707,4 @@ class CrowdfundingContractApi {
     }
 }
 
-export default CrowdfundingContractApi;
+export default new CrowdfundingContractApi();

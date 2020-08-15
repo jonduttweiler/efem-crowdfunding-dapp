@@ -1,8 +1,6 @@
 import { ofType } from 'redux-observable';
 import { map, mergeMap } from 'rxjs/operators'
-import CrowdfundingContractApi from '../../lib/blockchain/CrowdfundingContractApi';
-
-const crowdfundingContractApi = new CrowdfundingContractApi();
+import crowdfundingContractApi from '../../lib/blockchain/CrowdfundingContractApi';
 
 /**
  * Epic que reacciona a la acción de obtención de dacs locales,

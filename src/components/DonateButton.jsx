@@ -115,8 +115,6 @@ class DonateButton extends React.Component {
 
     this.props.addDonation(this.state.donation);
 
-    React.toast.info(<p>Gracias! Su donación está pendiente de confirmar</p>);
-
     this.closeDialog();
   }
 
