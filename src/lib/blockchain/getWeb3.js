@@ -8,9 +8,8 @@ let enablePromise;
 function enable(force = false) {
   if (!force && enablePromise) return enablePromise;
 
-  enablePromise = new Promise((resolve, reject) =>
-    this.currentProvider
-      .enable()
+  return new Promise((resolve, reject) =>
+    this.currentProvider.enable() //esta es la linea que hace abrir el metamask
       .then(addrs => {
         this.isEnabled = true;
         resolve(addrs);
@@ -22,7 +21,6 @@ function enable(force = false) {
       }),
   );
 
-  return enablePromise;
 }
 
 export default () =>

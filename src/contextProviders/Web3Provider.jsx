@@ -99,11 +99,10 @@ class Web3Provider extends Component {
   }
 
 
-  componentWillMount() {
+
+  componentWillMount() { //Necesita algo del DOM o lo podemos poner en el DidMount?
     getWeb3().then(web3 => {
-      this.setState({
-        validProvider: !web3.defaultNode,
-      });
+      this.setState({validProvider: !web3.defaultNode,});
 
       pollNetwork(web3, {
         onNetwork: (networkId, networkType) => {
@@ -135,41 +134,44 @@ class Web3Provider extends Component {
     this.enableProvider();
   }
 
+  showErrorOnProvider() {
+    React.swal({
+      title: 'Web3 Connection Error',
+      icon: "warning",
+      text: "Unable to connect to the web3 provider. Please check if your MetaMask or other wallet is " +
+        "connected to a valid network. If so try and restart your browser or open the DApp in " +
+        "private window."
+    });
+    this.setState({ setupTimeout: true }, () => this.props.onLoaded());
+  }
+
+
   async enableProvider() {
     // we set this timeout b/c if the provider is connected to an invalid network,
     // any rpc calls will hang
-    const timeout = setTimeout(async () => {
-      React.swal({
-        title: 'Web3 Connection Error',
-        content: React.swal.msg(
-          <p>
-            Unable to connect to the web3 provider. Please check if your MetaMask or other wallet is
-            connected to a valid network. If so try and restart your browser or open the DApp in
-            private window.
-          </p>,
-        ),
-      });
-      this.setState({ setupTimeout: true }, () => this.props.onLoaded());
-    }, 5000);
+    const timeout = setTimeout(() => this.showErrorOnProvider(), 5000);
 
     const web3 = await getWeb3();
-
     clearTimeout(timeout);
     this.props.onLoaded();
 
     const { networkId, networkType } = await fetchNetwork(web3);
-    this.setState(getNetworkState(networkId, networkType));
+    this.setState(getNetworkState(networkId, networkType), _ => {
+      if(!this.state.isCorrectNetwork){
+        this.showErrorOnProvider();
+      }
+    });
 
     // clear timeout here b/c we have successfully made an rpc call thus we are
     // successfully connected to a network
     clearTimeout(timeout);
 
     if (web3.isEnabled) {
-      this.setState(
-        {
-          isEnabled: true,
-          account: await getAccount(web3),
-        },
+      const account = await getAccount(web3);
+      this.setState({
+        isEnabled: true,
+        account: account
+      },
         () => this.props.onLoaded(),
       );
       return;
@@ -180,15 +182,11 @@ class Web3Provider extends Component {
     let balance;
 
     const timeoutId = setTimeout(async () => {
-      this.setState(
-        {
-          isEnabled:
-            web3.currentProvider._metamask && web3.currentProvider._metamask
-              ? await web3.currentProvider._metamask.isApproved()
-              : false,
-        },
-        () => this.props.onLoaded(),
-      );
+      const currentProviderMetamask = web3.currentProvider._metamask;
+
+      const isEnabled = currentProviderMetamask ? await web3.currentProvider._metamask.isApproved() : false;
+      
+      this.setState({ isEnabled: isEnabled },() => this.props.onLoaded());
       this.enableTimedout = true;
     }, 5000);
 
