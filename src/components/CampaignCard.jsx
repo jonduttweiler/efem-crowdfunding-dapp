@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { getTruncatedText, history } from '../lib/helpers';
 import CardStats from './CardStats';
 import Campaign from '../models/Campaign';
-import config from '../configuration';
+import messageUtils from '../utils/MessageUtils'
 
 /**
  * Campaign Card visible in the DACs view.
@@ -18,8 +18,8 @@ class CampaignCard extends Component {
   }
 
   viewCampaign() {
-    if(this.props.campaign.isPending) {
-      React.toast.warn('Campaign is pending');
+    if (this.props.campaign.isPending) {
+      messageUtils.addMessageWarn({ text: 'La campaign no ha sido confirmada aún.' });
     } else {
       history.push(`/campaigns/${this.props.campaign.id}`);
     }

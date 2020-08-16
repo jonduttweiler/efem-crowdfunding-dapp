@@ -45,6 +45,23 @@ class MessageUtils {
   }
 
   /**
+   * Agrega un mensaje de advertencia para ser mostrado al usuario.
+   * 
+   * @param data datos del mensaje
+   */
+  addMessageWarn({
+    title,
+    text = '',
+  }) {
+    let message = new Message({
+      title: title,
+      text: text,
+      severity: Severity.WARN
+    });
+    this.dispatchMessage(message);
+  }
+
+  /**
    * Agrega un mensaje de error para ser mostrado al usuario.
    * 
    * @param data datos del mensaje
@@ -52,11 +69,13 @@ class MessageUtils {
   addMessageError({
     title,
     text = '',
+    error
   }) {
     let message = new Message({
       title: title,
       text: text,
-      severity: Severity.ERROR
+      severity: Severity.ERROR,
+      error: error
     });
     this.dispatchMessage(message);
   }

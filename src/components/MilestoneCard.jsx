@@ -8,6 +8,7 @@ import Milestone from '../models/Milestone';
 import ProfileCard from './ProfileCard';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../redux/reducers/campaignsSlice'
+import messageUtils from '../utils/MessageUtils'
 
 /**
  * A single milestone
@@ -23,7 +24,7 @@ class MilestoneCard extends Component {
 
   viewMilestone() {
     if(this.props.milestone.isPending) {
-      React.toast.warn('Milestone is pending');
+      messageUtils.addMessageWarn({ text: 'El milestone no ha sido confirmado aún.' });
     } else {
       history.push(
         `/campaigns/${this.props.campaign.id}/milestones/${this.props.milestone.id}`,

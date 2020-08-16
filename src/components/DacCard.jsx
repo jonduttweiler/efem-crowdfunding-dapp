@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import { getTruncatedText, history } from '../lib/helpers';
 import CardStats from './CardStats';
 import DAC from '../models/DAC';
-import config from '../configuration';
+import messageUtils from '../utils/MessageUtils'
 
 /**
  * DAC Card visible in the DACs view.
@@ -20,7 +19,7 @@ class DacCard extends Component {
 
   viewDAC() {
     if (this.props.dac.isPending) {
-      React.toast.warn('Dac is pending');
+      messageUtils.addMessageWarn({ text: 'La DAC no ha sido confirmada aún.' });
     } else {
       history.push(`/dacs/${this.props.dac.id}`);
     }

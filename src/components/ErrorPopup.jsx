@@ -1,5 +1,6 @@
 import React from 'react';
 import config from '../configuration';
+import swal from '@sweetalert/with-react'
 // /* global window */
 
 export default (shortDescription, error) => {
@@ -38,26 +39,26 @@ export default (shortDescription, error) => {
     }
 
     if (value === 'email') {
-      window.open(
+      /*window.open(
         `mailto:${config.bugsEmail}?subject=Error in DApp&body=${encodeURIComponent(body)}`,
-      );
+      );*/
     } else if (value === 'gmail') {
       window.open(
         `https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&to=${
-          config.bugsEmail
+        config.bugsEmail
         }&su=Error in DApp&body=${encodeURIComponent(body)}`,
       );
     }
   };
 
   if (error) {
-    React.swal({
-      title: 'Oh no!',
-      content: React.swal.msg(
+    swal({
+      title: 'Algo no ha salido bien',
+      content: (
         <div>
           <p>{shortDescription}</p>
-          <p>Is this a recurring problem? Click Report.</p>
-        </div>,
+          <p>¿Es un problema recurrente? Repórtelo por favor</p>
+        </div>
       ),
       icon: 'error',
       buttons: {
@@ -68,12 +69,12 @@ export default (shortDescription, error) => {
           className: 'bg-success',
           closeModal: true,
         },
-        email: {
+        /*email: {
           text: 'Report',
           value: 'email',
           visible: true,
           closeModal: true,
-        },
+        },*/
         gmail: {
           text: 'Report in Gmail',
           value: 'gmail',
@@ -88,14 +89,9 @@ export default (shortDescription, error) => {
     });
   } else {
     React.swal({
-      title: "Algo no salió bien",
+      title: "Algo no ha salido bien",
       text: shortDescription,
-      icon: "error",
+      icon: "error"
     });
-    /*React.swal({
-      title: 'Oh no!',
-      content: React.swal.msg(<p>{shortDescription}</p>),
-      icon: 'error',
-    });*/
   }
 };

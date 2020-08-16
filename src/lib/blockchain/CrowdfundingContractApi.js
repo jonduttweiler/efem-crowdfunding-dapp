@@ -76,7 +76,8 @@ class CrowdfundingContractApi {
                         console.error(`Error procesando transacción de almacenamiento de dac.`, error);
                         subscriber.error(error);
                         messageUtils.addMessageError({
-                            text: `Se produjo un error creando la DAC ${dac.title}`
+                            text: `Se produjo un error creando la DAC ${dac.title}`,
+                            error: error
                         });
                     });
 
@@ -84,7 +85,8 @@ class CrowdfundingContractApi {
                 console.log(error);
                 subscriber.error(error);
                 messageUtils.addMessageError({
-                    text: `Se produjo un error creando la DAC ${dac.title}`
+                    text: `Se produjo un error creando la DAC ${dac.title}`,
+                    error: error
                 });
             }
         });
@@ -298,14 +300,16 @@ class CrowdfundingContractApi {
                         console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
                         subscriber.error(error);
                         messageUtils.addMessageError({
-                            text: `Se produjo un error creando la campaign ${campaign.title}`
+                            text: `Se produjo un error creando la campaign ${campaign.title}`,
+                            error: error
                         });
                     });
             } catch (error) {
                 console.error(`Error almacenando campaign`, error);
                 subscriber.error(error);
                 messageUtils.addMessageError({
-                    text: `Se produjo un error creando la campaign ${campaign.title}`
+                    text: `Se produjo un error creando la campaign ${campaign.title}`,
+                    error: error
                 });
             }
         });
@@ -422,14 +426,16 @@ class CrowdfundingContractApi {
                         console.error(`Error procesando transacción de almacenamiento de milestone.`, error);
                         subscriber.error(error);
                         messageUtils.addMessageError({
-                            text: `Se produjo un error creando el milestone ${milestone.title}`
+                            text: `Se produjo un error creando el milestone ${milestone.title}`,
+                            error: error
                         });
                     });
             } catch (error) {
                 console.error(`Error almacenando milestone`, error);
                 subscriber.error(error);
                 messageUtils.addMessageError({
-                    text: `Se produjo un error creando el milestone ${milestone.title}`
+                    text: `Se produjo un error creando el milestone ${milestone.title}`,
+                    error: error
                 });
             }
         });
@@ -560,14 +566,16 @@ class CrowdfundingContractApi {
                         console.error(`Error procesando transacción de almacenamiento de donación.`, error);
                         subscriber.error(error);
                         messageUtils.addMessageError({
-                            text: `Se produjo un error creando la donación`
+                            text: `Se produjo un error creando la donación`,
+                            error: error
                         });
                     });
             } catch (error) {
                 console.error(`Error almacenando donación`, error);
                 subscriber.error(error);
                 messageUtils.addMessageError({
-                    text: `Se produjo un error creando la donación`
+                    text: `Se produjo un error creando la donación`,
+                    error: error
                 });
             }
         });
@@ -623,7 +631,8 @@ class CrowdfundingContractApi {
                         //console.log(reason);
                         subscriber.error(error);
                         messageUtils.addMessageError({
-                            text: `Se produjo un error retirando los fondos del milestone ${milestone.title}`
+                            text: `Se produjo un error retirando los fondos del milestone ${milestone.title}`,
+                            error: error
                         });
                     })/*.catch(revertReason => {
                         console.log('revertReason', revertReason);
@@ -632,7 +641,8 @@ class CrowdfundingContractApi {
                 console.error(`Error retirando fondos de milestone`, error);
                 subscriber.error(error);
                 messageUtils.addMessageError({
-                    text: `Se produjo un error retirando los fondos del milestone ${milestone.title}`
+                    text: `Se produjo un error retirando los fondos del milestone ${milestone.title}`,
+                    error: error
                 });
             }
         });

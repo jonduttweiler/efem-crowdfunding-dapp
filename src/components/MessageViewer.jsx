@@ -19,8 +19,12 @@ class MessageViewer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+
     const { message } = this.props;
+
     if (message) {
+
+      //console.log('Mensaje a visualizar', message);
 
       if (message.severity === Severity.INFO) {
 
@@ -57,19 +61,19 @@ class MessageViewer extends Component {
   }
 
   showMessageWarn(message) {
-    React.toast.warn(message.text);
-  }
-
-  showMessageError(message) {
     React.swal({
-      title: message.title || 'Algo no salió bien',
+      title: message.title,
       text: message.text,
-      icon: "error",
+      icon: "warning",
     });
   }
 
+  showMessageError(message) {
+    ErrorPopup(message.text, message.error);
+  }
+
   render() {
-    return (<div></div>);
+    return null;
   }
 }
 

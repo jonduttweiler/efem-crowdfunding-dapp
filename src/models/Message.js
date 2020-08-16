@@ -20,12 +20,14 @@ class Message extends Model {
     title,
     text = '',
     severity = Severity.INFO,
+    error,
   } = {}) {
     super();
     this._clientId = clientId;
     this._title = title;
     this._text = text;
     this._severity = severity;
+    this._error = error;
   }
 
   get clientId() {
@@ -61,6 +63,14 @@ class Message extends Model {
 
   set severity(value) {
     this._severity = value;
+  }
+
+  get error() {
+    return this._error;
+  }
+
+  set error(value) {
+    this._error = value;
   }
 }
 
