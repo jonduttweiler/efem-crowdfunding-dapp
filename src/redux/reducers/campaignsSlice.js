@@ -33,6 +33,12 @@ export const campaignsSlice = createSlice({
       if(index != -1) {
         state[index] = campaign;
       }
+    },
+    deleteCampaignByClientId: (state, action) => {
+      let index = state.findIndex(c => action.payload.clientId == c.clientId);
+      if (index != -1) {
+        state.splice(index, 1);
+      }
     }
   },
 });

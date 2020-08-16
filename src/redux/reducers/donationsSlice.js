@@ -59,6 +59,12 @@ export const donationsSlice = createSlice({
       if (index != -1) {
         state[index] = donation;
       }
+    },
+    deleteDonationByClientId: (state, action) => {
+      let index = state.findIndex(d => action.payload.clientId == d.clientId);
+      if (index != -1) {
+        state.splice(index, 1);
+      }
     }
   },
 });

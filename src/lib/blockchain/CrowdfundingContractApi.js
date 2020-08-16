@@ -62,7 +62,7 @@ class CrowdfundingContractApi {
                     .once('confirmation', function (confNumber, receipt) {
                         console.log("DAC creation confimed", receipt);
                         let id = parseInt(receipt.events['NewDac'].returnValues.id);
-                        thisApi._getDac(crowdfunding, id).then(dac => {
+                        thisApi._getDacById(crowdfunding, id).then(dac => {
                             dac.clientId = clientId;
                             subscriber.next(dac);
                             messageUtils.addMessageSuccess({
@@ -73,6 +73,7 @@ class CrowdfundingContractApi {
                     })
 
                     .on('error', function (error) {
+                        error.dac = dac;
                         console.error(`Error procesando transacción de almacenamiento de dac.`, error);
                         subscriber.error(error);
                         messageUtils.addMessageError({
@@ -82,6 +83,7 @@ class CrowdfundingContractApi {
                     });
 
             } catch (error) {
+                error.dac = dac;
                 console.log(error);
                 subscriber.error(error);
                 messageUtils.addMessageError({
@@ -101,7 +103,7 @@ class CrowdfundingContractApi {
      * @param {*} pid de la Dac a obtener.
      * @returns Dac cuyo Id coincide con el especificado.
      */
-    async getDAC(pid) {
+    async getDACById(pid) {
         const crowdfunding = await this.getCrowdfunding();
 
         const { id, infoCid, donationIds, status, delegate } = await crowdfunding.getDac(pid);
@@ -124,7 +126,7 @@ class CrowdfundingContractApi {
     //get data of dac from blockchain and ipfs
     //Returns Promise<DAC>
     //Podriamos pasar esta funcion a otro archivo
-    async _getDac(crowdfunding, pid) {
+    async _getDacById(crowdfunding, pid) {
         const dacOnChain = await crowdfunding.getDac(pid);
         const {
             id,
@@ -178,7 +180,7 @@ class CrowdfundingContractApi {
 
                 if (ids.length > 0) {
                     for (let i = 0; i < ids.length; i++) {
-                        const dac = await this._getDac(crowdfunding, ids[i]);
+                        const dac = await this._getDacById(crowdfunding, ids[i]);
                         dacs.push(dac);
                     }
 
@@ -203,7 +205,7 @@ class CrowdfundingContractApi {
                 let ids = await crowdfunding.getCampaignIds();
                 let campaigns = [];
                 for (let i = 0; i < ids.length; i++) {
-                    let campaign = await this.getCampaign(ids[i]);
+                    let campaign = await this.getCampaignById(ids[i]);
                     campaigns.push(campaign);
                 }
                 subscriber.next(campaigns);
@@ -219,7 +221,7 @@ class CrowdfundingContractApi {
      * @param campaignId de la Campaign a obtener.
      * @returns Campaign cuyo Id coincide con el especificado.
      */
-    async getCampaign(campaignId) {
+    async getCampaignById(campaignId) {
         const crowdfunding = await this.getCrowdfunding();
         const campaingOnChain = await crowdfunding.getCampaign(campaignId);
         // Se obtiene la información de la Campaign desde IPFS.
@@ -287,7 +289,7 @@ class CrowdfundingContractApi {
                         // TODO Aquí debería gregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
                         let id = parseInt(receipt.events['NewCampaign'].returnValues.id);
-                        thisApi.getCampaign(id).then(campaign => {
+                        thisApi.getCampaignById(id).then(campaign => {
                             campaign.clientId = clientId;
                             subscriber.next(campaign);
                             messageUtils.addMessageSuccess({
@@ -297,6 +299,7 @@ class CrowdfundingContractApi {
                         });
                     })
                     .on('error', function (error) {
+                        error.campaign = campaign;
                         console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
                         subscriber.error(error);
                         messageUtils.addMessageError({
@@ -305,6 +308,7 @@ class CrowdfundingContractApi {
                         });
                     });
             } catch (error) {
+                error.campaign = campaign;
                 console.error(`Error almacenando campaign`, error);
                 subscriber.error(error);
                 messageUtils.addMessageError({
@@ -325,7 +329,7 @@ class CrowdfundingContractApi {
                 let ids = await crowdfunding.getMilestoneIds();
                 let milestones = [];
                 for (let i = 0; i < ids.length; i++) {
-                    let milestone = await this.getMilestone(ids[i]);
+                    let milestone = await this.getMilestoneById(ids[i]);
                     milestones.push(milestone);
                 }
                 subscriber.next(milestones);
@@ -336,12 +340,31 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Obtiene el Milestone desde el smart contract con los datos del milestone parámetro.
+     * 
+     * @param milestone a partir del cual se obtiene el milestone desde el smart contract
+     */
+    getMilestone(milestone) {
+        return new Observable(subscriber => {
+            if (milestone.id) {
+                this.getMilestoneById(milestone.id).then(milestone => {
+                    subscriber.next(milestone);
+                }, error => {
+                    subscriber.error(error);
+                });
+            } else {
+                subscriber.next(undefined);
+            }
+        });
+    }
+
+    /**
      * Obtiene el Milestone a partir del ID especificado.
      * 
      * @param id del Milestone a obtener.
      * @returns Milestone cuyo Id coincide con el especificado.
      */
-    async getMilestone(milestoneId) {
+    async getMilestoneById(milestoneId) {
         const crowdfunding = await this.getCrowdfunding();
         const milestoneOnChain = await crowdfunding.getMilestone(milestoneId);
         // Se obtiene la información del Milestone desde IPFS.
@@ -413,7 +436,7 @@ class CrowdfundingContractApi {
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
                         let id = parseInt(receipt.events['NewMilestone'].returnValues.id);
-                        thisApi.getMilestone(id).then(milestone => {
+                        thisApi.getMilestoneById(id).then(milestone => {
                             milestone.clientId = clientId;
                             subscriber.next(milestone);
                             messageUtils.addMessageSuccess({
@@ -423,6 +446,7 @@ class CrowdfundingContractApi {
                         });
                     })
                     .on('error', function (error) {
+                        error.milestone = milestone;
                         console.error(`Error procesando transacción de almacenamiento de milestone.`, error);
                         subscriber.error(error);
                         messageUtils.addMessageError({
@@ -431,6 +455,7 @@ class CrowdfundingContractApi {
                         });
                     });
             } catch (error) {
+                error.milestone = milestone;
                 console.error(`Error almacenando milestone`, error);
                 subscriber.error(error);
                 messageUtils.addMessageError({
@@ -451,7 +476,7 @@ class CrowdfundingContractApi {
                 let ids = await crowdfunding.getDonationIds();
                 let donations = [];
                 for (let i = 0; i < ids.length; i++) {
-                    let donation = await this.getDonation(ids[i]);
+                    let donation = await this.getDonationById(ids[i]);
                     donations.push(donation);
                 }
                 subscriber.next(donations);
@@ -472,7 +497,7 @@ class CrowdfundingContractApi {
             try {
                 let donations = [];
                 for (let i = 0; i < ids.length; i++) {
-                    let donation = await this.getDonation(ids[i]);
+                    let donation = await this.getDonationById(ids[i]);
                     donations.push(donation);
                 }
                 subscriber.next(donations);
@@ -488,7 +513,7 @@ class CrowdfundingContractApi {
      * @param donationId de la Donación a obtener.
      * @returns Donación cuyo Id coincide con el especificado.
      */
-    async getDonation(donationId) {
+    async getDonationById(donationId) {
         const crowdfunding = await this.getCrowdfunding();
         const donationOnChain = await crowdfunding.getDonation(donationId);
         // Se obtiene la información de la Donación desde IPFS.
@@ -553,7 +578,7 @@ class CrowdfundingContractApi {
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
                         let id = parseInt(receipt.events['NewDonation'].returnValues.id);
-                        thisApi.getDonation(id).then(donation => {
+                        thisApi.getDonationById(id).then(donation => {
                             donation.clientId = clientId;
                             subscriber.next(donation);
                             messageUtils.addMessageSuccess({
@@ -563,6 +588,7 @@ class CrowdfundingContractApi {
                         });
                     })
                     .on('error', function (error) {
+                        error.donation = donation;
                         console.error(`Error procesando transacción de almacenamiento de donación.`, error);
                         subscriber.error(error);
                         messageUtils.addMessageError({
@@ -571,6 +597,7 @@ class CrowdfundingContractApi {
                         });
                     });
             } catch (error) {
+                error.donation = donation;
                 console.error(`Error almacenando donación`, error);
                 subscriber.error(error);
                 messageUtils.addMessageError({
@@ -616,7 +643,7 @@ class CrowdfundingContractApi {
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
                         let milestoneId = parseInt(receipt.events['Withdraw'].returnValues.milestoneId);
-                        thisApi.getMilestone(milestoneId).then(milestone => {
+                        thisApi.getMilestoneById(milestoneId).then(milestone => {
                             milestone.clientId = clientId;
                             subscriber.next(milestone);
                             messageUtils.addMessageSuccess({
@@ -626,6 +653,7 @@ class CrowdfundingContractApi {
                         });
                     })
                     .on('error', function (error) {
+                        error.milestone = milestone;
                         console.error(`Error procesando transacción de retiro de fondos de milestone.`, error);
                         //let reason = await getRevertReason(milestone.txHash); // 'I accidentally killed it.'
                         //console.log(reason);
@@ -638,6 +666,7 @@ class CrowdfundingContractApi {
                         console.log('revertReason', revertReason);
                     })*/;
             } catch (error) {
+                error.milestone = milestone;
                 console.error(`Error retirando fondos de milestone`, error);
                 subscriber.error(error);
                 messageUtils.addMessageError({

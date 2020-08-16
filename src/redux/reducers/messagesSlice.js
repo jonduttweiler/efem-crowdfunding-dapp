@@ -11,7 +11,7 @@ export const messagesSlice = createSlice({
       state.push(action.payload);
     },
     deleteMessage: (state, action) => {
-      let index = state.findIndex(c => action.payload.clientId == c.clientId);
+      let index = state.findIndex(m => action.payload.clientId == m.clientId);
       if (index != -1) {
         state.splice(index, 1);
       }

@@ -9,6 +9,9 @@ export const milestonesSlice = createSlice({
     fetchMilestones: (state, action) => {
       // Solo se obtiene el estado actual.
     },
+    fetchMilestone: (state, action) => {
+      // Solo se obtiene el estado actual.
+    },
     resetMilestones: (state, action) => {
       // Se resguardan los Milestones Pendientes.
       var pendings = state.filter(m => m.isPending);
@@ -21,6 +24,17 @@ export const milestonesSlice = createSlice({
       }
       pendings.forEach(m => state.push(m));
     },
+    updateMilestoneById: (state, action) => {
+      if (action.payload) {
+        var milestone = new Milestone(action.payload);
+        // Se asigna un nuevo ID del lado cliente
+        milestone.clientId = nanoid();
+        let index = state.findIndex(m => milestone.id == m.id);
+        if (index != -1) {
+          state[index] = milestone;
+        }
+      }
+    },
     addMilestone: (state, action) => {
       // Se asigna el ID del lado cliente.
       action.payload.clientId = nanoid();
@@ -29,14 +43,20 @@ export const milestonesSlice = createSlice({
     },
     updateMilestoneByClientId: (state, action) => {
       let milestone = new Milestone(action.payload);
-      let index = state.findIndex(c => milestone.clientId == c.clientId);
-      if(index != -1) {
+      let index = state.findIndex(m => milestone.clientId == m.clientId);
+      if (index != -1) {
         state[index] = milestone;
+      }
+    },
+    deleteMilestoneByClientId: (state, action) => {
+      let index = state.findIndex(m => action.payload.clientId == m.clientId);
+      if (index != -1) {
+        state.splice(index, 1);
       }
     },
     withdraw: (state, action) => {
       let index = state.findIndex(c => action.payload.clientId == c.clientId);
-      if(index != -1) {
+      if (index != -1) {
         state[index].status = Milestone.PAYING;
       }
     }
@@ -44,10 +64,10 @@ export const milestonesSlice = createSlice({
 });
 
 export const {
-  fetchMilestones, 
-  resetMilestones, 
-  addMilestone, 
-  updateMilestoneByClientId, 
+  fetchMilestones,
+  resetMilestones,
+  addMilestone,
+  updateMilestoneByClientId,
   withdraw } = milestonesSlice.actions;
 
 export const selectMilestone = (state, id) => state.milestones.find(m => m.id === id);

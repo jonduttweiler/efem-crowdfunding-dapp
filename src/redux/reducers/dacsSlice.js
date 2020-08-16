@@ -30,6 +30,12 @@ export const DACsSlice = createSlice({
       const updatedDac = new DAC(action.payload);
       const dacIdx = state.findIndex(d => d.clientId === updatedDac.clientId);
       if (dacIdx > -1) state[dacIdx] = updatedDac;
+    },
+    deleteDacByClientId: (state, action) => {
+      let index = state.findIndex(d => action.payload.clientId == d.clientId);
+      if (index != -1) {
+        state.splice(index, 1);
+      }
     }
   },
 });

@@ -1,5 +1,6 @@
 import { ofType } from 'redux-observable';
-import { map, mergeMap } from 'rxjs/operators'
+import { of } from 'rxjs';
+import { map, mergeMap, catchError } from 'rxjs/operators'
 import crowdfundingContractApi from '../../lib/blockchain/CrowdfundingContractApi';
 
 /**
@@ -19,6 +20,22 @@ export const fetchMilestonesEpic = action$ => action$.pipe(
 )
 
 /**
+ * Epic que reacciona a la acción de obtención de un Milestone local,
+ * busca el Milestone en el smart contract y envía la acción de
+ * resetear el Milestone local.
+ * 
+ * @param action$ de Redux.
+ */
+export const fetchMilestoneEpic = action$ => action$.pipe(
+  ofType('milestones/fetchMilestone'),
+  mergeMap(action => crowdfundingContractApi.getMilestone(action.payload)),
+  map(milestone => ({
+    type: 'milestones/updateMilestoneById',
+    payload: milestone
+  }))
+)
+
+/**
  * Epic que reacciona a la acción de almacenamiento de milestone local,
  * almacena el milestone en el smart contract y envía la acción de
  * actualizar el milestone local.
@@ -31,6 +48,10 @@ export const addMilestoneEpic = action$ => action$.pipe(
   map(milestone => ({
     type: 'milestones/updateMilestoneByClientId',
     payload: milestone
+  })),
+  catchError(error => of({
+    type: 'milestones/deleteMilestoneByClientId',
+    payload: error.milestone
   }))
 )
 
@@ -45,5 +66,9 @@ export const milestoneWithdrawEpic = action$ => action$.pipe(
   map(milestone => ({
     type: 'milestones/updateMilestoneByClientId',
     payload: milestone
+  })),
+  catchError(error => of({
+    type: 'milestones/fetchMilestone',
+    payload: error.milestone
   }))
 )

@@ -12,7 +12,7 @@ import messagesReducer from './reducers/messagesSlice.js'
 import { loadUserEpic, newUserEpic } from './epics/usersEpics';
 import { fetchDacsEpic, addDacEpic } from './epics/dacsEpics';
 import { fetchCampaignsEpic, addCampaignEpic } from './epics/campaignsEpics'
-import { fetchMilestonesEpic, addMilestoneEpic, milestoneWithdrawEpic } from './epics/milestonesEpics'
+import { fetchMilestonesEpic, fetchMilestoneEpic, addMilestoneEpic, milestoneWithdrawEpic } from './epics/milestonesEpics'
 import { loadUsersRolesEpic } from './epics/usersRolesEpics';
 import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic } from './epics/donationsEpics'
 
@@ -24,6 +24,7 @@ const rootEpic = combineEpics(
   fetchCampaignsEpic,
   addCampaignEpic,
   fetchMilestonesEpic,
+  fetchMilestoneEpic,
   addMilestoneEpic,
   milestoneWithdrawEpic,
   fetchDonationsEpic,

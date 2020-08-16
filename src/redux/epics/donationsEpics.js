@@ -1,5 +1,6 @@
 import { ofType } from 'redux-observable';
-import { map, mergeMap } from 'rxjs/operators'
+import { of } from 'rxjs';
+import { map, mergeMap, catchError } from 'rxjs/operators'
 import crowdfundingContractApi from '../../lib/blockchain/CrowdfundingContractApi';
 
 /**
@@ -47,5 +48,9 @@ export const addDonationEpic = action$ => action$.pipe(
   map(campaign => ({
     type: 'donations/updateDonationByClientId',
     payload: campaign
+  })),
+  catchError(error => of({
+    type: 'donations/deleteDonationByClientId',
+    payload: error.donation
   }))
 )
