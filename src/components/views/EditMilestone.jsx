@@ -17,14 +17,13 @@ import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
 import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
-
-import RolesListProvider, { Consumer as RolesListConsumer } from '../../contextProviders/RolesListProvider';
 import MilestoneService from '../../services/MilestoneService';
 import FiatUtils from '../../utils/FiatUtils';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectUser } from '../../redux/reducers/userSlice';
 import { addMilestone } from '../../redux/reducers/milestonesSlice';
+import { milestoneReviewers, recipients } from '../../redux/reducers/usersRolesSlice';
 
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
@@ -61,7 +60,7 @@ class EditMilestone extends Component {
   }
 
   componentDidMount() {
-
+    //this.props.loadUsersRoles();
     this.checkUser()
       .then(async () => {
         this.setState({
@@ -99,8 +98,7 @@ class EditMilestone extends Component {
         } else {
           try {
             const milestone = new Milestone();
-            // El destinatario es quien crea el milestone.
-            milestone.recipientAddress = this.props.user.address;
+            
             this.setState({
               isLoading: false,             
               milestone,
@@ -208,10 +206,6 @@ class EditMilestone extends Component {
     const { milestone } = this.state;
 
     milestone.managerAddress = this.state.campaign.managerAddress;
-    /**
-     * Adaptar según la selección del combo de reviewers
-     */
-    milestone.reviewerAddress = this.state.campaign.managerAddress;
     milestone.campaignReviewerAddress = this.state.campaign.reviewerAddress;
     milestone.campaignId = this.state.campaign.id;
     /*milestone.status =
@@ -281,9 +275,8 @@ class EditMilestone extends Component {
   }
 
   render() {
-    // TODO Temporal hasta que los combos se carguen con las opciones.
-    const reviewers = ['0x36d1d3c43422EF3B1d7d23F20a25977c29BC3f0e'];
-    const { isNew, isProposed, history, fiatTypes/*, reviewers*/ } = this.props;
+
+    const { isNew, isProposed, history, fiatTypes, reviewers, recipients } = this.props;
     const { isLoading, isSaving, formIsValid, campaign, isBlocking, milestone } = this.state;
 
     return (
@@ -389,7 +382,7 @@ class EditMilestone extends Component {
                           completed successfully"
                         value={milestone.reviewerAddress}
                         cta="--- Select a reviewer ---"
-                        options={reviewers}
+                        options={reviewers.map(reviewer => ({ ...reviewer, title: reviewer.name, value: reviewer.address }))}
                         validations="isEtherAddress"
                         validationErrors={{
                           isEtherAddress: 'Please select a reviewer.',
@@ -398,21 +391,22 @@ class EditMilestone extends Component {
                         disabled={!isNew && !isProposed}
                       />
                     </div>
-                    <div className="label">Where will the money go after completion? *</div>
-                    <div className="form-group recipient-address-container">
-                      <Input
+                    
+                    <div className="form-group">
+                      <SelectFormsy
                         name="recipientAddress"
-                        id="title-input"
-                        type="text"
+                        id="recipient-select"
+                        label="Select a recipient"
+                        helpText="Cuenta RSK donde los fondos son depositados una vez aprobado el milestone"
                         value={milestone.recipientAddress}
-                        placeholder="0x0000000000000000000000000000000000000000"
-                        help="Enter a RSK address."
+                        cta="--- Select a recipient ---"
+                        options={recipients.map(recipient => ({ ...recipient, title: recipient.name, value: recipient.address }))}
                         validations="isEtherAddress"
                         validationErrors={{
-                          isEtherAddress: 'Please insert a valid RSK address.',
+                          isEtherAddress: 'Please select a recipient.',
                         }}
-                        required
-                        disabled={milestone.projectId !== undefined}
+                        //required
+                        disabled={!isNew && !isProposed}
                       />
                     </div>
 
@@ -504,23 +498,16 @@ EditMilestone.defaultProps = {
 };
 
 const EdtMilestone = props => (
-  <RolesListProvider>
-    <RolesListConsumer>
-      {({ reviewers }) => (
-        <WhiteListConsumer>
-          {({ state: { tokenWhitelist, fiatWhitelist } }) => (
-            <EditMilestone
-              {...props}
-              tokenWhitelist={tokenWhitelist}
-              fiatTypes={fiatWhitelist.map(f => ({ value: f, title: f }))}
-              reviewers={reviewers}
-              isCampaignManager={props.isCampaignManager}
-            />
-          )}
-        </WhiteListConsumer>
-      )}
-    </RolesListConsumer>
-  </RolesListProvider>
+  <WhiteListConsumer>
+    {({ state: { tokenWhitelist, fiatWhitelist } }) => (
+      <EditMilestone
+        {...props}
+        tokenWhitelist={tokenWhitelist}
+        fiatTypes={fiatWhitelist.map(f => ({ value: f, title: f }))}
+        isCampaignManager={props.isCampaignManager}
+      />
+    )}
+  </WhiteListConsumer>
 );
 
 
@@ -529,7 +516,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     user: selectUser(state),
     campaign: selectCampaign(state, campaignId),
-    isCampaignManager: selectUser(state).isCampaignManager()
+    isCampaignManager: selectUser(state).isCampaignManager(),
+    reviewers: milestoneReviewers(state),
+    recipients: recipients(state)
   }
 }
 

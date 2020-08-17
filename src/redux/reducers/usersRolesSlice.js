@@ -21,5 +21,6 @@ export const campaignManagers = state => state.usersRoles.filter(user => user.is
 export const campaignReviewers = state => state.usersRoles.filter(user => user.isCampaignReviewer());
 export const milestoneManagers = state => state.usersRoles.filter(user => user.isMilestoneManager());
 export const milestoneReviewers = state => state.usersRoles.filter(user => user.isMilestoneReviewer());
+export const recipients = state => state.usersRoles.filter(user => user.isRecipient());
 
 export default usersRolesSlice.reducer;

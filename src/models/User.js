@@ -6,8 +6,9 @@ import {
   CREATE_DAC_ROLE,
   CREATE_CAMPAIGN_ROLE,
   CREATE_MILESTONE_ROLE,
-  REVIEW_CAMPAIGN_ROLE,
-  REVIEW_MILESTONE_ROLE
+  CAMPAIGN_REVIEWER_ROLE,
+  MILESTONE_REVIEWER_ROLE,
+  RECIPIENT_ROLE
 } from '../constants/Role';
 
 /**
@@ -213,10 +214,13 @@ class User extends Model {
     return this.roles.includes(CREATE_MILESTONE_ROLE);
   }
   isCampaignReviewer() {
-    return this.roles.includes(REVIEW_CAMPAIGN_ROLE);
+    return this.roles.includes(CAMPAIGN_REVIEWER_ROLE);
   }
   isMilestoneReviewer() {
-    return this.roles.includes(REVIEW_MILESTONE_ROLE);
+    return this.roles.includes(MILESTONE_REVIEWER_ROLE);
+  }
+  isRecipient() {
+    return this.roles.includes(RECIPIENT_ROLE);
   }
 }
 

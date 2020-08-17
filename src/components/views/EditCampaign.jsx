@@ -19,7 +19,7 @@ import ErrorPopup from '../ErrorPopup';
 import { connect } from 'react-redux'
 import { addCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectUser } from '../../redux/reducers/userSlice';
-import { loadUsersRoles, milestoneManagers } from '../../redux/reducers/usersRolesSlice';
+import { campaignReviewers } from '../../redux/reducers/usersRolesSlice';
 
 /**
  * View to create or edit a Campaign
@@ -51,7 +51,7 @@ class EditCampaign extends Component {
   }
 
   componentDidMount() {
-    this.props.loadUsersRoles();
+    //this.props.loadUsersRoles();
 
     this.mounted = true;
     this.checkUser()
@@ -318,10 +318,10 @@ const mapStateToProps = (state, ownProps) => {
   return {
     user: selectUser(state),
     isCampaignManager: selectUser(state).isCampaignManager(),
-    reviewers: milestoneManagers(state)
+    reviewers: campaignReviewers(state)
   }
 }
 
-const mapDispatchToProps = { addCampaign, loadUsersRoles }
+const mapDispatchToProps = { addCampaign }
 
 export default connect(mapStateToProps,mapDispatchToProps)(EditCampaign)

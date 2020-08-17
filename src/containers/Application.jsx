@@ -56,6 +56,7 @@ import { connect } from 'react-redux'
 import { fetchDacs } from '../redux/reducers/dacsSlice'
 import { fetchCampaigns } from '../redux/reducers/campaignsSlice'
 import { fetchMilestones } from '../redux/reducers/milestonesSlice'
+import { loadUsersRoles } from '../redux/reducers/usersRolesSlice';
 import MessageViewer from '../components/MessageViewer';
 
 /* global document */
@@ -105,6 +106,7 @@ class Application extends Component {
     this.props.fetchDacs();
     this.props.fetchCampaigns();
     this.props.fetchMilestones();
+    this.props.loadUsersRoles();
   }
 
   web3Loaded() {
@@ -526,7 +528,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = {
   fetchDacs,
   fetchCampaigns,
-  fetchMilestones
+  fetchMilestones,
+  loadUsersRoles
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Application)

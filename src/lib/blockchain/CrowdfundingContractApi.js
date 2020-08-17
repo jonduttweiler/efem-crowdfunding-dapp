@@ -269,8 +269,7 @@ class CrowdfundingContractApi {
                     campaign.infoCid,
                     //campaign.dacId,
                     1,
-                    //campaign.reviewerAddress,
-                    campaign.managerAddress,
+                    campaign.reviewerAddress,
                     {
                         from: campaign.managerAddress,
                         $extraGas: extraGas()
