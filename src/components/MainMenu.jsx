@@ -53,8 +53,6 @@ class MainMenu extends Component {
     const { showMobileMenu } = this.state;
 
     const { currentUser } = this.props;
-    //when is authenticated? when firms with metamask?? or when is registered and we get the data from feathers?
-    const authenticated = currentUser && currentUser.authenticated;
     const registered =  currentUser && currentUser.registered || false;
     
     return (

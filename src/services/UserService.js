@@ -72,7 +72,6 @@ class UserService {
       try {
         await _uploadUserToIPFS(user);
 
-
         await feathersClient.service('/users').patch(user.address, user.toFeathers()); 
         user.isRegistered = true;
 
@@ -95,7 +94,8 @@ class UserService {
   async _updateAvatar(user) {
     if (user._newAvatar) {
       try {
-        user.avatar = await IpfsService.upload(user._newAvatar);
+        const avatarUrl = await IpfsService.upload(user._newAvatar);
+        user.avatar = IpfsService.resolveUrl(avatarUrl);
         delete user._newAvatar;
       } catch (err) {
         ErrorPopup('Failed to upload avatar', err);
