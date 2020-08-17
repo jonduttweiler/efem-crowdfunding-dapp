@@ -27,6 +27,12 @@ class FormsyImageUploader extends Component {
     this.setState({ image: this.props.previewImage || this.props.avatar });
   }
 
+  componentDidUpdate(prevProps) {
+    if(this.props.avatar != prevProps.avatar){
+      this.setState({ image: this.props.avatar });
+    }
+  }
+
   cropImage() {
     if (!this.cropper) {
       return;
