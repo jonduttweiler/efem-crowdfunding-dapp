@@ -84,6 +84,22 @@ class User extends Model {
     return user;
   }
 
+  clone() {
+    return new User({
+      address: this.address,
+      name: this.name,
+      avatar: this.avatar,
+      email: this.email,
+      giverId: this.giverId,
+      linkedin: this.linkedin,
+      url: this.url,
+      roles: this.roles,
+      balance: this.balance,
+      authenticated: this.authenticated,
+      registered: this.registered,
+    });
+  }
+
   // eslint-disable-next-line class-methods-use-this
   get type() {
     return 'giver';

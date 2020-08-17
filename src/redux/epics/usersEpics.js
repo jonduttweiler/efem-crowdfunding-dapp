@@ -1,6 +1,7 @@
 import { ofType } from 'redux-observable';
-import { map, mergeMap } from 'rxjs/operators'
+import { map, mergeMap, catchError } from 'rxjs/operators'
 import UserService from '../../services/UserService';
+import { of } from 'rxjs';
 
 const userService = new UserService();
 
@@ -15,7 +16,14 @@ export const loadUserEpic = (action$, state$) => action$.pipe(
 
 export const saveUserEpic = (action$) => action$.pipe(
   ofType('user/saveUser'),
-  mergeMap(action => userService.save(action.payload)),
-  map(user => ({ type: 'user/endSave', payload: user }))
+  mergeMap(
+    action => userService.save(action.payload).pipe(
+      map(user => ({ type: 'user/endSave', payload: user })),
+      catchError(error => of({type: 'user/endSaveError',payload: error,error: true}))
+    )
+  
+  
+  ),
+  
 )
 

@@ -11,22 +11,8 @@ import User from '../../models/User';
 import { history } from '../../lib/helpers';
 
 import { connect } from 'react-redux';
-import { saveUser, isSaved, selectUser } from '../../redux/reducers/userSlice';
+import { saveUser, endSave, hasError, errorOnSave, selectUser } from '../../redux/reducers/userSlice';
 
-
-
-const showToast = (msg, url, isSuccess = false) => {
-  const toast = url ? (
-    <p>
-      {msg}<br />
-      <a href={url} target="_blank" rel="noopener noreferrer">View transaction</a>
-    </p>
-  ) : (msg);
-
-  if (isSuccess) React.toast.success(toast);
-  else React.toast.info(toast);
-};
- 
 /**
  * The edit user profile view mapped to /profile/
  *
@@ -60,21 +46,27 @@ class EditProfile extends Component {
         } else {
           this.setState({ isLoading: false });
         }
-      });
+      }); 
   }
 
-  componentDidUpdate(prevProps, prevState){
+  componentDidUpdate(prevProps, prevState) {
 
-    if (prevProps.currentUser != this.props.currentUser) {
+    const endSave = this.state.isSaving && this.props.endSave;
+    const { hasError, errorOnSave } = this.props;
+
+    if (prevProps.currentUser != this.props.currentUser && !hasError) { 
       this.setState({ user: this.props.currentUser })
-    } 
+    }
 
-    if(this.props.isSaved && this.state.isSaving){
-      const msg = 'Your profile has been updated';
-      showToast(msg, "",true);
-  
+    if (endSave) { //process end save
       if (this.mounted) this.setState({ isSaving: false });
-      GA.trackEvent({category: 'User',action: 'updated',label: this.props.currentUser.address,});
+      if (hasError) {
+        const msg = errorOnSave.userMsg || 'An error has ocurred updating your data, try again';
+        React.toast.error(msg);
+      } else {
+        React.toast.success('Your profile has been updated');
+        GA.trackEvent({ category: 'User', action: 'updated', label: this.props.currentUser.address, });
+      }
     }
   }
 
@@ -223,9 +215,11 @@ class EditProfile extends Component {
 const mapStateToProps = (state,ownProps) => {
   return {
     currentUser: selectUser(state),
-    isSaved: isSaved(state)
+    endSave: endSave(state),
+    hasError: hasError(state),
+    errorOnSave: errorOnSave(state)
   };
 }
-const mapDispatchToProps = { saveUser } //or updateUser
+const mapDispatchToProps = { saveUser }
 
 export default connect(mapStateToProps,mapDispatchToProps)(EditProfile);

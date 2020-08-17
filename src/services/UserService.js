@@ -28,12 +28,13 @@ class UserService {
           subscriber.next(user);
 
           feathersClient.service('/users').get(address).then(userdata => {
-            const { name, email, avatar} = userdata;
+            const { name, email, avatar, linkedin} = userdata;
             user.registered = true;
 
             user.name = name;
             user.email = email;
             user.avatar = avatar;
+            user.linkedin = linkedin;
 
             subscriber.next(user);
           }).catch(err => {
@@ -71,15 +72,15 @@ class UserService {
       try {
         await _uploadUserToIPFS(user);
 
-        await feathersClient.service('/users').patch(user.address, user.toFeathers()); 
 
+        await feathersClient.service('/users').patch(user.address, user.toFeathers()); 
         user.isRegistered = true;
-        user.isSaved = true;
+
         subscriber.next(user);
 
       } catch (err) {
-        console.error('There has been a problem creating your user profile', err);
-        ErrorPopup('There has been a problem creating your user profile. Please refresh the page and try again.',);
+        err.userMsg = 'There has been a problem creating your user profile. Please refresh the page and try again.';
+        subscriber.error(err);
       }
     });
   }
@@ -139,5 +140,19 @@ export async function getUsersWithRoles() {
   }
   return usersWithRoles;
 }
+
+
+const pause = (ms = 3000) => {
+  return new Promise((resolve,reject)=> {
+    setTimeout(_ => resolve(),ms)
+  });
+}
+
+
+
+
+
+
+
 
 export default UserService;

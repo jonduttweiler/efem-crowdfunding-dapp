@@ -12,24 +12,37 @@ export const userSlice = createSlice({
       // A case reducer on a non-draftable value must not return undefined
       return state;
     },
-    setUser: (state, action) => { //No se puede asignar directamente state = action.payload; 
-      const { name, address, email, avatar, link, roles, balance, registered } = action.payload;
-      return new User({ name, address, email, avatar, link, roles, balance, registered });
+    setUser: (state, action) => { 
+      const { name, address, email, avatar, linkedin, roles, balance, registered } = action.payload;
+      return new User({ name, address, email, avatar, linkedin, roles, balance, registered });
     },
     saveUser: (state, action) => {
-      state.isSaved = false;
+      state.endSave = false; 
       return state;
     },
-    endSave: (state, action) => {
-      state.isSaved = true;
+    endSave: (prevState, action) => {
+      const state = prevState.clone();
+      state.endSave = true;
+      state.hasError = false;
+      state.errorOnSave = undefined;
       
-      const { address, email, name, avatar } = action.payload;
+      const { address, email, name, avatar, linkedin } = action.payload;
       state.address = address;
       state.email = email;
       state.name = name;
       state.avatar = avatar;
+      state.linkedin = linkedin;
       
       return state;
+    },
+    endSaveError: (prevState,action) => { 
+      const error = action.payload;
+      const newState = prevState.clone();
+
+      newState.endSave = true;
+      newState.hasError = true;
+      newState.errorOnSave = error;
+      return newState;
     },
     clearUser: (state, action) => {
       state = new User();
@@ -40,10 +53,12 @@ export const userSlice = createSlice({
 
 export const { loadUser, setUser, clearUser, saveUser } = userSlice.actions;
 
-export const selectUser = state => state.user;
+export const selectUser = state => state.user.clone();
 export const selectRoles = state => state.user.roles;
 
 
-export const isSaved = state => state.user.isSaved;
+export const endSave = state => state.user.endSave;
+export const hasError = state => state.user.hasError;
+export const errorOnSave = state => state.user.errorOnSave;
 
 export default userSlice.reducer;
