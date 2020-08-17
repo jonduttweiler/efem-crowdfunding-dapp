@@ -28,13 +28,13 @@ class UserService {
           subscriber.next(user);
 
           feathersClient.service('/users').get(address).then(userdata => {
-            const { name, email, avatar, linkedin} = userdata;
+            const { name, email, avatar, url} = userdata;
             user.registered = true;
 
             user.name = name;
             user.email = email;
             user.avatar = avatar;
-            user.linkedin = linkedin;
+            user.url = url;
 
             subscriber.next(user);
           }).catch(err => {

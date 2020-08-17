@@ -8,7 +8,7 @@ describe('User Model', () => {
     commitTime: '2018-03-03',
     email: 'test@test.te',
     giverId: '0',
-    linkedin: 'https://join.giveth.io',
+    url: 'https://join.giveth.io',
     name: 'John Doe',
   };
   const TestUserData2 = {
@@ -17,7 +17,7 @@ describe('User Model', () => {
     commitTime: '2018-03-04',
     email: 'test2@test.te',
     giverId: 1,
-    linkedin: 'https://join.giveth.io/',
+    url: 'https://join.giveth.io/',
     name: 'Doe John',
   };
   const TestUserDataWrong = {
@@ -26,7 +26,7 @@ describe('User Model', () => {
     commitTime: {},
     email: () => {},
     giverId: {},
-    linkedin: 421,
+    url: 421,
     name: 432,
   };
   const TestUser = new User(TestUserData);
@@ -51,8 +51,8 @@ describe('User Model', () => {
     expect(TestUser.giverId).toBe(TestUserData.giverId);
   });
 
-  it('should have correct linkedin', () => {
-    expect(TestUser.linkedin).toBe(TestUserData.linkedin);
+  it('should have correct url', () => {
+    expect(TestUser.url).toBe(TestUserData.url);
   });
 
   it('should have correct name', () => {
@@ -84,9 +84,9 @@ describe('User Model', () => {
     expect(TestUser.giverId).toBe(TestUserData2.giverId);
   });
 
-  it('should have correct linkedin after reassigning', () => {
-    TestUser.linkedin = TestUserData2.linkedin;
-    expect(TestUser.linkedin).toBe(TestUserData2.linkedin);
+  it('should have correct url after reassigning', () => {
+    TestUser.url = TestUserData2.url;
+    expect(TestUser.url).toBe(TestUserData2.url);
   });
 
   it('should have correct name after reassigning', () => {
@@ -124,9 +124,9 @@ describe('User Model', () => {
     }).toThrow(TypeError);
   });
 
-  it('should throw TypeError on wrong linkedin type', () => {
+  it('should throw TypeError on wrong url type', () => {
     expect(() => {
-      TestUser.linkedin = TestUserDataWrong.linkedin;
+      TestUser.url = TestUserDataWrong.url;
     }).toThrow(TypeError);
   });
 

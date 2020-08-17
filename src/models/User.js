@@ -20,7 +20,6 @@ import {
  * @attribute commitTime
  * @attribute email         Email address of the user
  * @attribute giverId       Giver ID used for querying donations
- * @attribute linkedin      Link to the linkedin profile
  * @attribute name          Name of the user
  * @attribute url           Url attached to LiquidPledging admin
  * @attribute authenticated If the user is authenticated w/ feathers
@@ -36,7 +35,6 @@ class User extends Model {
       avatar = '',
       email = '',
       giverId,
-      linkedin,
       url,
       roles = [],
       balance = new BigNumber(0),
@@ -50,7 +48,6 @@ class User extends Model {
       this._avatar = avatar;
       this._email = email;
       this._giverId = giverId;
-      this._linkedin = linkedin;
       this._url = url;
       this._roles = roles;
       this._balance = balance;
@@ -63,7 +60,7 @@ class User extends Model {
     return {
       name: this._name,
       email: this._email,
-      linkedin: this._linkedin,
+      url: this._url,
       avatar: cleanIpfsPath(this._avatar),
       version: 1,
     };
@@ -73,7 +70,7 @@ class User extends Model {
     const user = {
       name: this._name,
       email: this._email,
-      linkedin: this._linkedin,
+      url: this._url,
       avatar: cleanIpfsPath(this._avatar),
     };
     if (this._giverId === undefined && txHash) {
@@ -91,7 +88,6 @@ class User extends Model {
       avatar: this.avatar,
       email: this.email,
       giverId: this.giverId,
-      linkedin: this.linkedin,
       url: this.url,
       roles: this.roles,
       balance: this.balance,
@@ -148,15 +144,6 @@ class User extends Model {
   set giverId(value) {
     this.checkType(value, ['undefined', 'number'], 'giverId');
     this._giverId = value;
-  }
-
-  get linkedin() {
-    return this._linkedin;
-  }
-
-  set linkedin(value) {
-    this.checkType(value, ['undefined', 'string'], 'linkedin');
-    this._linkedin = value;
   }
 
   get name() {

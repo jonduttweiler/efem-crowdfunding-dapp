@@ -13,8 +13,8 @@ export const userSlice = createSlice({
       return state;
     },
     setUser: (state, action) => { 
-      const { name, address, email, avatar, linkedin, roles, balance, registered } = action.payload;
-      return new User({ name, address, email, avatar, linkedin, roles, balance, registered });
+      const { name, address, email, avatar, url, roles, balance, registered } = action.payload;
+      return new User({ name, address, email, avatar, url, roles, balance, registered });
     },
     saveUser: (state, action) => {
       state.endSave = false; 
@@ -26,12 +26,12 @@ export const userSlice = createSlice({
       state.hasError = false;
       state.errorOnSave = undefined;
       
-      const { address, email, name, avatar, linkedin } = action.payload;
+      const { address, email, name, avatar, url } = action.payload;
       state.address = address;
       state.email = email;
       state.name = name;
       state.avatar = avatar;
-      state.linkedin = linkedin;
+      state.url = url;
       
       return state;
     },

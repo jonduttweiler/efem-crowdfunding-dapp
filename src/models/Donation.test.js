@@ -137,8 +137,8 @@ describe('Donation Model', () => {
   //   expect(TestUser.giverId).toBe(TestUserData.giverId);
   // });
   //
-  // it('should have correct linkedin', () => {
-  //   expect(TestUser.linkedin).toBe(TestUserData.linkedin);
+  // it('should have correct url', () => {
+  //   expect(TestUser.url).toBe(TestUserData.url);
   // });
   //
   // it('should have correct name', () => {
@@ -170,9 +170,9 @@ describe('Donation Model', () => {
   //   expect(TestUser.giverId).toBe(TestUserData2.giverId);
   // });
   //
-  // it('should have correct linkedin after reassigning', () => {
-  //   TestUser.linkedin = TestUserData2.linkedin;
-  //   expect(TestUser.linkedin).toBe(TestUserData2.linkedin);
+  // it('should have correct url after reassigning', () => {
+  //   TestUser.url = TestUserData2.url;
+  //   expect(TestUser.url).toBe(TestUserData2.url);
   // });
   //
   // it('should have correct name after reassigning', () => {
@@ -210,9 +210,9 @@ describe('Donation Model', () => {
   //   }).toThrow(TypeError);
   // });
   //
-  // it('should throw TypeError on wrong linkedin type', () => {
+  // it('should throw TypeError on wrong url type', () => {
   //   expect(() => {
-  //     TestUser.linkedin = TestUserDataWrong.linkedin;
+  //     TestUser.url = TestUserDataWrong.url;
   //   }).toThrow(TypeError);
   // });
   //

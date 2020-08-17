@@ -132,7 +132,7 @@ class EditProfile extends Component {
                   mapping={inputs => {
                     user.name = inputs.name;
                     user.email = inputs.email;
-                    user.linkedin = inputs.linkedin;
+                    user.url = inputs.url;
                   }}
                   onChange={this.togglePristine}
                   layout="vertical"
@@ -178,10 +178,10 @@ class EditProfile extends Component {
 
                   <div className="form-group">
                     <Input
-                      name="linkedin"
+                      name="url"
                       label="Your Profile"
                       type="text"
-                      value={user.linkedin}
+                      value={user.url}
                       placeholder="Your profile url"
                       help="Provide a link to some more info about you, this will help to build trust. You could add your linkedin profile, Twitter account or a relevant website."
                       validations="isUrl"
