@@ -4,7 +4,10 @@ import moment from 'moment';
 import Pagination from 'react-js-pagination';
 
 import Loader from '../Loader';
-import { Consumer as UserConsumer } from '../../contextProviders/UserProvider';
+
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../redux/reducers/userSlice';
+
 import DonationProvider, {
   Consumer as DonationConsumer,
 } from '../../contextProviders/DonationProvider';
@@ -12,23 +15,24 @@ import DonationProvider, {
 /**
  * The my donations view
  */
-const Donations = () => (
-  <UserConsumer>
-    {({ state: { currentUser } }) => (
-      <DonationProvider currentUser={currentUser}>
-        <DonationConsumer>
-          {({
-            state: {
-              isLoading,
-              donations,
-              etherScanUrl,
-              totalResults,
-              visiblePages,
-              skipPages,
-              itemsPerPage,
-            },
-            actions: { refund, commit, reject, handlePageChanged },
-          }) => (
+const Donations = () => {
+  const currentUser = useSelector(selectUser);
+  
+  return (
+    <DonationProvider currentUser={currentUser}>
+      <DonationConsumer>
+        {({
+          state: {
+            isLoading,
+            donations,
+            etherScanUrl,
+            totalResults,
+            visiblePages,
+            skipPages,
+            itemsPerPage,
+          },
+          actions: { refund, commit, reject, handlePageChanged },
+        }) => (
             <div id="donations-view">
               <div className="container-fluid page-layout dashboard-table-view">
                 <div className="row">
@@ -174,10 +178,9 @@ const Donations = () => (
               </div>
             </div>
           )}
-        </DonationConsumer>
-      </DonationProvider>
-    )}
-  </UserConsumer>
-);
+      </DonationConsumer>
+    </DonationProvider>
+    );
+}
 
 export default Donations;
