@@ -24,7 +24,10 @@ class JoinGivethCommunity extends Component {
   }
 
   createDAC() {
-    if (!this.props.isDelegate) {
+    const { currentUser } = this.props;
+    const isDelegate = currentUser && currentUser.isDelegate();
+
+    if (!isDelegate) {
       React.swal({
         title: 'Sorry, this Dapp is in beta...',
         content: React.swal.msg(
@@ -61,7 +64,10 @@ class JoinGivethCommunity extends Component {
   }
 
   createCampaign() {
-    if (!this.props.isCampaignManager) {
+    const { currentUser } = this.props;
+    const isCampaignManager = currentUser && currentUser.isCampaignManager();
+
+    if (!isCampaignManager) {
       React.swal({
         title: 'Sorry, this Dapp is in beta...',
         content: React.swal.msg(
@@ -128,21 +134,14 @@ JoinGivethCommunity.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   currentUser: PropTypes.instanceOf(User),
-  isDelegate: PropTypes.bool,
-  isCampaignManager: PropTypes.bool,
 };
 
 JoinGivethCommunity.defaultProps = {
   currentUser: undefined,
 };
 
-
-
-
-
 const mapStateToProps = (state, props) => ({
-  isDelegate: selectUser(state).isDelegate(),
-  isCampaignManager: selectUser(state).isCampaignManager()
+  currentUser: selectUser(state)
 });
 const mapDispatchToProps = {};
 

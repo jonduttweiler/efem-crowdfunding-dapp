@@ -1,21 +1,12 @@
 import React from 'react';
-
-import { Consumer as UserConsumer } from '../../contextProviders/UserProvider';
-import { history } from '../../lib/helpers';
 import DACs from './DACs';
 import Campaigns from './Campaigns';
 import Milestones from './Milestones';
-
 import JoinGivethCommunity from '../JoinGivethCommunity';
 
-const Explore = () => (
+const Explore = ({ history }) => (
   <div>
-    <UserConsumer>
-      {({ state: { currentUser } }) => (
-        <JoinGivethCommunity currentUser={currentUser} history={history} />
-      )}
-    </UserConsumer>
-
+    <JoinGivethCommunity history={history} />
     <DACs />
     <Campaigns />
     <Milestones />
@@ -24,4 +15,5 @@ const Explore = () => (
 
 Explore.propTypes = {};
 
-export default Explore;
+
+export default Explore
