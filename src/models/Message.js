@@ -1,3 +1,4 @@
+import { nanoid } from '@reduxjs/toolkit'
 import Model from './Model';
 
 /**
@@ -16,7 +17,7 @@ export const Severity = {
 class Message extends Model {
 
   constructor({
-    clientId,
+    clientId = nanoid(),
     title,
     text = '',
     severity = Severity.INFO,
@@ -28,6 +29,20 @@ class Message extends Model {
     this._text = text;
     this._severity = severity;
     this._error = error;
+  }
+
+  /**
+   * Obtiene un objeto plano para ser almacenado.
+   */
+  toStore() {
+    return {
+      clientId: this._clientId,
+      title: this._title,
+      text: this._text,
+      severity: this._severity,
+      // El error no es serializado, pero no debería tener consecuencias porque no se modifica.
+      error: this._error
+    };
   }
 
   get clientId() {

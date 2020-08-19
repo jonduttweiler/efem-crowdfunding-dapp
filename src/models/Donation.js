@@ -1,3 +1,4 @@
+import { nanoid } from '@reduxjs/toolkit'
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import Model from './Model';
@@ -13,7 +14,7 @@ class Donation extends Model {
     super(data);
     const {
       id,
-      clientId,
+      clientId = nanoid(),
       giverAddress = '',
       tokenAddress = '',
       amount = new BigNumber(0),
@@ -21,7 +22,7 @@ class Donation extends Model {
       createdAt = moment().unix(),
       entityId,
       budgetId,     
-      status = Donation.PENDING
+      status = Donation.PENDING.toStore()
     } = data;
 
     this._id = id;
@@ -34,7 +35,7 @@ class Donation extends Model {
     this._createdAt = createdAt;
     this._entityId = entityId;
     this._budgetId = budgetId;
-    this._status = status;
+    this._status = StatusUtils.build(status.name, status.isLocal);
 
     /*this._amount = new BigNumber(utils.fromWei(data.amount));
     this._amountRemaining = new BigNumber(utils.fromWei(data.amountRemaining || ''));
@@ -107,6 +108,24 @@ class Donation extends Model {
       donatedTo.type = 'GIVER';
     }
     this._donatedTo = donatedTo;*/
+  }
+
+  /**
+   * Obtiene un objeto plano para ser almacenado.
+   */
+  toStore() {
+    return {
+      id: this._id,
+      clientId: this._clientId,
+      giverAddress: this._giverAddress,
+      tokenAddress: this._tokenAddress,
+      amount: this._amount,
+      amountRemainding: this._amountRemainding,
+      createdAt: this._createdAt,
+      entityId: this._entityId,
+      budgetId: this._budgetId,
+      status: this._status.toStore()
+    };
   }
 
   static get PENDING() {

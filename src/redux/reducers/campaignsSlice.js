@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { nanoid } from '@reduxjs/toolkit'
 import Campaign from '../../models/Campaign';
 
 export const campaignsSlice = createSlice({
@@ -11,31 +10,28 @@ export const campaignsSlice = createSlice({
     },
     resetCampaigns: (state, action) => {
       // Se resguardan las Campaigns Pendientes.
-      var pendings = state.filter(c => c.isPending);
+      var pendings = state.filter(c => c.status.name === Campaign.PENDING.name);
       state.splice(0, state.length);
       for (let i = 0; i < action.payload.length; i++) {
-        // Se asigna el ID del lado cliente.
-        action.payload[i].clientId = nanoid();
-        var campaign = new Campaign(action.payload[i]);
-        state.push(campaign);
+        let campaignStore = action.payload[i].toStore();
+        state.push(campaignStore);
       }
       pendings.forEach(c => state.push(c));
     },
     addCampaign: (state, action) => {
-      // Se asigna el ID del lado cliente.
-      action.payload.clientId = nanoid();
-      var campaign = new Campaign(action.payload);
-      state.push(campaign);
+      let campaignStore = action.payload.toStore();
+      state.push(campaignStore);
     },
     updateCampaignByClientId: (state, action) => {
-      let campaign = new Campaign(action.payload);
-      let index = state.findIndex(c => campaign.clientId === c.clientId);
-      if(index != -1) {
-        state[index] = campaign;
+      let campaignStore = action.payload.toStore();
+      let index = state.findIndex(c => c.clientId === campaignStore.clientId);
+      if (index != -1) {
+        state[index] = campaignStore;
       }
     },
     deleteCampaignByClientId: (state, action) => {
-      let index = state.findIndex(c => action.payload.clientId == c.clientId);
+      let campaignStore = action.payload.toStore();
+      let index = state.findIndex(c => c.clientId === campaignStore.clientId);
       if (index != -1) {
         state.splice(index, 1);
       }
@@ -45,8 +41,19 @@ export const campaignsSlice = createSlice({
 
 export const { fetchCampaigns, resetCampaigns, addCampaign, updateCampaignByClientId } = campaignsSlice.actions;
 
-export const selectCampaigns = state => state.campaigns;
-export const selectCampaign = (state, id) => state.campaigns.find(c => c.id === id);
-export const selectCampaignsByDac = (state, dacId) => state.campaigns.filter(c => c.dacIds.includes(dacId));
+export const selectCampaigns = state => {
+  return state.campaigns.map(function (campaignStore) {
+    return new Campaign(campaignStore);
+  });
+}
+export const selectCampaign = (state, id) => {
+  let campaignStore = state.campaigns.find(c => c.id === id);
+  return new Campaign(campaignStore);
+}
+export const selectCampaignsByDac = (state, dacId) => {
+  return state.campaigns.filter(c => c.dacIds.includes(dacId)).map(function (campaignStore) {
+    return new Campaign(campaignStore);
+  });
+}
 
 export default campaignsSlice.reducer;

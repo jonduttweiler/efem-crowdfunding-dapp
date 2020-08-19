@@ -17,6 +17,7 @@ class WithdrawMilestoneFundsButton extends Component {
 
   async withdraw() {
     const { milestone } = this.props;
+    milestone.status = Milestone.PAYING;
     this.props.withdraw(milestone);
   }
 

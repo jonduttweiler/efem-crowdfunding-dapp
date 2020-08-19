@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DACCard from '../DacCard';
 import Loader from '../Loader';
 import { connect } from 'react-redux'
-import { selectDACs } from '../../redux/reducers/dacsSlice'
+import { selectDacs } from '../../redux/reducers/dacsSlice'
 
 /**
  * The DACs view mapped to /dacs
@@ -78,7 +78,7 @@ DACs.propTypes = {};
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    dacs: selectDACs(state)
+    dacs: selectDacs(state)
   }
 }
 

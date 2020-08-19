@@ -14,12 +14,25 @@ class Campaign extends Entity {
       dacIds = [],
       managerAddress = '',
       reviewerAddress = '',
-      status = Campaign.PENDING
+      status = Campaign.PENDING.toStore()
     } = data;
     this._dacIds = dacIds;
     this._managerAddress = managerAddress;
     this._reviewerAddress = reviewerAddress;
-    this._status = status;
+    this._status = StatusUtils.build(status.name, status.isLocal);
+  }
+
+  /**
+   * Obtiene un objeto plano para ser almacenado.
+   */
+  toStore() {
+    let entityStore = super.toStore();
+    return Object.assign(entityStore, {
+      dacIds: this._dacIds,
+      managerAddress: this._managerAddress,
+      reviewerAddress: this._reviewerAddress,
+      status: this._status.toStore()
+    });
   }
 
   static get PENDING() {

@@ -15,6 +15,16 @@ class Status extends Model {
     this._isLocal = isLocal;
   }
 
+  /**
+   * Obtiene un objeto plano para ser almacenado.
+   */
+  toStore() {
+    return {
+      name: this._name,
+      isLocal: this._isLocal
+    }
+  }
+
   get name() {
     return this._name;
   }

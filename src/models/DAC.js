@@ -12,18 +12,33 @@ class DAC extends Entity {
 
     const {
       communityUrl = '',
-      status = DAC.PENDING,
       delegateAddress = '',
-      requiredConfirmations = ''
+      requiredConfirmations = '',
+      commitTime,
+      status = DAC.PENDING.toStore(),
     } = data;
 
     this._communityUrl = communityUrl;
-    this._status = status;
+    this._status = StatusUtils.build(status.name, status.isLocal);
     this._delegateAddress = delegateAddress;
     this._requiredConfirmations = requiredConfirmations;
-    this._commitTime = data.commitTime;
+    this._commitTime = commitTime;
     this._delegateId = delegateAddress;
+  }
 
+  /**
+   * Obtiene un objeto plano para ser almacenado.
+   */
+  toStore() {
+    let entityStore = super.toStore();
+    return Object.assign(entityStore, {
+      communityUrl: this._communityUrl,
+      delegateAddress: this._delegateAddress,
+      requiredConfirmations: this._requiredConfirmations,
+      commitTime: this._commitTime,
+      delegateId: this._delegateId,
+      status: this._status.toStore()
+    });
   }
 
   static get PENDING() {

@@ -13,7 +13,7 @@ import CampaignCard from '../CampaignCard';
 import DAC from '../../models/DAC';
 import ProfileCard from '../ProfileCard';
 import { connect } from 'react-redux'
-import { selectDAC } from '../../redux/reducers/dacsSlice'
+import { selectDac } from '../../redux/reducers/dacsSlice'
 import { selectCampaignsByDac } from '../../redux/reducers/campaignsSlice';
 import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 
@@ -136,7 +136,7 @@ ViewDAC.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
   const dacId = parseInt(ownProps.match.params.id);
   return {
-    dac: selectDAC(state, dacId),
+    dac: selectDac(state, dacId),
     campaigns: selectCampaignsByDac(state, dacId),
     donations: selectDonationsByEntity(state, dacId)
   }
