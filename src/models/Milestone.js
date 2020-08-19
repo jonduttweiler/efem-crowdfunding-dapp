@@ -19,7 +19,7 @@ export default class Milestone extends Entity {
       reviewerAddress = '',
       campaignReviewerAddress,
       recipientAddress = '',
-      status = Milestone.PENDING,
+      status = Milestone.PENDING.toStore(),
       items = [],
       date = getStartOfDayUTC().subtract(1, 'd')
     } = data;
@@ -30,12 +30,29 @@ export default class Milestone extends Entity {
     this._reviewerAddress = reviewerAddress;
     this._recipientAddress = recipientAddress;
     this._campaignReviewerAddress = campaignReviewerAddress;
-    this._status = status;
+    this._status = StatusUtils.build(status.name, status.isLocal);
 
     // TODO Revisar
     this._items = items.map(i => new MilestoneItemModel(i));
     this._itemizeState = items && items.length > 0;
     this._date = getStartOfDayUTC(date);
+  }
+
+  /**
+   * Obtiene un objeto plano para ser almacenado.
+   */
+  toStore() {
+    let entityStore = super.toStore();
+    return Object.assign(entityStore, {
+      campaignId: this._campaignId,
+      fiatType: this._fiatType,
+      fiatAmountTarget: this._fiatAmountTarget,
+      managerAddress: this._managerAddress,
+      reviewerAddress: this._reviewerAddress,
+      recipientAddress: this._recipientAddress,
+      campaignReviewerAddress: this._campaignReviewerAddress,
+      status: this._status.toStore()
+    });
   }
 
   /**

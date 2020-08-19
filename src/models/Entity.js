@@ -1,3 +1,4 @@
+import { nanoid } from '@reduxjs/toolkit'
 import Model from './Model';
 import { cleanIpfsPath } from '../lib/helpers';
 import IpfsService from '../services/IpfsService';
@@ -9,7 +10,7 @@ class Entity extends Model {
 
   constructor({
     id,
-    clientId,
+    clientId = nanoid(),
     title = '',
     description = '',
     url = '',
@@ -33,13 +34,32 @@ class Entity extends Model {
     this._createdAt = createdAt;
   }
 
+  /**
+   * Obtiene un objeto plano para envíar a IPFS.
+   */
   toIpfs() {
     return {
       title: this._title,
       description: this._description,
       url: this._url,
       imageCid: cleanIpfsPath(this._imageCid)
-    };
+    }
+  }
+
+  /**
+   * Obtiene un objeto plano para ser almacenado.
+   */
+  toStore() {
+    return {
+      id: this._id,
+      clientId: this._clientId,
+      title: this._title,
+      description: this._description,
+      url: this._url,
+      imageCid: this._imageCid,
+      donationIds: this._donationIds,
+      createdAt: this._createdAt
+    }
   }
 
   get id() {

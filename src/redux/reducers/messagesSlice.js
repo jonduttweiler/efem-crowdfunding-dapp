@@ -1,17 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { nanoid } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import Message from '../../models/Message'
 
 export const messagesSlice = createSlice({
   name: 'messages',
   initialState: [],
   reducers: {
     addMessage: (state, action) => {
-      // Se asigna el ID del lado cliente.
-      action.payload.clientId = nanoid();
-      state.push(action.payload);
+      let messageStore = action.payload.toStore();
+      state.push(messageStore);
     },
     deleteMessage: (state, action) => {
-      let index = state.findIndex(m => action.payload.clientId == m.clientId);
+      let messageStore = action.payload.toStore();
+      let index = state.findIndex(m => m.clientId === messageStore.clientId);
       if (index != -1) {
         state.splice(index, 1);
       }
@@ -23,7 +23,7 @@ export const { addMessage, deleteMessage } = messagesSlice.actions;
 
 export const selectNext = (state) => {
   if (state.messages.length > 0) {
-    return state.messages[0];
+    return new Message(state.messages[0]);
   }
   return undefined;
 };
