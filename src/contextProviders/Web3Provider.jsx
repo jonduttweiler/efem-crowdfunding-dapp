@@ -6,6 +6,11 @@ import getWeb3 from '../lib/blockchain/getWeb3';
 import pollEvery from '../lib/pollEvery';
 import config from '../configuration';
 
+import { connect } from 'react-redux'
+import { loadUser } from '../redux/reducers/userSlice';
+
+import Web3Utils from "../utils/Web3Utils";
+
 const POLL_DELAY_ACCOUNT = 1000;
 const POLL_DELAY_NETWORK = 2000;
 
@@ -98,6 +103,18 @@ class Web3Provider extends Component {
     this.enableProvider = this.enableProvider.bind(this);
   }
 
+
+ 
+  componentDidUpdate(prevProps,prevState) {
+
+    const currentAccount = this.state.account;
+    const prevAccount = prevState.account;
+
+    if (Web3Utils.areDistinctAccounts(currentAccount, prevAccount)) {
+      console.log("Load user with account:", currentAccount);
+      this.props.loadUser();
+    }
+  }
 
 
   componentWillMount() { //Necesita algo del DOM o lo podemos poner en el DidMount?
@@ -202,7 +219,7 @@ class Web3Provider extends Component {
       // ignore
     }
 
-    this.setState({ isEnabled, account, balance }, () => this.props.onLoaded());
+    this.setState({ isEnabled, account, balance }, () => this.props.onLoaded({ isEnabled, account, balance }));
   }
 
   render() {
@@ -248,6 +265,6 @@ Web3Provider.defaultProps = {};
 
 export { Consumer };
 
-export default Web3Provider;
+export default connect(null, { loadUser })(Web3Provider);
 
 

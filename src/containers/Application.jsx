@@ -17,8 +17,6 @@ import { history } from '../lib/helpers';
 
 import config from '../configuration';
 
-
-
 // components
 import MainMenu from '../components/MainMenu';
 import Loader from '../components/Loader';
@@ -34,11 +32,12 @@ import { connect } from 'react-redux'
 import { fetchDacs } from '../redux/reducers/dacsSlice'
 import { fetchCampaigns } from '../redux/reducers/campaignsSlice'
 import { fetchMilestones } from '../redux/reducers/milestonesSlice'
-import { loadUser, selectUser } from '../redux/reducers/userSlice';
+import { selectUser } from '../redux/reducers/userSlice';
 import { loadUsersRoles } from '../redux/reducers/usersRolesSlice';
 import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes  from './SwitchRoutes';
 import Footer from '../components/Footer';
+
 
 /* global document */
 /**
@@ -82,7 +81,6 @@ class Application extends Component {
   }
 
   componentDidMount() {
-    this.props.loadUser();
     this.props.fetchDacs();
     this.props.fetchCampaigns();
     this.props.fetchMilestones();
@@ -184,7 +182,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = {
-  loadUser,
   fetchDacs,
   fetchCampaigns,
   fetchMilestones,

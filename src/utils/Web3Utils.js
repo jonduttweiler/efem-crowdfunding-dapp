@@ -22,6 +22,14 @@ class Web3Utils {
   static etherToWei(etherAmount) {
     return new BigNumber(utils.toWei(etherAmount));
   }
+
+
+  static areDistinctAccounts(account1, account2) {
+    const keccakAccount1 = account1 && utils.keccak256(account1);
+    const keccakAccount2 = account2 && utils.keccak256(account2);
+    return keccakAccount1 !== keccakAccount2;
+  }
+
 }
 
 export default Web3Utils;

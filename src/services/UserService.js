@@ -50,6 +50,12 @@ class UserService {
             user.roles = roles;
             subscriber.next(user);
           });
+         
+          authenticateFeathers(user).then(authenticated => {
+            user.authenticated = authenticated;
+            subscriber.next(user); 
+          });
+
         }
       } catch (e) {
         subscriber.error(e);
@@ -102,6 +108,25 @@ class UserService {
       }
     }
   }
+}
+
+async function authenticateFeathers(user) { 
+  let authenticated = false;
+  if (user) {
+    const token = await feathersClient.passport.getJWT();
+
+    if (token) {
+      const { userId } = await feathersClient.passport.verifyJWT(token);
+
+      if (user.address === userId) {
+        await feathersClient.authenticate(); // authenticate the socket connection
+        authenticated = true;
+      } else {
+        await feathersClient.logout();
+      }
+    }
+  }
+  return authenticated;
 }
 
 async function _uploadUserToIPFS(user) {

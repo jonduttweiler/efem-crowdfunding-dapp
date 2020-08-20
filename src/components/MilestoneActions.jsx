@@ -14,7 +14,6 @@ import CancelMilestoneButton from 'components/CancelMilestoneButton';
 import ApproveRejectMilestoneCompletionButtons from 'components/ApproveRejectMilestoneCompletionButtons';
 import WithdrawMilestoneFundsButton from './WithdrawMilestoneFundsButton';
 import EditMilestoneButton from 'components/EditMilestoneButton';
-import { Consumer as UserConsumer } from '../contextProviders/UserProvider';
 
 class MilestoneActions extends Component {
   render() {

@@ -4,6 +4,8 @@ import { history } from './helpers';
 import { feathersClient } from './feathersClient';
 import getWeb3 from './blockchain/getWeb3';
 import config from '../configuration';
+import BigNumber from 'bignumber.js';
+import { utils } from 'web3';
 
 /**
  * Check if there is a currentUser. If not, routes back. If yes, resolves returned promise
@@ -19,12 +21,11 @@ import config from '../configuration';
  *      .catch((err) ...do something when not logged in
  *      returns new Error 'notLoggedIn' if not logged in
  */
-export const isLoggedIn = (currentUser, redirectOnFail = true) =>
+export const isLoggedIn = (currentUser) =>
   new Promise((resolve, reject) => {
     if (currentUser && currentUser.address && currentUser.authenticated) resolve();
     else {
-      // this refers to UserProvider
-      React.signIn(redirectOnFail);
+      authenticateIfPossible(currentUser); 
       reject();
     }
   });
@@ -164,6 +165,11 @@ export const checkForeignNetwork = async isCorrectNetwork => {
   });
 };
 
+const minimumWalletBalance = 0.000005;
+const minimumWalletBalanceInWei = new BigNumber(
+  utils.toWei(new BigNumber(minimumWalletBalance).toString()),
+);
+
 /**
  * Checks for sufficient wallet balance.
  *
@@ -173,14 +179,14 @@ export const checkForeignNetwork = async isCorrectNetwork => {
  */
 export const checkBalance = balance =>
   new Promise(resolve => {
-    if (balance && balance.gte(React.minimumWalletBalanceInWei)) {
+    if (balance && balance.gte(minimumWalletBalanceInWei)) {
       resolve();
     } else {
       React.swal({
         title: 'Insufficient wallet balance',
         content: React.swal.msg(
           <p>
-            Unfortunately you need at least {React.minimumWalletBalance} {config.nativeTokenName} in
+            Unfortunately you need at least {minimumWalletBalance} {config.nativeTokenName} in
             your wallet to continue. Please transfer some ${config.nativeTokenName} to your wallet
             first.
           </p>,
