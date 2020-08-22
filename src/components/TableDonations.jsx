@@ -7,6 +7,7 @@ import ProfileCard from './ProfileCard';
 import Donation from '../models/Donation';
 import CryptoAmount from './CryptoAmount';
 import StatusIndicator from './StatusIndicator';
+import DateTimeViewer from './DateTimeViewer';
 
 /**
  * Presenta una tabla de donaciones para una entidad.
@@ -54,7 +55,7 @@ class TableDonations extends Component {
                     <tr key={d.clientId}>
                       
                       <td className="td-date">
-                        {moment.unix(d.createdAt).format('MM/DD/YYYY hh:mm')}
+                        <DateTimeViewer value={d.createdAt}/>
                       </td>
                       
                       <td>

@@ -21,6 +21,7 @@ import CampaignService from '../../services/CampaignService';
 import Campaign from '../../models/Campaign';
 import DAC from '../../models/DAC';
 import Donation from '../../models/Donation';
+import DateViewer from '../DateViewer';
 
 const reviewDue = updatedAt =>
   moment()
@@ -293,7 +294,7 @@ class Profile extends Component {
                               <tr key={m._id} className={m.status === 'Pending' ? 'pending' : ''}>
                                 <td className="td-created-at">
                                   {m.createdAt && (
-                                    <span>{moment.utc(m.createdAt).format('Do MMM YYYY')}</span>
+                                    <span><DateViewer value={m.createdAt}/></span>
                                   )}
                                 </td>
                                 <td className="td-name">

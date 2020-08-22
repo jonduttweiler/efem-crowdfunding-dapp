@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import moment from 'moment';
 import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
 import BigNumber from 'bignumber.js';
 import User from 'models/User';
@@ -23,6 +22,7 @@ import Campaign from '../../models/Campaign';
 import StatusIndicator from '../StatusIndicator';
 import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 import { selectUser } from '../../redux/reducers/userSlice';
+import DateViewer from '../DateViewer';
 
 
 /**
@@ -185,7 +185,7 @@ class ViewMilestone extends Component {
                             <small className="form-text">
                               This date defines the fiat conversion rate
                             </small>
-                            {moment.utc(milestone.date).format('Do MMM YYYY')}
+                            <DateViewer value={milestone.date}/>
                           </div>
                         )}
 
