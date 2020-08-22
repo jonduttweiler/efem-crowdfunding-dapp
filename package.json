@@ -1,6 +1,6 @@
 {
   "name": "give4forest-dapp",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@acdi/efem-crowdfunding": "1.0.0-alfa.9",
@@ -56,7 +56,7 @@
     "rxjs": "^6.6.0",
     "socket.io-client": "^2.0.4",
     "sweetalert": "^2.1.2",
-    "@sweetalert/with-react": "^0.1.1",    
+    "@sweetalert/with-react": "^0.1.1",
     "web3": "1.2.11",
     "whatwg-fetch": "^3.0.0"
   },
