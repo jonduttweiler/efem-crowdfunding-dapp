@@ -1,6 +1,6 @@
 {
-  "name": "b4h-dapp",
-  "version": "0.1.0",
+  "name": "give4forest-dapp",
+  "version": "0.0.0",
   "private": true,
   "dependencies": {
     "@acdi/efem-crowdfunding": "1.0.0-alfa.9",
@@ -16,7 +16,6 @@
     "@reduxjs/toolkit": "^1.4.0",
     "axios": "^0.19.2",
     "bignumber.js": "^8.0.2",
-    //"eth-revert-reason": "^1.0.3",
     "ethereumjs-abi": "^0.6.5",
     "feathers-hooks-common": "^4.20.2",
     "feathers-reactive": "^0.7.2",
