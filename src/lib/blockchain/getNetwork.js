@@ -1,4 +1,4 @@
-import { Crowdfunding } from '@acdi/efem-crowdfunding';
+import { Crowdfunding } from '@acdi/give4forests-crowdfunding-contract';
 //import { LiquidPledging } from 'giveth-liquidpledging';
 //import { LPPCampaignFactory } from 'lpp-campaign';
 //import { LPPCappedMilestoneFactory } from 'lpp-capped-native-milestone';
