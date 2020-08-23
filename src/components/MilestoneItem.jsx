@@ -1,11 +1,11 @@
 import { withFormsy } from 'formsy-react';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { utils } from 'web3';
 
 import { getTruncatedText } from 'lib/helpers';
 import MilestoneItemModel from 'models/MilestoneItem';
+import DateViewer from './DateViewer';
 
 /** *
  * NOTE: This component is created as a Formsy form component
@@ -27,7 +27,7 @@ class MilestoneItem extends React.Component {
     const { removeItem, item, isEditMode, token } = this.props;
     return (
       <tr>
-        <td className="td-item-date">{moment.utc(item.date).format('Do MMM YYYY')}</td>
+        <td className="td-item-date"><DateViewer value={item.date}/></td>
 
         <td className="td-item-description">{getTruncatedText(item.description)}</td>
 
