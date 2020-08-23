@@ -1,5 +1,5 @@
 {
-  "name": "give4forest-dapp",
+  "name": "@acdi/give4forests-dapp",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -14,8 +14,10 @@
     "@feathersjs/socketio-client": "^1.2.1",
     "@portis/web3": "^2.0.0-beta.11",
     "@reduxjs/toolkit": "^1.4.0",
+    "@sweetalert/with-react": "^0.1.1",
     "axios": "^0.19.2",
     "bignumber.js": "^8.0.2",
+    "eth-contract-class": "0.0.12",
     "ethereumjs-abi": "^0.6.5",
     "feathers-hooks-common": "^4.20.2",
     "feathers-reactive": "^0.7.2",
@@ -56,7 +58,6 @@
     "rxjs": "^6.6.0",
     "socket.io-client": "^2.0.4",
     "sweetalert": "^2.1.2",
-    "@sweetalert/with-react": "^0.1.1",
     "web3": "1.2.11",
     "whatwg-fetch": "^3.0.0"
   },
@@ -91,12 +92,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Giveth/giveth-dapp.git"
+    "url": "https://github.com/ACDI-Argentina/efem-crowdfunding-dapp"
   },
   "author": {
-    "name": "Blockchain 4 Humanity",
-    "email": "hello@b4h.world",
-    "url": "http://b4h.world"
+    "name": "Give 4 Forests",
+    "email": "give4forests@acdi.org.ar"
   },
   "license": "GPL-3.0",
   "browserslist": [
