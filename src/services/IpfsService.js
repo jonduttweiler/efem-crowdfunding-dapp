@@ -1,5 +1,6 @@
 import config from '../configuration';
 import ImageTools from '../lib/ImageResizer';
+import { feathersClient } from '../lib/feathersClient';
 
 const isIPFS = require('is-ipfs');
 const axios = require('axios').default;
@@ -32,9 +33,28 @@ class IpfsService {
     return fetch(`${ipfsGateway}`, {
       method: 'POST',
       body,
-    }).then(res => {
-      if (res.ok) return `/ipfs/${res.headers.get('Ipfs-Hash')}`;
-      throw new Error('IPFS upload unsuccessful', res);
+    }).then(ipfsResponse => {
+      let cid = ipfsResponse.headers.get('Ipfs-Hash');
+      if (config.ipfsPinningEnabled) {
+        return feathersClient.service('/ipfs-pin').create({ cid: cid })
+          .then(() => {
+            if (ipfsResponse.ok) {
+              return `/ipfs/${cid}`;
+            } else {
+              throw new Error('IPFS Upload error', ipfsResponse);
+            }
+          })
+          .catch(err => {
+            throw new Error('IPFS Pinning unsuccessful', err);
+          });
+      } else {
+        console.warn('IPFS Pinning deshabilitado.');
+        if (ipfsResponse.ok) {
+          return `/ipfs/${cid}`;
+        } else {
+          throw new Error('IPFS Upload error', ipfsResponse);
+        }
+      }
     });
   }
 

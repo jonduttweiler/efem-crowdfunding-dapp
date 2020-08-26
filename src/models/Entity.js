@@ -15,8 +15,8 @@ class Entity extends Model {
     description = '',
     url = '',
     image = '',
-    // TODO Configurar una imágen adecuada por defecto.
-    imageCid = '/ipfs/QmVmEhSg7juZjL3MAdhTSfaK4Q4E8mBnSXhawPgfxD3Pcz',
+    // https://gateway.pinata.cloud/ipfs/QmVedKPUTUcNpj6iUWyuEh9yVstBpNjMaL41KmMWF2bAuA
+    imageCid = '/ipfs/QmVedKPUTUcNpj6iUWyuEh9yVstBpNjMaL41KmMWF2bAuA',
     donationIds = [],
     createdAt,
   } = {}) {
