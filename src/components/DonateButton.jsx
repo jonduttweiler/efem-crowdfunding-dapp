@@ -145,7 +145,7 @@ class DonateButton extends React.Component {
             className="btn btn-success"
             onClick={this.openDialog}
             disabled={disableButton}>
-          Donate
+          Donar
         </button>
         <Modal
           isOpen={modalVisible}
@@ -165,7 +165,7 @@ class DonateButton extends React.Component {
             layout="vertical"
           >
             <h3>
-              Donate to support <em>{title}</em>
+              Dona para apoyar <em>{title}</em>
             </h3>
 
             {!validProvider && (
@@ -219,7 +219,7 @@ class DonateButton extends React.Component {
               </div>
             )}
 
-            <span className="label">How much {selectedToken.symbol} do you want to donate?</span>
+            <span className="label">Cu&aacute;ntos {selectedToken.symbol} desea donar?</span>
 
             {validProvider && maxAmount.toNumber() > 0 && balance.gt(0) && (
               <div className="form-group">
@@ -261,7 +261,7 @@ class DonateButton extends React.Component {
               />
             </div>
             <p>
-              <small>
+            <small>
                 By donating you agree to our{' '}
                 <Link to="/termsandconditions">Terms and Conditions</Link> and{' '}
                 <Link to="/privacypolicy">Privacy Policy</Link>.
@@ -275,9 +275,9 @@ class DonateButton extends React.Component {
                 type="submit"
                 disabled={isSaving || !formIsValid || !isCorrectNetwork}
                 isLoading={isSaving}
-                loadingText="Donating..."
+                loadingText="Donando..."
               >
-                Donate
+                Donar
               </LoaderButton>
             )}
 
@@ -288,7 +288,7 @@ class DonateButton extends React.Component {
                 this.setState({ modalVisible: false });
               }}
             >
-              Close
+              Cerrar
             </button>
           </Form>
         </Modal>

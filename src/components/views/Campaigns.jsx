@@ -26,13 +26,12 @@ class Campaigns extends Component {
     return (
       <div id="campaigns-view" className="card-view">
         <div className="container-fluid page-layout reduced-padding">
-          <h4>Campaigns {total > 0 && <span className="badge badge-success">{total}</span>}</h4>
+          <h4>Campa&ntilde;as {total > 0 && <span className="badge badge-success">{total}</span>}</h4>
           {// There are some Campaigns in the system, show them
           !hasError && campaigns.length > 0 && (
             <div>
               <p>
-                These Campaigns work hard to solve causes. Help them realise their goals by giving
-                Bitcoin or tokens!
+                Nuestros emprendimientos de vida
               </p>
               <div className="cards-grid-container">
                 {campaigns.map(campaign => (
@@ -47,7 +46,7 @@ class Campaigns extends Component {
           !hasError && !isLoading && campaigns.length === 0 && (
             <div>
               <center>
-                <p>There are no campaigns yet!</p>
+                <p>&iexcl;A&uacute;n no hay campa&ntilde;as!</p>
                 <img
                   className="empty-state-img"
                   src={`${process.env.PUBLIC_URL}/img/campaign.svg`}
@@ -60,8 +59,8 @@ class Campaigns extends Component {
           )}
           {hasError && (
             <p>
-              <strong>Oops, something went wrong...</strong> The dapp could not load Campaigns for
-              some reason. Please try refreshing the page...
+              <strong>Ups, algo fall&oacute;...</strong> La dapp no pudo cargar las Campa&ntilde;as
+              por alguna raz&oacute;n. Intenta recargar la p&aacute;gina...
             </p>
           )}
         </div>

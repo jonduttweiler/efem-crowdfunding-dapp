@@ -103,22 +103,23 @@ class JoinGivethCommunity extends Component {
   }
 
   render() {
+    let randomBackgroundNumber = Math.ceil(Math.random() * 3);
     return (
       <div
         id="join-giveth-community"
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/img/hero.jpeg)` }}
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/img/banner${randomBackgroundNumber}.jpeg)` }}
       >
         <div className="vertical-align">
           <center>
             <h3><br /></h3>
             <OnlyRole role={CREATE_DAC_ROLE}>
               <button type="button" className="btn btn-info" onClick={() => this.createDAC()}>
-                Create a Fund
+                Crear una DAC
               </button>
             </OnlyRole>
             <OnlyRole role={CREATE_CAMPAIGN_ROLE}>
               <button type="button" className="btn btn-info" onClick={() => this.createCampaign()}>
-                Start a Campaign
+                Iniciar una campa&ntilde;a
               </button>
             </OnlyRole>
           </center>

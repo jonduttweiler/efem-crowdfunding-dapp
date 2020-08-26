@@ -152,15 +152,15 @@ class MyMilestones extends Component {
                       <table className="table table-responsive table-striped table-hover">
                         <thead>
                           <tr>
-                            {currentUser.authenticated && <th className="td-actions">Actions</th>}
-                            <th className="td-created-at">Created</th>
-                            <th className="td-name">Name</th>
-                            <th className="td-status">Status</th>
-                            <th className="td-confirmations">Confirmations</th>
-                            <th className="td-donations-number">Requested</th>
-                            <th className="td-donations-number">Donations</th>
-                            <th className="td-donations-amount">Donated</th>
-                            <th className="td-reviewer">Reviewer</th>
+                            {currentUser.authenticated && <th className="td-actions">Acciones</th>}
+                            <th className="td-created-at">Creada</th>
+                            <th className="td-name">Nombre</th>
+                            <th className="td-status">Estado</th>
+                            <th className="td-confirmations">Confirmaciones</th>
+                            <th className="td-donations-number">Solicitada</th>
+                            <th className="td-donations-number">Donaciones</th>
+                            <th className="td-donations-amount">Donado</th>
+                            <th className="td-reviewer">Revisor</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -192,7 +192,7 @@ class MyMilestones extends Component {
                                   className="secondary-link"
                                   to={`/campaigns/${m.campaign._id}`}
                                 >
-                                  CAMPAIGN <em>{getTruncatedText(m.campaign.title, 40)}</em>
+                                  CAMPA&Ntilde;A <em>{getTruncatedText(m.campaign.title, 40)}</em>
                                 </Link>
                               </td>
                               <td className="td-status">

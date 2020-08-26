@@ -33,7 +33,7 @@ class TableDonations extends Component {
     return (
       <div>
         <div>
-          <h2 style={{ display: 'inline-block' }}>Donations</h2>
+          <h2 style={{ display: 'inline-block' }}>Donaciones</h2>
         </div>
 
         <div className="dashboard-table-view">
@@ -94,10 +94,10 @@ class TableDonations extends Component {
                   >
                     {isLoading && (
                       <span>
-                        <i className="fa fa-circle-o-notch fa-spin" /> Loading
+                        <i className="fa fa-circle-o-notch fa-spin" /> Cargando
                       </span>
                     )}
-                    {!isLoading && <span>Load More</span>}
+                    {!isLoading && <span>Cargar m&aacute;s</span>}
                   </button>
                 </center>
               )}
@@ -105,7 +105,7 @@ class TableDonations extends Component {
           )}
 
           {!isLoading && donations.length === 0 && (
-            <p>No donations have been made yet. Be the first to donate now!</p>
+            <p>A&uacute;n no se han realizado donaciones. &iexcl;S&eacute; el primero en donar!</p>
           )}
         </div>
       </div>
