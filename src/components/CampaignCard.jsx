@@ -19,7 +19,7 @@ class CampaignCard extends Component {
 
   viewCampaign() {
     if (this.props.campaign.isPending) {
-      messageUtils.addMessageWarn({ text: 'La campaign no ha sido confirmada aún.' });
+      messageUtils.addMessageWarn({ text: 'La campaña no ha sido confirmada aún.' });
     } else {
       history.push(`/campaigns/${this.props.campaign.id}`);
     }

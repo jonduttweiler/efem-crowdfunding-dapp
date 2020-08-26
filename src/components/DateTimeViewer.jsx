@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import moment from 'moment';
 
 /**
- * Presenta una fecha en formato DD/MM/YYYY hh:mm.
+ * Presenta una fecha en formato DD/MM/YYYY HH:mm.
  * 
  */
 class DateTimeViewer extends Component {
 
     constructor(props) {
         super(props);
-        this.format = "DD/MM/YYYY hh:mm";
+        this.format = "DD/MM/YYYY HH:mm";
     }
 
     render() {

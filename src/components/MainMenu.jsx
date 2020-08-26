@@ -81,12 +81,12 @@ class MainMenu extends Component {
                   </Link>
 
                   <NavLink className="nav-link" to="/">
-                    Explore
+                    Home
                   </NavLink>
 
-                  {validProvider &&  ( /*authenticated */
+                  {/*validProvider && (
                     <MainMenuDropdown currentUser={currentUser} showMobileMenu={showMobileMenu}/>
-                  )}
+                  )*/}
                 </ul>
 
                 {/*
@@ -115,7 +115,7 @@ class MainMenu extends Component {
                       className="btn btn-outline-info btn-sm"
                       onClick={signUpSwal}
                     >
-                      Sign Up!
+                      Reg&iacute;strate!
                     </button>
                   )}
 
@@ -140,14 +140,14 @@ class MainMenu extends Component {
 
                         {currentUser.name && <span>{currentUser.name}</span>}
 
-                        {!currentUser.name && <span>Hi, you!</span>}
+                        {!currentUser.name && <span>&iexcl;Hola!</span>}
                       </Link>
                       <div
                         className={`dropdown-menu dropdown-profile ${showMobileMenu ? 'show' : ''}`}
                         aria-labelledby="navbarDropdownYou"
                       >
                         <NavLink className="dropdown-item" to="/profile">
-                          {registered ? <span>Profile</span> : <span>Register</span>} 
+                          {registered ? <span>Perfil</span> : <span>Reg&iacute;strate</span>} 
                         </NavLink>
                         {/* <NavLink className="dropdown-item" to="/wallet">
                               Wallet

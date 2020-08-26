@@ -21,19 +21,19 @@ const MainMenuDropdown = ({ currentUser, showMobileMenu }) => {
                 aria-labelledby="navbarDropdownDashboard"
             >
                 <NavLink className="dropdown-item" to="/my-milestones">
-                    Milestones
+                    Hitos
               </NavLink>
                 <NavLink className="dropdown-item" to="/donations">
-                    Donations
+                    Donaciones
               </NavLink>
                 <NavLink className="dropdown-item" to="/delegations">
-                    Delegations
+                    Delegaciones
               </NavLink>
                 <NavLink className="dropdown-item" to="/my-dacs">
-                    Funds
+                    DACs
               </NavLink>
                 <NavLink className="dropdown-item" to="/my-campaigns">
-                    Campaigns
+                    Campa&ntilde;as
               </NavLink>
             </div>
         </li>

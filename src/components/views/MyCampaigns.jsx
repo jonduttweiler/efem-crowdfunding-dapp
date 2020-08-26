@@ -146,9 +146,9 @@ class MyCampaigns extends Component {
                           <tr>
                             {currentUser.authenticated && <th className="td-actions" />}
                             <th className="td-name">Name</th>
-                            <th className="td-donations-number">Donations</th>
-                            <th className="td-donations-amount">Amount</th>
-                            <th className="td-status">Status</th>
+                            <th className="td-donations-number">Donaciones</th>
+                            <th className="td-donations-amount">Monto</th>
+                            <th className="td-status">Estado</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -166,7 +166,7 @@ class MyCampaigns extends Component {
                                       onClick={() => this.editCampaign(c.id)}
                                     >
                                       <i className="fa fa-edit" />
-                                      &nbsp;Edit
+                                      &nbsp;Editar
                                     </button>
                                   )}
 
@@ -179,7 +179,7 @@ class MyCampaigns extends Component {
                                         onClick={() => this.cancelCampaign(c)}
                                       >
                                         <i className="fa fa-ban" />
-                                        &nbsp;Cancel
+                                        &nbsp;Cancelar
                                       </button>
                                     )}
                                 </td>
@@ -245,7 +245,7 @@ class MyCampaigns extends Component {
                   {campaigns && campaigns.data.length === 0 && (
                     <div>
                       <center>
-                        <h3>You didn&apos;t create any campaigns yet!</h3>
+                        <h3>&iexcl;A&uacute;n no creaste campa&ntilde;as!</h3>
                         <img
                           className="empty-state-img"
                           src={`${process.env.PUBLIC_URL}/img/campaign.svg`}

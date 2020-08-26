@@ -19,7 +19,7 @@ const CardStats = ({
   <div className="row card-stats">
 
     <div className="col text-left">
-      <p>Donations</p>
+      <p>Donaciones</p>
       <p>{donations}</p>
     </div>
 
@@ -35,7 +35,7 @@ const CardStats = ({
     )}
 
     <div className="col-4 text-right">
-      <p>Status</p>
+      <p>Estado</p>
       <StatusIndicator status={status}></StatusIndicator>
     </div>
     

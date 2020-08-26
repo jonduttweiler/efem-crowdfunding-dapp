@@ -6,9 +6,10 @@ const Footer = props => (
         style={{
             marginTop: '5px',
             marginBottom: '5px',
+            marginLeft: '5%',
             height: '1px',
-            width: '100%',
-            borderTop: '1px solid gray',
+            width: '90%',
+            borderTop: '1px solid #CCC',
         }}
     >
         <footer className="page-footer" style={{ padding: '.5rem' }} >
@@ -17,16 +18,14 @@ const Footer = props => (
                     style={{
                         display: 'flex',
                         listStyle: 'none',
-                        position: 'absolute',
-                        left: '50%',
-                        transform: 'translatex(-50%)',
+                        paddingInlineStart: '0px',
+                        justifyContent: 'center',
                     }}
                 >
-                    <li style={{ marginRight: '2.4rem' }}>
-                        <Link to="/termsandconditions">Terms and Conditions</Link>
-                    </li>
-                    <li style={{ marginRight: '2.4rem' }}>
-                        <Link to="/privacypolicy">Privacy Policy</Link>
+                    <li>
+                        <a href="http://acdi.org.ar" target="_blank">
+                            <img src="/img/acdi-logo.png" width="60px" alt="ACDI logo" />
+                        </a> 
                     </li>
                 </ul>
             </small>

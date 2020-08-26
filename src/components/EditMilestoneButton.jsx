@@ -27,7 +27,7 @@ class EditMilestoneButton extends Component {
           ['Proposed', 'Rejected', 'InProgress', 'NeedsReview'].includes(milestone.status) && (
             <button type="button" className="btn btn-link" onClick={() => this.editMilestone()}>
               <i className="fa fa-edit" />
-              &nbsp;Edit
+              &nbsp;Editar
             </button>
           )}
       </Fragment>
