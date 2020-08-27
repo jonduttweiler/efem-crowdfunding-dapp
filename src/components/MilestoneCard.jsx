@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { getTruncatedText, isOwner, history } from '../lib/helpers';
 import User from '../models/User';
 import CardStats from './CardStats';
-import GivethLogo from '../assets/logo.svg';
+import GivethLogo from '../assets/logo.png';
 import Milestone from '../models/Milestone';
 import ProfileCard from './ProfileCard';
 import { connect } from 'react-redux'
