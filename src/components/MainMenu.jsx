@@ -77,7 +77,7 @@ class MainMenu extends Component {
               >
                 <ul className="navbar-nav mr-auto">
                   <Link className="navbar-brand" to="/">
-                    <img src="/img/logo.svg" width="40px" alt="B4H logo" />
+                    <img src="/img/logo.png" width="40px" alt="G4F logo" />
                   </Link>
 
                   <NavLink className="nav-link" to="/">
