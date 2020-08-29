@@ -8,6 +8,7 @@ import { history } from '../lib/helpers';
 import { connect } from 'react-redux';
 import { selectUser } from '../redux/reducers/userSlice';
 import MainMenuDropdown from './MainMenuDropdown';
+import LanguageSelector from '../components/LanguageSelector'
 
 
 
@@ -84,12 +85,17 @@ class MainMenu extends Component {
                     Home
                   </NavLink>
 
+                  
+
                   {/*validProvider && (
                     <MainMenuDropdown currentUser={currentUser} showMobileMenu={showMobileMenu}/>
                   )*/}
                 </ul>
 
-                {/*
+                <LanguageSelector></LanguageSelector>
+
+                { 
+                /*
                   <form id="search-form" className="form-inline my-2 my-lg-0">
                     <input className="form-control mr-sm-2" type="text" placeholder="E.g. save the whales"/>
                     <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Find</button>

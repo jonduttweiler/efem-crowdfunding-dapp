@@ -3,6 +3,7 @@ import CampaignCard from '../CampaignCard';
 import Loader from '../Loader';
 import { connect } from 'react-redux'
 import { selectCampaigns } from '../../redux/reducers/campaignsSlice'
+import { withTranslation } from 'react-i18next';
 
 /**
  * The Campaigns view mapped to /campaigns
@@ -17,7 +18,7 @@ class Campaigns extends Component {
   }
 
   render() {
-    const { campaigns } = this.props;
+    const { t, campaigns } = this.props;
     const { isLoading, hasError } = this.state;
     // TODO Por incorporación de Redux, se fija el total
     // como el tamaño de las campañas.
@@ -26,7 +27,7 @@ class Campaigns extends Component {
     return (
       <div id="campaigns-view" className="card-view">
         <div className="container-fluid page-layout reduced-padding">
-          <h4>Campa&ntilde;as {total > 0 && <span className="badge badge-success">{total}</span>}</h4>
+          <h4>{t('campaigns')} {total > 0 && <span className="badge badge-success">{total}</span>}</h4>
           {// There are some Campaigns in the system, show them
           !hasError && campaigns.length > 0 && (
             <div>
@@ -77,4 +78,6 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(Campaigns)
+export default connect(mapStateToProps)(
+  withTranslation()(Campaigns)
+)
