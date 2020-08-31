@@ -48,6 +48,13 @@ export const milestonesSlice = createSlice({
         state.splice(index, 1);
       }
     },
+    complete: (state, action) => {
+      let milestoneStore = action.payload.milestone.toStore();
+      let index = state.findIndex(m => m.clientId === milestoneStore.clientId);
+      if (index != -1) {
+        state[index] = milestoneStore;
+      }
+    },
     withdraw: (state, action) => {
       let milestoneStore = action.payload.toStore();
       let index = state.findIndex(m => m.clientId === milestoneStore.clientId);
@@ -63,6 +70,7 @@ export const {
   resetMilestones,
   addMilestone,
   updateMilestoneByClientId,
+  complete,
   withdraw } = milestonesSlice.actions;
 
 export const selectMilestone = (state, id) => {

@@ -4,7 +4,7 @@ import React from 'react';
 import { utils } from 'web3';
 
 import { getTruncatedText } from 'lib/helpers';
-import MilestoneItemModel from 'models/MilestoneItem';
+import MilestoneItemModel from '../models/MilestoneItem';
 import DateViewer from './DateViewer';
 
 /** *
@@ -31,13 +31,13 @@ class MilestoneItem extends React.Component {
 
         <td className="td-item-description">{getTruncatedText(item.description)}</td>
 
-        <td className="td-item-amount-fiat">
+        {/*<td className="td-item-amount-fiat">
           {item.fiatType} {item.fiatAmount.toFixed()}
           <br />
           <span className="help-block">
             {`1 ${token.name} = ${item.conversionRate} ${item.fiatType}`}
           </span>
-        </td>
+        </td>*/}
 
         <td className="td-item-amount-ether">{utils.fromWei(item.wei)}</td>
 

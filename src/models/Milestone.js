@@ -21,6 +21,7 @@ export default class Milestone extends Entity {
       recipientAddress = '',
       status = Milestone.PENDING.toStore(),
       items = [],
+      activityIds = [],
       date = getStartOfDayUTC().subtract(1, 'd')
     } = data;
     this._campaignId = campaignId;
@@ -30,6 +31,7 @@ export default class Milestone extends Entity {
     this._reviewerAddress = reviewerAddress;
     this._recipientAddress = recipientAddress;
     this._campaignReviewerAddress = campaignReviewerAddress;
+    this._activityIds = activityIds;
     this._status = StatusUtils.build(status.name, status.isLocal);
 
     // TODO Revisar
@@ -51,6 +53,7 @@ export default class Milestone extends Entity {
       reviewerAddress: this._reviewerAddress,
       recipientAddress: this._recipientAddress,
       campaignReviewerAddress: this._campaignReviewerAddress,
+      activityIds: this._activityIds,
       status: this._status.toStore()
     });
   }
@@ -83,6 +86,10 @@ export default class Milestone extends Entity {
 
   static get CANCELLED() {
     return StatusUtils.build('Cancelled');
+  }
+
+  static get COMPLETING() {
+    return StatusUtils.build('Completing', true);
   }
 
   static get COMPLETED() {
@@ -229,6 +236,14 @@ export default class Milestone extends Entity {
   set date(value) {
     this.checkIsMoment(value, 'date');
     this._date = value;
+  }
+
+  get activityIds() {
+    return this._activityIds;
+  }
+
+  set activityIds(value) {
+    this._activityIds = value;
   }
 
   /**

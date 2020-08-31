@@ -61,13 +61,13 @@ class AddMilestoneItemModal extends Component {
     const { item } = this.state;
 
     // set values on MilestoneItem
-    item.date = inputs.date.format();
+    //item.date = inputs.date.format();
     item.description = inputs.description;
     item.fiatType = inputs.fiatType;
     item.fiatAmount = new BigNumber(inputs.fiatAmount);
-    item.wei = utils.toWei(inputs.etherAmount);
-    item.conversionRate = parseFloat(inputs.conversionRate);
-    item.conversionRateTimestamp = inputs.conversionRateTimestamp;
+    //item.wei = utils.toWei(inputs.etherAmount);
+    //item.conversionRate = parseFloat(inputs.conversionRate);
+    //item.conversionRateTimestamp = inputs.conversionRateTimestamp;
 
     this.setState({ item });
   }
@@ -141,7 +141,7 @@ class AddMilestoneItemModal extends Component {
             </div>
           </div>
 
-          <RateConvertor token={token} />
+          {/*<RateConvertor token={token} />*/}
 
           <FormsyImageUploader
             name="image"

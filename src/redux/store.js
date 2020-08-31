@@ -6,13 +6,21 @@ import usersRolesReducer from './reducers/usersRolesSlice';
 import dacsReducer from './reducers/dacsSlice.js'
 import campaignsReducer from './reducers/campaignsSlice.js'
 import milestonesReducer from './reducers/milestonesSlice.js'
+import activitiesReducer from './reducers/activitiesSlice.js'
 import donationsReducer from './reducers/donationsSlice.js'
 import messagesReducer from './reducers/messagesSlice.js'
 
 import { loadUserEpic, saveUserEpic } from './epics/usersEpics';
 import { fetchDacsEpic, addDacEpic } from './epics/dacsEpics';
 import { fetchCampaignsEpic, addCampaignEpic } from './epics/campaignsEpics'
-import { fetchMilestonesEpic, fetchMilestoneEpic, addMilestoneEpic, milestoneWithdrawEpic } from './epics/milestonesEpics'
+import {
+  fetchMilestonesEpic,
+  fetchMilestoneEpic,
+  addMilestoneEpic,
+  milestoneCompleteEpic,
+  milestoneWithdrawEpic
+} from './epics/milestonesEpics'
+import { fetchActivitiesByIdsEpic } from './epics/activitiesEpics'
 import { loadUsersRolesEpic } from './epics/usersRolesEpics';
 import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic } from './epics/donationsEpics'
 
@@ -26,7 +34,9 @@ const rootEpic = combineEpics(
   fetchMilestonesEpic,
   fetchMilestoneEpic,
   addMilestoneEpic,
+  milestoneCompleteEpic,
   milestoneWithdrawEpic,
+  fetchActivitiesByIdsEpic,
   fetchDonationsEpic,
   fetchDonationsByIdsEpic,
   addDonationEpic,
@@ -47,6 +57,7 @@ const rootReducer = combineReducers({
   dacs: dacsReducer,
   campaigns: campaignsReducer,
   milestones: milestonesReducer,
+  activities: activitiesReducer,
   donations: donationsReducer,
   usersRoles: usersRolesReducer,
 });

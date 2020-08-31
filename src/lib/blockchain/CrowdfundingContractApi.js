@@ -1,6 +1,7 @@
 import DAC from '../../models/DAC';
 import Campaign from '../../models/Campaign';
 import Milestone from '../../models/Milestone';
+import Activity from '../../models/Activity';
 import Donation from '../../models/Donation';
 import getNetwork from './getNetwork';
 import IpfsService from '../../services/IpfsService';
@@ -106,7 +107,7 @@ class CrowdfundingContractApi {
     async getDACById(pid) {
         const crowdfunding = await this.getCrowdfunding();
 
-        const { id, infoCid, donationIds, status, delegate } = await crowdfunding.getDac(pid);
+        const { id, infoCid, donationIds, users, status } = await crowdfunding.getDac(pid);
         const { title, description, imageCid, communityUrl } = await IpfsService.downloadJson(infoCid);
 
         return new DAC({
@@ -118,7 +119,7 @@ class CrowdfundingContractApi {
             communityUrl,
             donationIds: donationIds.map(e => parseInt(e)),
             status: this.mapDACStatus(parseInt(status)),
-            delegateAddress: delegate,
+            delegateAddress: users[0],
             commitTime: 0
         });
     }
@@ -130,10 +131,9 @@ class CrowdfundingContractApi {
         const dacOnChain = await crowdfunding.getDac(pid);
         const {
             id,
-            idIndex,
             infoCid,
             donationIds,
-            delegate,
+            users,
             campaignIds,
             budgetIds,
             status
@@ -144,8 +144,7 @@ class CrowdfundingContractApi {
             title,
             description,
             communityUrl,
-            imageCid,
-            version
+            imageCid
         } = dacOnIPFS;
 
 
@@ -160,9 +159,8 @@ class CrowdfundingContractApi {
             communityUrl,
             donationIds: donationIds.map(e => parseInt(e)),
             status: this.mapDACStatus(parseInt(status)),
-            delegateAddress: delegate,
+            delegateAddress: users[0],
             commitTime: 0
-
         });
 
         return dac;
@@ -225,9 +223,9 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const campaingOnChain = await crowdfunding.getCampaign(campaignId);
         // Se obtiene la información de la Campaign desde IPFS.
-        const { id, infoCid, dacIds, donationIds, status, manager, reviewer } = campaingOnChain;
+        const { id, infoCid, dacIds, donationIds, users, status } = campaingOnChain;
         const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
-
+console.log('userssssssssss', users);
         return new Campaign({
             id: parseInt(id),
             title: title,
@@ -236,8 +234,8 @@ class CrowdfundingContractApi {
             url: url,
             dacIds: dacIds.map(e => parseInt(e)),
             donationIds: donationIds.map(e => parseInt(e)),
-            managerAddress: manager,
-            reviewerAddress: reviewer,
+            managerAddress: users[0],
+            reviewerAddress: users[1],
             status: this.mapCampaingStatus(parseInt(status))
         });
     }
@@ -367,7 +365,7 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const milestoneOnChain = await crowdfunding.getMilestone(milestoneId);
         // Se obtiene la información del Milestone desde IPFS.
-        const { id, campaignId, infoCid, fiatAmountTarget, donationIds, status, manager, reviewer, recipient, campaignReviewer } = milestoneOnChain;
+        const { id, campaignId, infoCid, fiatAmountTarget, users, activityIds, donationIds, status } = milestoneOnChain;
         const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
 
         return new Milestone({
@@ -378,11 +376,12 @@ class CrowdfundingContractApi {
             imageCid: imageCid,
             url: url,
             fiatAmountTarget: new BigNumber(fiatAmountTarget),
+            activityIds: activityIds.map(e => parseInt(e)),
             donationIds: donationIds.map(e => parseInt(e)),
-            managerAddress: manager,
-            reviewerAddress: reviewer,
-            campaignReviewerAddress: campaignReviewer,
-            recipientAddress: recipient,
+            managerAddress: users[0],
+            reviewerAddress: users[1],
+            campaignReviewerAddress: users[2],
+            recipientAddress: users[3],
             status: this.mapMilestoneStatus(parseInt(status))
         });
     }
@@ -608,6 +607,77 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Marca como completado un Milestone en el Smart Contarct.
+     * 
+     * @param milestone a marcar como completado.
+     */
+    milestoneComplete(milestone, activity) {
+
+        return new Observable(async subscriber => {
+
+            try {
+                let crowdfunding = await this.getCrowdfunding();
+
+                // Subir items a IPFS.
+
+                // Se almacena en IPFS toda la información del Activity.
+                let activityInfoCid = await IpfsService.upload(activity.toIpfs());
+
+                let thisApi = this;
+                let clientId = milestone.clientId;
+
+                let promiEvent = crowdfunding.milestoneComplete(
+                    milestone.id,
+                    activityInfoCid,
+                    {
+                        from: activity.userAddress,
+                        $extraGas: extraGas()
+                    });
+
+                promiEvent
+                    .once('transactionHash', function (hash) {
+                        // La transacción ha sido creada.
+                        milestone.txHash = hash;
+                        subscriber.next(milestone);
+                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para completar el milestone' });
+                    })
+                    .once('confirmation', function (confNumber, receipt) {
+                        // La transacción ha sido incluida en un bloque
+                        // sin bloques de confirmación (once).
+                        // TODO Aquí debería agregarse lógica para esperar
+                        // un número determinado de bloques confirmados (on, confNumber).
+                        let milestoneId = parseInt(receipt.events['MilestoneComplete'].returnValues.milestoneId);
+                        thisApi.getMilestoneById(milestoneId).then(milestone => {
+                            milestone.clientId = clientId;
+                            subscriber.next(milestone);
+                            messageUtils.addMessageSuccess({
+                                title: 'Felicitaciones!',
+                                text: `El milestone ${milestone.title} ha sido completado`
+                            });
+                        });
+                    })
+                    .on('error', function (error) {
+                        error.milestone = milestone;
+                        console.error(`Error procesando transacción para completar el milestone.`, error);
+                        subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error completando el milestone ${milestone.title}`,
+                            error: error
+                        });
+                    });
+            } catch (error) {
+                error.milestone = milestone;
+                console.error(`Error completando milestone`, error);
+                subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error completando el milestone ${milestone.title}`,
+                    error: error
+                });
+            }
+        });
+    }
+
+    /**
      * Retiro de fondos de un milestone.
      * 
      * @param milestone desde el cual se retiran los fondos.
@@ -641,7 +711,7 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        let milestoneId = parseInt(receipt.events['Withdraw'].returnValues.milestoneId);
+                        let milestoneId = parseInt(receipt.events['MilestoneWithdraw'].returnValues.milestoneId);
                         thisApi.getMilestoneById(milestoneId).then(milestone => {
                             milestone.clientId = clientId;
                             subscriber.next(milestone);
@@ -673,6 +743,49 @@ class CrowdfundingContractApi {
                     error: error
                 });
             }
+        });
+    }
+
+    /**
+     * Obtiene todas las Activities desde el Smart Contract que coinciden con los
+     * IDs especificados.
+     * 
+     * @param ids IDs de las activities a obtener.
+     */
+    getActivitiesByIds(ids) {
+        return new Observable(async subscriber => {
+            try {
+                let activities = [];
+                for (let i = 0; i < ids.length; i++) {
+                    let activity = await this.getActivityById(ids[i]);
+                    activities.push(activity);
+                }
+                subscriber.next(activities);
+            } catch (error) {
+                subscriber.error(error);
+            }
+        });
+    }
+
+    /**
+     * Obtiene la Activity a partir del ID especificado.
+     * 
+     * @param activityId de la Activity a obtener.
+     * @returns Activity cuyo Id coincide con el especificado.
+     */
+    async getActivityById(activityId) {
+        const crowdfunding = await this.getCrowdfunding();
+        const activityOnChain = await crowdfunding.getActivity(activityId);
+        // Se obtiene la información de la Activity desde IPFS.
+        const { id, infoCid, user, milestoneId } = activityOnChain;
+        const { message, items } = await IpfsService.downloadJson(infoCid);
+
+        return new Activity({
+            id: parseInt(id),
+            userAddress: user,
+            milestoneId: parseInt(milestoneId),
+            message: message,
+            items: items
         });
     }
 

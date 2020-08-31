@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
 import BigNumber from 'bignumber.js';
 import User from 'models/User';
@@ -10,7 +9,7 @@ import DonateButton from '../DonateButton';
 import GoBackButton from '../GoBackButton';
 import TableDonations from '../TableDonations';
 import Loader from '../Loader';
-import MilestoneConversations from '../MilestoneConversations';
+import MilestoneActivities from '../MilestoneActivities';
 // import DelegateMultipleButton from '../DelegateMultipleButton';
 import Milestone from '../../models/Milestone';
 import { connect } from 'react-redux'
@@ -21,16 +20,9 @@ import ProfileCard from '../ProfileCard';
 import Campaign from '../../models/Campaign';
 import StatusIndicator from '../StatusIndicator';
 import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
+import { fetchActivitiesByIds, selectActivitiesByMilestone } from '../../redux/reducers/activitiesSlice'
 import { selectUser } from '../../redux/reducers/userSlice';
 import DateViewer from '../DateViewer';
-
-
-/**
-  Loads and shows a single milestone
-
-  @route params:
-    milestoneId (string): id of a milestone
-* */
 
 class ViewMilestone extends Component {
   constructor(props) {
@@ -51,6 +43,7 @@ class ViewMilestone extends Component {
   }
 
   componentDidMount() {
+    this.props.fetchActivitiesByIds(this.props.milestone.activityIds);
     this.props.fetchDonationsByIds(this.props.milestone.donationIds);
   }
   
@@ -81,7 +74,7 @@ class ViewMilestone extends Component {
   }
 
   render() {
-    const { donations,history, user, balance, campaign, milestone } = this.props;
+    const { donations, activities, history, user, balance, campaign, milestone } = this.props;
     
     const {
       isLoading,
@@ -224,7 +217,7 @@ class ViewMilestone extends Component {
 
                     <div className="col-md-6">
                       <h4>Status updates</h4>
-                      <MilestoneConversations milestone={milestone} balance={balance} />
+                      <MilestoneActivities activities={activities} milestone={milestone} balance={balance} />
                     </div>
                   </div>
                 </div>
@@ -278,9 +271,10 @@ const mapStateToProps = (state, ownProps) => {
     reduxProps.campaign = selectCampaign(state, reduxProps.milestone.campaignId);
   }
   reduxProps.donations = selectDonationsByEntity(state, milestoneId);
+  reduxProps.activities = selectActivitiesByMilestone(state, milestoneId);
   return reduxProps;
 }
 
-const mapDispatchToProps = { fetchDonationsByIds }
+const mapDispatchToProps = { fetchDonationsByIds, fetchActivitiesByIds }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewMilestone)

@@ -30,7 +30,7 @@ export const donationsSlice = createSlice({
         let replaced = false;
         for (let j = 0; j < state.length; j++) {
           // Se compara por su ID porque lo comparten aquellas
-          // donaciones que están en la persistidas.
+          // donaciones que están en persistidas.
           if (state[j].id === donationStore.id) {
             state[j] = donationStore;
             replaced = true;

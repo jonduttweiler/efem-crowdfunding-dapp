@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import config from '../configuration';
 import Loader from './Loader';
 import ProfileCard from './ProfileCard';

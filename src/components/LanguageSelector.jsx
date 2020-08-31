@@ -37,7 +37,7 @@ class LanguageSelector extends Component {
 
     render() {
         const options = config.language.options.map(language => (
-            <option value={language.key}>{language.name}</option>
+            <option key={language.key} value={language.key}>{language.name}</option>
         ));
         return (
             <select id="language-selector"

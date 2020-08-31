@@ -56,6 +56,27 @@ export const addMilestoneEpic = action$ => action$.pipe(
 )
 
 /**
+ * Marcado del Milestone como completado
+ * 
+ * @param action$ de Redux.
+ */
+export const milestoneCompleteEpic = action$ => action$.pipe(
+  ofType('milestones/complete'),
+  mergeMap(action => crowdfundingContractApi.milestoneComplete(
+    action.payload.milestone,
+    action.payload.activity
+  )),
+  map(milestone => ({
+    type: 'milestones/updateMilestoneByClientId',
+    payload: milestone
+  })),
+  catchError(error => of({
+    type: 'milestones/fetchMilestone',
+    payload: error.milestone
+  }))
+)
+
+/**
  * Retiro de fondos de un Milestone
  * 
  * @param action$ de Redux.
