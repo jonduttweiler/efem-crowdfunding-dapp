@@ -1,5 +1,6 @@
 import { nanoid } from '@reduxjs/toolkit'
 import Model from './Model';
+import Item from './Item';
 
 /**
  * Modelo de actividad de un milestone en la Dapp.
@@ -45,11 +46,8 @@ class Activity extends Model {
    */
   toIpfs() {
     return {
-      id: this._id,
-      milestoneId: this._milestoneId,
-      userAddress: this._userAddress,
       message: this._message,
-      items: this._items
+      itemCids: this._itemCids
     }
   }
 
@@ -91,6 +89,25 @@ class Activity extends Model {
 
   get message() {
     return this._message;
+  }
+
+  get items() {
+    return this._items;
+  }
+
+  set items(value) {
+    value.forEach(item => {
+      this.checkInstanceOf(item, Item, 'items');
+    });
+    this._items = value;
+  }
+
+  set itemCids(value) {
+    this._itemCids = value;
+  }
+
+  get itemCids() {
+    return this._itemCids;
   }
 }
 

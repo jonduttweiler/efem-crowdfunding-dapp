@@ -10,6 +10,7 @@ import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import messageUtils from '../../utils/MessageUtils'
+import Item from '../../models/Item';
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -225,7 +226,7 @@ class CrowdfundingContractApi {
         // Se obtiene la información de la Campaign desde IPFS.
         const { id, infoCid, dacIds, donationIds, users, status } = campaingOnChain;
         const { title, description, imageCid, url } = await IpfsService.downloadJson(infoCid);
-console.log('userssssssssss', users);
+
         return new Campaign({
             id: parseInt(id),
             title: title,
@@ -619,7 +620,16 @@ console.log('userssssssssss', users);
                 let crowdfunding = await this.getCrowdfunding();
 
                 // Subir items a IPFS.
-
+                let itemCids = [];
+                for (let i = 0; i < activity.items.length; i++) {
+                    let item = activity.items[i];
+                    // Se almacena en IPFS la imagen del Item.
+                    let imageCid = await IpfsService.upload(item.image);
+                    item.imageCid = imageCid;
+                    let itemCid = await IpfsService.upload(item.toIpfs());
+                    itemCids.push(itemCid);
+                }
+                activity.itemCids = itemCids;
                 // Se almacena en IPFS toda la información del Activity.
                 let activityInfoCid = await IpfsService.upload(activity.toIpfs());
 
@@ -778,8 +788,17 @@ console.log('userssssssssss', users);
         const activityOnChain = await crowdfunding.getActivity(activityId);
         // Se obtiene la información de la Activity desde IPFS.
         const { id, infoCid, user, milestoneId } = activityOnChain;
-        const { message, items } = await IpfsService.downloadJson(infoCid);
-
+        const { message, itemCids } = await IpfsService.downloadJson(infoCid);
+        let items = [];
+        for (let i = 0; i < itemCids.length; i++) {
+            const { date, description, imageCid } = await IpfsService.downloadJson(itemCids[i]);
+            let item = new Item({
+                date: date,
+                description: description,
+                imageCid: imageCid
+            });
+            items.push(item);
+        }
         return new Activity({
             id: parseInt(id),
             userAddress: user,

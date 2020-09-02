@@ -1,37 +1,38 @@
-/* eslint react/no-did-mount-set-state: 0 */
-
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
-
-import MilestoneItem from './MilestoneItem';
-import AddMilestoneItem from './AddMilestoneItem';
-import AddMilestoneItemModal from './AddMilestoneItemModal';
+import ItemRow from './ItemRow';
+import AddItemButton from './AddItemButton';
+import AddItemModal from './AddItemModal';
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
 
 class MilestoneProof extends Component {
+
   constructor(props) {
     super(props);
-
     this.state = {
       items: props.items,
-      addMilestoneItemModalVisible: false,
+      addItemModalVisible: false,
     };
   }
 
   componentDidMount() {
-    this.setState({ items: this.props.items });
+    this.setState({
+      items: this.props.items
+    });
   }
 
   onAddItem(item) {
     this.addItem(item);
-    this.setState({ addMilestoneItemModalVisible: false });
+    this.setState({ addItemModalVisible: false });
   }
 
   addItem(item) {
     this.setState(
-      prevState => ({ items: prevState.items.concat(item) }),
+      prevState => ({
+        items: prevState.items.concat(item)
+      }),
       () => this.props.onItemsChanged(this.state.items),
     );
   }
@@ -39,23 +40,23 @@ class MilestoneProof extends Component {
   removeItem(index) {
     const { items } = this.state;
     delete items[index];
-    this.setState({ items: items.filter(() => true) }, () =>
-      this.props.onItemsChanged(this.state.items),
+    this.setState({
+      items: items.filter(() => true)
+    },
+      () => this.props.onItemsChanged(this.state.items),
     );
   }
 
-  toggleAddMilestoneItemModal() {
+  toggleAddItemModal() {
     this.setState(prevState => ({
-      addMilestoneItemModalVisible: !prevState.addMilestoneItemModalVisible,
+      addItemModalVisible: !prevState.addItemModalVisible,
     }));
   }
 
   render() {
-    const { items, addMilestoneItemModalVisible } = this.state;
+    const { items, addItemModalVisible } = this.state;
     const { isEditMode, milestoneStatus } = this.props;
-
     const canEdit = isEditMode || ['Proposed', 'Pending'].includes(milestoneStatus);
-
     return (
       <div>
         <div className="form-group row dashboard-table-view">
@@ -77,7 +78,7 @@ class MilestoneProof extends Component {
                       </thead>
                       <tbody>
                         {items.map((item, i) => (
-                          <MilestoneItem
+                          <ItemRow
                             key={item.id}
                             name={`milestoneItem-${i}`}
                             index={i}
@@ -92,13 +93,13 @@ class MilestoneProof extends Component {
                 )}
 
                 {items.length > 0 && canEdit && (
-                  <AddMilestoneItem onClick={() => this.toggleAddMilestoneItemModal()} />
+                  <AddItemButton onClick={() => this.toggleAddItemModal()} />
                 )}
 
                 {items.length === 0 && canEdit && (
                   <div className="text-center">
                     <p>Attach an expense, invoice or anything else that requires payment.</p>
-                    <AddMilestoneItem onClick={() => this.toggleAddMilestoneItemModal()} />
+                    <AddItemButton onClick={() => this.toggleAddItemModal()} />
                   </div>
                 )}
               </div>
@@ -106,9 +107,9 @@ class MilestoneProof extends Component {
           </div>
         </div>
 
-        <AddMilestoneItemModal
-          openModal={addMilestoneItemModalVisible}
-          onClose={() => this.toggleAddMilestoneItemModal()}
+        <AddItemModal
+          openModal={addItemModalVisible}
+          onClose={() => this.toggleAddItemModal()}
           onAddItem={item => this.onAddItem(item)}
         />
       </div>
@@ -124,7 +125,7 @@ MilestoneProof.propTypes = {
 };
 
 MilestoneProof.defaultProps = {
-  onItemsChanged: () => {},
+  onItemsChanged: () => { },
   milestoneStatus: '',
 };
 

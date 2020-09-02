@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function AddMilestoneItem(props) {
+function AddItemButton(props) {
   const { onClick } = props;
   return (
     <div className="add-milestone-item">
@@ -10,14 +10,14 @@ function AddMilestoneItem(props) {
         className="btn btn-primary btn-sm btn-add-milestone-item"
         onClick={onClick}
       >
-        Add Line Item
+        Add Item
       </button>
     </div>
   );
 }
 
-AddMilestoneItem.propTypes = {
+AddItemButton.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
 
-export default AddMilestoneItem;
+export default AddItemButton;

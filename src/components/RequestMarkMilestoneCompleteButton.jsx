@@ -16,23 +16,20 @@ class RequestMarkMilestoneCompleteButton extends Component {
   requestMarkComplete() {
     const { milestone, currentUser } = this.props;
 
-    this.activityModal.current
-      .openModal({
-        title: 'Mark milestone complete',
-        description:
-          "Describe what you've done to finish the work of this milestone and attach proof if necessary. This information will be publicly visible and emailed to the reviewer.",
-        required: false,
-        cta: 'Mark complete',
-        enableAttachProof: true,
-        textPlaceholder: "Describe what you've done...",
-      })
-      .then(activity => {
-        milestone.status = Milestone.COMPLETING;
-        this.props.complete({
-          milestone,
-          activity
-        });
+    this.activityModal.current.openModal({
+      title: 'Mark milestone complete',
+      description: "Describe what you've done to finish the work of this milestone and attach proof if necessary. This information will be publicly visible and emailed to the reviewer.",
+      required: false,
+      cta: 'Mark complete',
+      enableAttachProof: true,
+      textPlaceholder: "Describe what you've done...",
+    }).then(activity => {
+      milestone.status = Milestone.COMPLETING;
+      this.props.complete({
+        milestone,
+        activity
       });
+    });
   }
 
   render() {

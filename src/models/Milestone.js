@@ -1,7 +1,7 @@
 import Entity from './Entity';
 import BigNumber from 'bignumber.js';
 import { getStartOfDayUTC } from 'lib/helpers';
-import MilestoneItemModel from './MilestoneItem';
+import Item from './Item';
 import StatusUtils from '../utils/StatusUtils';
 import Status from './Status';
 
@@ -35,7 +35,7 @@ export default class Milestone extends Entity {
     this._status = StatusUtils.build(status.name, status.isLocal);
 
     // TODO Revisar
-    this._items = items.map(i => new MilestoneItemModel(i));
+    //this._items = items.map(i => new Item(i));
     this._itemizeState = items && items.length > 0;
     this._date = getStartOfDayUTC(date);
   }
@@ -207,17 +207,6 @@ export default class Milestone extends Entity {
   set status(value) {
     this.checkInstanceOf(value, Status, 'status');
     this._status = value;
-  }
-
-  get items() {
-    return this._items;
-  }
-
-  set items(value) {
-    value.forEach(item => {
-      this.checkInstanceOf(item, MilestoneItemModel, 'items');
-    });
-    this._items = value;
   }
 
   get itemizeState() {

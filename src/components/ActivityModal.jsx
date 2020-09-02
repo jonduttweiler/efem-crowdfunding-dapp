@@ -6,7 +6,7 @@ import Modal from 'react-modal';
 import Milestone from 'models/Milestone';
 import QuillFormsy from 'components/QuillFormsy';
 import LoaderButton from 'components/LoaderButton';
-import MilestoneProof from 'components/MilestoneProof';
+import MilestoneProof from './MilestoneProof';
 import Activity from '../models/Activity';
 
 const modalStyles = {
@@ -113,8 +113,8 @@ class ActivityModal extends Component {
   submit(model) {
     this.setState(
       prevState => ({
-        items: prevState.items,
         message: model.message,
+        items: prevState.items
       }),
       () => this.closeModal(),
     );
@@ -148,8 +148,7 @@ class ActivityModal extends Component {
         <div className="activity-modal">
           <h2>{title}</h2>
           <p className="mb-4">{description}</p>
-          <Form
-            id="activity"
+          <Form id="activity"
             onSubmit={this.submit}
             ref={this.form}
             mapping={inputs => this.mapInputs(inputs)}
@@ -170,9 +169,6 @@ class ActivityModal extends Component {
                 <QuillFormsy
                   name="message"
                   label="Accompanying message"
-                  // {/* helpText="Make it as extensive as necessary. Your goal is to build trust,
-                  // so that people donate BTC to your Campaign. Don't hesitate to add a detailed budget for this Milestone"
-                  // */}
                   value={message}
                   placeholder={textPlaceholder}
                   validations="minLength:3"

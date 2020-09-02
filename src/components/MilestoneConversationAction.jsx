@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import Milestone from 'models/Milestone';
 import User from 'models/User';
 import BigNumber from 'bignumber.js';
-
 import DeleteProposedMilestoneButton from 'components/DeleteProposedMilestoneButton';
 import AcceptRejectProposedMilestoneButtons from 'components/AcceptRejectProposedMilestoneButtons';
 import ReproposeRejectedMilestoneButton from 'components/ReproposeRejectedMilestoneButton';

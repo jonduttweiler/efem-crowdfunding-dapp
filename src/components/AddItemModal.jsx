@@ -10,7 +10,7 @@ import { Input, Form } from 'formsy-react-components';
 import { utils } from 'web3';
 
 import getConversionRatesContext from 'containers/getConversionRatesContext';
-import MilestoneItem from 'models/MilestoneItem';
+import Item from '../models/Item';
 import FormsyImageUploader from './FormsyImageUploader';
 import RateConvertor from './RateConvertor';
 
@@ -29,14 +29,13 @@ const modalStyles = {
 
 Modal.setAppElement('#root');
 
-class AddMilestoneItemModal extends Component {
+class AddItemModal extends Component {
+
   constructor(props) {
     super(props);
-
     this.form = React.createRef();
-
     this.state = {
-      item: new MilestoneItem({}),
+      item: new Item({}),
       formIsValid: false,
     };
     this.setImage = this.setImage.bind(this);
@@ -59,7 +58,6 @@ class AddMilestoneItemModal extends Component {
 
   mapInputs(inputs) {
     const { item } = this.state;
-
     // set values on MilestoneItem
     //item.date = inputs.date.format();
     item.description = inputs.description;
@@ -68,7 +66,6 @@ class AddMilestoneItemModal extends Component {
     //item.wei = utils.toWei(inputs.etherAmount);
     //item.conversionRate = parseFloat(inputs.conversionRate);
     //item.conversionRateTimestamp = inputs.conversionRateTimestamp;
-
     this.setState({ item });
   }
 
@@ -79,7 +76,7 @@ class AddMilestoneItemModal extends Component {
 
   reset() {
     this.setState({
-      item: new MilestoneItem({}),
+      item: new Item({}),
       formIsValid: false,
     });
   }
@@ -87,10 +84,8 @@ class AddMilestoneItemModal extends Component {
   submit() {
     // Formsy doesn't like nesting, even when using Portals
     // So we're manually fetching and submitting the model
-
     // We need to call getModel here to set values on the MilestoneItem
     this.form.current.formsyForm.getModel();
-
     // Get MilestoneItem
     this.props.onAddItem(this.state.item);
     this.reset();
@@ -174,15 +169,15 @@ class AddMilestoneItemModal extends Component {
   }
 }
 
-AddMilestoneItemModal.propTypes = {
+AddItemModal.propTypes = {
   openModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onAddItem: PropTypes.func.isRequired,
   token: PropTypes.shape({}),
 };
 
-AddMilestoneItemModal.defaultProps = {
+AddItemModal.defaultProps = {
   token: undefined,
 };
 
-export default getConversionRatesContext(AddMilestoneItemModal);
+export default getConversionRatesContext(AddItemModal);
