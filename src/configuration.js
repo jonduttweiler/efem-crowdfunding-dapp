@@ -19,6 +19,13 @@ const {
 
 const configurations = {
   localhost: {
+    language: {
+      default: 'es',
+      options: [
+        { key: "es", name: "Español" },
+        { key: "en", name: "English" }
+      ]
+    },
     title: 'localhost',
     liquidPledgingAddress: '0x46579394802b5e4d2C0647436BFcc71A2d9E8478',
     lppCampaignFactoryAddress: '0xe3155F7A49897e7860476b5A625B258ebe43cA98',
@@ -55,6 +62,13 @@ const configurations = {
     }
   },
   rsk_testnet: {
+    language: {
+      default: 'es',
+      options: [
+        { key: "es", name: "Español" },
+        { key: "en", name: "English" }
+      ]
+    },
     title: 'RSK Testnet',
     liquidPledgingAddress: '0x581A2751C29F030730c99f9435c5f34A82BF4969',
     lppCampaignFactoryAddress: '0xcb5eea43731E1058e5c8FBc989CB2E221602Fb67',
@@ -91,6 +105,13 @@ const configurations = {
     }
   },
   rsk_mainnet: {
+    language: {
+      default: 'es',
+      options: [
+        { key: "es", name: "Español" },
+        { key: "en", name: "English" }
+      ]
+    },
     title: 'RSK MainNet',
     liquidPledgingAddress: '0x86Fd7661114Ca0Cf959337CB7DAFbBE93dB248d2',
     lppCampaignFactoryAddress: '0xB874E4B1F4DBEEBCBdB8150EA8c71c3E96FCb40E',

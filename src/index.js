@@ -6,6 +6,7 @@ import Application from './containers/Application';
 import './styles/application.css';
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
+import './i18n/i18n';
 
 try {
   localForage
