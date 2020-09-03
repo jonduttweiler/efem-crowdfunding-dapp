@@ -192,7 +192,7 @@ class EditDAC extends Component {
                     mapping={inputs => {
                       dac.title = inputs.title;
                       dac.description = inputs.description;
-                      dac.communityUrl = inputs.communityUrl;
+                      dac.url = inputs.communityUrl;
                     }}
                     onValid={() => this.toggleFormValid(true)}
                     onInvalid={() => this.toggleFormValid(false)}
@@ -254,7 +254,7 @@ class EditDAC extends Component {
                         id="community-url"
                         label="Url to join your community"
                         type="text"
-                        value={dac.communityUrl}
+                        value={dac.url}
                         placeholder="https://slack.giveth.com"
                         help="Where can people join your community? Paste a link here for your community's website, social or chatroom."
                         validations="isUrl"

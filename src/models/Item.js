@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Model from './Model';
 import { cleanIpfsPath, getStartOfDayUTC } from '../lib/helpers';
-import IpfsService from '../services/IpfsService';
+import ipfsService from '../ipfs/IpfsService';
 
 class Item extends Model {
 
@@ -83,7 +83,15 @@ class Item extends Model {
    * Obtiene la URL completa de la imagen.
    */
   get imageCidUrl() {
-    return IpfsService.resolveUrl(this._imageCid)
+    return ipfsService.resolveUrl(this._imageCid)
+  }
+
+  get imageSrc() {
+    if(this._image && this._image != '') {
+      return this._image;
+    } else {
+      return this.imageCidUrl;
+    }
   }
 }
 

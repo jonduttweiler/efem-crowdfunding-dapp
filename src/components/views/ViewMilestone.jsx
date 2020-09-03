@@ -52,6 +52,9 @@ class ViewMilestone extends Component {
     if (JSON.stringify(this.props.milestone.donationIds) !== JSON.stringify(prevProps.milestone.donationIds)) {
       this.props.fetchDonationsByIds(this.props.milestone.donationIds);
     }
+    if (JSON.stringify(this.props.milestone.activityIds) !== JSON.stringify(prevProps.milestone.activityIds)) {
+      this.props.fetchActivitiesByIds(this.props.milestone.activityIds);
+    }
   }
 
   isActiveMilestone() {

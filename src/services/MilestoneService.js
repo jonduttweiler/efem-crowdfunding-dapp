@@ -1,8 +1,3 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-restricted-syntax */
-
-/* eslint-disable no-await-in-loop */
-
 import BigNumber from 'bignumber.js';
 import { utils } from 'web3';
 import { paramsForServer } from 'feathers-hooks-common';
@@ -12,10 +7,6 @@ import { feathersClient } from 'lib/feathersClient';
 import getNetwork from 'lib/blockchain/getNetwork';
 import getWeb3 from 'lib/blockchain/getWeb3';
 import extraGas from 'lib/blockchain/extraGas';
-import DonationService from 'services/DonationService';
-import IpfsService from './IpfsService';
-import ErrorPopup from '../components/ErrorPopup';
-
 import Donation from '../models/Donation';
 
 const milestones = feathersClient.service('milestones');

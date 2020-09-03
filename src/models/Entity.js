@@ -1,7 +1,7 @@
 import { nanoid } from '@reduxjs/toolkit'
 import Model from './Model';
 import { cleanIpfsPath } from '../lib/helpers';
-import IpfsService from '../services/IpfsService';
+import ipfsService from '../ipfs/IpfsService';
 
 /**
  * Base de DAC, Milestone y Campaign.
@@ -129,7 +129,7 @@ class Entity extends Model {
    * Obtiene la URL completa de la imagen.
    */
   get imageCidUrl() {
-    return IpfsService.resolveUrl(this._imageCid)
+    return ipfsService.resolveUrl(this._imageCid)
   }
 
   get txHash() {

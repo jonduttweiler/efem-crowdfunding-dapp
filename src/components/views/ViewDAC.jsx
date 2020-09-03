@@ -66,8 +66,8 @@ class ViewDAC extends Component {
             enabled={dac.receiveFunds}
           />}
 
-          {dac.communityUrl && (
-            <CommunityButton className="btn btn-secondary" url={dac.communityUrl}>
+          {dac.url && (
+            <CommunityButton className="btn btn-secondary" url={dac.url}>
               Join our community
             </CommunityButton>
           )}

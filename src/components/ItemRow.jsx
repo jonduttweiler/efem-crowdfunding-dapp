@@ -39,18 +39,25 @@ class ItemRow extends React.Component {
           </td>*/}
         <td className="td-item-amount-ether">{/*utils.fromWei(item.wei)*/}</td>
         <td className="td-item-file-upload">
-          {item.imageCidUrl && isEditMode && (
+          {/*item.imageCidUrl && isEditMode && (
             <div className="image-preview small">
               <img src={item.imageCidUrl} alt="Preview of uploaded file" />
             </div>
-          )}
-          {item.imageCidUrl && !isEditMode && (
+          )*/}
+          {/*item.imageCidUrl && !isEditMode && (
             <div className="image-preview small">
               <a href={item.imageCidUrl} target="_blank" rel="noopener noreferrer">
                 <img src={item.imageCidUrl} alt="View uploaded file" style={{ height: 'initial' }} />
               </a>
             </div>
-          )}
+          )*/}
+          {
+            <div className="image-preview small">
+              <a href={item.imageSrc} target="_blank" rel="noopener noreferrer">
+                <img src={item.imageSrc} alt="View uploaded file" style={{ height: 'initial' }} />
+              </a>
+            </div>
+          }
         </td>
         {isEditMode && (
           <td className="td-item-remove">

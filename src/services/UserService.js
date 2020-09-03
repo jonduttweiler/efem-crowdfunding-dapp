@@ -1,6 +1,6 @@
 import { feathersClient } from '../lib/feathersClient';
 import ErrorPopup from '../components/ErrorPopup';
-import IpfsService from './IpfsService';
+import ipfsService from '../ipfs/IpfsService';
 import walletApi from '../lib/blockchain/WalletApi';
 import crowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 import { Observable } from 'rxjs';
@@ -100,8 +100,8 @@ class UserService {
   async _updateAvatar(user) {
     if (user._newAvatar) {
       try {
-        const avatarUrl = await IpfsService.upload(user._newAvatar);
-        user.avatar = IpfsService.resolveUrl(avatarUrl);
+        const avatarUrl = await ipfsService.upload(user._newAvatar);
+        user.avatar = ipfsService.resolveUrl(avatarUrl);
         delete user._newAvatar;
       } catch (err) {
         ErrorPopup('Failed to upload avatar', err);
@@ -131,7 +131,7 @@ async function authenticateFeathers(user) {
 
 async function _uploadUserToIPFS(user) {
   try {
-    user.profileHash = await IpfsService.upload(user.toIpfs());
+    user.profileHash = await ipfsService.upload(user.toIpfs());
   } catch (err) {
     ErrorPopup('Failed to upload profile to ipfs');
   }

@@ -6,14 +6,13 @@ const isIPFS = require('is-ipfs');
 const axios = require('axios').default;
 const url = require('url');
 
-class ActivityIpfsBridge {
-  
+class IpfsService {
   /**
    * Upload a json object or Blob to ipfs
    *
    * @param {object|Blob|string} obj Object/Blob to upload to ipfsGateway. The only valid string is a base64 encoded image.
    */
-  upload(activity) {
+  upload(obj) {
     const { ipfsGateway } = config;
     if (!ipfsGateway || ipfsGateway === '') {
       console.log('not uploading to ipfs. missing ipfsGateway url');
@@ -59,13 +58,13 @@ class ActivityIpfsBridge {
     });
   }
 
-  static resolveUrl(path) {
+  resolveUrl(path) {
     const { ipfsGateway } = config;
     if (!isIPFS.path(path)) throw new Error(`${path} is not a valid ipfs path`);
     return url.resolve(ipfsGateway, path);
   }
 
-  static async downloadJson(path) {
+  async downloadJson(path) {
     const { ipfsGateway } = config;
     if (!isIPFS.path(path)) throw new Error(`${path} is not a valid ipfs path`);
     const response = await axios({
@@ -77,4 +76,4 @@ class ActivityIpfsBridge {
   }
 }
 
-export default IpfsService;
+export default new IpfsService();

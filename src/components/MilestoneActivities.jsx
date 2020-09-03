@@ -5,7 +5,7 @@ import { Form } from 'formsy-react-components';
 import Milestone from 'models/Milestone';
 import BigNumber from 'bignumber.js';
 import ProfileCard from './ProfileCard';
-import MilestoneProof from 'components/MilestoneProof';
+import MilestoneProof from './MilestoneProof';
 import MilestoneConversationAction from 'components/MilestoneConversationAction';
 import Loader from './Loader';
 import Activity from '../models/Activity';
