@@ -39,6 +39,7 @@ class MilestoneActivities extends Component {
                     <div className="c-timestamp">
                       <DateTimeViewer value={a.createdAt}/>
                     </div>
+                    <div className="c-action">{a.action}</div>
                     <div className="c-message">{ReactHtmlParser(a.message)}</div>
                     {a.items && a.items.length > 0 && (
                       <Form className="items-form">

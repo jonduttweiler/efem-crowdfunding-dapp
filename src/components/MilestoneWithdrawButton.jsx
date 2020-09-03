@@ -8,7 +8,7 @@ import { withdraw } from '../redux/reducers/milestonesSlice';
 /**
  * Boton de retiro de fondos del Milestone
  */
-class WithdrawMilestoneFundsButton extends Component {
+class MilestoneWithdrawButton extends Component {
 
   constructor(props) {
     super(props);
@@ -41,7 +41,7 @@ class WithdrawMilestoneFundsButton extends Component {
   }
 }
 
-WithdrawMilestoneFundsButton.propTypes = {
+MilestoneWithdrawButton.propTypes = {
   user: PropTypes.instanceOf(User).isRequired,
   milestone: PropTypes.instanceOf(Milestone).isRequired,
 };
@@ -53,4 +53,4 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = { withdraw }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WithdrawMilestoneFundsButton);
+export default connect(mapStateToProps, mapDispatchToProps)(MilestoneWithdrawButton);

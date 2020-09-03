@@ -722,14 +722,17 @@ class CrowdfundingContractApi {
     async getActivityById(activityId) {
         const crowdfunding = await this.getCrowdfunding();
         const activityOnChain = await crowdfunding.getActivity(activityId);
-        const { id, infoCid, user, milestoneId } = activityOnChain;
+        console.log('activityOnChain', activityOnChain);
+        const { id, infoCid, user, createdAt, milestoneId } = activityOnChain;
         // Se obtiene la información del Activity desde IPFS.
         const activityOnIpfs = await activityIpfsConnector.download(infoCid);
-        const { message, items } = activityOnIpfs;
+        const { action, message, items } = activityOnIpfs;
         return new Activity({
             id: parseInt(id),
             userAddress: user,
+            createdAt: createdAt,
             milestoneId: parseInt(milestoneId),
+            action: action,
             message: message,
             items: items
         });

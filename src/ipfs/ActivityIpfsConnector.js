@@ -33,13 +33,13 @@ class ActivityIpfsConnector {
    * @return información parcial del activity en IPFS.
    */
   async download(infoCid) {
-    const { message, itemCids } = await ipfsService.downloadJson(infoCid);
+    const { action, message, itemCids } = await ipfsService.downloadJson(infoCid);
     let items = [];
     for (let i = 0; i < itemCids.length; i++) {
       let item = await itemIpfsConnector.download(itemCids[i]);
       items.push(item);
     }
-    return { message, items };
+    return { action, message, items };
   }
 }
 

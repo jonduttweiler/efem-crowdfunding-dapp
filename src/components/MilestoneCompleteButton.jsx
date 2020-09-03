@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import Milestone from 'models/Milestone';
+import Milestone from '../models/Milestone';
+import Activity from '../models/Activity';
 import User from 'models/User';
 import ActivityModal from './ActivityModal';
 import { connect } from 'react-redux'
 import { complete } from '../redux/reducers/milestonesSlice';
 
-class RequestMarkMilestoneCompleteButton extends Component {
+class MilestoneCompleteButton extends Component {
 
   constructor() {
     super();
@@ -25,6 +26,7 @@ class RequestMarkMilestoneCompleteButton extends Component {
       textPlaceholder: "Describe what you've done...",
     }).then(activity => {
       milestone.status = Milestone.COMPLETING;
+      activity.action = Activity.ACTION_COMPLETE;
       this.props.complete({
         milestone,
         activity
@@ -53,7 +55,7 @@ class RequestMarkMilestoneCompleteButton extends Component {
   }
 }
 
-RequestMarkMilestoneCompleteButton.propTypes = {
+MilestoneCompleteButton.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,
   milestone: PropTypes.instanceOf(Milestone).isRequired,
 };
@@ -65,4 +67,4 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = { complete }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RequestMarkMilestoneCompleteButton);
+export default connect(mapStateToProps, mapDispatchToProps)(MilestoneCompleteButton);

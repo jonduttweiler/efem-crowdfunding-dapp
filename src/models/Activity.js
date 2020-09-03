@@ -1,6 +1,7 @@
 import { nanoid } from '@reduxjs/toolkit'
 import Model from './Model';
 import Item from './Item';
+import moment from 'moment';
 
 /**
  * Modelo de actividad de un milestone en la Dapp.
@@ -14,6 +15,8 @@ class Activity extends Model {
       clientId = nanoid(),
       milestoneId,
       userAddress = '',
+      createdAt = moment().unix(),
+      action = '',
       message = '',
       items = []
     } = data;
@@ -23,6 +26,8 @@ class Activity extends Model {
     this._clientId = clientId;
     this._milestoneId = milestoneId;
     this._userAddress = userAddress;
+    this._createdAt = createdAt;
+    this._action = action;
     this._message = message;
     this._items = items;
   }
@@ -36,6 +41,8 @@ class Activity extends Model {
       clientId: this._clientId,
       milestoneId: this._milestoneId,
       userAddress: this._userAddress,
+      createdAt: this._createdAt,
+      action: this._action,
       message: this._message,
       items: this._items
     };
@@ -46,6 +53,7 @@ class Activity extends Model {
    */
   toIpfs() {
     return {
+      action: this._action,
       message: this._message,
       itemCids: this._itemCids
     }
@@ -78,6 +86,15 @@ class Activity extends Model {
     this._userAddress = value;
   }
 
+  get createdAt() {
+    return this._createdAt;
+  }
+
+  set createdAt(value) {
+    this.checkType(value, ['string'], 'createdAt');
+    this._createdAt = value;
+  }
+
   get milestoneId() {
     return this._milestoneId;
   }
@@ -87,8 +104,22 @@ class Activity extends Model {
     this._milestoneId = value;
   }
 
+  get action() {
+    return this._action;
+  }
+
+  set action(value) {
+    this.checkType(value, ['string'], 'action');
+    this._action = value;
+  }
+
   get message() {
     return this._message;
+  }
+
+  set message(value) {
+    this.checkType(value, ['string'], 'message');
+    this._message = value;
   }
 
   get items() {
@@ -108,6 +139,18 @@ class Activity extends Model {
 
   get itemCids() {
     return this._itemCids;
+  }
+
+  static get ACTION_COMPLETE() {
+    return 'Complete';
+  }
+
+  static get ACTION_APPROVE() {
+    return 'Approve';
+  }
+
+  static get ACTION_REJECT() {
+    return 'Reject';
   }
 }
 
