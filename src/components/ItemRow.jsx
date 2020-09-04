@@ -76,7 +76,7 @@ ItemRow.propTypes = {
   removeItem: PropTypes.func,
   item: PropTypes.instanceOf(Item).isRequired,
   isEditMode: PropTypes.bool,
-  token: PropTypes.shape().isRequired,
+  //token: PropTypes.shape().isRequired,
 };
 
 ItemRow.defaultProps = {

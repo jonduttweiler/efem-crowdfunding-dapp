@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import config from '../configuration';
 
 /**
- * Selecciona de idioma de la aplicación.
+ * Selecciona el idioma de la aplicación.
  */
 class LanguageSelector extends Component {
 

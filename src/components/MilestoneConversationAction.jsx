@@ -10,7 +10,7 @@ import DeleteProposedMilestoneButton from 'components/DeleteProposedMilestoneBut
 import AcceptRejectProposedMilestoneButtons from 'components/AcceptRejectProposedMilestoneButtons';
 import ReproposeRejectedMilestoneButton from 'components/ReproposeRejectedMilestoneButton';
 import MilestoneCompleteButton from './MilestoneCompleteButton';
-import ApproveRejectMilestoneCompletionButtons from 'components/ApproveRejectMilestoneCompletionButtons';
+import MilestoneReviewButtons from './MilestoneReviewButtons';
 import MilestoneWithdrawButton from 'components/MilestoneWithdrawButton';
 
 class MilestoneConversationAction extends Component {
@@ -38,7 +38,7 @@ class MilestoneConversationAction extends Component {
 
       case 'NeedsReview':
         return (
-          <ApproveRejectMilestoneCompletionButtons
+          <MilestoneReviewButtons
             milestone={milestone}
             balance={balance}
             currentUser={currentUser}

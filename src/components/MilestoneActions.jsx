@@ -11,7 +11,7 @@ import AcceptRejectProposedMilestoneButtons from 'components/AcceptRejectPropose
 import ReproposeRejectedMilestoneButton from 'components/ReproposeRejectedMilestoneButton';
 import MilestoneCompleteButton from './MilestoneCompleteButton';
 import CancelMilestoneButton from 'components/CancelMilestoneButton';
-import ApproveRejectMilestoneCompletionButtons from 'components/ApproveRejectMilestoneCompletionButtons';
+import MilestoneReviewButtons from './MilestoneReviewButtons';
 import MilestoneWithdrawButton from './MilestoneWithdrawButton';
 import EditMilestoneButton from 'components/EditMilestoneButton';
 
@@ -51,12 +51,12 @@ class MilestoneActions extends Component {
           currentUser={currentUser}/>
         */}
 
-        {/*
-        <ApproveRejectMilestoneCompletionButtons
+        {
+        <MilestoneReviewButtons
           milestone={milestone}
           balance={balance}
-          currentUser={currentUser}/>
-        */}
+          currentUser={user}/>
+        }
 
         <MilestoneWithdrawButton
           milestone={milestone}

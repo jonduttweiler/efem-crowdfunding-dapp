@@ -68,6 +68,17 @@ export default class Milestone extends Entity {
   }
 
   /**
+   * Determina si el usuario es revisor del Milestone.
+   * 
+   * TODO Evaluar si el Campaign Reviewer debe considerarse como un reviewer normal.
+   * 
+   * @param user a determinar si es revisor del milestone.
+   */
+  isReviewer(user) {
+    return user && (user.address === this.reviewerAddress || user.address === this.campaignReviewerAddress);
+  }
+
+  /**
    * Determina si el usuario es el recipient del Milestone.
    * 
    * @param user a determinar si es el recipient del milestone.
@@ -96,8 +107,16 @@ export default class Milestone extends Entity {
     return StatusUtils.build('Completed');
   }
 
+  static get APPROVING() {
+    return StatusUtils.build('Appoving', true);
+  }
+
   static get APPROVED() {
     return StatusUtils.build('Approved');
+  }
+
+  static get REJECTING() {
+    return StatusUtils.build('Rejecting', true);
   }
 
   static get REJECTED() {

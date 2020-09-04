@@ -59,6 +59,14 @@ class Activity extends Model {
     }
   }
 
+  get isApprove() {
+    return this._action === Activity.ACTION_APPROVE;
+  }
+
+  get isReject() {
+    return this._action === Activity.ACTION_REJECT;
+  }
+
   get id() {
     return this._id;
   }

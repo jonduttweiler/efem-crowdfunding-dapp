@@ -49,10 +49,13 @@ class MilestoneActivities extends Component {
                     )}
                     {/* ---- action buttons ---- */}
                     <div className="c-action-footer">
+                      {/* 
                       <MilestoneConversationAction
                         messageContext={a.messageContext}
                         milestone={milestone}
                       />
+                      */}
+                      
                     </div>
                     <div className="c-divider" />
                   </div>

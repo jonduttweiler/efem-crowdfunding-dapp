@@ -624,6 +624,92 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Revisa el milestone para marcarlo como aprobado o no en el Smart Contarct.
+     * 
+     * @param milestone a revisar.
+     */
+    milestoneReview(milestone, activity) {
+
+        return new Observable(async subscriber => {
+            console.log('activity.isApprove', activity.isApprove);
+            console.log('activity', activity);
+            try {
+                let crowdfunding = await this.getCrowdfunding();
+
+                // Se almacena en IPFS toda la información del Activity.
+                let activityInfoCid = await activityIpfsConnector.upload(activity);
+
+                let thisApi = this;
+                let clientId = milestone.clientId;
+
+                let promiEvent = crowdfunding.milestoneReview(
+                    milestone.id,
+                    activity.isApprove,
+                    activityInfoCid,
+                    {
+                        from: activity.userAddress,
+                        $extraGas: extraGas()
+                    });
+
+                promiEvent
+                    .once('transactionHash', function (hash) {
+                        // La transacción ha sido creada.
+                        milestone.txHash = hash;
+                        subscriber.next(milestone);
+                        let text = activity.isApprove ?
+                            'Se inició la transacción para aprobar el milestone' :
+                            'Se inició la transacción para rechazar el milestone';
+                        messageUtils.addMessageInfo({ text: text });
+                    })
+                    .once('confirmation', function (confNumber, receipt) {
+                        // La transacción ha sido incluida en un bloque
+                        // sin bloques de confirmación (once).
+                        // TODO Aquí debería agregarse lógica para esperar
+                        // un número determinado de bloques confirmados (on, confNumber).
+                        let milestoneId;
+                        if (activity.isApprove) {
+                            milestoneId = parseInt(receipt.events['MilestoneApprove'].returnValues.milestoneId);
+                        } else {
+                            milestoneId = parseInt(receipt.events['MilestoneReject'].returnValues.milestoneId);
+                        }
+                        thisApi.getMilestoneById(milestoneId).then(milestone => {
+                            milestone.clientId = clientId;
+                            subscriber.next(milestone);
+                            if (activity.isApprove) {
+                                messageUtils.addMessageSuccess({
+                                    title: 'Felicitaciones!',
+                                    text: `El milestone ${milestone.title} ha sido aprobado`
+                                });
+                            } else {
+                                messageUtils.addMessageSuccess({
+                                    title: 'Qué pena!',
+                                    text: `El milestone ${milestone.title} ha sido rechazado`
+                                });
+                            }
+                        });
+                    })
+                    .on('error', function (error) {
+                        error.milestone = milestone;
+                        console.error(`Error procesando transacción para revisión el milestone.`, error);
+                        subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error revisando el milestone ${milestone.title}`,
+                            error: error
+                        });
+                    });
+            } catch (error) {
+                error.milestone = milestone;
+                console.error(`Error revisando milestone`, error);
+                subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error revisando el milestone ${milestone.title}`,
+                    error: error
+                });
+            }
+        });
+    }
+
+    /**
      * Retiro de fondos de un milestone.
      * 
      * @param milestone desde el cual se retiran los fondos.
@@ -638,7 +724,7 @@ class CrowdfundingContractApi {
                 let thisApi = this;
                 let clientId = milestone.clientId;
 
-                let promiEvent = crowdfunding.withdraw(
+                let promiEvent = crowdfunding.milestoneWithdraw(
                     milestone.id,
                     {
                         from: milestone.recipientAddress,

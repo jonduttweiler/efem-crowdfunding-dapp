@@ -77,6 +77,27 @@ export const milestoneCompleteEpic = action$ => action$.pipe(
 )
 
 /**
+ * Revisión del Milestone para aprobarlo o rechazarlo.
+ * 
+ * @param action$ de Redux.
+ */
+export const milestoneReviewEpic = action$ => action$.pipe(
+  ofType('milestones/review'),
+  mergeMap(action => crowdfundingContractApi.milestoneReview(
+    action.payload.milestone,
+    action.payload.activity
+  )),
+  map(milestone => ({
+    type: 'milestones/updateMilestoneByClientId',
+    payload: milestone
+  })),
+  catchError(error => of({
+    type: 'milestones/fetchMilestone',
+    payload: error.milestone
+  }))
+)
+
+/**
  * Retiro de fondos de un Milestone
  * 
  * @param action$ de Redux.

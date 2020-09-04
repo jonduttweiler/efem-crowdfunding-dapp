@@ -15,7 +15,7 @@ class MilestoneCompleteButton extends Component {
   }
 
   requestMarkComplete() {
-    const { milestone, currentUser } = this.props;
+    const { milestone } = this.props;
 
     this.activityModal.current.openModal({
       title: 'Mark milestone complete',
@@ -36,8 +36,7 @@ class MilestoneCompleteButton extends Component {
 
   render() {
     const { milestone, currentUser } = this.props;
-    let showButton = (milestone.isRecipient(currentUser) || milestone.isManager(currentUser))
-      && milestone.isActive;
+    let showButton = milestone.isManager(currentUser) && milestone.isActive;
     let buttonLabel = 'Mark complete';
     return (
       <Fragment>
