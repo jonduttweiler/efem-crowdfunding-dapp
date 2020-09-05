@@ -15,7 +15,9 @@ class DateTimeViewer extends Component {
     render() {
         let dateTime = this.props.value;
         return (
-            <span>{!dateTime ? '(Sin fecha)' : moment.unix(dateTime).format(this.format)}</span>
+            <div>
+                {!dateTime ? '(Sin fecha)' : moment.unix(dateTime).format(this.format)}
+            </div>
         );
     }
 }

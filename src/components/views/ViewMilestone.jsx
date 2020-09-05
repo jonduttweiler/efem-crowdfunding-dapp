@@ -9,7 +9,7 @@ import DonateButton from '../DonateButton';
 import GoBackButton from '../GoBackButton';
 import TableDonations from '../TableDonations';
 import Loader from '../Loader';
-import MilestoneActivities from '../MilestoneActivities';
+import ActivityList from '../ActivityList';
 // import DelegateMultipleButton from '../DelegateMultipleButton';
 import Milestone from '../../models/Milestone';
 import { connect } from 'react-redux'
@@ -46,7 +46,7 @@ class ViewMilestone extends Component {
     this.props.fetchActivitiesByIds(this.props.milestone.activityIds);
     this.props.fetchDonationsByIds(this.props.milestone.donationIds);
   }
-  
+
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (JSON.stringify(this.props.milestone.donationIds) !== JSON.stringify(prevProps.milestone.donationIds)) {
@@ -78,10 +78,10 @@ class ViewMilestone extends Component {
 
   render() {
     const { donations, activities, history, user, balance, campaign, milestone } = this.props;
-    
+
     const {
       isLoading,
-      
+
       isLoadingDonations,
       //campaign,
       //milestone,
@@ -106,7 +106,7 @@ class ViewMilestone extends Component {
 
               <div className="milestone-actions">
                 {milestone.id && <DonateButton
-                  entityType={Milestone.type}                 
+                  entityType={Milestone.type}
                   entityId={milestone.id}
                   title={milestone.title}
                   enabled={milestone.receiveFunds}
@@ -142,7 +142,7 @@ class ViewMilestone extends Component {
                       title={`Campaign: ${campaign.title}`}
                     />
 
-                    <ProfileCard address={milestone.managerAddress}/>
+                    <ProfileCard address={milestone.managerAddress} />
 
                     <div className="card content-card">
                       <div className="card-body content">{this.renderDescription()}</div>
@@ -154,7 +154,7 @@ class ViewMilestone extends Component {
               <div className="row spacer-top-50">
                 <div className="col-md-8 m-auto">
                   <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-12">
                       <h4>Details</h4>
 
                       <div className="card details-card">
@@ -163,16 +163,16 @@ class ViewMilestone extends Component {
                           <small className="form-text">
                             This person will review the actual completion of the Milestone
                           </small>
-                          <ProfileCard address={milestone.reviewerAddress} namePosition="right"/>
+                          <ProfileCard address={milestone.reviewerAddress} namePosition="right" />
                         </div>
-                        
+
 
                         <div className="form-group">
                           <span className="label">Recipient</span>
                           <small className="form-text">
                             Where the funds go after successful completion of the Milestone
                           </small>
-                          <ProfileCard address={milestone.recipientAddress} namePosition="right"/>
+                          <ProfileCard address={milestone.recipientAddress} namePosition="right" />
                         </div>
 
                         {milestone.date && (
@@ -181,7 +181,7 @@ class ViewMilestone extends Component {
                             <small className="form-text">
                               This date defines the fiat conversion rate
                             </small>
-                            <DateViewer value={milestone.date}/>
+                            <DateViewer value={milestone.date} />
                           </div>
                         )}
 
@@ -191,7 +191,7 @@ class ViewMilestone extends Component {
                             The maximum amount that can be donated to this Milestone. Based on the
                             requested amount in fiat.
                           </small>
-                          <FiatAmount amount={milestone.fiatAmountTarget}/>
+                          <FiatAmount amount={milestone.fiatAmountTarget} />
                         </div>
 
                         <div className="form-group">
@@ -218,9 +218,8 @@ class ViewMilestone extends Component {
                       </div>
                     </div>
 
-                    <div className="col-md-6">
-                      <h4>Status updates</h4>
-                      <MilestoneActivities activities={activities} milestone={milestone} balance={balance} />
+                    <div className="col-md-12">
+                      <ActivityList activities={activities} />
                     </div>
                   </div>
                 </div>
@@ -228,7 +227,7 @@ class ViewMilestone extends Component {
 
               <div className="row spacer-top-50 spacer-bottom-50">
                 <div className="col-md-8 m-auto">
-                  <TableDonations donations={donations}/>
+                  <TableDonations donations={donations} />
                 </div>
               </div>
             </div>
@@ -270,7 +269,7 @@ const mapStateToProps = (state, ownProps) => {
   reduxProps.user = selectUser(state);
   const milestoneId = parseInt(ownProps.match.params.milestoneId);
   reduxProps.milestone = selectMilestone(state, milestoneId);
-  if(reduxProps.milestone) {
+  if (reduxProps.milestone) {
     reduxProps.campaign = selectCampaign(state, reduxProps.milestone.campaignId);
   }
   reduxProps.donations = selectDonationsByEntity(state, milestoneId);

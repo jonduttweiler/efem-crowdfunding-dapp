@@ -67,6 +67,10 @@ class Activity extends Model {
     return this._action === Activity.ACTION_REJECT;
   }
 
+  get hasItems() {
+    return this._items.length > 0;
+  }
+
   get id() {
     return this._id;
   }
