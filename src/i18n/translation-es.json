@@ -1,5 +1,15 @@
 {
     "campaigns": "Campañas",
+    "milestoneComplete": "Completar",
+    "milestoneCompleteTitle": "Completar hito",
+    "milestoneCompleteDescription": "Describe lo que has hecho para terminar el trabajo de este hito y adjunta pruebas si es necesario. Esta información será visible públicamente y se enviará por correo electrónico al revisor.",
+    "milestoneCompleteMessagePlaceholder": "Describe lo que has hecho",
+    "milestoneCompleteMessageMinLength": "Se agradece mucho si escribe algo significativo",
+    "milestoneApprove": "Aprobar",
+    "milestoneReject": "Rechazar",
+    "milestoneProofDescription": "Adjunte un gasto, factura o cualquier otra cosa que requiera pago.",
     "activities": "Actividades",
-    "attachements": "Adjuntos"
+    "attachements": "Adjuntos",
+    "message": "Mensaje",
+    "itemNewTitle": "Nuevo adjunto"
 }

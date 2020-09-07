@@ -3,7 +3,13 @@ import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import ItemRow from './ItemRow';
 import AddItemButton from './AddItemButton';
+import FormDialog from './AddItemModalNew';
 import AddItemModal from './AddItemModal';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import { withStyles } from '@material-ui/core/styles';
+import { withTranslation } from 'react-i18next';
+import Typography from '@material-ui/core/Typography';
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
 
@@ -55,7 +61,7 @@ class MilestoneProof extends Component {
 
   render() {
     const { items, addItemModalVisible } = this.state;
-    const { isEditMode } = this.props;
+    const { isEditMode, classes, t } = this.props;
     //const canEdit = isEditMode || ['Proposed', 'Pending'].includes(milestoneStatus);
     const canEdit = isEditMode;
     return (
@@ -94,13 +100,23 @@ class MilestoneProof extends Component {
                 )}
 
                 {items.length > 0 && canEdit && (
-                  <AddItemButton onClick={() => this.toggleAddItemModal()} />
+                  <Fab color="primary" aria-label="add" className={classes.fab}>
+                    <AddIcon />
+                  </Fab>
                 )}
 
                 {items.length === 0 && canEdit && (
-                  <div className="text-center">
-                    <p>Attach an expense, invoice or anything else that requires payment.</p>
-                    <AddItemButton onClick={() => this.toggleAddItemModal()} />
+                  <div>
+                    <Typography variant="body1" gutterBottom>
+                      {t('milestoneProofDescription')}
+                    </Typography>
+                    <Fab color="primary"
+                      aria-label="add"
+                      className={classes.fab}
+                      onClick={() => this.toggleAddItemModal()}>
+                      <AddIcon />
+                    </Fab>
+                    <FormDialog></FormDialog>
                   </div>
                 )}
               </div>
@@ -113,10 +129,21 @@ class MilestoneProof extends Component {
           onClose={() => this.toggleAddItemModal()}
           onAddItem={item => this.onAddItem(item)}
         />
+
+
       </div>
     );
   }
 }
+
+
+const styles = theme => ({
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  }
+});
 
 MilestoneProof.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -128,4 +155,6 @@ MilestoneProof.defaultProps = {
   onItemsChanged: () => { }
 };
 
-export default MilestoneProof;
+export default withStyles(styles)(
+  withTranslation()(MilestoneProof)
+);

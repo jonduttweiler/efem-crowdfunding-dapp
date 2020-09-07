@@ -1,5 +1,15 @@
 {
     "campaigns": "Campaings",
+    "milestoneComplete": "Complete",
+    "milestoneCompleteTitle": "Milestone complete",
+    "milestoneCompleteDescription": "Describe what you've done to finish the work of this milestone and attach proof if necessary. This information will be publicly visible and emailed to the reviewer.",
+    "milestoneCompleteMessagePlaceholder": "Describe what you've done",
+    "milestoneCompleteMessageMinLength": "It is really appreciated if you write something meaningful",
+    "milestoneApprove": "Approve",
+    "milestoneReject": "Reject",
+    "milestoneProofDescription": "Attach an expense, invoice or anything else that requires payment.",
     "activities": "Activities",
-    "attachements": "Attachements"
+    "attachements": "Attachements",
+    "message": "Message",
+    "itemNewTitle": "New attachment"
 }

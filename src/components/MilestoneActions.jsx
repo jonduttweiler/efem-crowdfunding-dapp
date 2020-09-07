@@ -14,6 +14,7 @@ import CancelMilestoneButton from 'components/CancelMilestoneButton';
 import MilestoneReviewButtons from './MilestoneReviewButtons';
 import MilestoneWithdrawButton from './MilestoneWithdrawButton';
 import EditMilestoneButton from 'components/EditMilestoneButton';
+import MilestoneComplete from './MilestoneComplete';
 
 class MilestoneActions extends Component {
   render() {
@@ -21,6 +22,10 @@ class MilestoneActions extends Component {
 
     return (
       <Fragment>
+
+        {
+          <MilestoneComplete milestone={milestone}></MilestoneComplete>
+        }
         {/*
         <AcceptRejectProposedMilestoneButtons
           milestone={milestone}
