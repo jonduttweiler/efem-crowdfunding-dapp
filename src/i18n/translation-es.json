@@ -11,5 +11,11 @@
     "activities": "Actividades",
     "attachements": "Adjuntos",
     "message": "Mensaje",
-    "itemNewTitle": "Nuevo adjunto"
+    "itemAdd": "Agregar adjunto",
+    "itemNewTitle": "Nuevo adjunto",
+    "itemDescription": "Descripción",
+    "itemDescriptionPlaceholder": "Mi comprobante",
+    "imageAdd": "Agrega una imagen",
+    "imageAddHelp": "Una imagen vale más que mil palabras. Selecciona un archivo PNG o JPG",
+    "imageMinLength": "Por favor, selecciona un archivo PNG o JPG"
 }

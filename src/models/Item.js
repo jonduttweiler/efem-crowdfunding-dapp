@@ -1,3 +1,4 @@
+import { nanoid } from '@reduxjs/toolkit'
 import moment from 'moment';
 import Model from './Model';
 import { cleanIpfsPath, getStartOfDayUTC } from '../lib/helpers';
@@ -8,11 +9,13 @@ class Item extends Model {
   constructor(data) {
     super(data);
     const {
+      clientId = nanoid(),
       date = getStartOfDayUTC().subtract(1, 'd'),
       description = '',
       image = '',
       imageCid = ''
     } = data;
+    this._clientId = clientId;
     this._date = date;
     this._description = description;
     this._image = image;
@@ -32,10 +35,20 @@ class Item extends Model {
    */
   toStore() {
     return {
+      clientId: this._clientId,
       date: this._date,
       description: this._description,
       imageCid: this._imageCid
     }
+  }
+
+  get clientId() {
+    return this._clientId;
+  }
+
+  set clientId(value) {
+    this.checkType(value, ['undefined', 'string'], 'clientId');
+    this._clientId = value;
   }
 
   get date() {

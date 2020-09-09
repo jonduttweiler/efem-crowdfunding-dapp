@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import { File } from 'formsy-react-components';
 import Cropper from 'react-cropper';
 import ImageTools from '../lib/ImageResizer';
+import { withTranslation } from 'react-i18next';
 
 /* global FileReader */
 /**
@@ -12,13 +12,12 @@ import ImageTools from '../lib/ImageResizer';
  *  @param setImage Callback function that is called every time the image changes
  */
 class FormsyImageUploader extends Component {
+  
   constructor() {
     super();
-
     this.state = {
       image: undefined,
     };
-
     this.cropImage = this.cropImage.bind(this);
     this.loadAndPreviewImage = this.loadAndPreviewImage.bind(this);
   }
@@ -38,7 +37,6 @@ class FormsyImageUploader extends Component {
       return;
     }
     const imgResized = this.cropper.getCroppedCanvas().toDataURL();
-
     ImageTools.resize(
       imgResized,
       {
@@ -57,7 +55,6 @@ class FormsyImageUploader extends Component {
       this.setState({ image: e.target.result });
       this.props.setImage(e.target.result);
     };
-
     ImageTools.resize(
       files[0],
       {
@@ -71,6 +68,7 @@ class FormsyImageUploader extends Component {
   }
 
   render() {
+    const { t } = this.props;
     return (
       <div>
         {(this.props.previewImage || this.previewImage) && this.props.resize && (
@@ -121,14 +119,14 @@ class FormsyImageUploader extends Component {
         )}
 
         <File
-          label="Add a picture"
           name="picture"
+          label={t('imageAdd')}
           accept=".png,.jpeg,.jpg"
           onChange={this.loadAndPreviewImage}
-          help="A picture says more than a thousand words. Select a png or jpg file."
+          help={t('imageAddHelp')}
           validations="minLength: 1"
           validationErrors={{
-            minLength: 'Please select a png or jpg file.',
+            minLength: t('imageMinLength'),
           }}
           required={this.props.isRequired}
         />
@@ -154,4 +152,4 @@ FormsyImageUploader.defaultProps = {
   resize: true,
 };
 
-export default FormsyImageUploader;
+export default withTranslation()(FormsyImageUploader);

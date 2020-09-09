@@ -16,14 +16,15 @@ class ActivityList extends Component {
 
   render() {
     const { activities, classes, t } = this.props;
+    console.log('activities', activities);
     return (
       <Container fixed>
         <Typography variant="overline">
           {t('activities')}
         </Typography>
         <List className={classes.root}>
-          {activities.map(a => (
-            <ActivityListItem activity={a}></ActivityListItem>
+          {activities.map(activity => (
+            <ActivityListItem key={activity.clientId} activity={activity}></ActivityListItem>
           ))}
         </List>
       </Container>

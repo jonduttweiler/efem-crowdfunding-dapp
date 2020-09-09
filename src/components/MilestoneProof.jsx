@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
-import ItemRow from './ItemRow';
-import AddItemButton from './AddItemButton';
-import FormDialog from './AddItemModalNew';
-import AddItemModal from './AddItemModal';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import ItemList from './ItemList';
+import AddItemDialog from './AddItemDialog';
 import { withStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
@@ -18,8 +14,7 @@ class MilestoneProof extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: props.items,
-      addItemModalVisible: false,
+      items: props.items
     };
   }
 
@@ -53,14 +48,9 @@ class MilestoneProof extends Component {
     );
   }
 
-  toggleAddItemModal() {
-    this.setState(prevState => ({
-      addItemModalVisible: !prevState.addItemModalVisible,
-    }));
-  }
-
   render() {
-    const { items, addItemModalVisible } = this.state;
+    const { items } = this.state;
+    console.log('items', items);
     const { isEditMode, classes, t } = this.props;
     //const canEdit = isEditMode || ['Proposed', 'Pending'].includes(milestoneStatus);
     const canEdit = isEditMode;
@@ -70,67 +60,22 @@ class MilestoneProof extends Component {
           <div className="col-12">
             <div className="card milestone-items-card">
               <div className="card-body">
-                {items.length > 0 && (
-                  <div className="table-container">
-                    <table className="table table-responsive table-striped table-hover">
-                      <thead>
-                        <tr>
-                          <th className="td-item-date">Date</th>
-                          <th className="td-item-description">Description</th>
-                          <th className="td-item-amount-fiat">Amount Fiat</th>
-                          <th className="td-item-fiat-amount">Amount</th>
-                          <th className="td-item-file-upload">Attached proof</th>
-                          {canEdit && <th className="td-item-action" />}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {items.map((item, i) => (
-                          <ItemRow
-                            key={item.id}
-                            name={`milestoneItem-${i}`}
-                            index={i}
-                            item={item}
-                            removeItem={() => this.removeItem(i)}
-                            isEditMode={canEdit}
-                          />
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
+                <ItemList items={items}></ItemList>
                 {items.length > 0 && canEdit && (
-                  <Fab color="primary" aria-label="add" className={classes.fab}>
-                    <AddIcon />
-                  </Fab>
+                  <AddItemDialog onAddItem={item => this.onAddItem(item)} />
                 )}
-
                 {items.length === 0 && canEdit && (
                   <div>
                     <Typography variant="body1" gutterBottom>
                       {t('milestoneProofDescription')}
                     </Typography>
-                    <Fab color="primary"
-                      aria-label="add"
-                      className={classes.fab}
-                      onClick={() => this.toggleAddItemModal()}>
-                      <AddIcon />
-                    </Fab>
-                    <FormDialog></FormDialog>
+                    <AddItemDialog onAddItem={item => this.onAddItem(item)} />
                   </div>
                 )}
               </div>
             </div>
           </div>
         </div>
-
-        <AddItemModal
-          openModal={addItemModalVisible}
-          onClose={() => this.toggleAddItemModal()}
-          onAddItem={item => this.onAddItem(item)}
-        />
-
-
       </div>
     );
   }

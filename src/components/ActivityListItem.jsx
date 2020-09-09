@@ -15,8 +15,7 @@ import DateTimeViewer from './DateTimeViewer';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
-import List from '@material-ui/core/List';
-import ItemListItem from './ItemListItem';
+import ItemList from './ItemList';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import { withTranslation } from 'react-i18next';
@@ -69,7 +68,7 @@ class ActivityListItem extends Component {
               <React.Fragment>
                 {ReactHtmlParser(activity.message)}
                 <ActivityActionChip activity={activity}></ActivityActionChip>
-                <DateTimeViewer value={activity.createdAt}  />
+                <DateTimeViewer value={activity.createdAt} />
               </React.Fragment>
             }
           />
@@ -80,11 +79,7 @@ class ActivityListItem extends Component {
             <Typography variant="overline">
               {t('attachements')}
             </Typography>
-            <List>
-              {activity.items.map(i => (
-                <ItemListItem item={i}></ItemListItem>
-              ))}
-            </List>
+            <ItemList items={activity.items}></ItemList>
           </Container>
         </Collapse>
         <Divider />

@@ -11,5 +11,11 @@
     "activities": "Activities",
     "attachements": "Attachements",
     "message": "Message",
-    "itemNewTitle": "New attachment"
+    "itemAdd": "Add item",
+    "itemNewTitle": "New attachment",
+    "itemDescription": "Description",
+    "itemDescriptionPlaceholder": "My receipt",
+    "imageAdd": "Add a picture",
+    "imageAddHelp": "A picture says more than a thousand words. Select a PNG or JPG file",
+    "imageMinLength": "Please select a PNG or JPG file"
 }
