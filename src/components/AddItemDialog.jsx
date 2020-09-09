@@ -103,13 +103,6 @@ class AddItemDialog extends Component {
               layout="vertical"
             >
 
-              {/*<Prompt
-                when={isBlocking}
-                message={() =>
-                  `You have unsaved changes. Are you sure you want to navigate from this page?`
-                }
-              />*/}
-
               <TextField
                 id="description"
                 name="description"

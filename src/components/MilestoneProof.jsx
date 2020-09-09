@@ -24,11 +24,6 @@ class MilestoneProof extends Component {
     });
   }
 
-  onAddItem(item) {
-    this.addItem(item);
-    this.setState({ addItemModalVisible: false });
-  }
-
   addItem(item) {
     this.setState(
       prevState => ({
@@ -50,7 +45,6 @@ class MilestoneProof extends Component {
 
   render() {
     const { items } = this.state;
-    console.log('items', items);
     const { isEditMode, classes, t } = this.props;
     //const canEdit = isEditMode || ['Proposed', 'Pending'].includes(milestoneStatus);
     const canEdit = isEditMode;
@@ -62,14 +56,14 @@ class MilestoneProof extends Component {
               <div className="card-body">
                 <ItemList items={items}></ItemList>
                 {items.length > 0 && canEdit && (
-                  <AddItemDialog onAddItem={item => this.onAddItem(item)} />
+                  <AddItemDialog onAddItem={item => this.addItem(item)} />
                 )}
                 {items.length === 0 && canEdit && (
                   <div>
                     <Typography variant="body1" gutterBottom>
                       {t('milestoneProofDescription')}
                     </Typography>
-                    <AddItemDialog onAddItem={item => this.onAddItem(item)} />
+                    <AddItemDialog onAddItem={item => this.addItem(item)} />
                   </div>
                 )}
               </div>

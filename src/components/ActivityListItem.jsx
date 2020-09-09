@@ -9,7 +9,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { getUser } from '../services/UserService';
 import User from '../models/User';
-import ReactHtmlParser from 'react-html-parser';
 import ActivityActionChip from './ActivityActionChip';
 import DateTimeViewer from './DateTimeViewer';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -66,7 +65,9 @@ class ActivityListItem extends Component {
             primary={user.name}
             secondary={
               <React.Fragment>
-                {ReactHtmlParser(activity.message)}
+                <Typography variant="body1" gutterBottom>
+                  {activity.message}
+                </Typography>
                 <ActivityActionChip activity={activity}></ActivityActionChip>
                 <DateTimeViewer value={activity.createdAt} />
               </React.Fragment>

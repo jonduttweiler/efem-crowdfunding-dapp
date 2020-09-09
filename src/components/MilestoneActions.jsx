@@ -24,7 +24,10 @@ class MilestoneActions extends Component {
       <Fragment>
 
         {
-          <MilestoneComplete milestone={milestone}></MilestoneComplete>
+          <MilestoneComplete
+            milestone={milestone}
+            currentUser={user}>
+          </MilestoneComplete>
         }
         {/*
         <AcceptRejectProposedMilestoneButtons

@@ -18,7 +18,9 @@ import QuillFormsy from '../components/QuillFormsy';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
 import { complete } from '../redux/reducers/milestonesSlice';
-
+import MilestoneCard from './MilestoneCard';
+import User from 'models/User';
+import TextField from '@material-ui/core/TextField';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -27,17 +29,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 class MilestoneComplete extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       formIsValid: false,
       activity: new Activity({}),
       open: false
     };
-
-    this.promise = {};
-
     this.form = React.createRef();
-
+    this.handleChangeMessage = this.handleChangeMessage.bind(this);
     this.handleChangeItems = this.handleChangeItems.bind(this);
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -76,6 +74,7 @@ class MilestoneComplete extends Component {
     this.setState({
       activity: activity
     });
+    this.checkForm();
   };
 
   handleChangeItems(items) {
@@ -83,6 +82,16 @@ class MilestoneComplete extends Component {
     activity.items = items;
     this.setState({
       activity: activity
+    });
+    this.checkForm();
+  };
+
+  checkForm() {
+    const { activity } = this.state;
+    const formIsValid = activity.message != '' && activity.items.length > 0;
+    console.log('EVALUACION', activity, formIsValid);
+    this.setState({
+      formIsValid: formIsValid
     });
   };
 
@@ -92,13 +101,16 @@ class MilestoneComplete extends Component {
       formIsValid,
       open
     } = this.state;
-    const { milestone, classes, t } = this.props;
+    const { milestone, currentUser, classes, t } = this.props;
+    let showButton = milestone.isManager(currentUser) && milestone.isActive;
 
     return (
       <div>
-        <Button color="primary" onClick={this.handleClickOpen}>
-          {t('milestoneComplete')}
-        </Button>
+        {showButton && (
+          <Button color="primary" onClick={this.handleClickOpen}>
+            {t('milestoneComplete')}
+          </Button>)
+        }
         <Dialog fullScreen open={open} onClose={this.handleClose} TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
             <Toolbar>
@@ -108,51 +120,69 @@ class MilestoneComplete extends Component {
               <Typography variant="h6" className={classes.title}>
                 {t('milestoneCompleteTitle')}
               </Typography>
-              <Button autoFocus color="inherit" onClick={this.handleComplete}>
+              <Button autoFocus
+                color="inherit"
+                onClick={this.handleComplete}
+                disabled={!formIsValid}>
                 {t('milestoneComplete')}
               </Button>
             </Toolbar>
           </AppBar>
+          <div className={classes.root}>
+            <Grid container spacing={3}>
+              <Grid item xs={3}>
+                <MilestoneCard milestone={milestone} />
+              </Grid>
+              <Grid item xs={9}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      {t('milestoneCompleteDescription')}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Form id="activity"
+                      ref={this.form}
+                      layout="vertical">
 
-          <Form id="activity"
-            ref={this.form}
-            layout="vertical">
-
-            <div className={classes.root}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {t('milestoneCompleteDescription')}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <QuillFormsy
-                    name="message"
-                    label={t('message')}
-                    value={activity.message}
-                    placeholder={t('milestoneCompleteMessagePlaceholder')}
-                    validations="minLength:3"
-                    validationErrors={{
-                      minLength: t('milestoneCompleteMessageMinLength'),
-                    }}
-                    required={true}
-                    onChange={this.handleChangeMessage}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <span className="label">
-                    {t('attachements')}
-                  </span>
-                  <MilestoneProof
-                    isEditMode
-                    items={activity.items}
-                    onItemsChanged={items => this.handleChangeItems(items)}
-                    milestoneStatus={milestone.status}
-                  />
+                      <div>
+                        <Grid container spacing={3}>
+                          <Grid item xs={6}>
+                            <TextField
+                              id="message"
+                              name="message"
+                              value={activity.message}
+                              label={t('message')}
+                              placeholder={t('milestoneCompleteMessagePlaceholder')}
+                              multiline
+                              rows={10}
+                              autoFocus
+                              margin="dense"
+                              type="text"
+                              fullWidth
+                              required
+                              onChange={this.handleChangeMessage}
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <span className="label">
+                              {t('attachements')}
+                            </span>
+                            <MilestoneProof
+                              isEditMode
+                              items={activity.items}
+                              onItemsChanged={items => this.handleChangeItems(items)}
+                              milestoneStatus={milestone.status}
+                            />
+                          </Grid>
+                        </Grid>
+                      </div>
+                    </Form>
+                  </Grid>
                 </Grid>
               </Grid>
-            </div>
-          </Form>
+            </Grid>
+          </div>
         </Dialog>
       </div >
     );
@@ -161,28 +191,21 @@ class MilestoneComplete extends Component {
 
 MilestoneComplete.propTypes = {
   milestone: PropTypes.instanceOf(Milestone).isRequired,
+  currentUser: PropTypes.instanceOf(User).isRequired
 };
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    margin: '2em'
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+    margin: '1em'
   },
   appBar: {
-    position: 'relative',
+    position: 'relative'
   },
   title: {
     marginLeft: theme.spacing(2),
-    flex: 1,
-  },
-  control: {
-    padding: theme.spacing(2),
-  },
+    flex: 1
+  }
 });
 
 const mapStateToProps = (state, ownProps) => {
