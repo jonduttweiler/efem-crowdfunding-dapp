@@ -16,9 +16,9 @@ class CryptoAmount extends Component {
     }
 
     render() {
-        let amountConfig = config.tokens[this.props.tokenAddress];
-        let amount = Web3Utils.weiToEther(this.props.amount).toFixed(amountConfig.showDecimals);
-        let symbol = amountConfig.symbol;
+        let tokenConfig = config.tokens[this.props.tokenAddress];
+        let amount = Web3Utils.weiToEther(this.props.amount).toFixed(tokenConfig.showDecimals);
+        let symbol = tokenConfig.symbol;
         return (
             <span>{amount}{' '}{symbol}</span>
         );

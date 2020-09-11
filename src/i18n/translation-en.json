@@ -1,12 +1,35 @@
 {
     "campaigns": "Campaings",
+    
     "milestoneComplete": "Complete",
     "milestoneCompleteTitle": "Milestone complete",
     "milestoneCompleteDescription": "Describe what you've done to finish the work of this milestone and attach proof if necessary. This information will be publicly visible and emailed to the reviewer.",
     "milestoneCompleteMessagePlaceholder": "Describe what you've done",
     "milestoneCompleteMessageMinLength": "It is really appreciated if you write something meaningful",
+    
     "milestoneApprove": "Approve",
+    "milestoneApproveTitle": "Milestone approve",
+    "milestoneApproveDescription": "Explain why you approve the completion of this milestone. Compliments are appreciated! This information will be publicly visible and emailed to the milestone owner.",
+    "milestoneApproveMessagePlaceholder": "Explain why you approve the completion of this milestone",
+    "milestoneApproveMessageMinLength": "It is really appreciated if you write something meaningful",
+
     "milestoneReject": "Reject",
+    "milestoneRejectTitle": "Milestone reject",
+    "milestoneRejectDescription": "Explain why you rejected the completion of this milestone. This information will be publicly visible and emailed to the milestone owner.",
+    "milestoneRejectMessagePlaceholder": "Explain why you rejected the completion of this milestone",
+    "milestoneRejectMessageMinLength": "It is really appreciated if you write something meaningful",
+
+    "donate": "Donate",
+    "donateAmount": "Amount",
+    "donateDacTitle": "Donate to DAC",
+    "donateDacDescription": "You are committing your funds to the DAC. As long as the owner of the fund does not lock your money, you can get it back at any time.",
+    "donateCampaignTitle": "Donate to campaign",
+    "donateCampaignDescription": "You are committing your funds to this campaign. If you have filled out contact information in your profile you will be notified about how your funds are spent.",
+    "donateMilestoneTitle": "Donate to milestone",
+    "donateMilestoneDescription": "You are committing your funds to this milestone. If you have filled out contact information in your profile you will be notified about how your funds are spent.",
+
+    "tokenBalance": "Balance",
+
     "milestoneProofDescription": "Attach an expense, invoice or anything else that requires payment.",
     "activities": "Activities",
     "attachements": "Attachements",

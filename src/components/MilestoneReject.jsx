@@ -16,17 +16,17 @@ import { withStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
-import { complete } from '../redux/reducers/milestonesSlice';
+import { review } from '../redux/reducers/milestonesSlice';
 import MilestoneCard from './MilestoneCard';
 import User from 'models/User';
 import TextField from '@material-ui/core/TextField';
-import DoneIcon from '@material-ui/icons/Done';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-class MilestoneComplete extends Component {
+class MilestoneReject extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,10 +36,9 @@ class MilestoneComplete extends Component {
     };
     this.form = React.createRef();
     this.handleChangeMessage = this.handleChangeMessage.bind(this);
-    this.handleChangeItems = this.handleChangeItems.bind(this);
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleComplete = this.handleComplete.bind(this);
+    this.handleApprove = this.handleApprove.bind(this);
   }
 
   handleClickOpen() {
@@ -54,12 +53,12 @@ class MilestoneComplete extends Component {
     });
   };
 
-  handleComplete() {
+  handleApprove() {
     const { milestone } = this.props;
     const { activity } = this.state;
-    milestone.status = Milestone.COMPLETING;
-    activity.action = Activity.ACTION_COMPLETE;
-    this.props.complete({
+    milestone.status = Milestone.REJECTING;
+    activity.action = Activity.ACTION_REJECT;
+    this.props.review({
       milestone,
       activity
     });
@@ -77,18 +76,9 @@ class MilestoneComplete extends Component {
     this.checkForm();
   };
 
-  handleChangeItems(items) {
-    const { activity } = this.state;
-    activity.items = items;
-    this.setState({
-      activity: activity
-    });
-    this.checkForm();
-  };
-
   checkForm() {
     const { activity } = this.state;
-    const formIsValid = activity.message != '' && activity.items.length > 0;
+    const formIsValid = activity.message != '';
     this.setState({
       formIsValid: formIsValid
     });
@@ -101,20 +91,21 @@ class MilestoneComplete extends Component {
       open
     } = this.state;
     const { milestone, currentUser, classes, t } = this.props;
-    let showButton = milestone.isManager(currentUser) && milestone.isActive;
+    let showButton = milestone.isReviewer(currentUser) && milestone.isCompleted;
 
     return (
       <div>
         {showButton && (
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             className={classes.button}
-            startIcon={<DoneIcon />}
+            startIcon={<ThumbDownIcon />}
             onClick={this.handleClickOpen}
           >
-            {t('milestoneComplete')}
-          </Button>)
+            {t('milestoneReject')}
+          </Button>
+        )
         }
         <Dialog fullScreen open={open} onClose={this.handleClose} TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
@@ -123,13 +114,13 @@ class MilestoneComplete extends Component {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" className={classes.title}>
-                {t('milestoneCompleteTitle')}
+                {t('milestoneRejectTitle')}
               </Typography>
               <Button autoFocus
                 color="inherit"
-                onClick={this.handleComplete}
+                onClick={this.handleApprove}
                 disabled={!formIsValid}>
-                {t('milestoneComplete')}
+                {t('milestoneReject')}
               </Button>
             </Toolbar>
           </AppBar>
@@ -142,7 +133,7 @@ class MilestoneComplete extends Component {
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <Typography variant="subtitle1" gutterBottom>
-                      {t('milestoneCompleteDescription')}
+                      {t('milestoneRejectDescription')}
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
@@ -152,13 +143,13 @@ class MilestoneComplete extends Component {
 
                       <div>
                         <Grid container spacing={3}>
-                          <Grid item xs={6}>
+                          <Grid item xs={12}>
                             <TextField
                               id="message"
                               name="message"
                               value={activity.message}
                               label={t('message')}
-                              placeholder={t('milestoneCompleteMessagePlaceholder')}
+                              placeholder={t('milestoneRejectMessagePlaceholder')}
                               multiline
                               rows={10}
                               autoFocus
@@ -167,17 +158,6 @@ class MilestoneComplete extends Component {
                               fullWidth
                               required
                               onChange={this.handleChangeMessage}
-                            />
-                          </Grid>
-                          <Grid item xs={6}>
-                            <span className="label">
-                              {t('attachements')}
-                            </span>
-                            <MilestoneProof
-                              isEditMode
-                              items={activity.items}
-                              onItemsChanged={items => this.handleChangeItems(items)}
-                              milestoneStatus={milestone.status}
                             />
                           </Grid>
                         </Grid>
@@ -194,7 +174,7 @@ class MilestoneComplete extends Component {
   }
 }
 
-MilestoneComplete.propTypes = {
+MilestoneReject.propTypes = {
   milestone: PropTypes.instanceOf(Milestone).isRequired,
   currentUser: PropTypes.instanceOf(User).isRequired
 };
@@ -221,10 +201,10 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = { complete }
+const mapDispatchToProps = { review }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(
-    withTranslation()(MilestoneComplete)
+    withTranslation()(MilestoneReject)
   )
 );

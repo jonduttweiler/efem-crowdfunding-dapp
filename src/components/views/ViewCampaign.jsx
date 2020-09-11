@@ -11,10 +11,11 @@ import { feathersClient } from '../../lib/feathersClient';
 import Loader from '../Loader';
 import MilestoneCard from '../MilestoneCard';
 import GoBackButton from '../GoBackButton';
-import { isOwner, getUserName } from '../../lib/helpers';
+import { isOwner } from '../../lib/helpers';
 import { checkBalance } from '../../lib/middleware';
 import BackgroundImageHeader from '../BackgroundImageHeader';
 import DonateButton from '../DonateButton';
+import Donate from '../Donate';
 import Campaign from '../../models/Campaign';
 import CommunityButton from '../CommunityButton';
 import DelegateMultipleButton from '../DelegateMultipleButton';
@@ -26,6 +27,8 @@ import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
 import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 import ProfileCard from '../ProfileCard';
+import CampaignCard from '../CampaignCard';
+import { withTranslation } from 'react-i18next';
 
 /**
  * The Campaign detail view mapped to /campaing/id
@@ -88,7 +91,7 @@ class ViewCampaign extends Component {
   }
 
   render() {
-    const { campaign, milestones, donations, history, currentUser, balance } = this.props;
+    const { campaign, milestones, donations, history, currentUser, balance, t } = this.props;
     const {
       isLoading,
       isLoadingMilestones,
@@ -112,6 +115,13 @@ class ViewCampaign extends Component {
                     title={campaign.title}
                     enabled={campaign.receiveFunds}
                 />}
+                {<Donate
+                  entityId={campaign.id}
+                  entityCard={<CampaignCard campaign={campaign} />}
+                  title={t('donateCampaignTitle')}
+                  description={t('donateCampaignDescription')}
+                  enabled={campaign.receiveFunds}
+                ></Donate>}
                 {currentUser && currentUser.authenticated && (
                   <DelegateMultipleButton
                     style={{ padding: '10px 10px' }}
@@ -259,4 +269,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = { fetchDonationsByIds }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ViewCampaign)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withTranslation()(ViewCampaign)
+)

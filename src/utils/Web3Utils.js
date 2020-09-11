@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { utils } from 'web3';
 
 class Web3Utils {
-  
+
   /**
    * Convierte los Wei pasados como parámetro en una cantidad de Ether.
    *
@@ -20,7 +20,11 @@ class Web3Utils {
    * @returns equivalente en Wei de los Ether pasado como parámetro.
    */
   static etherToWei(etherAmount) {
-    return new BigNumber(utils.toWei(etherAmount));
+    let value = etherAmount;
+    if (!(etherAmount instanceof String)) {
+      value = etherAmount.toString();
+    }
+    return new BigNumber(utils.toWei(value));
   }
 
 

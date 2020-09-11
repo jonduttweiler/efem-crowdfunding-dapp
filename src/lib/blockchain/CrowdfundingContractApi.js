@@ -215,11 +215,12 @@ class CrowdfundingContractApi {
                 let thisApi = this;
                 let clientId = campaign.clientId;
 
-                let promiEvent = crowdfunding.newCampaign(
+                let promiEvent = crowdfunding.saveCampaign(
                     infoCid,
                     //campaign.dacId,
                     1,
                     campaign.reviewerAddress,
+                    0,
                     {
                         from: campaign.managerAddress,
                         $extraGas: extraGas()
@@ -237,7 +238,7 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería gregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        let id = parseInt(receipt.events['NewCampaign'].returnValues.id);
+                        let id = parseInt(receipt.events['SaveCampaign'].returnValues.id);
                         thisApi.getCampaignById(id).then(campaign => {
                             campaign.clientId = clientId;
                             subscriber.next(campaign);

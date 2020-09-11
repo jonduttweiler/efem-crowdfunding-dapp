@@ -16,6 +16,9 @@ import { connect } from 'react-redux'
 import { selectDac } from '../../redux/reducers/dacsSlice'
 import { selectCampaignsByDac } from '../../redux/reducers/campaignsSlice';
 import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
+import DacCard from '../DacCard';
+import { withTranslation } from 'react-i18next';
+import Donate from '../Donate';
 
 /**
  * The DAC detail view mapped to /dac/id
@@ -45,12 +48,12 @@ class ViewDAC extends Component {
   }
 
   render() {
-    const { dac, campaigns, donations, balance, history } = this.props;
+    const { dac, campaigns, donations, balance, history, t } = this.props;
     const {
       isLoading,
       isLoadingCampaigns,
     } = this.state;
-    
+
     if (isLoading) return <Loader className="fixed" />;
     if (!dac) return <div id="view-cause-view">Failed to load dac</div>;
     return (
@@ -66,6 +69,14 @@ class ViewDAC extends Component {
             enabled={dac.receiveFunds}
           />}
 
+          {<Donate
+            entityId={dac.id}
+            entityCard={<DacCard dac={dac} />}
+            title={t('donateDacTitle')}
+            description={t('donateDacDescription')}
+            enabled={dac.receiveFunds}
+          ></Donate>}
+
           {dac.url && (
             <CommunityButton className="btn btn-secondary" url={dac.url}>
               Join our community
@@ -78,8 +89,8 @@ class ViewDAC extends Component {
             <div className="col-md-8 m-auto">
               <GoBackButton to="/" title="Communities" />
 
-              <ProfileCard address={dac.delegateAddress}/>
-              
+              <ProfileCard address={dac.delegateAddress} />
+
               <div className="card content-card">
                 <div className="card-body content">{ReactHtmlParser(dac.description)}</div>
               </div>
@@ -107,7 +118,7 @@ class ViewDAC extends Component {
           <div className="row spacer-top-50 spacer-bottom-50">
             <div className="col-md-8 m-auto">
               <Balances entity={dac} />
-              <TableDonations donations={donations}/>
+              <TableDonations donations={donations} />
             </div>
           </div>
         </div>
@@ -144,4 +155,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = { fetchDonationsByIds }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ViewDAC)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withTranslation()(ViewDAC)
+)

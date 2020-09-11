@@ -6,6 +6,7 @@ import User from 'models/User';
 import MilestoneActions from '../MilestoneActions';
 import BackgroundImageHeader from '../BackgroundImageHeader';
 import DonateButton from '../DonateButton';
+import Donate from '../Donate';
 import GoBackButton from '../GoBackButton';
 import TableDonations from '../TableDonations';
 import Loader from '../Loader';
@@ -23,6 +24,8 @@ import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reduce
 import { fetchActivitiesByIds, selectActivitiesByMilestone } from '../../redux/reducers/activitiesSlice'
 import { selectUser } from '../../redux/reducers/userSlice';
 import DateViewer from '../DateViewer';
+import MilestoneCard from '../MilestoneCard';
+import { withTranslation } from 'react-i18next';
 
 class ViewMilestone extends Component {
   constructor(props) {
@@ -77,11 +80,10 @@ class ViewMilestone extends Component {
   }
 
   render() {
-    const { donations, activities, history, user, balance, campaign, milestone } = this.props;
+    const { donations, activities, history, user, balance, campaign, milestone, t } = this.props;
 
     const {
       isLoading,
-
       isLoadingDonations,
       //campaign,
       //milestone,
@@ -111,6 +113,13 @@ class ViewMilestone extends Component {
                   title={milestone.title}
                   enabled={milestone.receiveFunds}
                 />}
+                {<Donate
+                  entityId={milestone.id}
+                  entityCard={<MilestoneCard milestone={milestone} />}
+                  title={t('donateMilestoneTitle')}
+                  description={t('donateMilestoneDescription')}
+                  enabled={milestone.receiveFunds}
+                ></Donate>}
                 {/*this.isActiveMilestone() && (
                   <Fragment>
                     {user && (
@@ -279,4 +288,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = { fetchDonationsByIds, fetchActivitiesByIds }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ViewMilestone)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withTranslation()(ViewMilestone)
+)
