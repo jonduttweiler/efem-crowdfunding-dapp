@@ -116,7 +116,11 @@ class MilestoneComplete extends Component {
             {t('milestoneComplete')}
           </Button>)
         }
-        <Dialog fullScreen open={open} onClose={this.handleClose} TransitionComponent={Transition}>
+        <Dialog fullWidth={true}
+          maxWidth="md"
+          open={open}
+          onClose={this.handleClose}
+          TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
             <Toolbar>
               <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
@@ -135,11 +139,11 @@ class MilestoneComplete extends Component {
           </AppBar>
           <div className={classes.root}>
             <Grid container spacing={3}>
-              <Grid item xs={3}>
+              <Grid item xs={4}>
                 <MilestoneCard milestone={milestone} />
               </Grid>
-              <Grid item xs={9}>
-                <Grid container spacing={3}>
+              <Grid item xs={8}>
+                <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <Typography variant="subtitle1" gutterBottom>
                       {t('milestoneCompleteDescription')}
@@ -149,38 +153,28 @@ class MilestoneComplete extends Component {
                     <Form id="activity"
                       ref={this.form}
                       layout="vertical">
-
                       <div>
-                        <Grid container spacing={3}>
-                          <Grid item xs={6}>
-                            <TextField
-                              id="message"
-                              name="message"
-                              value={activity.message}
-                              label={t('message')}
-                              placeholder={t('milestoneCompleteMessagePlaceholder')}
-                              multiline
-                              rows={10}
-                              autoFocus
-                              margin="dense"
-                              type="text"
-                              fullWidth
-                              required
-                              onChange={this.handleChangeMessage}
-                            />
-                          </Grid>
-                          <Grid item xs={6}>
-                            <span className="label">
-                              {t('attachements')}
-                            </span>
-                            <MilestoneProof
-                              isEditMode
-                              items={activity.items}
-                              onItemsChanged={items => this.handleChangeItems(items)}
-                              milestoneStatus={milestone.status}
-                            />
-                          </Grid>
-                        </Grid>
+                        <TextField
+                          id="message"
+                          name="message"
+                          value={activity.message}
+                          label={t('message')}
+                          placeholder={t('milestoneCompleteMessagePlaceholder')}
+                          multiline
+                          rows={5}
+                          autoFocus
+                          margin="dense"
+                          type="text"
+                          fullWidth
+                          required
+                          onChange={this.handleChangeMessage}
+                        />
+                        <MilestoneProof
+                          isEditMode
+                          items={activity.items}
+                          onItemsChanged={items => this.handleChangeItems(items)}
+                          milestoneStatus={milestone.status}
+                        />
                       </div>
                     </Form>
                   </Grid>

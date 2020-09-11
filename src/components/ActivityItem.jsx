@@ -5,10 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import { getUser } from '../services/UserService';
-import User from '../models/User';
 import ActivityActionChip from './ActivityActionChip';
 import DateTimeViewer from './DateTimeViewer';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -18,31 +15,18 @@ import ItemList from './ItemList';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import { withTranslation } from 'react-i18next';
+import ProfileCard from './ProfileCard';
 
-class ActivityListItem extends Component {
+class ActivityItem extends Component {
 
   constructor() {
     super();
     this.state = {
       activities: {},
       isLoading: false,
-      user: new User(),
       open: false
     };
     this.handleClick = this.handleClick.bind(this);
-  }
-
-  componentDidMount() {
-    if (this.props.activity.userAddress) {
-      this.loadUser();
-    }
-  }
-
-  async loadUser() {
-    const user = await getUser(this.props.activity.userAddress);
-    if (user) {
-      this.setState({ user });
-    }
   }
 
   handleClick() {
@@ -53,22 +37,22 @@ class ActivityListItem extends Component {
   };
 
   render() {
-    const { user, open } = this.state;
+    const { open } = this.state;
     const { activity, classes, t } = this.props;
     return (
       <React.Fragment>
         <ListItem alignItems="flex-start" onClick={this.handleClick}>
           <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src={user.avatar} />
+            <ProfileCard address={activity.userAddress} namePosition="bottom"/>
           </ListItemAvatar>
           <ListItemText
-            primary={user.name}
+            className={classes.text}
+            primary={<ActivityActionChip activity={activity}></ActivityActionChip>}
             secondary={
               <React.Fragment>
                 <Typography variant="body1" gutterBottom>
                   {activity.message}
                 </Typography>
-                <ActivityActionChip activity={activity}></ActivityActionChip>
                 <DateTimeViewer value={activity.createdAt} />
               </React.Fragment>
             }
@@ -89,24 +73,26 @@ class ActivityListItem extends Component {
   }
 }
 
-ActivityListItem.propTypes = {
+ActivityItem.propTypes = {
   activity: PropTypes.instanceOf(Activity).isRequired
 };
 
 const styles = theme => ({
   root: {
     width: '100%',
-    //maxWidth: '36ch',
     backgroundColor: theme.palette.background.paper,
   },
   items: {
-    paddingLeft: '4em'
+    paddingLeft: '6em'
   },
   inline: {
     display: 'inline',
+  },
+  text: {
+    marginLeft: '2em'
   }
 });
 
 export default withStyles(styles)(
-  withTranslation()(ActivityListItem)
+  withTranslation()(ActivityItem)
 );

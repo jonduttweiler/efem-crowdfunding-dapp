@@ -1,5 +1,3 @@
-/* eslint-disable react/prefer-stateless-function */
-// @dev: not prefering stateless here because functionality will be extended
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
@@ -9,11 +7,8 @@ import BigNumber from 'bignumber.js';
 import DeleteProposedMilestoneButton from 'components/DeleteProposedMilestoneButton';
 import AcceptRejectProposedMilestoneButtons from 'components/AcceptRejectProposedMilestoneButtons';
 import ReproposeRejectedMilestoneButton from 'components/ReproposeRejectedMilestoneButton';
-import MilestoneCompleteButton from './MilestoneCompleteButton';
 import CancelMilestoneButton from 'components/CancelMilestoneButton';
-import MilestoneReviewButtons from './MilestoneReviewButtons';
 import MilestoneWithdrawButton from './MilestoneWithdrawButton';
-import EditMilestoneButton from 'components/EditMilestoneButton';
 import MilestoneComplete from './MilestoneComplete';
 import MilestoneApprove from './MilestoneApprove';
 import MilestoneReject from './MilestoneReject';
@@ -24,27 +19,25 @@ class MilestoneActions extends Component {
 
     return (
       <Fragment>
+        <MilestoneComplete
+          milestone={milestone}
+          currentUser={user}>
+        </MilestoneComplete>
 
-        {
-          <MilestoneComplete
-            milestone={milestone}
-            currentUser={user}>
-          </MilestoneComplete>
-        }
+        <MilestoneApprove
+          milestone={milestone}
+          currentUser={user}>
+        </MilestoneApprove>
 
-        {
-          <MilestoneApprove
-            milestone={milestone}
-            currentUser={user}>
-          </MilestoneApprove>
-        }
+        <MilestoneReject
+          milestone={milestone}
+          currentUser={user}>
+        </MilestoneReject>
 
-        {
-          <MilestoneReject
-            milestone={milestone}
-            currentUser={user}>
-          </MilestoneReject>
-        }
+        <MilestoneWithdrawButton
+          milestone={milestone}
+          balance={balance}
+          user={user} />
 
         {/*
         <AcceptRejectProposedMilestoneButtons
@@ -52,41 +45,21 @@ class MilestoneActions extends Component {
           balance={balance}
           currentUser={currentUser}/>
         */}
-
         {/*
         <ReproposeRejectedMilestoneButton milestone={milestone} currentUser={currentUser} />
         */}
-
-        {/*<MilestoneCompleteButton
-          milestone={milestone}
-          balance={balance}
-        currentUser={user} />*/}
-
         {/*
         <CancelMilestoneButton
           milestone={milestone}
           balance={balance}
           currentUser={currentUser}/>
         */}
-
         {/*
           <DeleteProposedMilestoneButton
           milestone={milestone}
           balance={balance}
           currentUser={currentUser}/>
         */}
-
-        {
-          /*<MilestoneReviewButtons
-            milestone={milestone}
-            balance={balance}
-            currentUser={user} />*/
-        }
-
-        <MilestoneWithdrawButton
-          milestone={milestone}
-          balance={balance}
-          user={user} />
 
         {/*
         <EditMilestoneButton

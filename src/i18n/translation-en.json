@@ -28,10 +28,14 @@
     "donateMilestoneTitle": "Donate to milestone",
     "donateMilestoneDescription": "You are committing your funds to this milestone. If you have filled out contact information in your profile you will be notified about how your funds are spent.",
 
+    "donations": "Donations",
+    "donationsEmpty": "No donations have been made yet. Be the first to donate!",
+
     "tokenBalance": "Balance",
 
     "milestoneProofDescription": "Attach an expense, invoice or anything else that requires payment.",
     "activities": "Activities",
+    "activitiesEmpty": "No activities have been done on the milestone yet.",
     "attachements": "Attachements",
     "message": "Message",
     "itemAdd": "Add item",

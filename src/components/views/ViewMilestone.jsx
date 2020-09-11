@@ -5,10 +5,9 @@ import BigNumber from 'bignumber.js';
 import User from 'models/User';
 import MilestoneActions from '../MilestoneActions';
 import BackgroundImageHeader from '../BackgroundImageHeader';
-import DonateButton from '../DonateButton';
 import Donate from '../Donate';
 import GoBackButton from '../GoBackButton';
-import TableDonations from '../TableDonations';
+import DonationList from '../DonationList';
 import Loader from '../Loader';
 import ActivityList from '../ActivityList';
 // import DelegateMultipleButton from '../DelegateMultipleButton';
@@ -107,19 +106,13 @@ class ViewMilestone extends Component {
               <p>Campaign: {campaign.title} </p>
 
               <div className="milestone-actions">
-                {milestone.id && <DonateButton
-                  entityType={Milestone.type}
-                  entityId={milestone.id}
-                  title={milestone.title}
-                  enabled={milestone.receiveFunds}
-                />}
-                {<Donate
+                <Donate
                   entityId={milestone.id}
                   entityCard={<MilestoneCard milestone={milestone} />}
                   title={t('donateMilestoneTitle')}
                   description={t('donateMilestoneDescription')}
-                  enabled={milestone.receiveFunds}
-                ></Donate>}
+                  enabled={milestone.receiveFunds}>  
+                </Donate>
                 {/*this.isActiveMilestone() && (
                   <Fragment>
                     {user && (
@@ -236,7 +229,7 @@ class ViewMilestone extends Component {
 
               <div className="row spacer-top-50 spacer-bottom-50">
                 <div className="col-md-8 m-auto">
-                  <TableDonations donations={donations} />
+                  <DonationList donations={donations}></DonationList>
                 </div>
               </div>
             </div>

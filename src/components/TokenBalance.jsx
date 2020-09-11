@@ -35,7 +35,7 @@ class TokenBalance extends Component {
     return (
       <ListItem alignItems="flex-start" className={classes.root}>
         <ListItemAvatar>
-          <Avatar alt={symbol} src={logo} />
+          <Avatar alt={symbol} src={logo} className={classes.logo} />
         </ListItemAvatar>
         <ListItemText
           primary={symbol}
@@ -76,7 +76,11 @@ const styles = theme => ({
   },
   inline: {
     display: 'inline',
-  }
+  },
+  logo: {
+    width: theme.spacing(6),
+    height: theme.spacing(6),
+  },
 });
 
 export default withStyles(styles)(

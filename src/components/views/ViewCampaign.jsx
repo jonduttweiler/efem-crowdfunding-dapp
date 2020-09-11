@@ -14,12 +14,11 @@ import GoBackButton from '../GoBackButton';
 import { isOwner } from '../../lib/helpers';
 import { checkBalance } from '../../lib/middleware';
 import BackgroundImageHeader from '../BackgroundImageHeader';
-import DonateButton from '../DonateButton';
 import Donate from '../Donate';
 import Campaign from '../../models/Campaign';
 import CommunityButton from '../CommunityButton';
 import DelegateMultipleButton from '../DelegateMultipleButton';
-import TableDonations from '../TableDonations';
+import DonationList from '../DonationList';
 import User from '../../models/User';
 import ErrorBoundary from '../ErrorBoundary';
 import { connect } from 'react-redux'
@@ -40,7 +39,7 @@ import { withTranslation } from 'react-i18next';
 class ViewCampaign extends Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       isLoading: false,
       isLoadingMilestones: false,
@@ -109,19 +108,13 @@ class ViewCampaign extends Component {
               <BackgroundImageHeader image={campaign.imageCidUrl} height={300}>
                 <h6>Campaign</h6>
                 <h1>{campaign.title}</h1>
-                {campaign.id && <DonateButton
-                    entityType={Campaign.type}                    
-                    entityId={campaign.id}
-                    title={campaign.title}
-                    enabled={campaign.receiveFunds}
-                />}
-                {<Donate
+                <Donate
                   entityId={campaign.id}
                   entityCard={<CampaignCard campaign={campaign} />}
                   title={t('donateCampaignTitle')}
                   description={t('donateCampaignDescription')}
-                  enabled={campaign.receiveFunds}
-                ></Donate>}
+                  enabled={campaign.receiveFunds}>
+                </Donate>
                 {currentUser && currentUser.authenticated && (
                   <DelegateMultipleButton
                     style={{ padding: '10px 10px' }}
@@ -141,8 +134,8 @@ class ViewCampaign extends Component {
                 <div className="row">
                   <div className="col-md-8 m-auto">
                     <GoBackButton to="/" title="Campaigns" />
-                    
-                    <ProfileCard address={campaign.managerAddress}/>
+
+                    <ProfileCard address={campaign.managerAddress} />
 
                     <div className="card content-card ">
                       <div className="card-body content">
@@ -219,13 +212,13 @@ class ViewCampaign extends Component {
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
                     <Balances entity={campaign} />
-                    <TableDonations donations={donations}/>
+                    <DonationList donations={donations}></DonationList>
                   </div>
                 </div>
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
                     <h4>Campaign Reviewer</h4>
-                    <ProfileCard address={campaign.reviewerAddress}/>
+                    <ProfileCard address={campaign.reviewerAddress} />
                   </div>
                 </div>
               </div>

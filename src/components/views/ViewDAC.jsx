@@ -6,8 +6,7 @@ import Balances from 'components/Balances';
 import Loader from '../Loader';
 import GoBackButton from '../GoBackButton';
 import BackgroundImageHeader from '../BackgroundImageHeader';
-import DonateButton from '../DonateButton';
-import TableDonations from '../TableDonations';
+import DonationList from '../DonationList';
 import CommunityButton from '../CommunityButton';
 import CampaignCard from '../CampaignCard';
 import DAC from '../../models/DAC';
@@ -61,22 +60,13 @@ class ViewDAC extends Component {
         <BackgroundImageHeader image={dac.imageCidUrl} height={300}>
           <h6>Decentralized Altruistic Community</h6>
           <h1>{dac.title}</h1>
-
-          {dac.id && <DonateButton
-            entityType={DAC.type}
-            entityId={dac.id}
-            title={dac.title}
-            enabled={dac.receiveFunds}
-          />}
-
-          {<Donate
+          <Donate
             entityId={dac.id}
             entityCard={<DacCard dac={dac} />}
             title={t('donateDacTitle')}
             description={t('donateDacDescription')}
-            enabled={dac.receiveFunds}
-          ></Donate>}
-
+            enabled={dac.receiveFunds}>
+          </Donate>
           {dac.url && (
             <CommunityButton className="btn btn-secondary" url={dac.url}>
               Join our community
@@ -118,7 +108,7 @@ class ViewDAC extends Component {
           <div className="row spacer-top-50 spacer-bottom-50">
             <div className="col-md-8 m-auto">
               <Balances entity={dac} />
-              <TableDonations donations={donations} />
+              <DonationList donations={donations}></DonationList>
             </div>
           </div>
         </div>

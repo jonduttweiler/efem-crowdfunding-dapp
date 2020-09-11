@@ -28,10 +28,14 @@
     "donateMilestoneTitle": "Donar a hito",
     "donateMilestoneDescription": "Está comprometiendo sus fondos para este hito. Si ha completado la información de contacto en su perfil, se le notificará cómo se gastan sus fondos.",
 
+    "donations": "Donaciones",
+    "donationsEmpty": "Aún no se han realizado donaciones. Sé el primero en donar!",
+
     "tokenBalance": "Balance",
 
     "milestoneProofDescription": "Adjunte un gasto, factura o cualquier otra cosa que requiera pago.",
     "activities": "Actividades",
+    "activitiesEmpty": "Aún no se han realizado actividades sobre el milestone.",
     "attachements": "Adjuntos",
     "message": "Mensaje",
     "itemAdd": "Agregar adjunto",

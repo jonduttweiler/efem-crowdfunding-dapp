@@ -8,7 +8,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import DateViewer from './DateViewer';
 
-class ItemListItem extends Component {
+class ItemItem extends Component {
 
   constructor() {
     super();
@@ -32,7 +32,7 @@ class ItemListItem extends Component {
   }
 }
 
-ItemListItem.propTypes = {
+ItemItem.propTypes = {
   item: PropTypes.instanceOf(Item).isRequired
 };
 
@@ -43,4 +43,4 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(ItemListItem);
+export default withStyles(styles)(ItemItem);

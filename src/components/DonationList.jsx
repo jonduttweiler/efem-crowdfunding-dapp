@@ -1,34 +1,34 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Activity from '../models/Activity';
+import Donation from '../models/Donation';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import ActivityItem from './ActivityItem';
+import DonationItem from './DonationItem';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { withTranslation } from 'react-i18next';
 
-class ActivityList extends Component {
+class DonationList extends Component {
 
   constructor() {
     super();
   }
 
   render() {
-    const { activities, classes, t } = this.props;
+    const { donations, classes, t } = this.props;
     return (
       <Container fixed>
         <Typography variant="overline">
-          {t('activities')}
+          {t('donations')}
         </Typography>
         <List className={classes.root}>
-          {activities.map(activity => (
-            <ActivityItem key={activity.clientId} activity={activity}></ActivityItem>
+          {donations.map(donation => (
+            <DonationItem key={donation.clientId} donation={donation}></DonationItem>
           ))}
         </List>
-        {activities.length == 0 && (
+        {donations.length == 0 && (
           <Typography variant="body2">
-            {t('activitiesEmpty')}
+            {t('donationsEmpty')}
           </Typography>
         )}
       </Container>
@@ -36,15 +36,13 @@ class ActivityList extends Component {
   }
 }
 
-ActivityList.propTypes = {
-  activities: PropTypes.arrayOf(PropTypes.instanceOf(Activity)).isRequired
+DonationList.propTypes = {
+  donations: PropTypes.arrayOf(PropTypes.instanceOf(Donation)).isRequired
 };
 
 const styles = {
   root: {
-    width: '100%',
-    //maxWidth: '36ch',
-    //backgroundColor: theme.palette.background.paper,
+    width: '100%'
   },
   inline: {
     display: 'inline',
@@ -52,5 +50,5 @@ const styles = {
 };
 
 export default withStyles(styles)(
-  withTranslation()(ActivityList)
+  withTranslation()(DonationList)
 );
