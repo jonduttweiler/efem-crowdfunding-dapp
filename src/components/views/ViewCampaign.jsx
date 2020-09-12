@@ -88,13 +88,16 @@ class ViewCampaign extends Component {
   }
 
   render() {
+    const { isLoading, isLoadingMilestones, milestonesLoaded, milestonesTotal } = this.state;
     const { campaign, milestones, donations, history, currentUser, balance } = this.props;
-    const {
-      isLoading,
-      isLoadingMilestones,
-      milestonesLoaded,
-      milestonesTotal
-    } = this.state;
+    
+    const currentUserAddress = currentUser && currentUser.address;
+    const managerAddress = campaign && campaign.managerAddress;
+    const reviewerAddress = campaign && campaign.reviewerAddress;
+
+    const isCampaignManager = currentUserAddress && (currentUserAddress === managerAddress);
+    const isCampaignReviewer = currentUserAddress && (currentUserAddress === reviewerAddress);
+    
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
     return (
       <ErrorBoundary>
@@ -112,6 +115,17 @@ class ViewCampaign extends Component {
                     title={campaign.title}
                     enabled={campaign.receiveFunds}
                 />}
+                {
+                  isCampaignManager && (
+                    <Link 
+                      className="btn btn-success mx-2"
+                      to={`/campaigns/${campaign.id}/edit`}
+                    >
+                      Editar
+                    </Link>
+                  )
+                }
+
                 {currentUser && currentUser.authenticated && (
                   <DelegateMultipleButton
                     style={{ padding: '10px 10px' }}

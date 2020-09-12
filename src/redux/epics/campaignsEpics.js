@@ -26,8 +26,8 @@ export const fetchCampaignsEpic = action$ => action$.pipe(
  * 
  * @param action$ de Redux.
  */
-export const addCampaignEpic = action$ => action$.pipe(
-  ofType('campaigns/addCampaign'),
+export const saveCampaignEpic = action$ => action$.pipe(
+  ofType('campaigns/saveCampaign'),
   mergeMap(action => crowdfundingContractApi.saveCampaign(action.payload)),
   map(campaign => ({
     type: 'campaigns/updateCampaignByClientId',

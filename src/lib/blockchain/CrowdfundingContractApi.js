@@ -238,7 +238,7 @@ class CrowdfundingContractApi {
             donationIds: donationIds.map(e => parseInt(e)),
             managerAddress: manager,
             reviewerAddress: reviewer,
-            status: this.mapCampaingStatus(parseInt(status))
+            status: this.mapCampaignStatus(parseInt(status))
         });
     }
 
@@ -250,50 +250,54 @@ class CrowdfundingContractApi {
     saveCampaign(campaign) {
 
         return new Observable(async subscriber => {
-
+            
             try {
-                let crowdfunding = await this.getCrowdfunding();
+                const dacId = 1; //preguntar a Mauri que vamos a hacer con esto, esto existe?
+                const crowdfunding = await this.getCrowdfunding();
+                const campaignId = campaign.id || 0; //zero is for new campaigns;
+                const isUpdating = campaignId > 0;
 
+                //cannot upload string to ipfs
+                console.log("%csaveCampaign","color:cyan",campaign)
+                
                 // Se almacena en IPFS la imagen de la Campaign.
-                let imageCid = await IpfsService.upload(campaign.image);
-                campaign.imageCid = imageCid;
+                if(campaign.image){ 
+                    const imageCid = await IpfsService.upload(campaign.image);
+                    campaign.imageCid = imageCid; 
+                }
 
                 // Se almacena en IPFS toda la información de la Campaign.
-                let infoCid = await IpfsService.upload(campaign.toIpfs());
+                const infoCid = await IpfsService.upload(campaign.toIpfs());
                 campaign.infoCid = infoCid;
 
-                let thisApi = this;
-                let clientId = campaign.clientId;
+                const clientId = campaign.clientId;
 
-                let promiEvent = crowdfunding.newCampaign(
+                const promiEvent = crowdfunding.saveCampaign(
                     campaign.infoCid,
-                    //campaign.dacId,
-                    1,
+                    dacId,
                     campaign.reviewerAddress,
+                    campaignId,
                     {
                         from: campaign.managerAddress,
                         $extraGas: extraGas()
                     });
 
-                promiEvent
-                    .once('transactionHash', function (hash) {
-                        // La transacción ha sido creada.
+                promiEvent.once('transactionHash', (hash) => { // La transacción ha sido creada.
                         campaign.txHash = hash;
                         subscriber.next(campaign);
                         messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la campaign' });
                     })
-                    .once('confirmation', function (confNumber, receipt) {
-                        // La transacción ha sido incluida en un bloque
-                        // sin bloques de confirmación (once).
-                        // TODO Aquí debería gregarse lógica para esperar
-                        // un número determinado de bloques confirmados (on, confNumber).
-                        let id = parseInt(receipt.events['NewCampaign'].returnValues.id);
-                        thisApi.getCampaignById(id).then(campaign => {
+                    .once('confirmation',(confNumber, receipt) => {
+                        // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
+                        // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
+                        const idFromEvent = parseInt(receipt.events['SaveCampaign'].returnValues.id);
+
+                        this.getCampaignById(idFromEvent).then(campaign => {
                             campaign.clientId = clientId;
                             subscriber.next(campaign);
                             messageUtils.addMessageSuccess({
                                 title: 'Felicitaciones!',
-                                text: `La campaign ${campaign.title} ha sido confirmada`
+                                text: `La campaign ${campaign.title} ha sido ${isUpdating ? "actualizada" : "confirmada"}`
                             });
                         });
                     })
@@ -697,7 +701,7 @@ class CrowdfundingContractApi {
      * @param status de la campaign en el smart contract.
      * @returns estado de la campaign en la dapp.
      */
-    mapCampaingStatus(status) {
+    mapCampaignStatus(status) {
         switch (status) {
             case 0: return Campaign.ACTIVE;
             case 1: return Campaign.CANCELLED;
