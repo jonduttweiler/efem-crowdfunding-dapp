@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const usersRolesSlice = createSlice({
+export const usersSlice = createSlice({
     name: 'usersRoles',
     initialState: [], //List of User instances with roles
     reducers: {
@@ -14,7 +14,7 @@ export const usersRolesSlice = createSlice({
     },
 });
 
-export const { loadUsersRoles } = usersRolesSlice.actions;
+export const { loadUsersRoles } = usersSlice.actions;
 
 export const selectUsersByRole = (state, role) => state.usersRoles.filter(user => user.hasRole(role));
 export const selectUsersByRoles = (state, roles) => state.usersRoles.filter(user => user.hasAnyRoles(roles));
@@ -26,4 +26,4 @@ export const milestoneManagers = state => state.usersRoles.filter(user => user.i
 export const milestoneReviewers = state => state.usersRoles.filter(user => user.isMilestoneReviewer());
 export const recipients = state => state.usersRoles.filter(user => user.isRecipient());
 
-export default usersRolesSlice.reducer;
+export default usersSlice.reducer;

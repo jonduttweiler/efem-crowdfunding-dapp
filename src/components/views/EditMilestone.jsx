@@ -23,7 +23,7 @@ import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectUser } from '../../redux/reducers/userSlice';
 import { addMilestone } from '../../redux/reducers/milestonesSlice';
-import { milestoneReviewers, recipients } from '../../redux/reducers/usersRolesSlice';
+import { milestoneReviewers, recipients } from '../../redux/reducers/usersSlice';
 
 
 BigNumber.config({ DECIMAL_PLACES: 18 });

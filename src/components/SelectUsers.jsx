@@ -3,7 +3,7 @@ import SelectFormsy from './SelectFormsy';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux'
-import { selectUsersByRoles } from '../redux/reducers/usersRolesSlice';
+import { selectUsersByRoles } from '../redux/reducers/usersSlice';
 
 
 class SelectUsers extends React.Component {
