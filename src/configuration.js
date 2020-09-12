@@ -18,7 +18,7 @@ const {
 const configurations = {
   localhost: {
     language: {
-      default: 'es',
+      default: 'en',
       options: [
         { key: "es", name: "Español" },
         { key: "en", name: "English" }
@@ -62,7 +62,7 @@ const configurations = {
   },
   rsk_testnet: {
     language: {
-      default: 'es',
+      default: 'en',
       options: [
         { key: "es", name: "Español" },
         { key: "en", name: "English" }
@@ -106,7 +106,7 @@ const configurations = {
   },
   rsk_mainnet: {
     language: {
-      default: 'es',
+      default: 'en',
       options: [
         { key: "es", name: "Español" },
         { key: "en", name: "English" }
