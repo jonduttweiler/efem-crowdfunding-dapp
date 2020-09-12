@@ -172,7 +172,7 @@ class EditProfile extends Component {
 
                   <FormsyImageUploader
                     setImage={this.setImage}
-                    avatar={user.avatar}
+                    avatar={user.avatar || user._newAvatar } 
                     aspectRatio={1}
                   />
 

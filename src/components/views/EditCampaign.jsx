@@ -5,21 +5,21 @@ import 'react-input-token/lib/style.css';
 import { Form, Input } from 'formsy-react-components';
 import Loader from '../Loader';
 import QuillFormsy from '../QuillFormsy';
-import SelectFormsy from '../SelectFormsy';
+import SelectUsers from '../SelectUsers';
+
 import FormsyImageUploader from '../FormsyImageUploader';
 import GoBackButton from '../GoBackButton';
-import { isOwner, getTruncatedText, history } from '../../lib/helpers';
+import { isOwner, history } from '../../lib/helpers';
 import { authenticateIfPossible, checkProfile } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
 import Campaign from '../../models/Campaign';
-import CampaignService from '../../services/CampaignService';
-import ErrorPopup from '../ErrorPopup';
 
 import { connect } from 'react-redux'
-import { addCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 import { campaignReviewers } from '../../redux/reducers/usersRolesSlice';
+import { saveCampaign } from '../../redux/reducers/campaignsSlice'
+import { CAMPAIGN_REVIEWER_ROLE } from '../../constants/Role';
 
 /**
  * View to create or edit a Campaign
@@ -32,15 +32,16 @@ class EditCampaign extends Component {
   constructor(props) {
     super(props);
 
+    const campaign = new Campaign({
+      managerAddress: props.user && props.user.address,
+      status: Campaign.PENDING
+    });
+
     this.state = {
       isLoading: false,
       isSaving: false,
       formIsValid: false,
-      // Campaign model
-      campaign: new Campaign({
-        managerAddress: props.user.address,
-        status: Campaign.PENDING
-      }),
+      campaign: campaign,
       isBlocking: false,
     };
 
@@ -51,36 +52,23 @@ class EditCampaign extends Component {
   }
 
   componentDidMount() {
-    //this.props.loadUsersRoles();
 
     this.mounted = true;
-    this.checkUser()
-      .then(() => {
-        // Load this Campaign
-        if (!this.props.isNew) {
-          console.log('Esta por aca');
-          CampaignService.get(this.props.match.params.id)
-            .then(campaign => {
-              if (isOwner(campaign.managerAddress, this.props.currentUser)) {
-                this.setState({ campaign, isLoading: false });
-              } else history.goBack();
-            })
-            .catch(() => err => {
-              this.setState({ isLoading: false });
-              ErrorPopup(
-                'There has been a problem loading the Campaign. Please refresh the page and try again.',
-                err,
-              );
-            });
-        } else {
-          this.setState({ isLoading: false });
-        }
-      })
-      .catch(err => {
-        if (err === 'noBalance') {
-          // handle no balance error
-        }
-      });
+
+    this.checkUser().then(() => {
+      const isEditingCampaign = !this.props.isNew;
+
+      if (isEditingCampaign) {
+        const campaign = this.props.campaign;
+        this.setState({ campaign, isLoading: false })
+      } else {
+        this.setState({ isLoading: false });
+      }
+    }).catch(err => {
+      if (err === 'noBalance') {
+        // handle no balance error
+      }
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -119,19 +107,15 @@ class EditCampaign extends Component {
   }
 
   submit() {
+    //Esto tiene que comprobar aunque sea que se hayan cargado los requeridos
     const afterSave = campaign => {
       //React.toast.success('Your Campaign has been saved!');
       history.push(`/`);
     };
 
-    this.setState(
-      {
-        isSaving: true,
-        isBlocking: false,
-      },
-      () => {
+    this.setState({ isSaving: true, isBlocking: false }, () => {
         // Save the campaign
-        this.props.addCampaign(this.state.campaign);
+        this.props.saveCampaign(this.state.campaign);
         afterSave(this.state.campaign);
       },
     );
@@ -148,7 +132,7 @@ class EditCampaign extends Component {
   }
 
   render() {
-    const { isNew, reviewers } = this.props;
+    const { isNew } = this.props;
     const { isLoading, isSaving, campaign, formIsValid, isBlocking } = this.state;
 
     return (
@@ -165,7 +149,7 @@ class EditCampaign extends Component {
                   <div className="form-header">
                     {isNew && <h3>Start a new campaign!</h3>}
 
-                    {!isNew && <h3>Edit campaign{campaign.title}</h3>}
+                    {!isNew && <h3>Edit campaign {campaign.title}</h3>}
                     <p>
                       <i className="fa fa-question-circle" />A campaign solves a specific cause by
                       executing a project via its Milestones. Funds raised by a campaign need to be
@@ -229,7 +213,7 @@ class EditCampaign extends Component {
                     <div className="form-group">
                       <FormsyImageUploader
                         setImage={this.setImage}
-                        previewImage={campaign.image}
+                        previewImage={campaign.imageCidUrl}
                         isRequired={isNew}
                       />
                     </div>
@@ -250,20 +234,19 @@ class EditCampaign extends Component {
 
                     <div className="form-group">
                       {
-                        <SelectFormsy
-                          name="reviewerAddress"
+                        <SelectUsers
+                          roles={[CAMPAIGN_REVIEWER_ROLE]}
                           id="reviewer-select"
+                          name="reviewerAddress"
                           label="Select a reviewer"
                           helpText="This person or smart contract will be reviewing your Campaign to increase trust for Givers."
                           value={campaign.reviewerAddress}
                           cta="--- Select a reviewer ---"
-                          options={reviewers.map(reviewer => ({ ...reviewer, title: reviewer.name, value: reviewer.address }))}
                           validations="isEtherAddress"
                           validationErrors={{
                             isEtherAddress: 'Please select a reviewer.',
                           }}
-                          //required
-                          disabled={!isNew}
+                          required
                         />
                       }
                     </div>
@@ -277,7 +260,7 @@ class EditCampaign extends Component {
                           className="btn btn-success pull-right"
                           formNoValidate
                           type="submit"
-                          //disabled={isSaving || !formIsValid}
+                          disabled={isSaving || !formIsValid}
                           isLoading={isSaving}
                           loadingText="Saving..."
                         >
@@ -305,7 +288,6 @@ EditCampaign.propTypes = {
     }).isRequired,
   }).isRequired,
   isCampaignManager: PropTypes.bool,
-  reviewers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 EditCampaign.defaultProps = {
@@ -314,14 +296,16 @@ EditCampaign.defaultProps = {
 };
 
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state, props) => {
+  const campaignId = parseInt(props.match.params.id);
   return {
     user: selectCurrentUser(state),
     isCampaignManager: selectCurrentUser(state).isCampaignManager(),
-    reviewers: campaignReviewers(state)
-  }
-}
+    reviewers: campaignReviewers(state),    
+    campaign: selectCampaign(state, campaignId)
+  };
+};
 
-const mapDispatchToProps = { addCampaign }
+const mapDispatchToProps = { saveCampaign }
 
 export default connect(mapStateToProps,mapDispatchToProps)(EditCampaign)

@@ -1,26 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const usersRolesSlice = createSlice({
-    name: 'userRoles',
+export const usersSlice = createSlice({
+    name: 'usersRoles',
     initialState: [], //List of User instances with roles
     reducers: {
         loadUsersRoles: (state, action) => {
             return state;
         },
-        setUsers: (state, action) => {
+        setUsersRoles: (state, action) => {
             state = action.payload;
             return state;
         }   
     },
 });
 
-export const { loadUsersRoles } = usersRolesSlice.actions;
+export const { loadUsersRoles } = usersSlice.actions;
 
-export const delegates = state => state.userRoles.filter(user => user.isDelegate());
-export const campaignManagers = state => state.userRoles.filter(user => user.isCampaignManager());
-export const campaignReviewers = state => state.userRoles.filter(user => user.isCampaignReviewer());
-export const milestoneManagers = state => state.userRoles.filter(user => user.isMilestoneManager());
-export const milestoneReviewers = state => state.userRoles.filter(user => user.isMilestoneReviewer());
-export const recipients = state => state.userRoles.filter(user => user.isRecipient());
+export const selectUsersByRole = (state, role) => state.usersRoles.filter(user => user.hasRole(role));
+export const selectUsersByRoles = (state, roles) => state.usersRoles.filter(user => user.hasAnyRoles(roles));
 
-export default usersRolesSlice.reducer;
+export const delegates = state => state.usersRoles.filter(user => user.isDelegate());
+export const campaignManagers = state => state.usersRoles.filter(user => user.isCampaignManager());
+export const campaignReviewers = state => state.usersRoles.filter(user => user.isCampaignReviewer());
+export const milestoneManagers = state => state.usersRoles.filter(user => user.isMilestoneManager());
+export const milestoneReviewers = state => state.usersRoles.filter(user => user.isMilestoneReviewer());
+export const recipients = state => state.usersRoles.filter(user => user.isRecipient());
+
+export default usersSlice.reducer;

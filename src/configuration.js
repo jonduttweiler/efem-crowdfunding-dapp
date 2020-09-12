@@ -13,6 +13,8 @@ const {
   REACT_APP_NETWORK_NAME,
   REACT_APP_NATIVE_TOKEN_NAME,
   REACT_APP_NODE_ID,
+  REACT_APP_IPFS_GATEWAY,
+  REACT_APP_IPFS_PINNING_ENABLED,
 } = process.env;
 
 const configurations = {
@@ -180,6 +182,8 @@ config.networkName = REACT_APP_NETWORK_NAME || config.networkName;
 config.nodeId = (REACT_APP_NODE_ID && Number.parseInt(REACT_APP_NODE_ID, 10)) || config.nodeId;
 config.nativeTokenName = REACT_APP_NATIVE_TOKEN_NAME || config.nativeTokenName;
 
-//config.sendErrors = ['develop', 'release', 'beta', 'rsk_testnet'].includes(REACT_APP_ENVIRONMENT);
+config.ipfsGateway = REACT_APP_IPFS_GATEWAY || config.ipfsGateway;
+config.ipfsPinningEnabled = (REACT_APP_IPFS_PINNING_ENABLED !== undefined)? REACT_APP_IPFS_PINNING_ENABLED : config.ipfsPinningEnabled;
 
+//config.sendErrors = ['develop', 'release', 'beta', 'rsk_testnet'].includes(REACT_APP_ENVIRONMENT);
 export default config;

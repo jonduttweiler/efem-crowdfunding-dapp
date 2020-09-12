@@ -18,9 +18,17 @@ export const campaignsSlice = createSlice({
       }
       pendings.forEach(c => state.push(c));
     },
-    addCampaign: (state, action) => {
-      let campaignStore = action.payload.toStore();
-      state.push(campaignStore);
+    saveCampaign: (state, action) => {
+      const campaign = action.payload;
+      campaign.status = Campaign.PENDING;
+      const campaignStore = campaign.toStore();
+      const index = state.findIndex(c => c.clientId === campaignStore.clientId);
+
+      if (index != -1) {
+        state[index] = campaignStore;
+      } else {
+        state.push(campaignStore);
+      }
     },
     updateCampaignByClientId: (state, action) => {
       let campaignStore = action.payload.toStore();
@@ -39,7 +47,7 @@ export const campaignsSlice = createSlice({
   },
 });
 
-export const { fetchCampaigns, resetCampaigns, addCampaign, updateCampaignByClientId } = campaignsSlice.actions;
+export const { fetchCampaigns, resetCampaigns, saveCampaign, updateCampaignByClientId } = campaignsSlice.actions;
 
 export const selectCampaigns = state => {
   return state.campaigns.map(function (campaignStore) {

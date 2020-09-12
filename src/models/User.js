@@ -224,6 +224,21 @@ class User extends Model {
     this._balance = value;
   }
 
+  hasRole(role){
+    return this.roles.includes(role);
+  }
+
+  hasAnyRoles(roles){ //roles should be an array
+    let found = false;
+
+    for (const wanted of roles) {
+      found = this.roles.includes(wanted);
+      if (found) break;
+    } 
+
+    return found;
+  }
+
   isDelegate() {
     return this.roles.includes(CREATE_DAC_ROLE);
   }

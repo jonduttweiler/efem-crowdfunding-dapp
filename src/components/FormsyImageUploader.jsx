@@ -27,8 +27,11 @@ class FormsyImageUploader extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.avatar != prevProps.avatar){
+    if (this.props.avatar != prevProps.avatar) {
       this.setState({ image: this.props.avatar });
+    }
+    if (this.props.previewImage != prevProps.previewImage) {
+      this.setState({ image: this.props.previewImage });
     }
   }
 

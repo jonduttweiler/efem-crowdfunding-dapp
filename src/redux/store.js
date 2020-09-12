@@ -12,7 +12,6 @@ import messagesReducer from './reducers/messagesSlice.js'
 
 import { saveUserEpic, loadCurrentUserEpic } from './epics/currentUserEpics';
 import { fetchDacsEpic, addDacEpic } from './epics/dacsEpics';
-import { fetchCampaignsEpic, addCampaignEpic } from './epics/campaignsEpics'
 import {
   fetchMilestonesEpic,
   fetchMilestoneEpic,
@@ -22,6 +21,7 @@ import {
   milestoneWithdrawEpic
 } from './epics/milestonesEpics'
 import { fetchActivitiesByIdsEpic } from './epics/activitiesEpics'
+import { fetchCampaignsEpic, saveCampaignEpic } from './epics/campaignsEpics'
 import { loadUsersRolesEpic } from './epics/usersRolesEpics';
 import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic } from './epics/donationsEpics'
 
@@ -31,7 +31,7 @@ const rootEpic = combineEpics(
   fetchDacsEpic,
   addDacEpic,
   fetchCampaignsEpic,
-  addCampaignEpic,
+  saveCampaignEpic,
   fetchMilestonesEpic,
   fetchMilestoneEpic,
   addMilestoneEpic,
