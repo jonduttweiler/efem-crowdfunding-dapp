@@ -16,6 +16,9 @@ export const usersRolesSlice = createSlice({
 
 export const { loadUsersRoles } = usersRolesSlice.actions;
 
+export const selectUsersByRole = (state, role) => state.usersRoles.filter(user => user.hasRole(role));
+export const selectUsersByRoles = (state, roles) => state.usersRoles.filter(user => user.hasAnyRoles(roles));
+
 export const delegates = state => state.usersRoles.filter(user => user.isDelegate());
 export const campaignManagers = state => state.usersRoles.filter(user => user.isCampaignManager());
 export const campaignReviewers = state => state.usersRoles.filter(user => user.isCampaignReviewer());

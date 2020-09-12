@@ -5,7 +5,8 @@ import 'react-input-token/lib/style.css';
 import { Form, Input } from 'formsy-react-components';
 import Loader from '../Loader';
 import QuillFormsy from '../QuillFormsy';
-import SelectFormsy from '../SelectFormsy';
+import SelectUsers from '../SelectUsers';
+
 import FormsyImageUploader from '../FormsyImageUploader';
 import GoBackButton from '../GoBackButton';
 import { isOwner, getTruncatedText, history } from '../../lib/helpers';
@@ -17,7 +18,7 @@ import Campaign from '../../models/Campaign';
 import { connect } from 'react-redux'
 import { saveCampaign, selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectUser } from '../../redux/reducers/userSlice';
-import { campaignReviewers } from '../../redux/reducers/usersRolesSlice';
+import { CAMPAIGN_REVIEWER_ROLE } from '../../constants/Role';
 
 /**
  * View to create or edit a Campaign
@@ -130,7 +131,7 @@ class EditCampaign extends Component {
   }
 
   render() {
-    const { isNew, reviewers } = this.props;
+    const { isNew } = this.props;
     const { isLoading, isSaving, campaign, formIsValid, isBlocking } = this.state;
 
     return (
@@ -232,14 +233,14 @@ class EditCampaign extends Component {
 
                     <div className="form-group">
                       {
-                        <SelectFormsy
-                          name="reviewerAddress"
+                        <SelectUsers
+                          roles={[CAMPAIGN_REVIEWER_ROLE]}
                           id="reviewer-select"
+                          name="reviewerAddress"
                           label="Select a reviewer"
                           helpText="This person or smart contract will be reviewing your Campaign to increase trust for Givers."
                           value={campaign.reviewerAddress}
                           cta="--- Select a reviewer ---"
-                          options={reviewers.map(reviewer => ({ ...reviewer, title: reviewer.name, value: reviewer.address }))}
                           validations="isEtherAddress"
                           validationErrors={{
                             isEtherAddress: 'Please select a reviewer.',
@@ -286,7 +287,6 @@ EditCampaign.propTypes = {
     }).isRequired,
   }).isRequired,
   isCampaignManager: PropTypes.bool,
-  reviewers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 EditCampaign.defaultProps = {
@@ -302,7 +302,6 @@ const mapStateToProps = (state, props) => {
     user: selectUser(state),
     campaign: selectCampaign(state, campaignId),
     isCampaignManager: selectUser(state).isCampaignManager(),
-    reviewers: campaignReviewers(state),
   };
 };
 
