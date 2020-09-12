@@ -6,7 +6,7 @@ import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 import { history } from '../lib/helpers';
 
 import { connect } from 'react-redux';
-import { selectUser } from '../redux/reducers/userSlice';
+import { selectCurrentUser } from '../redux/reducers/currentUserSlice';
 import MainMenuDropdown from './MainMenuDropdown';
 import LanguageSelector from '../components/LanguageSelector'
 
@@ -172,7 +172,7 @@ class MainMenu extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  currentUser: selectUser(state)
+  currentUser: selectCurrentUser(state)
 });
 const mapDispatchToProps = { };
 

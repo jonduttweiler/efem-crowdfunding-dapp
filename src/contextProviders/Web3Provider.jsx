@@ -7,7 +7,7 @@ import pollEvery from '../lib/pollEvery';
 import config from '../configuration';
 
 import { connect } from 'react-redux'
-import { loadUser } from '../redux/reducers/userSlice';
+import { loadCurrentUser } from '../redux/reducers/currentUserSlice';
 
 import Web3Utils from "../utils/Web3Utils";
 
@@ -112,7 +112,7 @@ class Web3Provider extends Component {
 
     if (Web3Utils.areDistinctAccounts(currentAccount, prevAccount)) {
       console.log("Load user with account:", currentAccount);
-      this.props.loadUser();
+      this.props.loadCurrentUser();
     }
   }
 
@@ -265,6 +265,6 @@ Web3Provider.defaultProps = {};
 
 export { Consumer };
 
-export default connect(null, { loadUser })(Web3Provider);
+export default connect(null, { loadCurrentUser })(Web3Provider);
 
 

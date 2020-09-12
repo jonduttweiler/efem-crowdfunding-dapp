@@ -15,7 +15,7 @@ import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
 import { connect } from 'react-redux'
 import { addDac, selectDac } from '../../redux/reducers/dacsSlice';
-import { selectRoles , selectUser} from '../../redux/reducers/userSlice';
+import { selectRoles , selectCurrentUser} from '../../redux/reducers/currentUserSlice';
 
 
 
@@ -309,10 +309,10 @@ EditDAC.defaultProps = {
 };
 
 const mapStateToProps = (state, props) => ({
-    user: selectUser(state),
+    user: selectCurrentUser(state),
     dac: selectDac(state, props.match.params.id),
     roles: selectRoles(state),
-    isDelegate: selectUser(state).isDelegate()
+    isDelegate: selectCurrentUser(state).isDelegate()
 });
 const mapDispatchToProps = { addDac }
 

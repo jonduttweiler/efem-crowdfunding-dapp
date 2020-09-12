@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import User from '../models/User';
 
 import { connect } from 'react-redux';
-import { selectUser } from '../redux/reducers/userSlice';
+import { selectCurrentUser } from '../redux/reducers/currentUserSlice';
 
 import OnlyRole from '../components/OnlyRole';
 
@@ -143,7 +143,7 @@ JoinGivethCommunity.defaultProps = {
 };
 
 const mapStateToProps = (state, props) => ({
-  currentUser: selectUser(state)
+  currentUser: selectCurrentUser(state)
 });
 const mapDispatchToProps = {};
 

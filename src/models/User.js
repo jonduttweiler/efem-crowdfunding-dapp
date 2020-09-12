@@ -81,6 +81,23 @@ class User extends Model {
     return user;
   }
 
+  /**
+   * Obtiene un objeto plano para ser almacenado.
+   */
+  toStore() {
+    return {
+      address: this._address,
+      name: this._name,
+      email: this._email,
+      url: this._url,
+      avatar: this._avatar,
+      roles: this._roles,
+      balance: this._balance,
+      authenticated: this._authenticated,
+      registered: this._registered
+    }
+  }
+
   clone() {
     return new User({
       address: this.address,

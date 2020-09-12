@@ -11,7 +11,7 @@ import User from '../../models/User';
 import { history } from '../../lib/helpers';
 
 import { connect } from 'react-redux';
-import { saveUser, endSave, hasError, errorOnSave, selectUser } from '../../redux/reducers/userSlice';
+import { saveUser, endSave, hasError, errorOnSave, selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 
 /**
  * The edit user profile view mapped to /profile/
@@ -214,7 +214,7 @@ class EditProfile extends Component {
 
 const mapStateToProps = (state,ownProps) => {
   return {
-    currentUser: selectUser(state),
+    currentUser: selectCurrentUser(state),
     endSave: endSave(state),
     hasError: hasError(state),
     errorOnSave: errorOnSave(state)

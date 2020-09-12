@@ -5,13 +5,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import { cleanIpfsPath } from '../lib/helpers';
 import { withTranslation } from 'react-i18next';
 import config from '../configuration';
-import Web3Utils from '../utils/Web3Utils';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-
 import ipfsService from '../ipfs/IpfsService';
 import CryptoAmount from './CryptoAmount';
 
@@ -20,11 +17,6 @@ class TokenBalance extends Component {
   constructor(props) {
     super(props);
   }
-
-
-
-
-
 
   render() {
     const { tokenAddress, balance, classes, t } = this.props;

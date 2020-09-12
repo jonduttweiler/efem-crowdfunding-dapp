@@ -18,7 +18,7 @@ import ErrorPopup from '../ErrorPopup';
 
 import { connect } from 'react-redux'
 import { addCampaign } from '../../redux/reducers/campaignsSlice'
-import { selectUser } from '../../redux/reducers/userSlice';
+import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 import { campaignReviewers } from '../../redux/reducers/usersRolesSlice';
 
 /**
@@ -316,8 +316,8 @@ EditCampaign.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    user: selectUser(state),
-    isCampaignManager: selectUser(state).isCampaignManager(),
+    user: selectCurrentUser(state),
+    isCampaignManager: selectCurrentUser(state).isCampaignManager(),
     reviewers: campaignReviewers(state)
   }
 }

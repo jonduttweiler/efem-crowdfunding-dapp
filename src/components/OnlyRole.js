@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { selectRoles } from '../redux/reducers/userSlice';
+import { selectRoles } from '../redux/reducers/currentUserSlice';
 
 class OnlyRole extends Component {
 

@@ -21,7 +21,7 @@ import Campaign from '../../models/Campaign';
 import StatusIndicator from '../StatusIndicator';
 import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 import { fetchActivitiesByIds, selectActivitiesByMilestone } from '../../redux/reducers/activitiesSlice'
-import { selectUser } from '../../redux/reducers/userSlice';
+import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 import DateViewer from '../DateViewer';
 import MilestoneCard from '../MilestoneCard';
 import { withTranslation } from 'react-i18next';
@@ -268,7 +268,7 @@ const mapStateToProps = (state, ownProps) => {
     campaign: undefined,
     donations: []
   }
-  reduxProps.user = selectUser(state);
+  reduxProps.user = selectCurrentUser(state);
   const milestoneId = parseInt(ownProps.match.params.milestoneId);
   reduxProps.milestone = selectMilestone(state, milestoneId);
   if (reduxProps.milestone) {

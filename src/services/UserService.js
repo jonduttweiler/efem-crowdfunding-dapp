@@ -10,55 +10,54 @@ import { ALL_ROLES } from '../constants/Role';
 
 class UserService {
 
-  loadUser(user) {
+  loadCurrentUser(currentUser) {
 
     return new Observable(async subscriber => {
 
       try {
+
         // Se carga la cuenta del usuario desde la wallet
         let address = await walletApi.getAccountAddress();
-        user.address = address;
-        subscriber.next(user);
+        currentUser.address = address;
+        subscriber.next(currentUser);
 
         if (address) {
-
           // Se obtiene el balance del usuario.
           let balance = await walletApi.getBalance(address);
-          user.balance = new BigNumber(balance);
-          subscriber.next(user);
+          currentUser.balance = new BigNumber(balance);
+          subscriber.next(currentUser);
 
-          feathersClient.service('/users').get(address).then(userdata => {
-            const { name, email, avatar, url} = userdata;
-            user.registered = true;
-
-            user.name = name;
-            user.email = email;
-            user.avatar = avatar;
-            user.url = url;
-
-            subscriber.next(user);
+          feathersClient.service('/users').get(address).then(data => {
+            const { name, email, avatar, url } = data;
+            currentUser.registered = true;
+            currentUser.name = name;
+            currentUser.email = email;
+            currentUser.avatar = avatar;
+            currentUser.url = url;
+            subscriber.next(currentUser);
           }).catch(err => {
-            if(err.code === 404){
-              subscriber.next({ registered: false });
+            console.error('Error obteniendo datos del usuario desde Feathers.', err);
+            if (err.code === 404) {
+              currentUser.registered = false;
+              subscriber.next(currentUser);
               return;
             }
-            console.log(err);
           });
 
           // Se cargan los roles del usuario desde el smart constract
           getRoles(address).then(roles => {
-            user.roles = roles;
-            subscriber.next(user);
-          });
-         
-          authenticateFeathers(user).then(authenticated => {
-            user.authenticated = authenticated;
-            subscriber.next(user); 
+            currentUser.roles = roles;
+            subscriber.next(currentUser);
           });
 
+          authenticateFeathers(currentUser).then(authenticated => {
+            currentUser.authenticated = authenticated;
+            subscriber.next(currentUser);
+          });
         }
-      } catch (e) {
-        subscriber.error(e);
+      } catch (err) {
+        console.error('Error obteniendo datos del usuario.', err);
+        subscriber.error(err);
       }
     });
   }
@@ -78,7 +77,7 @@ class UserService {
       try {
         await _uploadUserToIPFS(user);
 
-        await feathersClient.service('/users').patch(user.address, user.toFeathers()); 
+        await feathersClient.service('/users').patch(user.address, user.toFeathers());
         user.isRegistered = true;
 
         subscriber.next(user);
@@ -90,10 +89,10 @@ class UserService {
     });
   }
 
-  getUsersRoles(){
+  getUsersRoles() {
     return new Observable(async subscriber => {
-        const users = await getUsersWithRoles();
-        subscriber.next(users);
+      const users = await getUsersWithRoles();
+      subscriber.next(users);
     })
   }
 
@@ -110,7 +109,7 @@ class UserService {
   }
 }
 
-async function authenticateFeathers(user) { 
+async function authenticateFeathers(user) {
   let authenticated = false;
   if (user) {
     const token = await feathersClient.passport.getJWT();
@@ -138,27 +137,27 @@ async function _uploadUserToIPFS(user) {
 }
 
 export async function getUser(address) {
-    const userdata = await feathersClient.service('/users').get(address);
-    return new User({...userdata});
+  const userdata = await feathersClient.service('/users').get(address);
+  return new User({ ...userdata });
 }
 
 async function getRoles(address) {
   try {
-      const userRoles = [];
-      for (const rol of ALL_ROLES) {
-          const canPerform = await crowdfundingContractApi.canPerformRole(address, rol);
-          if (canPerform) userRoles.push(rol);
-      }
-      return userRoles;
+    const userRoles = [];
+    for (const rol of ALL_ROLES) {
+      const canPerform = await crowdfundingContractApi.canPerformRole(address, rol);
+      if (canPerform) userRoles.push(rol);
+    }
+    return userRoles;
 
   } catch (err) {
-      console.log(err)
+    console.log(err)
   }
 }
 
 export async function getUsersWithRoles() {
   const usersWithRoles = [];
-  const {data: users} = await feathersClient.service("users").find();
+  const { data: users } = await feathersClient.service("users").find();
   for (const user of users) {
     const roles = await getRoles(user.address);
     usersWithRoles.push(new User({ ...user, roles }));
@@ -168,8 +167,8 @@ export async function getUsersWithRoles() {
 
 
 const pause = (ms = 3000) => {
-  return new Promise((resolve,reject)=> {
-    setTimeout(_ => resolve(),ms)
+  return new Promise((resolve, reject) => {
+    setTimeout(_ => resolve(), ms)
   });
 }
 

@@ -6,7 +6,7 @@ import Pagination from 'react-js-pagination';
 import Loader from '../Loader';
 
 import { useSelector } from 'react-redux';
-import { selectUser } from '../../redux/reducers/userSlice';
+import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 
 import DonationProvider, {
   Consumer as DonationConsumer,
@@ -16,7 +16,7 @@ import DonationProvider, {
  * The my donations view
  */
 const Donations = () => {
-  const currentUser = useSelector(selectUser);
+  const currentUser = useSelector(selectCurrentUser);
   
   return (
     <DonationProvider currentUser={currentUser}>

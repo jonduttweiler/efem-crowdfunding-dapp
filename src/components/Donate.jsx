@@ -21,7 +21,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import config from '../configuration';
 import TokenBalance from './TokenBalance';
 import Web3Utils from '../utils/Web3Utils';
-import { selectUser } from '../redux/reducers/userSlice'
+import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -238,7 +238,7 @@ const styles = theme => ({
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: selectUser(state)
+    currentUser: selectCurrentUser(state)
   }
 }
 

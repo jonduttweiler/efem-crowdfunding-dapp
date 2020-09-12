@@ -21,7 +21,7 @@ import MilestoneService from '../../services/MilestoneService';
 import FiatUtils from '../../utils/FiatUtils';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
-import { selectUser } from '../../redux/reducers/userSlice';
+import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 import { addMilestone } from '../../redux/reducers/milestonesSlice';
 import { milestoneReviewers, recipients } from '../../redux/reducers/usersRolesSlice';
 
@@ -514,9 +514,9 @@ const EdtMilestone = props => (
 const mapStateToProps = (state, ownProps) => {
   const campaignId = parseInt(ownProps.match.params.id);
   return {
-    user: selectUser(state),
+    user: selectCurrentUser(state),
     campaign: selectCampaign(state, campaignId),
-    isCampaignManager: selectUser(state).isCampaignManager(),
+    isCampaignManager: selectCurrentUser(state).isCampaignManager(),
     reviewers: milestoneReviewers(state),
     recipients: recipients(state)
   }

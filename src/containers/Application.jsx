@@ -32,7 +32,7 @@ import { connect } from 'react-redux'
 import { fetchDacs } from '../redux/reducers/dacsSlice'
 import { fetchCampaigns } from '../redux/reducers/campaignsSlice'
 import { fetchMilestones } from '../redux/reducers/milestonesSlice'
-import { selectUser } from '../redux/reducers/userSlice';
+import { selectCurrentUser } from '../redux/reducers/currentUserSlice';
 import { loadUsersRoles } from '../redux/reducers/usersRolesSlice';
 import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes  from './SwitchRoutes';
@@ -98,7 +98,7 @@ class Application extends Component {
   render() {
     const { web3Loading, whiteListLoading } = this.state;
     const { currentUser } = this.props;
-    const userLoading = false; //TODO: pass to a userSlice
+    const userLoading = false; //TODO: pass to a currentUserSlice
 
     return (
       <ErrorBoundary>
@@ -177,7 +177,7 @@ class Application extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: selectUser(state)
+    currentUser: selectCurrentUser(state)
   }
 }
 
