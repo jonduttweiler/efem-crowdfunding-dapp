@@ -2,7 +2,7 @@ import { applyMiddleware, compose, combineReducers, createStore } from 'redux'
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
 import loggerMiddleware from './middlewares/logger'
 import currentUserReducer from './reducers/currentUserSlice.js'
-import usersRolesReducer from './reducers/usersRolesSlice';
+import usersReducer from './reducers/usersSlice';
 import dacsReducer from './reducers/dacsSlice.js'
 import campaignsReducer from './reducers/campaignsSlice.js'
 import milestonesReducer from './reducers/milestonesSlice.js'
@@ -22,7 +22,7 @@ import {
 } from './epics/milestonesEpics'
 import { fetchActivitiesByIdsEpic } from './epics/activitiesEpics'
 import { fetchCampaignsEpic, saveCampaignEpic } from './epics/campaignsEpics'
-import { loadUsersRolesEpic } from './epics/usersRolesEpics';
+import { loadUsersRolesEpic, fetchUserByAddressEpic } from './epics/usersEpics';
 import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic } from './epics/donationsEpics'
 
 const rootEpic = combineEpics(
@@ -42,7 +42,8 @@ const rootEpic = combineEpics(
   fetchDonationsEpic,
   fetchDonationsByIdsEpic,
   addDonationEpic,
-  loadUsersRolesEpic
+  loadUsersRolesEpic,
+  fetchUserByAddressEpic
 );
 
 const epicMiddleware = createEpicMiddleware();
@@ -61,7 +62,7 @@ const rootReducer = combineReducers({
   milestones: milestonesReducer,
   activities: activitiesReducer,
   donations: donationsReducer,
-  usersRoles: usersRolesReducer  
+  users: usersReducer  
 });
 
 export const store = createStore(rootReducer, undefined, composedEnhancers)

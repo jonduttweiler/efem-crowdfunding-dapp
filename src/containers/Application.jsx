@@ -33,7 +33,7 @@ import { fetchDacs } from '../redux/reducers/dacsSlice'
 import { fetchCampaigns } from '../redux/reducers/campaignsSlice'
 import { fetchMilestones } from '../redux/reducers/milestonesSlice'
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice';
-import { loadUsersRoles } from '../redux/reducers/usersRolesSlice';
+import { loadUsersRoles } from '../redux/reducers/usersSlice';
 import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes  from './SwitchRoutes';
 import Footer from '../components/Footer';

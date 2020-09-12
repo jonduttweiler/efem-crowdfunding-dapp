@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Activity from '../models/Activity';
+import Donation from '../models/Donation';
 import { withStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -58,7 +58,7 @@ class DonationItem extends Component {
 }
 
 DonationItem.propTypes = {
-  donation: PropTypes.instanceOf(Activity).isRequired
+  donation: PropTypes.instanceOf(Donation).isRequired
 };
 
 const styles = theme => ({

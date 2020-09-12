@@ -35,7 +35,7 @@ class User extends Model {
       avatar = '',
       email = '',
       giverId,
-      url,
+      url = '',
       roles = [],
       balance = new BigNumber(0),
       authenticated = false,

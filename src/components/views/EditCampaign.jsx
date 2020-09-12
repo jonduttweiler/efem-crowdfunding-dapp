@@ -17,8 +17,8 @@ import Campaign from '../../models/Campaign';
 
 import { connect } from 'react-redux'
 import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
-import { campaignReviewers } from '../../redux/reducers/usersRolesSlice';
-import { saveCampaign } from '../../redux/reducers/campaignsSlice'
+import { campaignReviewers } from '../../redux/reducers/usersSlice';
+import { saveCampaign, selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { CAMPAIGN_REVIEWER_ROLE } from '../../constants/Role';
 
 /**
@@ -91,12 +91,12 @@ class EditCampaign extends Component {
   }
 
   checkUser() {
-    if (!this.props.currentUser) { 
+    if (!this.props.currentUser) {
       history.push('/');
       return Promise.reject("Not allowed. No user logged in");
     }
 
-    if(!this.props.isCampaignManager){
+    if (!this.props.isCampaignManager) {
       history.push('/');
       return Promise.reject("Not allowed. User is not campaign manager");
     }
@@ -114,10 +114,10 @@ class EditCampaign extends Component {
     };
 
     this.setState({ isSaving: true, isBlocking: false }, () => {
-        // Save the campaign
-        this.props.saveCampaign(this.state.campaign);
-        afterSave(this.state.campaign);
-      },
+      // Save the campaign
+      this.props.saveCampaign(this.state.campaign);
+      afterSave(this.state.campaign);
+    },
     );
   }
 
@@ -301,11 +301,11 @@ const mapStateToProps = (state, props) => {
   return {
     user: selectCurrentUser(state),
     isCampaignManager: selectCurrentUser(state).isCampaignManager(),
-    reviewers: campaignReviewers(state),    
+    reviewers: campaignReviewers(state),
     campaign: selectCampaign(state, campaignId)
   };
 };
 
 const mapDispatchToProps = { saveCampaign }
 
-export default connect(mapStateToProps,mapDispatchToProps)(EditCampaign)
+export default connect(mapStateToProps, mapDispatchToProps)(EditCampaign)

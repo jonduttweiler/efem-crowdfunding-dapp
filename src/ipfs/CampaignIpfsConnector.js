@@ -13,9 +13,11 @@ class CampaignIpfsConnector {
    * @return CID de la campaign en IPFS
    */
   async upload(campaign) {
-    // Se almacena en IPFS la imagen de la Campaign.
-    let imageCid = await ipfsService.upload(campaign.image);
-    campaign.imageCid = imageCid;
+    if (campaign.image) {
+      // Se almacena en IPFS la imagen de la Campaign.
+      let imageCid = await ipfsService.upload(campaign.image);
+      campaign.imageCid = imageCid;
+    }
     // Se almacena en IPFS toda la información de la Campaign.
     let infoCid = await ipfsService.upload(campaign.toIpfs());
     return infoCid;

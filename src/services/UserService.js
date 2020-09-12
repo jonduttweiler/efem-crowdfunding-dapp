@@ -10,6 +10,15 @@ import { ALL_ROLES } from '../constants/Role';
 
 class UserService {
 
+  /**
+   * Carga el usuario actual con los siguientes datos.
+   * - Address según wallet
+   * - Balance según wallet
+   * - Datos identificatorios
+   * - Roles. 
+   * 
+   * @param currentUser usuario actual
+   */
   loadCurrentUser(currentUser) {
 
     return new Observable(async subscriber => {
@@ -58,6 +67,23 @@ class UserService {
       } catch (err) {
         console.error('Error obteniendo datos del usuario.', err);
         subscriber.error(err);
+      }
+    });
+  }
+
+  /**
+   * Carga el usuario coincidente con la address.
+   * 
+   * @param address del usuario.
+   */
+  loadUserByAddress(address) {
+    return new Observable(async subscriber => {
+      try {
+        const userdata = await feathersClient.service('/users').get(address);
+        subscriber.next(new User({ ...userdata }));
+      } catch (e) {
+        console.error(`Error obteniedo usuario por address ${address}.`, e);
+        subscriber.error(e);
       }
     });
   }
@@ -136,11 +162,6 @@ async function _uploadUserToIPFS(user) {
   }
 }
 
-export async function getUser(address) {
-  const userdata = await feathersClient.service('/users').get(address);
-  return new User({ ...userdata });
-}
-
 async function getRoles(address) {
   try {
     const userRoles = [];
@@ -171,12 +192,5 @@ const pause = (ms = 3000) => {
     setTimeout(_ => resolve(), ms)
   });
 }
-
-
-
-
-
-
-
 
 export default UserService;

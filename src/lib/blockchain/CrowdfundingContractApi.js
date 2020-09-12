@@ -193,7 +193,7 @@ class CrowdfundingContractApi {
             donationIds: donationIds.map(e => parseInt(e)),
             managerAddress: users[0],
             reviewerAddress: users[1],
-            status: this.mapCampaingStatus(parseInt(status))
+            status: this.mapCampaignStatus(parseInt(status))
         });
     }
 
