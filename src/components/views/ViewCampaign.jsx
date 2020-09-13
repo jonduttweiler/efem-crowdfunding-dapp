@@ -92,13 +92,9 @@ class ViewCampaign extends Component {
   render() {
     const { isLoading, isLoadingMilestones, milestonesLoaded, milestonesTotal } = this.state;
     const { campaign, milestones, donations, history, currentUser, balance, t } = this.props;
-    
-    const currentUserAddress = currentUser && currentUser.address;
-    const managerAddress = campaign && campaign.managerAddress;
-    const reviewerAddress = campaign && campaign.reviewerAddress;
 
-    const isCampaignManager = currentUserAddress && (currentUserAddress === managerAddress);
-    const isCampaignReviewer = currentUserAddress && (currentUserAddress === reviewerAddress);
+    const isCampaignManager = campaign.isCampaignManager(currentUser);
+    
     
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
     return (

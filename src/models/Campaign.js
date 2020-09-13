@@ -35,6 +35,23 @@ class Campaign extends Entity {
     });
   }
 
+  /**
+   * Determina si el usuario es el manager de la campaña.
+   * 
+   * @param user a determinar si es el manager de la campaña.
+   */
+   isManager(user) {
+     return user && user.address === this.managerAddress;
+   }
+
+  /**
+   * Determina si el usuario es revisor de la campaña.
+   * @param user a determinar si es revisor de la campaña.
+   */
+  isReviewer(user) {
+    return user && user.address === this.reviewerAddress;
+  }
+
   static get PENDING() {
     return StatusUtils.build('Pending', true);
   }
@@ -119,6 +136,7 @@ class Campaign extends Entity {
   get receiveFunds() {
     return this.isActive;
   }
+
 }
 
 export default Campaign;
