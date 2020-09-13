@@ -21,6 +21,8 @@ import { campaignReviewers } from '../../redux/reducers/usersSlice';
 import { saveCampaign, selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { CAMPAIGN_REVIEWER_ROLE } from '../../constants/Role';
 
+
+import { withTranslation } from 'react-i18next';
 /**
  * View to create or edit a Campaign
  *
@@ -132,7 +134,7 @@ class EditCampaign extends Component {
   }
 
   render() {
-    const { isNew } = this.props;
+    const { isNew, t } = this.props;
     const { isLoading, isSaving, campaign, formIsValid, isBlocking } = this.state;
 
     return (
@@ -147,13 +149,11 @@ class EditCampaign extends Component {
                   <GoBackButton history={history} />
 
                   <div className="form-header">
-                    {isNew && <h3>Start a new campaign!</h3>}
+                    {isNew && <h3>{t('newCampaignTitle')}</h3>}
 
-                    {!isNew && <h3>Edit campaign {campaign.title}</h3>}
+                    {!isNew && <h3>{t('editCampaignTitle')} {campaign.title}</h3>}
                     <p>
-                      <i className="fa fa-question-circle" />A campaign solves a specific cause by
-                      executing a project via its Milestones. Funds raised by a campaign need to be
-                      delegated to its Milestones in order to be paid out.
+                      <i className="fa fa-question-circle" />{t('campaignDescription')}
                     </p>
                   </div>
 
@@ -172,24 +172,19 @@ class EditCampaign extends Component {
                     onChange={e => this.triggerRouteBlocking(e)}
                     layout="vertical"
                   >
-                    <Prompt
-                      when={isBlocking}
-                      message={() =>
-                        `You have unsaved changes. Are you sure you want to navigate from this page?`
-                      }
-                    />
+                    <Prompt when={isBlocking} message={() => t('unsavedChanges')}/>
 
                     <Input
                       name="title"
                       id="title-input"
-                      label="What are you working on?"
+                      label={t('campaignTitleLabel')}
                       type="text"
                       value={campaign.title}
-                      placeholder="E.g. Installing 1000 solar panels."
-                      help="Describe your campaign in 1 sentence."
+                      placeholder={t('campaignTitlePlaceholder')}
+                      help={t('campaignTitleHelp')}
                       validations="minLength:3"
                       validationErrors={{
-                        minLength: 'Please provide at least 3 characters.',
+                        minLength: t('campaignTitleValidationMinLength'),
                       }}
                       required
                       autoFocus
@@ -197,15 +192,13 @@ class EditCampaign extends Component {
 
                     <QuillFormsy
                       name="description"
-                      label="Explain how you are going to do this successfully."
-                      helpText="Make it as extensive as necessary.
-                      Your goal is to build trust, so that people donate Bitcoin to your campaign."
+                      label={t('campaignDescriptionLabel')}
+                      helpText={t('campaignDescriptionHelp')}
                       value={campaign.description}
-                      placeholder="Describe how you're going to execute your campaign successfully..."
+                      placeholder={t('campaignDescriptionPlaceholder')}
                       validations="minLength:20"
-                      help="Describe your campaign."
                       validationErrors={{
-                        minLength: 'Please provide at least 10 characters.',
+                        minLength: t('campaignDescriptionError'),
                       }}
                       required
                     />
@@ -222,13 +215,13 @@ class EditCampaign extends Component {
                       <Input
                         name="url"
                         id="url"
-                        label="Url to join your Community"
+                        label={t('campaignUrlLabel')}
                         type="text"
                         value={campaign.url}
-                        placeholder="https://slack.giveth.com"
-                        help="Where can people join your Community? The dapp redirects people there."
+                        placeholder="https://slack.give4forests.com"
+                        help={t('campaignUrlHelp')}
                         validations="isUrl"
-                        validationErrors={{ isUrl: 'Please provide a url.' }}
+                        validationErrors={{ isUrl: t('campaignUrlError') }}
                       />
                     </div>
 
@@ -238,13 +231,13 @@ class EditCampaign extends Component {
                           roles={[CAMPAIGN_REVIEWER_ROLE]}
                           id="reviewer-select"
                           name="reviewerAddress"
-                          label="Select a reviewer"
-                          helpText="This person or smart contract will be reviewing your Campaign to increase trust for Givers."
+                          label={t('campaignReviewerLabel')}
+                          helpText={t('campaignReviewerHelpText')}
                           value={campaign.reviewerAddress}
-                          cta="--- Select a reviewer ---"
+                          cta={t('campaignReviewerCta')}
                           validations="isEtherAddress"
                           validationErrors={{
-                            isEtherAddress: 'Please select a reviewer.',
+                            isEtherAddress: t('campaignReviewerError')
                           }}
                           required
                         />
@@ -262,9 +255,9 @@ class EditCampaign extends Component {
                           type="submit"
                           disabled={isSaving || !formIsValid}
                           isLoading={isSaving}
-                          loadingText="Saving..."
+                          loadingText={t('campaignLoadingText')}
                         >
-                          {isNew ? 'Create' : 'Update'} Campaign
+                          {isNew ? t('createCampaignBtn'): t('updateCampaignBtn')} 
                         </LoaderButton>
                       </div>
                     </div>
@@ -308,4 +301,4 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = { saveCampaign }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditCampaign)
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation() (EditCampaign));
