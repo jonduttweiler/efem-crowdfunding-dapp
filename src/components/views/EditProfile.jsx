@@ -1,43 +1,33 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
 import { Form, Input } from 'formsy-react-components';
-import GA from 'lib/GoogleAnalytics';
 import Loader from '../Loader';
 import FormsyImageUploader from '../FormsyImageUploader';
 import { isLoggedIn } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
-import User from '../../models/User';
 import { history } from '../../lib/helpers';
-
 import { connect } from 'react-redux';
-import { saveUser, endSave, hasError, errorOnSave, selectCurrentUser } from '../../redux/reducers/currentUserSlice';
+import { registerCurrentUser, selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 
 /**
- * The edit user profile view mapped to /profile/
+ * Edición del usuario actual.
  *
- * @param currentUser  The current user's address
+ * @param currentUser  The current user
  */
 class EditProfile extends Component {
   constructor(props) {
     super(props);
-
-    const user = props.currentUser ? new User(props.currentUser) : new User(); 
-
     this.state = {
       isLoading: true,
       isSaving: false,
-      user: user,
       isPristine: true,
     };
-
     this.submit = this.submit.bind(this);
     this.setImage = this.setImage.bind(this);
     this.togglePristine = this.togglePristine.bind(this);
   }
 
   componentDidMount() {
-    this.mounted = true;
     isLoggedIn(this.props.currentUser)
       .then(() => this.setState({ isLoading: false }))
       .catch(err => {
@@ -46,54 +36,35 @@ class EditProfile extends Component {
         } else {
           this.setState({ isLoading: false });
         }
-      }); 
+      });
   }
 
   componentDidUpdate(prevProps, prevState) {
-
-    const endSave = this.state.isSaving && this.props.endSave;
-    const { hasError, errorOnSave } = this.props;
-
-    if (prevProps.currentUser != this.props.currentUser && !hasError) { 
-      this.setState({ user: this.props.currentUser })
+    if (this.state.isSaving && this.props.currentUser.isRegistered) {
+      this.setState({
+        isSaving: false
+      });
     }
-
-    if (endSave) { //process end save
-      if (this.mounted) this.setState({ isSaving: false });
-      if (hasError) {
-        const msg = errorOnSave.userMsg || 'An error has ocurred updating your data, try again';
-        React.toast.error(msg);
-      } else {
-        React.toast.success('Your profile has been updated');
-        GA.trackEvent({ category: 'User', action: 'updated', label: this.props.currentUser.address, });
-      }
-    }
-  }
-
-
-  componentWillUnmount() {
-    this.mounted = false;
   }
 
   setImage(image) {
-    const { currentUser: user } = this.props;
-    user.newAvatar = image;
-    this.setState({ user, isPristine: false });
+    const { currentUser } = this.props;
+    currentUser.newAvatar = image;
+    this.setState({ isPristine: false });
   }
-  
+
   togglePristine(currentValues, isChanged) {
     this.setState({ isPristine: !isChanged });
   }
-  
+
   submit() {
-    this.setState({ isSaving: true, }, _ => { 
-      this.props.saveUser(this.state.user);
-    }); 
+    this.setState({ isSaving: true, });
+    this.props.registerCurrentUser(this.props.currentUser);
   }
 
   render() {
-    
-    const { isLoading, isSaving, user, isPristine } = this.state;
+
+    const { isLoading, isSaving, isPristine } = this.state;
     const { currentUser } = this.props;
 
     return (
@@ -104,8 +75,8 @@ class EditProfile extends Component {
 
             {!isLoading && (
               <div>
-                {user.email && <h3>Edit your profile</h3>}
-                {!user.email && <h3>Create a profile to get started</h3>}
+                {currentUser.email && <h3>Edit your profile</h3>}
+                {!currentUser.email && <h3>Create a profile to get started</h3>}
                 <p>
                   <i className="fa fa-question-circle" />
                   Trust is important to run successful Funds or Campaigns. Without trust you will
@@ -130,9 +101,9 @@ class EditProfile extends Component {
                 <Form
                   onSubmit={this.submit}
                   mapping={inputs => {
-                    user.name = inputs.name;
-                    user.email = inputs.email;
-                    user.url = inputs.url;
+                    currentUser.name = inputs.name;
+                    currentUser.email = inputs.email;
+                    currentUser.url = inputs.url;
                   }}
                   onChange={this.togglePristine}
                   layout="vertical"
@@ -144,7 +115,7 @@ class EditProfile extends Component {
                       id="name-input"
                       label="Your name"
                       type="text"
-                      value={user.name}
+                      value={currentUser.name}
                       placeholder="John Doe."
                       validations="minLength:3"
                       validationErrors={{
@@ -160,7 +131,7 @@ class EditProfile extends Component {
                       name="email"
                       autoComplete="email"
                       label="Email"
-                      value={user.email}
+                      value={currentUser.email}
                       placeholder="email@example.com"
                       validations="isEmail"
                       help="Please enter your email address."
@@ -172,7 +143,7 @@ class EditProfile extends Component {
 
                   <FormsyImageUploader
                     setImage={this.setImage}
-                    avatar={user.avatar || user._newAvatar } 
+                    avatar={currentUser.avatar || currentUser._newAvatar}
                     aspectRatio={1}
                   />
 
@@ -181,7 +152,7 @@ class EditProfile extends Component {
                       name="url"
                       label="Your Profile"
                       type="text"
-                      value={user.url}
+                      value={currentUser.url}
                       placeholder="Your profile url"
                       help="Provide a link to some more info about you, this will help to build trust. You could add your linkedin profile, Twitter account or a relevant website."
                       validations="isUrl"
@@ -212,14 +183,11 @@ class EditProfile extends Component {
 }
 
 
-const mapStateToProps = (state,ownProps) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: selectCurrentUser(state),
-    endSave: endSave(state),
-    hasError: hasError(state),
-    errorOnSave: errorOnSave(state)
+    currentUser: selectCurrentUser(state)
   };
 }
-const mapDispatchToProps = { saveUser }
+const mapDispatchToProps = { registerCurrentUser }
 
-export default connect(mapStateToProps,mapDispatchToProps)(EditProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);

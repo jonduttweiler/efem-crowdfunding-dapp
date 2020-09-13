@@ -20,8 +20,11 @@ export const fetchUserByAddressEpic = action$ => action$.pipe(
   }))
 )
 
-export const loadUsersRolesEpic = action$ => action$.pipe(
-  ofType('users/loadUsersRoles'),
-  mergeMap(action => userService.getUsersRoles()),
-  map(usersList => ({ type: 'users/setUsersRoles', payload: usersList }))
+export const fetchUsersEpic = action$ => action$.pipe(
+  ofType('users/fetchUsers'),
+  mergeMap(action => userService.loadUsersWithRoles()),
+  map(users => ({
+    type: 'users/mergeUsers',
+    payload: users
+  }))
 )

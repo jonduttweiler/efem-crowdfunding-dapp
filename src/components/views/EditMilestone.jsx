@@ -60,7 +60,6 @@ class EditMilestone extends Component {
   }
 
   componentDidMount() {
-    //this.props.loadUsersRoles();
     this.checkUser()
       .then(async () => {
         this.setState({

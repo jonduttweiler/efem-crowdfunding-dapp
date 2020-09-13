@@ -565,7 +565,7 @@ class CrowdfundingContractApi {
     milestoneComplete(milestone, activity) {
 
         return new Observable(async subscriber => {
-
+console.log('Activityyyyyyyyy', activity);
             try {
                 let crowdfunding = await this.getCrowdfunding();
 

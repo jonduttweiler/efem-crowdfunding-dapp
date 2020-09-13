@@ -14,7 +14,7 @@ const userService = new UserService();
  * @param action$ de Redux.
  */
 export const loadCurrentUserEpic = (action$, state$) => action$.pipe(
-  ofType('currentUser/loadCurrentUser'),
+  ofType('currentUser/initCurrentUser'),
   mergeMap(action => {
     let currentUser = new User(state$.value.currentUser);
     return userService.loadCurrentUser(currentUser);
@@ -25,25 +25,19 @@ export const loadCurrentUserEpic = (action$, state$) => action$.pipe(
   }))
 )
 
-/*export const loadUserEpic = (action$, state$) => action$.pipe(
-  ofType('currentUser/loadUser'),
-  mergeMap(action => {
-    let user = state$.value.currentUser;
-    return userService.loadUser(user);
-  }),
-  map(user => ({ type: 'currentUser/setUser', payload: user }))
-)*/
-
-export const saveUserEpic = (action$) => action$.pipe(
-  ofType('currentUser/saveUser'),
+export const registerCurrentUserEpic = (action$) => action$.pipe(
+  ofType('currentUser/registerCurrentUser'),
   mergeMap(
     action => userService.save(action.payload).pipe(
-      map(user => ({ type: 'currentUser/endSave', payload: user })),
-      catchError(error => of({type: 'currentUser/endSaveError',payload: error,error: true}))
+      map(currentUser => ({
+        type: 'currentUser/setCurrentUser',
+        payload: currentUser
+      })),
+      catchError(error => of({
+        type: 'currentUser/initCurrentUser',
+        payload: error, error: true
+      }))
     )
-  
-  
-  ),
-  
+  )
 )
 

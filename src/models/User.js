@@ -1,7 +1,6 @@
 import Model from './Model';
 import { cleanIpfsPath } from '../lib/helpers';
 import BigNumber from 'bignumber.js';
-
 import {
   CREATE_DAC_ROLE,
   CREATE_CAMPAIGN_ROLE,
@@ -10,6 +9,8 @@ import {
   MILESTONE_REVIEWER_ROLE,
   RECIPIENT_ROLE
 } from '../constants/Role';
+import StatusUtils from '../utils/StatusUtils';
+import Status from './Status';
 
 /**
  * Modelo de User en Dapp.
@@ -30,7 +31,7 @@ class User extends Model {
     super(data);
 
     const {
-      address = '',
+      address = null,
       name = '',
       avatar = '',
       email = '',
@@ -40,6 +41,7 @@ class User extends Model {
       balance = new BigNumber(0),
       authenticated = false,
       registered = false, //exists on mongodb?
+      status = User.UNREGISTERED.toStore()
     } = data;
 
     if (data) {
@@ -53,6 +55,7 @@ class User extends Model {
       this._balance = balance;
       this._authenticated = authenticated;
       this._registered = registered;
+      this._status = StatusUtils.build(status.name, status.isLocal);
     }
   }
 
@@ -94,23 +97,28 @@ class User extends Model {
       roles: this._roles,
       balance: this._balance,
       authenticated: this._authenticated,
-      registered: this._registered
+      registered: this._registered,
+      status: this._status.toStore()
     }
   }
 
-  clone() {
-    return new User({
-      address: this.address,
-      name: this.name,
-      avatar: this.avatar,
-      email: this.email,
-      giverId: this.giverId,
-      url: this.url,
-      roles: this.roles,
-      balance: this.balance,
-      authenticated: this.authenticated,
-      registered: this.registered,
-    });
+  static get UNREGISTERED() {
+    return StatusUtils.build('Unregistered');
+  }
+
+  static get REGISTERED() {
+    return StatusUtils.build('Registered');
+  }
+
+  static get REGISTERING() {
+    return StatusUtils.build('Registering', true);
+  }
+
+  /**
+   * Indica si el usuario está registrado en este momento.
+   */
+  get isRegistered() {
+    return this.status.name === User.REGISTERED.name;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -237,6 +245,15 @@ class User extends Model {
     } 
 
     return found;
+  }
+
+  get status() {
+    return this._status;
+  }
+
+  set status(value) {
+    this.checkInstanceOf(value, Status, 'status');
+    this._status = value;
   }
 
   isDelegate() {

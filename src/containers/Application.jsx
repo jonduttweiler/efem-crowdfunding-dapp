@@ -33,7 +33,7 @@ import { fetchDacs } from '../redux/reducers/dacsSlice'
 import { fetchCampaigns } from '../redux/reducers/campaignsSlice'
 import { fetchMilestones } from '../redux/reducers/milestonesSlice'
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice';
-import { loadUsersRoles } from '../redux/reducers/usersSlice';
+import { fetchUsers } from '../redux/reducers/usersSlice';
 import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes  from './SwitchRoutes';
 import Footer from '../components/Footer';
@@ -84,7 +84,7 @@ class Application extends Component {
     this.props.fetchDacs();
     this.props.fetchCampaigns();
     this.props.fetchMilestones();
-    this.props.loadUsersRoles();
+    this.props.fetchUsers();
   }
 
   web3Loaded() {
@@ -185,7 +185,7 @@ const mapDispatchToProps = {
   fetchDacs,
   fetchCampaigns,
   fetchMilestones,
-  loadUsersRoles
+  fetchUsers
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Application)

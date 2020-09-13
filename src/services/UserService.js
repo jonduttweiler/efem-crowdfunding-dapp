@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import User from '../models/User';
 import { ALL_ROLES } from '../constants/Role';
+import messageUtils from '../utils/MessageUtils'
 
 class UserService {
 
@@ -79,13 +80,36 @@ class UserService {
   loadUserByAddress(address) {
     return new Observable(async subscriber => {
       try {
-        const userdata = await feathersClient.service('/users').get(address);
-        subscriber.next(new User({ ...userdata }));
+        //if (address) {
+          const userdata = await feathersClient.service('/users').get(address);
+          subscriber.next(new User({ ...userdata }));
+        /*} else {
+          // Si la dirección es vacía, se obtiene un usuario por defecto.
+          subscriber.next(new User());
+        }*/
       } catch (e) {
         console.error(`Error obteniedo usuario por address ${address}.`, e);
         subscriber.error(e);
       }
     });
+  }
+
+  /**
+   * Carga los usuarios con sus roles.
+   * 
+   * TODO Esto deberíamos obtimizarlo porque se están cargadno todos los usuarios
+   * al mismo tiempo y cuando crezca la cantidad habrá problemas de performance.
+   */
+  loadUsersWithRoles() {
+    return new Observable(async subscriber => {
+      const usersByGroups = [];
+      const { data: users } = await feathersClient.service("users").find();
+      for (const user of users) {
+        const roles = await getRoles(user.address);
+        usersByGroups.push(new User({ ...user, roles }));
+      }
+      subscriber.next(usersByGroups);
+    })
   }
 
   /**
@@ -101,36 +125,33 @@ class UserService {
       await this._updateAvatar(user);
 
       try {
+
         await _uploadUserToIPFS(user);
 
         await feathersClient.service('/users').patch(user.address, user.toFeathers());
-        user.isRegistered = true;
+        //user.isRegistered = true;
 
         subscriber.next(user);
+        messageUtils.addMessageSuccess({
+          title: 'Felicitaciones!',
+          text: `Su perfil ha sido registrado`
+        });
 
       } catch (err) {
-        err.userMsg = 'There has been a problem creating your user profile. Please refresh the page and try again.';
         subscriber.error(err);
+        messageUtils.addMessageError({
+          text: `Se produjo un error registrando su perfil. Por favor, refresque la página e inténtelo nuevamente.`,
+          error: err
+        });
       }
     });
   }
 
-  getUsersRoles() {
-    return new Observable(async subscriber => {
-      const users = await getUsersWithRoles();
-      subscriber.next(users);
-    })
-  }
-
   async _updateAvatar(user) {
     if (user._newAvatar) {
-      try {
-        const avatarUrl = await ipfsService.upload(user._newAvatar);
-        user.avatar = ipfsService.resolveUrl(avatarUrl);
-        delete user._newAvatar;
-      } catch (err) {
-        ErrorPopup('Failed to upload avatar', err);
-      }
+      const avatarUrl = await ipfsService.upload(user._newAvatar);
+      user.avatar = ipfsService.resolveUrl(avatarUrl);
+      delete user._newAvatar;
     }
   }
 }
@@ -163,29 +184,17 @@ async function _uploadUserToIPFS(user) {
 }
 
 async function getRoles(address) {
+  const userRoles = [];
   try {
-    const userRoles = [];
     for (const rol of ALL_ROLES) {
       const canPerform = await crowdfundingContractApi.canPerformRole(address, rol);
       if (canPerform) userRoles.push(rol);
     }
-    return userRoles;
-
   } catch (err) {
-    console.log(err)
+    console.error(`Error obteniendo roles del usuario ${address}.`, err);
   }
+  return userRoles;
 }
-
-export async function getUsersWithRoles() {
-  const usersWithRoles = [];
-  const { data: users } = await feathersClient.service("users").find();
-  for (const user of users) {
-    const roles = await getRoles(user.address);
-    usersWithRoles.push(new User({ ...user, roles }));
-  }
-  return usersWithRoles;
-}
-
 
 const pause = (ms = 3000) => {
   return new Promise((resolve, reject) => {

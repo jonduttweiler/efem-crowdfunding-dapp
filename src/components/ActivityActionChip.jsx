@@ -14,7 +14,7 @@ class ActivityChip extends Component {
     const { activity } = this.props;
     let label = activity.action;
     let color = 'default';
-    console.log(activity);
+    
     if (activity.isApprove) {
       color = 'primary';
     } else if (activity.isReject) {

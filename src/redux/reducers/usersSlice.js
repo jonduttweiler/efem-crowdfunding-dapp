@@ -18,41 +18,60 @@ export const usersSlice = createSlice({
             if (index != -1) {
                 // El usuario ya existe localmente,
                 // por lo que se realiza un merge de sus datos con los actuales.
-                let u = state[index];
-                let address = userStore.address;
-                let name = userStore.name !== '' ? userStore.name : u.name;
-                let email = userStore.email !== '' ? userStore.email : u.email;
-                let url = userStore.url !== '' ? userStore.url : u.url;
-                let avatar = userStore.avatar !== '' ? userStore.avatar : u.avatar;
-                let roles = userStore.roles.length !== 0 ? userStore.roles : u.roles;
-                let balance = userStore.balance !== new BigNumber(0) ? userStore.balance : u.balance;
-                let registered = userStore.registered === true ? userStore.registered : u.registered;
-                state[index] = {
-                    address,
-                    name,
-                    email,
-                    url,
-                    avatar,
-                    roles,
-                    balance,
-                    registered
-                };
+                state[index] = merge(state[index], userStore);
             } else {
                 // El usuario es nuevo localmente
                 state.push(userStore);
             }
         },
-        loadUsersRoles: (state, action) => {
-            return state;
+        fetchUsers: (state, action) => {
+            // Solo se obtiene el estado actual.
         },
-        setUsersRoles: (state, action) => {
-            state = action.payload;
-            return state;
+        mergeUsers: (state, action) => {
+            for (let i = 0; i < action.payload.length; i++) {
+                let userStore = action.payload[i].toStore();
+                let index = state.findIndex(u => u.address === userStore.address);
+                if (index != -1) {
+                    // El usuario ya existe localmente,
+                    // por lo que se realiza un merge de sus datos con los actuales.
+                    state[index] = merge(state[index], userStore);
+                } else {
+                    // El usuario es nuevo localmente
+                    state.push(userStore);
+                }
+            }
         }
     },
 });
 
-export const { loadUsersRoles, fetchUserByAddress } = usersSlice.actions;
+/**
+ * Realiza el merge del estado de un usuario con uno nuevo.
+ * 
+ * Si los datos nuevos están definidos, se priorizan por sobre el estado actual.
+ * 
+ */
+function merge(stateUser, newUser) {
+    let address = stateUser.address;
+    let name = newUser.name !== '' ? newUser.name : stateUser.name;
+    let email = newUser.email !== '' ? newUser.email : stateUser.email;
+    let url = newUser.url !== '' ? newUser.url : stateUser.url;
+    let avatar = newUser.avatar !== '' ? newUser.avatar : stateUser.avatar;
+    let roles = newUser.roles.length !== 0 ? newUser.roles : stateUser.roles;
+    let balance = newUser.balance !== new BigNumber(0) ? newUser.balance : stateUser.balance;
+    let registered = newUser.registered === true ? newUser.registered : stateUser.registered;
+    return {
+        address,
+        name,
+        email,
+        url,
+        avatar,
+        roles,
+        balance,
+        registered
+    };
+}
+
+export const { fetchUserByAddress, fetchUsers } = usersSlice.actions;
 
 export const selectUserByAddress = (state, address) => {
     let userStore = state.users.find(u => u.address === address);

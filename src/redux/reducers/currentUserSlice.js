@@ -1,65 +1,38 @@
 import { createSlice } from '@reduxjs/toolkit';
 import User from '../../models/User';
 
+/**
+ * Estado inicial del usuario.
+ */
+const currentUserInitialState = {
+  status: User.UNREGISTERED.toStore(),
+  authenticated: false,
+  roles: []
+}
+
 export const currentUserSlice = createSlice({
   name: 'currentUser',
-  initialState: {
-    authenticated: false,
-    roles: []
-  },
+  initialState: currentUserInitialState,
   reducers: {
-    loadCurrentUser: (state, action) => {
-      // Solo se obtiene el estado actual.
+    initCurrentUser: (state, action) => {
+      // Cuando se carga el usuario, se obtiene un
+      // estado inicial para ir cargándolo desde el Epic.
+      return currentUserInitialState;
     },
     setCurrentUser: (state, action) => {
+      action.payload.status = User.REGISTERED;
       return action.payload.toStore();
     },
-    /*setUser: (state, action) => { 
-      const { name, address, email, avatar, url, roles, balance, registered } = action.payload;
-      return new User({ name, address, email, avatar, url, roles, balance, registered });
-    },*/
-    saveUser: (state, action) => {
-      state.endSave = false; 
-      return state;
-    },
-    endSave: (prevState, action) => {
-      const state = prevState.clone();
-      state.endSave = true;
-      state.hasError = false;
-      state.errorOnSave = undefined;
-      
-      const { address, email, name, avatar, url } = action.payload;
-      state.address = address;
-      state.email = email;
-      state.name = name;
-      state.avatar = avatar;
-      state.url = url;
-      
-      return state;
-    },
-    endSaveError: (prevState,action) => { 
-      const error = action.payload;
-      const newState = prevState.clone();
-
-      newState.endSave = true;
-      newState.hasError = true;
-      newState.errorOnSave = error;
-      return newState;
-    },
-    clearUser: (state, action) => {
-      state = new User();
-      return state;
+    registerCurrentUser: (state, action) => {
+      action.payload.status = User.REGISTERING;
+      return action.payload.toStore();
     }
   },
 });
 
-export const { clearUser, saveUser, loadCurrentUser, setCurrentUser } = currentUserSlice.actions;
+export const { registerCurrentUser, initCurrentUser, setCurrentUser } = currentUserSlice.actions;
 
-//export const selectUser = state => state.currentUser.clone();
 export const selectCurrentUser = state => new User(state.currentUser);
 export const selectRoles = state => state.currentUser.roles;
-export const endSave = state => state.currentUser.endSave;
-export const hasError = state => state.currentUser.hasError;
-export const errorOnSave = state => state.currentUser.errorOnSave;
 
 export default currentUserSlice.reducer;

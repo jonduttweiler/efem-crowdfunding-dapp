@@ -12,7 +12,22 @@ class ProfileCard extends Component {  //va a recibir como prop un address
     }
 
     componentDidMount() {
-        this.props.fetchUserByAddress(this.props.address);
+        if(this.props.address) {
+            this.props.fetchUserByAddress(this.props.address);
+        }        
+    }
+
+    /*shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.address === nextProps.address) {
+            return false;
+        }
+        return true;
+    }*/
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.address !== prevProps.address) {
+            this.props.fetchUserByAddress(this.props.address);
+        }
     }
 
     render() {
