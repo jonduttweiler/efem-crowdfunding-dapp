@@ -1,5 +1,42 @@
 {
     "campaigns": "Campañas",
+    "campaign": "Campaña",
+    "edit": "Editar",
+    "newCampaignTitle":"Comienza una nueva campaña!",
+    "editCampaignTitle":"Editar campaña",
+    "campaignDescription":"Una campaña resuelve una causa específica ejecutando un proyecto a través de sus Hitos. Los fondos recaudados por una campaña deben delegarse a sus Hitos para poder ser pagados.",
+    "campaignTitleLabel": "¿En que estás trabajando?",
+    
+    "campaignTitlePlaceholder":"Ej. Instalar 1000 paneles solares.",
+    "campaignTitleHelp":"Describe tu campaña en una oración.",
+    "campaignTitleValidationMinLength":"Proporciona al menos 3 caracteres",
+
+    "campaignDescriptionLabel":"Explique cómo va a hacer esto con éxito.",
+    "campaignDescriptionHelp": "Hágalo tan extenso como sea necesario. Su objetivo es generar confianza para que la gente done a su campaña.",
+    "campaignDescriptionPlaceholder": "Describe cómo vas a ejecutar tu campaña con éxito...",
+    "campaignDescriptionError": "Proporciona al menos 10 caracteres.",
+
+    "campaignUrlLabel": "Url para unirse a su comunidad",
+    "campaignUrlHelp": "¿Dónde pueden unirse las personas a su comunidad? El dapp redirige a las personas allí.",
+    "campaignUrlError":"Por favor proporciona una url.",
+
+    "campaignReviewerLabel": "Seleccione un revisor",
+    "campaignReviewerCta": "--- Seleccione un revisor ---",
+    "campaignReviewerHelpText": "Esta persona o contrato inteligente revisará su campaña para aumentar la confianza en los donantes.",
+    "campaignReviewerError": "Por favor, seleccione un revisor.",
+    
+    "campaignLoadingText":"Guardando...",
+    "createCampaignBtn":"Crear Campaña",
+    "updateCampaignBtn":"Actualizar Campaña",
+
+
+
+
+
+
+
+    "unsavedChanges":"Tienes cambios sin guardar. ¿Estás seguro que deseas salir de esta página?",
+
 
     "milestoneComplete": "Completar",
     "milestoneCompleteTitle": "Completar hito",

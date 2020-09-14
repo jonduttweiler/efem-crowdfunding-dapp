@@ -28,9 +28,10 @@ import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reduce
 import ProfileCard from '../ProfileCard';
 import CampaignCard from '../CampaignCard';
 import { withTranslation } from 'react-i18next';
+import EditCampaignButton from '../EditCampaignButton';
 
 /**
- * The Campaign detail view mapped to /campaing/id
+ * The Campaign detail view mapped to /campaign/id
  *
  * @param currentUser  Currently logged in user information
  * @param history      Browser history object
@@ -93,13 +94,6 @@ class ViewCampaign extends Component {
     const { isLoading, isLoadingMilestones, milestonesLoaded, milestonesTotal } = this.state;
     const { campaign, milestones, donations, history, currentUser, balance, t } = this.props;
     
-    const currentUserAddress = currentUser && currentUser.address;
-    const managerAddress = campaign && campaign.managerAddress;
-    const reviewerAddress = campaign && campaign.reviewerAddress;
-
-    const isCampaignManager = currentUserAddress && (currentUserAddress === managerAddress);
-    const isCampaignReviewer = currentUserAddress && (currentUserAddress === reviewerAddress);
-    
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
     return (
       <ErrorBoundary>
@@ -109,7 +103,7 @@ class ViewCampaign extends Component {
           {!isLoading && (
             <div>
               <BackgroundImageHeader image={campaign.imageCidUrl} height={300}>
-                <h6>Campaign</h6>
+                <h6>{t('campaign')}</h6>
                 <h1>{campaign.title}</h1>
                 <Donate
                   entityId={campaign.id}
@@ -118,16 +112,13 @@ class ViewCampaign extends Component {
                   description={t('donateCampaignDescription')}
                   enabled={campaign.receiveFunds}>
                 </Donate>
-                {
-                  isCampaignManager && (
-                    <Link 
-                      className="btn btn-success mx-2"
-                      to={`/campaigns/${campaign.id}/edit`}
-                    >
-                      Editar
-                    </Link>
-                  )
-                }
+                
+                <EditCampaignButton 
+                  currentUser={currentUser}
+                  campaign={campaign}
+                  title={t('donateCampaignTitle')}
+                  >
+                </EditCampaignButton>
 
                 {currentUser && currentUser.authenticated && (
                   <DelegateMultipleButton
@@ -147,7 +138,7 @@ class ViewCampaign extends Component {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-md-8 m-auto">
-                    <GoBackButton to="/" title="Campaigns" />
+                    <GoBackButton to="/" title={t("campaigns")} />
 
                     <ProfileCard address={campaign.managerAddress} />
 

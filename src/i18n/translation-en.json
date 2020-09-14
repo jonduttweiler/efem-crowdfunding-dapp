@@ -1,5 +1,34 @@
 {
-    "campaigns": "Campaings",
+    "campaigns": "Campaigns",
+    "campaign": "Campaign",
+    "edit": "Edit",
+    "newCampaignTitle":"Start a new campaign!",
+    "editCampaignTitle":"Edit campaign",
+    "campaignDescription": "A campaign solves a specific cause by executing a project via its Milestones. Funds raised by a campaign need to be delegated to its Milestones in order to be paid out.",
+    "campaignTitleLabel": "What are you working on?",
+    "campaignTitlePlaceholder":"E.g. Installing 1000 solar panels.",
+    "campaignTitleHelp":"Describe your campaign in 1 sentence.",
+    "campaignTitleValidationMinLength":"Please provide at least 3 characters.",
+
+    "campaignDescriptionLabel":"Explain how you are going to do this successfully.",
+    "campaignDescriptionHelp": "Make it as extensive as necessary. Your goal is to build trust, so that people donate to your campaign.",
+    "campaignDescriptionPlaceholder": "Describe how you're going to execute your campaign successfully...",
+    "campaignDescriptionError": "Please provide at least 10 characters.",
+
+    "campaignUrlLabel": "Url to join your Community",
+    "campaignUrlHelp": "Where can people join your Community? The dapp redirects people there.",
+    "campaignUrlError":"Please provide a url.",
+
+    "campaignReviewerLabel": "Select a reviewer",
+    "campaignReviewerCta": "--- Select a reviewer ---",
+    "campaignReviewerHelpText": "This person or smart contract will be reviewing your Campaign to increase trust for Givers.",
+    "campaignReviewerError": "Please select a reviewer.",
+    
+    "campaignLoadingText":"Saving...",
+    "createCampaignBtn":"Create Campaign",
+    "updateCampaignBtn":"Update Campaign",
+
+    "unsavedChanges":"You have unsaved changes. Are you sure you want to navigate from this page?",
     
     "milestoneComplete": "Complete",
     "milestoneCompleteTitle": "Milestone complete",
