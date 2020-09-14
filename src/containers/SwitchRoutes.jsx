@@ -25,8 +25,14 @@ import EditCampaign from '../components/views/EditCampaign';
 import ViewCampaign from '../components/views/ViewCampaign';
 import EditMilestone from '../components/views/EditMilestone';
 
+// pages for this product
+import LandingPage from "views/LandingPage/LandingPage.js";
+import ProfilePage from "views/ProfilePage/ProfilePage.js";
+import LoginPage from "views/LoginPage/LoginPage.js";
+
 const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
     <Switch>
+
         {/*NOTE order matters, wrong order breaks routes!*/}
         <Route
             exact
@@ -280,11 +286,13 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
             render={props => <Profile {...props} />}
         />
 
-        <Route
+        <Route path="/" render={props => <LandingPage {...props} />} />
+
+        {/*<Route
             exact
             path="/"
             render={props => <Explore {...props} />}
-        />
+        />*/}
         <Route
             exact
             path="/campaigns"
@@ -295,6 +303,13 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
             path="/dacs"
             render={props => <DACs {...props} />}
         />
+
+        {/* Other material react routes. Not used*/})
+        <Route path="/landing-page" render={props => <LandingPage {...props} />} />
+        {/* <Route path="/profile" component={ProfilePage} />*/})
+        <Route path="/login-page" component={LoginPage} />
+
+
 
         <Route component={NotFound} />
     </Switch>

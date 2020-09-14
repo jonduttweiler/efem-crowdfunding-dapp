@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+
 import { Helmet } from 'react-helmet';
 
 import { Router } from 'react-router-dom';
@@ -18,7 +19,7 @@ import { history } from '../lib/helpers';
 import config from '../configuration';
 
 // components
-import MainMenu from '../components/MainMenu';
+//import MainMenu from '../components/MainMenu';
 import Loader from '../components/Loader';
 import ErrorBoundary from '../components/ErrorBoundary';
 
@@ -36,8 +37,6 @@ import { selectUser } from '../redux/reducers/userSlice';
 import { loadUsersRoles } from '../redux/reducers/usersRolesSlice';
 import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes  from './SwitchRoutes';
-import Footer from '../components/Footer';
-
 
 /* global document */
 /**
@@ -131,7 +130,7 @@ class Application extends Component {
                           {web3Loading && <Loader className="fixed" />}
                           {!web3Loading && (
                             <ConversionRateProvider fiatWhitelist={fiatWhitelist}>
-                              <Router history={history}>
+                            <Router history={history}>
                                 <div>
                                   {GA.init() && <GA.RouteTracker />}
 
@@ -139,14 +138,12 @@ class Application extends Component {
 
                                   {!userLoading && (
                                     <div>
-                                      <MainMenu />
                                       <SwitchRoutes 
                                         currentUser = {currentUser}
                                         balance = {balance}
                                         isCorrectNetwork = {isCorrectNetwork}
                                       />
-                                      <Footer />
-                                     </div>
+                                    </div>
                                   )}
                                   <ToastContainer
                                     position="top-right"

@@ -108,7 +108,6 @@ class JoinGivethCommunity extends Component {
     return (
       <div
         id="join-giveth-community"
-        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/img/banner${randomBackgroundNumber}.jpeg)` }}
       >
         <div className="vertical-align">
           <center>

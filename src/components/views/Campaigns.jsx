@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
+// @material-ui/core components
+
 import CampaignCard from '../CampaignCard';
 import Loader from '../Loader';
 import { connect } from 'react-redux'
 import { selectCampaigns } from '../../redux/reducers/campaignsSlice'
 import { withTranslation } from 'react-i18next';
+
+import GridContainer from "components/Grid/GridContainer.js";
+import GridItem from "components/Grid/GridItem.js";
+
+import styles from "assets/jss/material-kit-react/views/landingPageSections/campaignsStyle.js";
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+
+const classes = makeStyles(styles);
 
 /**
  * The Campaigns view mapped to /campaigns
@@ -18,22 +28,23 @@ class Campaigns extends Component {
   }
 
   render() {
-    const { t, campaigns } = this.props;
+    const { classes, theme, t, campaigns } = this.props;
     const { isLoading, hasError } = this.state;
+
     // TODO Por incorporación de Redux, se fija el total
     // como el tamaño de las campañas.
     // Falta el desarrollo del Paginado.
     var total = campaigns.length;
     return (
       <div id="campaigns-view" className="card-view">
-        <div className="container-fluid page-layout reduced-padding">
-          <h4>{t('campaigns')} {total > 0 && <span className="badge badge-success">{total}</span>}</h4>
+        <div className={classes.section}>
+          <h2 className={classes.title}>{t('campaigns')} {total > 0 && <span className="badge badge-success">{total}</span>}</h2>
+          <h5 className={classes.description}>
+            Nuestros emprendimientos de vida
+          </h5>
           {// There are some Campaigns in the system, show them
           !hasError && campaigns.length > 0 && (
             <div>
-              <p>
-                Nuestros emprendimientos de vida
-              </p>
               <div className="cards-grid-container">
                 {campaigns.map(campaign => (
                   <CampaignCard key={campaign.clientId} campaign={campaign} />
@@ -79,5 +90,5 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 export default connect(mapStateToProps)(
-  withTranslation()(Campaigns)
-)
+  withTranslation()((withStyles(styles)(Campaigns))
+))
