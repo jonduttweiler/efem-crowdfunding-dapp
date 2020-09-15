@@ -10,8 +10,14 @@ import { selectCurrentUser } from '../redux/reducers/currentUserSlice';
 import MainMenuDropdown from './MainMenuDropdown';
 import LanguageSelector from '../components/LanguageSelector'
 
+// @material-ui/core components
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import Button from "components/CustomButtons/Button.js";
+import CustomDropdown from './CustomDropdown/CustomDropdown';
 
-
+import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js";
+import { withStyles } from '@material-ui/core/styles';
 
 const signUpSwal = () => {
   React.swal({
@@ -53,118 +59,73 @@ class MainMenu extends Component {
   render() {
     const { showMobileMenu } = this.state;
 
-    const { currentUser } = this.props;
+    const { classes, theme, currentUser } = this.props;
     const registered =  currentUser && currentUser.registered || false;
-    
+
     return (
       <Web3Consumer>
         {({ state: { validProvider, isEnabled, failedToLoad }, actions: { enableProvider } }) => (
-          <div>
-            <nav
-              id="main-menu"
-              className={`navbar navbar-expand-lg fixed-top ${showMobileMenu ? 'show' : ''} `}
-            >
-              <button
-                className="navbar-toggler navbar-toggler-right"
-                type="button"
-                onClick={() => this.toggleMobileMenu()}
-              >
-                <i className={`navbar-toggler-icon fa ${showMobileMenu ? 'fa-close' : 'fa-bars'}`}/>
-              </button>
+          <List className={classes.list}>
 
-              <div
-                className={`collapse navbar-collapse ${showMobileMenu ? 'show' : ''} `}
-                id="navbarSupportedContent"
-              >
-                <ul className="navbar-nav mr-auto">
-                  <Link className="navbar-brand" to="/">
-                    <img src="/img/logo.png" width="40px" alt="G4F logo" />
-                  </Link>
+          <ListItem className={classes.listItem}>
+            <LanguageSelector ></LanguageSelector>
+          </ListItem>
 
-                  <NavLink className="nav-link" to="/">
-                    Home
-                  </NavLink>
+          {validProvider && !failedToLoad && !isEnabled && (
+              <ListItem className={classes.listItem}>
+                <Button
+                  color="transparent"
+                  target="_blank"
+                  className={classes.navLink}
+                  onClick={() => enableProvider()}
+                >
+                  Enable Web3
+                </Button>
+              </ListItem>
+            )}
+            {validProvider && !failedToLoad && isEnabled && !currentUser && (
+              <small className="text-muted">Please unlock MetaMask</small>
+            )}
+            {validProvider && !failedToLoad && !isEnabled && (
+              <ListItem className={classes.listItem}>
+                <Button
+                  color="transparent"
+                  className={classes.navLink}
+                  onClick={signUpSwal}
+                >
+                  Reg&iacute;strate!
+                </Button>
+              </ListItem>
+            )}
 
-                  
-
-                  {/*validProvider && (
-                    <MainMenuDropdown currentUser={currentUser} showMobileMenu={showMobileMenu}/>
-                  )*/}
-                </ul>
-
-                <LanguageSelector></LanguageSelector>
-
-                { 
-                /*
-                  <form id="search-form" className="form-inline my-2 my-lg-0">
-                    <input className="form-control mr-sm-2" type="text" placeholder="E.g. save the whales"/>
-                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Find</button>
-                  </form>
-                */}
-
-                <ul className="navbar-nav">
-                  {validProvider && !failedToLoad && !isEnabled && (
-                    <button
-                      type="button"
-                      className="btn btn-outline-success btn-sm"
-                      onClick={() => enableProvider()}
-                    >
-                      Enable Web3
-                    </button>
-                  )}
-                  {validProvider && !failedToLoad && isEnabled && !currentUser && (
-                    <small className="text-muted">Please unlock MetaMask</small>
-                  )}
-                  {!validProvider && (
-                    <button
-                      type="button"
-                      className="btn btn-outline-info btn-sm"
-                      onClick={signUpSwal}
-                    >
-                      Reg&iacute;strate!
-                    </button>
-                  )}
-
-                  {currentUser && (
-                    <li className="nav-item dropdown">
-                      <Link
-                        className="nav-link dropdown-toggle"
-                        id="navbarDropdownYou"
-                        to="/"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        {currentUser.avatar && (
+            {currentUser && (
+              <ListItem className={classes.listItem}>
+                <CustomDropdown
+                  noLiPadding
+                  //TODO: mostrar avatar del usuario
+                  /*avatar={currentUser.avatar && (
                           <Avatar
                             className="menu-avatar"
                             size={30}
                             src={currentUser.avatar}
                             round
                           />
-                        )}
-
-                        {currentUser.name && <span>{currentUser.name}</span>}
-
-                        {!currentUser.name && <span>&iexcl;Hola!</span>}
-                      </Link>
-                      <div
-                        className={`dropdown-menu dropdown-profile ${showMobileMenu ? 'show' : ''}`}
-                        aria-labelledby="navbarDropdownYou"
-                      >
-                        <NavLink className="dropdown-item" to="/profile">
-                          {registered ? <span>Perfil</span> : <span>Reg&iacute;strate</span>} 
-                        </NavLink>
-                        {/* <NavLink className="dropdown-item" to="/wallet">
-                              Wallet
-                            </NavLink> */}
-                      </div>
-                    </li>
-                  )}
-                </ul>
-              </div>
-            </nav>
-          </div>
+                        )}*/
+                  buttonText={(currentUser.name && <span>{currentUser.name}</span>) ||
+                              (!currentUser.name && <span>&iexcl;Hola!</span>)}
+                  buttonProps={{
+                    className: classes.navLink,
+                    color: "transparent"
+                  }}
+                  dropdownList={[
+                    <NavLink className={classes.dropdownLink} to="/profile">
+                        {registered ? <span>Perfil</span> : <span>Reg&iacute;strate</span>} 
+                    </NavLink>
+                  ]}
+                />
+              </ListItem>
+              )}
+          </List>
         )}
       </Web3Consumer>
     );
@@ -176,9 +137,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 const mapDispatchToProps = { };
 
-const MainMenuConnected = connect(mapStateToProps,mapDispatchToProps)(MainMenu);
-
-export default withRouter(MainMenuConnected);
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(withStyles(styles)(MainMenu)))
 
 MainMenu.propTypes = {};
 MainMenu.defaultProps = {};

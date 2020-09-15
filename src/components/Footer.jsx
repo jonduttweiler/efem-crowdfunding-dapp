@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Footer = props => (
+/* Le cambio el nombre por conflicto con Footer anterior */
+const OldFooter = props => (
     <div
         style={{
             marginTop: '5px',
@@ -33,4 +34,4 @@ const Footer = props => (
     </div >
 );
 
-export default Footer;
+export default OldFooter;
