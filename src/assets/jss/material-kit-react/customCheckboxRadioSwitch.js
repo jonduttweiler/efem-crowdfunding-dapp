@@ -166,10 +166,10 @@ const customCheckboxRadioSwitch = {
   },
   switchChecked: {
     "& + $switchBar": {
-      backgroundColor: "rgba(156, 39, 176, 1) !important"
+      backgroundColor: "rgba(23, 162, 184, 1) !important"
     },
     "& $switchIcon": {
-      borderColor: "#9c27b0"
+      borderColor: "#17A2B8"
     }
   },
   switchRoot: {
