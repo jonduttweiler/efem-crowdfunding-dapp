@@ -10,7 +10,7 @@ import GoBackButton from '../GoBackButton';
 import DonationList from '../DonationList';
 import Loader from '../Loader';
 import ActivityList from '../ActivityList';
-// import DelegateMultipleButton from '../DelegateMultipleButton';
+import DelegateMultipleButton from '../DelegateMultipleButton';
 import Milestone from '../../models/Milestone';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
@@ -111,8 +111,14 @@ class ViewMilestone extends Component {
                   entityCard={<MilestoneCard milestone={milestone} />}
                   title={t('donateMilestoneTitle')}
                   description={t('donateMilestoneDescription')}
-                  enabled={milestone.receiveFunds}>  
+                  enabled={milestone.receiveFunds}>
                 </Donate>
+                <DelegateMultipleButton
+                  milestone={milestone}
+                  campaign={campaign}
+                  balance={balance}
+                  user={user}
+                />
                 {/*this.isActiveMilestone() && (
                   <Fragment>
                     {user && (

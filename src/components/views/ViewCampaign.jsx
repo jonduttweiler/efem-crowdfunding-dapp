@@ -15,6 +15,7 @@ import { isOwner } from '../../lib/helpers';
 import { checkBalance } from '../../lib/middleware';
 import BackgroundImageHeader from '../BackgroundImageHeader';
 import Donate from '../Donate';
+import Transfer from '../Transfer';
 import Campaign from '../../models/Campaign';
 import CommunityButton from '../CommunityButton';
 import DelegateMultipleButton from '../DelegateMultipleButton';
@@ -112,6 +113,14 @@ class ViewCampaign extends Component {
                   description={t('donateCampaignDescription')}
                   enabled={campaign.receiveFunds}>
                 </Donate>
+
+                <Transfer
+                  entityId={campaign.id}
+                  entityCard={<CampaignCard campaign={campaign} />}
+                  title={t('donateCampaignTitle')}
+                  description={t('donateCampaignDescription')}
+                  enabled={campaign.receiveFunds}>
+                </Transfer>
                 
                 <EditCampaignButton 
                   currentUser={currentUser}

@@ -60,6 +60,8 @@
     "donations": "Donations",
     "donationsEmpty": "No donations have been made yet. Be the first to donate!",
 
+    "transfer": "Transfer",
+    
     "tokenBalance": "Balance",
 
     "milestoneProofDescription": "Attach an expense, invoice or anything else that requires payment.",
