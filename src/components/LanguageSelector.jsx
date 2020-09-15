@@ -3,6 +3,13 @@ import React, { Component } from 'react';
 import { withTranslation } from 'react-i18next';
 import config from '../configuration';
 
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import Button from "components/CustomButtons/Button.js";
+import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js";
+import { withStyles } from '@material-ui/core/styles';
+import Flag from 'react-flagkit';
+
 /**
  * Selecciona de idioma de la aplicación.
  */
@@ -10,6 +17,7 @@ class LanguageSelector extends Component {
 
     constructor(props) {
         super(props);
+        console.log(JSON.stringify(config));
         this.state = {
             value: config.language.default
         };
@@ -18,8 +26,9 @@ class LanguageSelector extends Component {
         this.setLanguage(config.language.default);
     }
 
-    changeValue(event) {
-        let value = event.currentTarget.value;
+    changeValue(newVal) {
+        console.log(newVal);
+        let value = newVal;
         this.setState({
             value: value
         });
@@ -36,17 +45,21 @@ class LanguageSelector extends Component {
     }
 
     render() {
+
+        const { classes } = this.props;
+
         const options = config.language.options.map(language => (
-            <option value={language.key}>{language.name}</option>
+            <ListItem className={classes.listItem}>
+                <Button title={language.name} justIcon link className={classes.margin5}>
+                    <Flag country={language.flag} value={language.key} onClick={() => this.changeValue(language.key)} />
+                </Button>
+            </ListItem>
         ));
         return (
-            <select id="language-selector"
-                onChange={this.changeValue}
-                value={this.state.value}>
+            <List className={classes.list}>
                 {options}
-            </select>
+            </List>
         );
     }
 }
-
-export default withTranslation()(LanguageSelector);
+export default withTranslation()(withStyles(styles)(LanguageSelector));
