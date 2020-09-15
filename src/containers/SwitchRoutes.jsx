@@ -15,7 +15,6 @@ import MyDACs from '../components/views/MyDACs';
 import MyCampaigns from '../components/views/MyCampaigns';
 import MyMilestones from '../components/views/MyMilestones';
 import NotFound from '../components/views/NotFound';
-import Explore from '../components/views/Explore';
 import Campaigns from '../components/views/Campaigns';
 import DACs from '../components/views/DACs';
 import TermsAndConditions from '../components/views/TermsAndConditions';
@@ -27,7 +26,6 @@ import EditMilestone from '../components/views/EditMilestone';
 
 // pages for this product
 import LandingPage from "views/LandingPage/LandingPage.js";
-import ProfilePage from "views/ProfilePage/ProfilePage.js";
 import LoginPage from "views/LoginPage/LoginPage.js";
 
 const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
@@ -306,7 +304,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
 
         {/* Other material react routes. Not used*/})
         <Route path="/landing-page" render={props => <LandingPage {...props} />} />
-        {/* <Route path="/profile" component={ProfilePage} />*/})
         <Route path="/login-page" component={LoginPage} />
 
 

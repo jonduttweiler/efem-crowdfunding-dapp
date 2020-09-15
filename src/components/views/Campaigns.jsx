@@ -7,13 +7,8 @@ import { connect } from 'react-redux'
 import { selectCampaigns } from '../../redux/reducers/campaignsSlice'
 import { withTranslation } from 'react-i18next';
 
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-
 import styles from "assets/jss/material-kit-react/views/landingPageSections/campaignsStyle.js";
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-
-const classes = makeStyles(styles);
 
 /**
  * The Campaigns view mapped to /campaigns
@@ -58,7 +53,7 @@ class Campaigns extends Component {
           !hasError && !isLoading && campaigns.length === 0 && (
             <div>
               <center>
-                <p>&iexcl;A&uacute;n no hay campa&ntilde;as!</p>
+                <p className={classes.description}>&iexcl;A&uacute;n no hay campa&ntilde;as!</p>
                 <img
                   className="empty-state-img"
                   src={`${process.env.PUBLIC_URL}/img/campaign.svg`}
