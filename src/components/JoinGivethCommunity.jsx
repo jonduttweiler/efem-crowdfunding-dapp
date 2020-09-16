@@ -104,8 +104,6 @@ class JoinGivethCommunity extends Component {
   }
 
   render() {
-    let cantBanners = 4;
-    let randomBackgroundNumber = Math.ceil(Math.random() * cantBanners);
     return (
       <div
         id="join-giveth-community"

@@ -8,7 +8,7 @@ import { selectCampaigns } from '../../redux/reducers/campaignsSlice'
 import { withTranslation } from 'react-i18next';
 
 import styles from "assets/jss/material-kit-react/views/landingPageSections/campaignsStyle.js";
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 /**
  * The Campaigns view mapped to /campaigns
@@ -23,7 +23,7 @@ class Campaigns extends Component {
   }
 
   render() {
-    const { classes, theme, t, campaigns } = this.props;
+    const { classes, t, campaigns } = this.props;
     const { isLoading, hasError } = this.state;
 
     // TODO Por incorporación de Redux, se fija el total

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import Avatar from 'react-avatar';
-import { Link, NavLink, withRouter } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 
 import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 import { history } from '../lib/helpers';
 
 import { connect } from 'react-redux';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice';
-import MainMenuDropdown from './MainMenuDropdown';
 import LanguageSelector from '../components/LanguageSelector'
 
 // @material-ui/core components
@@ -39,13 +37,6 @@ const signUpSwal = () => {
  * The main top menu
  */
 class MainMenu extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showMobileMenu: false,
-    };
-  }
 
   componentDidMount() {
     // when route changes, close the menu
@@ -57,9 +48,7 @@ class MainMenu extends Component {
   }
 
   render() {
-    const { showMobileMenu } = this.state;
-
-    const { classes, theme, currentUser } = this.props;
+    const { classes, currentUser } = this.props;
     const registered =  currentUser && currentUser.registered || false;
 
     return (

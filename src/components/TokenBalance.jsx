@@ -14,10 +14,6 @@ import CryptoAmount from './CryptoAmount';
 
 class TokenBalance extends Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { tokenAddress, balance, classes, t } = this.props;
     let tokenConfig = config.tokens[tokenAddress];

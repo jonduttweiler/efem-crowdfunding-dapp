@@ -8,10 +8,6 @@ import Status from '../models/Status';
  */
 class StatusIndicator extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         let status = this.props.status;
         return (

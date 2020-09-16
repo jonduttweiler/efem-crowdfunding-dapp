@@ -3,12 +3,10 @@ import { Link } from 'react-router-dom';
 import classNames from "classnames";
 
 import { Form, Input } from 'formsy-react-components';
-import GA from 'lib/GoogleAnalytics';
 import Loader from '../Loader';
 import FormsyImageUploader from '../FormsyImageUploader';
 import { isLoggedIn } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
-import User from '../../models/User';
 import { history } from '../../lib/helpers';
 
 import { connect } from 'react-redux';
@@ -31,8 +29,6 @@ import styles from "assets/jss/material-kit-react/views/profilePage.js";
 class EditProfile extends Component {
   constructor(props) {
     super(props);
-
-    const { ...rest } = props;
 
     this.state = {
       isLoading: true,
@@ -113,7 +109,7 @@ class EditProfile extends Component {
                 <GridItem xs={12} sm={12} md={6}>
                   <div className={classes.profile}>
                     <div>
-                      <img src={currentUser.avatar} alt="..." className={imageClasses} />
+                      <img src={currentUser.avatar ? currentUser.avatar : require("assets/img/default-user-icon.png")} alt="..." className={imageClasses} />
                     </div>
                     {isLoading && <Loader className="fixed" />}
                     {!isLoading && (

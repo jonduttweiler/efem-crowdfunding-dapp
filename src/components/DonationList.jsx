@@ -10,10 +10,6 @@ import { withTranslation } from 'react-i18next';
 
 class DonationList extends Component {
 
-  constructor() {
-    super();
-  }
-
   render() {
     const { donations, classes, t } = this.props;
     return (
