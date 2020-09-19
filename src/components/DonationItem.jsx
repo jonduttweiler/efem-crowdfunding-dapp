@@ -11,6 +11,8 @@ import { withTranslation } from 'react-i18next';
 import ProfileCard from './ProfileCard';
 import CryptoAmount from './CryptoAmount';
 import StatusIndicator from './StatusIndicator';
+import { connect } from 'react-redux'
+import { selectDonation } from '../redux/reducers/donationsSlice'
 
 class DonationItem extends Component {
 
@@ -34,6 +36,12 @@ class DonationItem extends Component {
   render() {
     const { user, open } = this.state;
     const { donation, classes, t } = this.props;
+    
+    if(!donation) {
+      // TODO Implementar un Skeletor (https://material-ui.com/components/skeleton/) cuando no esté en Labs.
+      return (<div></div>)
+    }
+
     return (
       <React.Fragment>
         <ListItem alignItems="flex-start" onClick={this.handleClick}>
@@ -57,9 +65,6 @@ class DonationItem extends Component {
   }
 }
 
-DonationItem.propTypes = {
-  donation: PropTypes.instanceOf(Donation).isRequired
-};
 
 const styles = theme => ({
   root: {
@@ -74,6 +79,20 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(
-  withTranslation()(DonationItem)
+DonationItem.propTypes = {
+  donationId: PropTypes.number.isRequired
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    donation: selectDonation(state, ownProps.donationId)
+  }
+}
+
+const mapDispatchToProps = { }
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withStyles(styles)(
+    withTranslation()(DonationItem)
+  )
 );

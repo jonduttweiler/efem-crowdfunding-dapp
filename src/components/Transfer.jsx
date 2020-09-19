@@ -15,6 +15,7 @@ import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
 import { addDonation } from '../redux/reducers/donationsSlice'
 import User from 'models/User';
+import Entity from 'models/Entity';
 import TextField from '@material-ui/core/TextField';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -30,7 +31,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
-
+import { fetchDonationsByIds, selectDonation } from '../redux/reducers/donationsSlice'
+import DonationItemSelectable from './DonationItemSelectable';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,17 +41,20 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 class Transfer extends Component {
   constructor(props) {
     super(props);
+    console.log('props.entity', props.entity);
     this.state = {
       donationIsValid: false,
       open: false,
       amount: 0,
       checked: [],
-      left: [0, 1, 2, 3],
-      right: [4, 5, 6, 7]
+      //left: [0, 1, 2, 3],
+      //right: [4, 5, 6, 7],
+      left: props.entity.donationIds,
+      right: []
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-   // this.handleDonate = this.handleDonate.bind(this);
+    // this.handleDonate = this.handleDonate.bind(this);
     //this.handleAmountChange = this.handleAmountChange.bind(this);
     //this.handleAmountBlur = this.handleAmountBlur.bind(this);
     //this.checkDonation = this.checkDonation.bind(this);
@@ -64,11 +69,20 @@ class Transfer extends Component {
     this.setRight = this.setRight.bind(this);
     this.handleCheckedRight = this.handleCheckedRight.bind(this);
     this.handleCheckedLeft = this.handleCheckedLeft.bind(this);
-
+    //this.getDonationById = this.getDonationById.bind(this);
     //this.leftChecked = this.intersection(checked, left);
     //this.rightChecked = this.intersection(checked, right);
 
 
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (JSON.stringify(prevProps.entity.donationIds) !== JSON.stringify(this.props.entity.donationIds)) {
+      this.props.fetchDonationsByIds(this.props.entity.donationIds);
+      this.setState({
+        left: this.props.entity.donationIds
+      });
+    }
   }
 
   not(a, b) {
@@ -158,6 +172,10 @@ class Transfer extends Component {
      this.checkDonation();
    };*/
 
+ /* getDonationById(donationId) {
+    return this.props.donations.find(d => d.id === donationId);
+  }*/
+
   customList(title, items) {
     const { checked, left, right } = this.state;
     const { classes } = this.props;
@@ -179,21 +197,16 @@ class Transfer extends Component {
         />
         <Divider />
         <List className={classes.list} dense component="div" role="list">
-          {items.map((value) => {
-            const labelId = `transfer-list-all-item-${value}-label`;
-
+          {items.map((donationId) => {
+            //const labelId = `transfer-list-all-item-${value}-label`;
+           // let donation = this.props.selectDonation(donationId);
             return (
-              <ListItem key={value} role="listitem" button onClick={() => this.handleToggle(value)}>
-                <ListItemIcon>
-                  <Checkbox
-                    checked={checked.indexOf(value) !== -1}
-                    tabIndex={-1}
-                    disableRipple
-                    inputProps={{ 'aria-labelledby': labelId }}
-                  />
-                </ListItemIcon>
-                <ListItemText id={labelId} primary={`List item ${value + 1}`} />
-              </ListItem>
+              <DonationItemSelectable
+                key={donationId}
+                donationId={donationId}
+                handleToggle={this.handleToggle}
+                isChecked={checked.indexOf(donationId) !== -1}>
+              </DonationItemSelectable>
             );
           })}
           <ListItem />
@@ -346,6 +359,7 @@ class Transfer extends Component {
 
 Transfer.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,
+  entity: PropTypes.instanceOf(Entity).isRequired,
   tokenAddress: PropTypes.string.isRequired,
   enabled: PropTypes.bool.isRequired,
 };
@@ -393,11 +407,12 @@ const styles = theme => ({
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: selectCurrentUser(state)
+    currentUser: selectCurrentUser(state),
+    //donations: selectDonationsByEntity(state, ownProps.entity.id)
   }
 }
 
-const mapDispatchToProps = { addDonation }
+const mapDispatchToProps = { addDonation, fetchDonationsByIds, selectDonation }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(

@@ -83,7 +83,10 @@ export const {
 
 export const selectMilestone = (state, id) => {
   let milestoneStore = state.milestones.find(m => m.id === id);
-  return new Milestone(milestoneStore);
+  if(milestoneStore) {
+    return new Milestone(milestoneStore);
+  }
+  return undefined;
 }
 export const selectMilestones = state => {
   return state.milestones.map(function (milestoneStore) {

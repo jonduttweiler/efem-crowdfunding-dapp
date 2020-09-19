@@ -72,7 +72,10 @@ export const { fetchDonations,
 
 export const selectDonation = (state, id) => {
   let donationStore = state.donations.find(d => d.id === id);
-  return new Donation(donationStore);
+  if(donationStore) {
+    return new Donation(donationStore);
+  }
+  return undefined;  
 }
 export const selectDonations = state => {
   return state.donations.map(function (donationStore) {

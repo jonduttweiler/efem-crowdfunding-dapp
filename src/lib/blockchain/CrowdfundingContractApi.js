@@ -442,6 +442,7 @@ class CrowdfundingContractApi {
      * @param ids IDs de las donaciones a obtener.
      */
     getDonationsByIds(ids) {
+        console.log('getDonationsByIds(ids) {', ids);
         return new Observable(async subscriber => {
             try {
                 let donations = [];
