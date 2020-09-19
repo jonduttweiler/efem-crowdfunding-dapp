@@ -49,10 +49,10 @@ class Transfer extends Component {
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleDonate = this.handleDonate.bind(this);
-    this.handleAmountChange = this.handleAmountChange.bind(this);
-    this.handleAmountBlur = this.handleAmountBlur.bind(this);
-    this.checkDonation = this.checkDonation.bind(this);
+   // this.handleDonate = this.handleDonate.bind(this);
+    //this.handleAmountChange = this.handleAmountChange.bind(this);
+    //this.handleAmountBlur = this.handleAmountBlur.bind(this);
+    //this.checkDonation = this.checkDonation.bind(this);
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
 
@@ -62,9 +62,13 @@ class Transfer extends Component {
     this.union = this.union.bind(this);
     this.setLeft = this.setLeft.bind(this);
     this.setRight = this.setRight.bind(this);
+    this.handleCheckedRight = this.handleCheckedRight.bind(this);
+    this.handleCheckedLeft = this.handleCheckedLeft.bind(this);
 
     //this.leftChecked = this.intersection(checked, left);
     //this.rightChecked = this.intersection(checked, right);
+
+
   }
 
   not(a, b) {
@@ -83,13 +87,11 @@ class Transfer extends Component {
     const { checked } = this.state;
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
-
     if (currentIndex === -1) {
       newChecked.push(value);
     } else {
       newChecked.splice(currentIndex, 1);
     }
-
     this.setChecked(newChecked);
   };
 
@@ -149,12 +151,12 @@ class Transfer extends Component {
     this.close();
   };
 
-  handleAmountChange(event) {
-    this.setState({
-      amount: event.target.value === '' ? '' : Number(event.target.value)
-    });
-    this.checkDonation();
-  };
+  /* handleAmountChange(event) {
+     this.setState({
+       amount: event.target.value === '' ? '' : Number(event.target.value)
+     });
+     this.checkDonation();
+   };*/
 
   customList(title, items) {
     const { checked, left, right } = this.state;
@@ -181,7 +183,7 @@ class Transfer extends Component {
             const labelId = `transfer-list-all-item-${value}-label`;
 
             return (
-              <ListItem key={value} role="listitem" button onClick={this.handleToggle(value)}>
+              <ListItem key={value} role="listitem" button onClick={() => this.handleToggle(value)}>
                 <ListItemIcon>
                   <Checkbox
                     checked={checked.indexOf(value) !== -1}
@@ -200,7 +202,7 @@ class Transfer extends Component {
     );
   }
 
-  handleAmountBlur() {
+  /*handleAmountBlur() {
     const { amount } = this.state;
     const { currentUser } = this.props;
     const max = Web3Utils.weiToEther(currentUser.balance);
@@ -213,10 +215,10 @@ class Transfer extends Component {
         amount: max
       });
     }
-    this.checkDonation();
-  };
+    //this.checkDonation();
+  };*/
 
-  checkDonation() {
+  /*checkDonation() {
     const { amount } = this.state;
     let donationIsValid = false;
     if (amount > 0) {
@@ -225,9 +227,9 @@ class Transfer extends Component {
     this.setState({
       donationIsValid: donationIsValid
     });
-  }
+  }*/
 
-  handleDonate() {
+  /*handleDonate() {
     const { amount } = this.state;
     const { entityId, currentUser, tokenAddress, addDonation } = this.props;
     const donation = new Donation();
@@ -237,7 +239,7 @@ class Transfer extends Component {
     donation.giverAddress = currentUser.address;
     addDonation(donation);
     this.close();
-  };
+  };*/
 
   open() {
     this.setState({
@@ -254,20 +256,6 @@ class Transfer extends Component {
   render() {
     const { donationIsValid, open, checked, left, right } = this.state;
     const { title, description, entityCard, enabled, currentUser, classes, t } = this.props;
-
-    // TODO Definir parametrización de donación.
-    const balance = currentUser.balance;
-    const max = Web3Utils.weiToEther(balance);
-    const inputProps = {
-      step: 0.0001,
-      min: 0,
-      max: max,
-      size: 31
-    };
-
-
-    let tokenConfig = config.tokens[this.props.tokenAddress];
-    let tokenSymbol = tokenConfig.symbol;
 
     let leftChecked = this.intersection(checked, left);
     let rightChecked = this.intersection(checked, right);
