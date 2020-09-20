@@ -23,7 +23,7 @@ import {
 import { fetchActivitiesByIdsEpic } from './epics/activitiesEpics'
 import { fetchCampaignsEpic, saveCampaignEpic } from './epics/campaignsEpics'
 import { fetchUsersEpic, fetchUserByAddressEpic } from './epics/usersEpics';
-import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic } from './epics/donationsEpics'
+import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic, transferDonationsEpic } from './epics/donationsEpics'
 
 const rootEpic = combineEpics(
   loadCurrentUserEpic,
@@ -42,6 +42,7 @@ const rootEpic = combineEpics(
   fetchDonationsEpic,
   fetchDonationsByIdsEpic,
   addDonationEpic,
+  transferDonationsEpic,
   fetchUsersEpic,
   fetchUserByAddressEpic
 );

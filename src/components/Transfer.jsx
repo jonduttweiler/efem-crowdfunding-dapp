@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Donation from '../models/Donation';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -16,23 +15,20 @@ import { connect } from 'react-redux'
 import { addDonation } from '../redux/reducers/donationsSlice'
 import User from 'models/User';
 import Entity from 'models/Entity';
-import TextField from '@material-ui/core/TextField';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import config from '../configuration';
-import TokenBalance from './TokenBalance';
-import Web3Utils from '../utils/Web3Utils';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 import List from '@material-ui/core/List';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
-import { fetchDonationsByIds, selectDonation } from '../redux/reducers/donationsSlice'
+import { fetchDonationsByIds, selectDonation, transferDonations } from '../redux/reducers/donationsSlice'
 import DonationItemSelectable from './DonationItemSelectable';
+import { selectMilestonesByCampaign } from '../redux/reducers/milestonesSlice';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -41,9 +37,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 class Transfer extends Component {
   constructor(props) {
     super(props);
-    console.log('props.entity', props.entity);
     this.state = {
-      donationIsValid: false,
+      transferIsValid: true,
       open: false,
       amount: 0,
       checked: [],
@@ -69,11 +64,12 @@ class Transfer extends Component {
     this.setRight = this.setRight.bind(this);
     this.handleCheckedRight = this.handleCheckedRight.bind(this);
     this.handleCheckedLeft = this.handleCheckedLeft.bind(this);
+    this.onChangeMilestone = this.onChangeMilestone.bind(this);
     //this.getDonationById = this.getDonationById.bind(this);
     //this.leftChecked = this.intersection(checked, left);
     //this.rightChecked = this.intersection(checked, right);
 
-
+    this.handleTransfer = this.handleTransfer.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -84,6 +80,18 @@ class Transfer extends Component {
       });
     }
   }
+
+  handleTransfer() {
+    const { milestone, right, checked } = this.state;
+    const { entity, transferDonations } = this.props;
+    transferDonations({
+      userAddress: entity.managerAddress,
+      entityIdFrom: entity.id,
+      entityIdTo: milestone.id,
+      donationIds: right
+    });
+    this.close();
+  };
 
   not(a, b) {
     return a.filter((value) => b.indexOf(value) === -1);
@@ -165,16 +173,23 @@ class Transfer extends Component {
     this.close();
   };
 
-  /* handleAmountChange(event) {
-     this.setState({
-       amount: event.target.value === '' ? '' : Number(event.target.value)
-     });
-     this.checkDonation();
-   };*/
+  open() {
+    this.setState({
+      open: true
+    });
+  }
 
- /* getDonationById(donationId) {
-    return this.props.donations.find(d => d.id === donationId);
-  }*/
+  close() {
+    this.setState({
+      open: false
+    });
+  }
+
+  onChangeMilestone(milestone) {
+    this.setState({
+      milestone: milestone
+    });
+  }
 
   customList(title, items) {
     const { checked, left, right } = this.state;
@@ -199,7 +214,7 @@ class Transfer extends Component {
         <List className={classes.list} dense component="div" role="list">
           {items.map((donationId) => {
             //const labelId = `transfer-list-all-item-${value}-label`;
-           // let donation = this.props.selectDonation(donationId);
+            // let donation = this.props.selectDonation(donationId);
             return (
               <DonationItemSelectable
                 key={donationId}
@@ -215,60 +230,9 @@ class Transfer extends Component {
     );
   }
 
-  /*handleAmountBlur() {
-    const { amount } = this.state;
-    const { currentUser } = this.props;
-    const max = Web3Utils.weiToEther(currentUser.balance);
-    if (amount < 0) {
-      this.setState({
-        amount: 0
-      });
-    } else if (amount > max) {
-      this.setState({
-        amount: max
-      });
-    }
-    //this.checkDonation();
-  };*/
-
-  /*checkDonation() {
-    const { amount } = this.state;
-    let donationIsValid = false;
-    if (amount > 0) {
-      donationIsValid = true;
-    }
-    this.setState({
-      donationIsValid: donationIsValid
-    });
-  }*/
-
-  /*handleDonate() {
-    const { amount } = this.state;
-    const { entityId, currentUser, tokenAddress, addDonation } = this.props;
-    const donation = new Donation();
-    donation.entityId = entityId;
-    donation.tokenAddress = tokenAddress;
-    donation.amount = Web3Utils.etherToWei(amount);
-    donation.giverAddress = currentUser.address;
-    addDonation(donation);
-    this.close();
-  };*/
-
-  open() {
-    this.setState({
-      open: true
-    });
-  }
-
-  close() {
-    this.setState({
-      open: false
-    });
-  }
-
   render() {
-    const { donationIsValid, open, checked, left, right } = this.state;
-    const { title, description, entityCard, enabled, currentUser, classes, t } = this.props;
+    const { transferIsValid, open, checked, left, right } = this.state;
+    const { milestones, title, description, entityCard, enabled, currentUser, classes, t } = this.props;
 
     let leftChecked = this.intersection(checked, left);
     let rightChecked = this.intersection(checked, right);
@@ -301,9 +265,9 @@ class Transfer extends Component {
               </Typography>
               <Button autoFocus
                 color="inherit"
-                onClick={this.handleDonate}
-                disabled={!donationIsValid}>
-                {t('donate')}
+                onClick={this.handleTransfer}
+                disabled={!transferIsValid}>
+                {t('transfer')}
               </Button>
             </Toolbar>
           </AppBar>
@@ -317,6 +281,18 @@ class Transfer extends Component {
                   <Typography variant="subtitle1" gutterBottom>
                     {description}
                   </Typography>
+
+                  <Autocomplete
+                    id="select-milestone"
+                    className={classes.selectMilestone}
+                    options={milestones}
+                    getOptionLabel={(option) => option.title}
+                    style={{ width: 300 }}
+                    onChange={(event, newValue) => {
+                      this.onChangeMilestone(newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Milestone" />}
+                  />
 
                   <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
                     <Grid item>{this.customList('Choices', left)}</Grid>
@@ -399,20 +375,21 @@ const styles = theme => ({
     height: 230,
     backgroundColor: theme.palette.background.paper,
     overflow: 'auto',
-  }/*,
-  button: {
-    margin: theme.spacing(0.5, 0),
-  },*/
+  },
+  selectMilestone: {
+    flexGrow: 1
+  }
 });
 
 const mapStateToProps = (state, ownProps) => {
   return {
     currentUser: selectCurrentUser(state),
     //donations: selectDonationsByEntity(state, ownProps.entity.id)
+    milestones: selectMilestonesByCampaign(state, ownProps.entity.id),
   }
 }
 
-const mapDispatchToProps = { addDonation, fetchDonationsByIds, selectDonation }
+const mapDispatchToProps = { addDonation, fetchDonationsByIds, selectDonation, transferDonations }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(

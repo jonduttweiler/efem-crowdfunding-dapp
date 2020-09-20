@@ -559,6 +559,83 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Transfiere las donaciones en el Smart Contarct.
+     * 
+     * @param userAddress Dirección del usuario que realiza la transferencia.
+     * @param entityIdFrom ID de la entidad desde donde se transfieren las donaciones.
+     * @param entityIdTo ID de la entidad hacia donde se transfieren las donaciones.
+     * @param donationIds IDs de las donaciones a transferir.
+     */
+    transferDonations(userAddress, entityIdFrom, entityIdTo, donationIds) {
+
+        return new Observable(async subscriber => {
+
+            try {
+                let crowdfunding = await this.getCrowdfunding();
+
+                let thisApi = this;
+
+                let promiEvent = crowdfunding.transfer(
+                    entityIdFrom,
+                    entityIdTo,
+                    donationIds,
+                    {
+                        from: userAddress,
+                        $extraGas: extraGas()
+                    });
+
+                promiEvent
+                    .once('transactionHash', function (hash) {
+                        // La transacción ha sido creada.
+                        //subscriber.next();
+                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear realizar la transferencia.' });
+                    })
+                    .once('confirmation', function (confNumber, receipt) {
+                        // La transacción ha sido incluida en un bloque
+                        // sin bloques de confirmación (once).
+                        // TODO Aquí debería agregarse lógica para esperar
+                        // un número determinado de bloques confirmados (on, confNumber).
+                        /* let id = parseInt(receipt.events['Transfer'].returnValues.entityIdFrom);
+                         uint256 entityIdFrom,
+                         uint256 entityIdTo,
+                         uint256 donationId,
+                         uint256 amount
+                         thisApi.getDonationById(id).then(donation => {
+                             donation.clientId = clientId;
+                             subscriber.next(donation);
+                             messageUtils.addMessageSuccess({
+                                 title: 'Gracias por tu ayuda!',
+                                 text: `La donación ha sido confirmada`
+                             });
+                         });*/
+                        subscriber.next();
+                        messageUtils.addMessageSuccess({
+                            title: 'Felicitaciones!',
+                            text: `La transferencia ha sido confirmada`
+                        });
+                    })
+                    .on('error', function (error) {
+                        //error.donation = donation;
+                        console.error(`Error procesando transacción de transferencia de donaciones.`, error);
+                        subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error transfiriendo las donaciones`,
+                            error: error
+                        });
+                    });
+            } catch (error) {
+                //error.donation = donation;
+                console.error(`Error realizando transferencia de donaciones`, error);
+                subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error transfiriendo las donaciones`,
+                    error: error
+                });
+            }
+        });
+    }
+
+    /**
      * Marca como completado un Milestone en el Smart Contarct.
      * 
      * @param milestone a marcar como completado.
@@ -566,7 +643,7 @@ class CrowdfundingContractApi {
     milestoneComplete(milestone, activity) {
 
         return new Observable(async subscriber => {
-console.log('Activityyyyyyyyy', activity);
+
             try {
                 let crowdfunding = await this.getCrowdfunding();
 

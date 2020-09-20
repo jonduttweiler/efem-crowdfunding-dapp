@@ -19,7 +19,7 @@ import FiatAmount from '../FiatAmount';
 import ProfileCard from '../ProfileCard';
 import Campaign from '../../models/Campaign';
 import StatusIndicator from '../StatusIndicator';
-import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
+import { selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 import { fetchActivitiesByIds, selectActivitiesByMilestone } from '../../redux/reducers/activitiesSlice'
 import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 import DateViewer from '../DateViewer';
@@ -46,14 +46,14 @@ class ViewMilestone extends Component {
 
   componentDidMount() {
     this.props.fetchActivitiesByIds(this.props.milestone.activityIds);
-    this.props.fetchDonationsByIds(this.props.milestone.donationIds);
+    //this.props.fetchDonationsByIds(this.props.milestone.donationIds);
   }
 
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
-    if (JSON.stringify(this.props.milestone.donationIds) !== JSON.stringify(prevProps.milestone.donationIds)) {
+    /*if (JSON.stringify(this.props.milestone.donationIds) !== JSON.stringify(prevProps.milestone.donationIds)) {
       this.props.fetchDonationsByIds(this.props.milestone.donationIds);
-    }
+    }*/
     if (JSON.stringify(this.props.milestone.activityIds) !== JSON.stringify(prevProps.milestone.activityIds)) {
       this.props.fetchActivitiesByIds(this.props.milestone.activityIds);
     }
@@ -113,12 +113,12 @@ class ViewMilestone extends Component {
                   description={t('donateMilestoneDescription')}
                   enabled={milestone.receiveFunds}>
                 </Donate>
-                <DelegateMultipleButton
+                {/*<DelegateMultipleButton
                   milestone={milestone}
                   campaign={campaign}
                   balance={balance}
                   user={user}
-                />
+                />*/}
                 {/*this.isActiveMilestone() && (
                   <Fragment>
                     {user && (
@@ -235,7 +235,7 @@ class ViewMilestone extends Component {
 
               <div className="row spacer-top-50 spacer-bottom-50">
                 <div className="col-md-8 m-auto">
-                  <DonationList donations={donations}></DonationList>
+                  <DonationList donationIds={milestone.donationIds}></DonationList>
                 </div>
               </div>
             </div>
@@ -285,7 +285,7 @@ const mapStateToProps = (state, ownProps) => {
   return reduxProps;
 }
 
-const mapDispatchToProps = { fetchDonationsByIds, fetchActivitiesByIds }
+const mapDispatchToProps = { fetchActivitiesByIds }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withTranslation()(ViewMilestone)

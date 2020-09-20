@@ -104,7 +104,7 @@ class Donation extends Model {
   }
 
   get amountRemainding() {
-    return this._amountRemaining;
+    return this._amountRemainding;
   }
 
   set amountRemainding(value) {

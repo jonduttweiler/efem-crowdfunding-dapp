@@ -45,12 +45,34 @@ export const fetchDonationsByIdsEpic = action$ => action$.pipe(
 export const addDonationEpic = action$ => action$.pipe(
   ofType('donations/addDonation'),
   mergeMap(action => crowdfundingContractApi.saveDonation(action.payload)),
-  map(campaign => ({
+  map(donation => ({
     type: 'donations/updateDonationByClientId',
-    payload: campaign
+    payload: donation
   })),
   catchError(error => of({
     type: 'donations/deleteDonationByClientId',
     payload: error.donation
+  }))
+)
+
+/**
+ * Epic que reacciona a la acción de transferencia de donaciones.
+ * 
+ * @param action$ de Redux.
+ */
+export const transferDonationsEpic = action$ => action$.pipe(
+  ofType('donations/transferDonations'),
+  mergeMap(action => crowdfundingContractApi.transferDonations(
+    action.payload.userAddress,
+    action.payload.entityIdFrom,
+    action.payload.entityIdTo,
+    action.payload.donationIds)),
+  map(() => ({
+    type: 'donations/pendiente',
+    payload: undefined
+  })),
+  catchError(error => of({
+    type: 'donations/pendiente',
+    payload: error
   }))
 )

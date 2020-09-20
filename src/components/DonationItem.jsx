@@ -54,6 +54,7 @@ class DonationItem extends Component {
             secondary={
               <React.Fragment>
                 <StatusIndicator status={donation.status}></StatusIndicator>
+                <CryptoAmount amount={donation.amountRemainding} tokenAddress={donation.tokenAddress}/>
                 <DateTimeViewer value={donation.createdAt}/>
               </React.Fragment>
             }

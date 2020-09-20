@@ -59,6 +59,14 @@ export const donationsSlice = createSlice({
       if (index != -1) {
         state.splice(index, 1);
       }
+    },
+    transferDonations: (state, action) => {
+      // TODO
+      console.log(action.payload);
+    },
+    pendiente: (state, action) => {
+      // TODO
+      console.log('TRATAR CALLBACK DE TRANSFER');
     }
   },
 });
@@ -68,7 +76,8 @@ export const { fetchDonations,
   fetchDonationsByIds,
   mergeDonations,
   addDonation,
-  updateDonationByClientId } = donationsSlice.actions;
+  updateDonationByClientId,
+  transferDonations } = donationsSlice.actions;
 
 export const selectDonation = (state, id) => {
   let donationStore = state.donations.find(d => d.id === id);
