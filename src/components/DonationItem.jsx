@@ -13,6 +13,12 @@ import CryptoAmount from './CryptoAmount';
 import StatusIndicator from './StatusIndicator';
 import { connect } from 'react-redux'
 import { selectDonation } from '../redux/reducers/donationsSlice'
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import makeEntitySelect from '../redux/selectors/entitiesSelector';
+import Avatar from '@material-ui/core/Avatar';
+import { deepOrange, green } from '@material-ui/core/colors';
 
 class DonationItem extends Component {
 
@@ -35,9 +41,9 @@ class DonationItem extends Component {
 
   render() {
     const { user, open } = this.state;
-    const { donation, classes, t } = this.props;
-    
-    if(!donation) {
+    const { donation, entity, classes, t } = this.props;
+
+    if (!donation) {
       // TODO Implementar un Skeletor (https://material-ui.com/components/skeleton/) cuando no esté en Labs.
       return (<div></div>)
     }
@@ -46,16 +52,40 @@ class DonationItem extends Component {
       <React.Fragment>
         <ListItem alignItems="flex-start" onClick={this.handleClick}>
           <ListItemAvatar>
-            <ProfileCard address={donation.giverAddress} namePosition="bottom"/>
+            <ProfileCard address={donation.giverAddress} namePosition="bottom" />
           </ListItemAvatar>
           <ListItemText
             className={classes.text}
-            primary={<CryptoAmount amount={donation.amount} tokenAddress={donation.tokenAddress}/>}
+    
             secondary={
               <React.Fragment>
-                <StatusIndicator status={donation.status}></StatusIndicator>
-                <CryptoAmount amount={donation.amountRemainding} tokenAddress={donation.tokenAddress}/>
-                <DateTimeViewer value={donation.createdAt}/>
+                <Grid container spacing={3}>
+                  <Grid item xs={3}>
+                    <Typography variant="h6">
+                      <CryptoAmount amount={donation.amountRemainding} tokenAddress={donation.tokenAddress} />
+                    </Typography>
+                    <StatusIndicator status={donation.status}></StatusIndicator>
+                  </Grid>
+                  <Grid item xs={9}>
+                    <Typography variant="h6" gutterBottom>
+                      Donación original
+                    </Typography>
+                    <ListItem alignItems="flex-start" className={classes.root}>
+                      <ListItemAvatar>
+                        <Avatar variant="rounded" src={entity.imageCidUrl} className={classes.entityLogo} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={entity.title}
+                        secondary={
+                          <React.Fragment>
+                            <CryptoAmount amount={donation.amount} tokenAddress={donation.tokenAddress} />
+                            <DateTimeViewer value={donation.createdAt} />
+                          </React.Fragment>
+                        }
+                      />
+                    </ListItem>
+                  </Grid>
+                </Grid>
               </React.Fragment>
             }
           />
@@ -77,6 +107,10 @@ const styles = theme => ({
   },
   text: {
     marginLeft: '2em'
+  },
+  entityLogo: {
+    width: theme.spacing(6),
+    height: theme.spacing(6)
   }
 });
 
@@ -84,15 +118,25 @@ DonationItem.propTypes = {
   donationId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    donation: selectDonation(state, ownProps.donationId)
+const makeMapStateToProps = () => {
+  const entitySelect = makeEntitySelect()
+  const mapStateToProps = (state, ownProps) => {
+    let props = {}
+    props.donation = selectDonation(state, ownProps.donationId);
+    console.log('props.donation', props.donation);
+    if (props.donation) {
+      props.entity = entitySelect(state, {
+        entityId: props.donation.entityId
+      });
+    }
+    return props;
   }
+  return mapStateToProps
 }
 
-const mapDispatchToProps = { }
+const mapDispatchToProps = {}
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(makeMapStateToProps, mapDispatchToProps)(
   withStyles(styles)(
     withTranslation()(DonationItem)
   )

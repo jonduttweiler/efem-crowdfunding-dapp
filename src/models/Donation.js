@@ -21,7 +21,7 @@ class Donation extends Model {
       amountRemainding = new BigNumber(0),
       createdAt = moment().unix(),
       entityId,
-      budgetId,     
+      budgetEntityId,
       status = Donation.PENDING.toStore()
     } = data;
 
@@ -34,7 +34,7 @@ class Donation extends Model {
     this._amountRemainding = amountRemainding;
     this._createdAt = createdAt;
     this._entityId = entityId;
-    this._budgetId = budgetId;
+    this._budgetEntityId = budgetEntityId;
     this._status = StatusUtils.build(status.name, status.isLocal);
   }
 
@@ -51,7 +51,7 @@ class Donation extends Model {
       amountRemainding: this._amountRemainding,
       createdAt: this._createdAt,
       entityId: this._entityId,
-      budgetId: this._budgetId,
+      budgetEntityId: this._budgetEntityId,
       status: this._status.toStore()
     };
   }
@@ -139,13 +139,13 @@ class Donation extends Model {
     this._entityId = value;
   }
 
-  get budgetId() {
-    return this._budgetId;
+  get budgetEntityId() {
+    return this._budgetEntityId;
   }
 
-  set budgetId(value) {
-    this.checkType(value, ['string'], 'budgetId');
-    this._budgetId = value;
+  set budgetEntityId(value) {
+    this.checkType(value, ['string'], 'budgetEntityId');
+    this._budgetEntityId = value;
   }
 
   get status() {
@@ -250,7 +250,7 @@ class Donation extends Model {
     );
   }
 
- 
+
   set pendingAmountRemaining(value) {
     this.checkInstanceOf(value, BigNumber, 'pendingAmountRemaining');
     if (this._pendingAmountRemaining) {

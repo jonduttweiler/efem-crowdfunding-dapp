@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Status from '../models/Status';
+import Chip from '@material-ui/core/Chip';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 /**
  * Presenta un estado
@@ -15,10 +17,12 @@ class StatusIndicator extends Component {
     render() {
         let status = this.props.status;
         return (
-            <span>
-                {status.isLocal && (<i className="fa fa-circle-o-notch fa-spin" />)}
-                {status.name}
-            </span>
+            <Chip size="small"
+                variant="outlined"
+                label={status.name}
+                color="primary"
+                icon={status.isLocal && (<CircularProgress size={10} />)}
+            />
         );
     }
 }

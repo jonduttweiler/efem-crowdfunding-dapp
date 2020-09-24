@@ -18,6 +18,7 @@ class Entity extends Model {
     // https://gateway.pinata.cloud/ipfs/QmVedKPUTUcNpj6iUWyuEh9yVstBpNjMaL41KmMWF2bAuA
     imageCid = '/ipfs/QmVedKPUTUcNpj6iUWyuEh9yVstBpNjMaL41KmMWF2bAuA',
     donationIds = [],
+    budgetDonationIds = [],
     createdAt,
   } = {}) {
     super();
@@ -31,6 +32,7 @@ class Entity extends Model {
     this._image = image;
     this._imageCid = imageCid;
     this._donationIds = donationIds;
+    this._budgetDonationIds = budgetDonationIds;
     this._createdAt = createdAt;
   }
 
@@ -58,6 +60,7 @@ class Entity extends Model {
       url: this._url,
       imageCid: this._imageCid,
       donationIds: this._donationIds,
+      budgetDonationIds: this._budgetDonationIds,
       createdAt: this._createdAt
     }
   }
@@ -149,6 +152,14 @@ class Entity extends Model {
     this._donationIds = value;
   }
 
+  get budgetDonationIds() {
+    return this._budgetDonationIds;
+  }
+
+  set budgetDonationIds(value) {
+    this._budgetDonationIds = value;
+  }
+
   get createdAt() {
     return this._createdAt;
   }
@@ -162,6 +173,13 @@ class Entity extends Model {
    */
   get donationsCount() {
     return this._donationIds.length;
+  }
+
+  /**
+   * Obtiene la cantidad de donaciones en el presupuesto de la entidad.
+   */
+  get budgetDonationsCount() {
+    return this._budgetDonationIds.length;
   }
 }
 

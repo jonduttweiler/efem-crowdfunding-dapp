@@ -235,7 +235,7 @@ class ViewMilestone extends Component {
 
               <div className="row spacer-top-50 spacer-bottom-50">
                 <div className="col-md-8 m-auto">
-                  <DonationList donationIds={milestone.donationIds}></DonationList>
+                  <DonationList donationIds={milestone.budgetDonationIds}></DonationList>
                 </div>
               </div>
             </div>

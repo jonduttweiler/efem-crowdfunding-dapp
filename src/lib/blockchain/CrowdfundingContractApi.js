@@ -106,7 +106,7 @@ class CrowdfundingContractApi {
      */
     async getDacById(dacId) {
         const crowdfunding = await this.getCrowdfunding();
-        const { id, infoCid, donationIds, users, status } = await crowdfunding.getDac(dacId);
+        const { id, infoCid, donationIds, budgetDonationIds, users, status } = await crowdfunding.getDac(dacId);
         // Se obtiene la información de la Dac desde IPFS.
         const dacOnIpfs = await dacIpfsConnector.download(infoCid);
         const { title, description, imageCid, url } = dacOnIpfs;
@@ -117,6 +117,7 @@ class CrowdfundingContractApi {
             imageCid,
             url,
             donationIds: donationIds.map(e => parseInt(e)),
+            budgetDonationIds: budgetDonationIds.map(e => parseInt(e)),
             status: this.mapDACStatus(parseInt(status)),
             delegateAddress: users[0],
             commitTime: 0
@@ -178,7 +179,7 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const campaingOnChain = await crowdfunding.getCampaign(campaignId);
         // Se obtiene la información de la Campaign desde IPFS.
-        const { id, infoCid, dacIds, donationIds, users, status } = campaingOnChain;
+        const { id, infoCid, dacIds, donationIds, budgetDonationIds, users, status } = campaingOnChain;
         // Se obtiene la información de la Campaign desde IPFS.
         const campaignOnIpfs = await campaignIpfsConnector.download(infoCid);
         const { title, description, imageCid, url } = campaignOnIpfs;
@@ -191,6 +192,7 @@ class CrowdfundingContractApi {
             url: url,
             dacIds: dacIds.map(e => parseInt(e)),
             donationIds: donationIds.map(e => parseInt(e)),
+            budgetDonationIds: budgetDonationIds.map(e => parseInt(e)),
             managerAddress: users[0],
             reviewerAddress: users[1],
             status: this.mapCampaignStatus(parseInt(status))
@@ -319,7 +321,7 @@ class CrowdfundingContractApi {
     async getMilestoneById(milestoneId) {
         const crowdfunding = await this.getCrowdfunding();
         const milestoneOnChain = await crowdfunding.getMilestone(milestoneId);
-        const { id, campaignId, infoCid, fiatAmountTarget, users, activityIds, donationIds, status } = milestoneOnChain;
+        const { id, campaignId, infoCid, fiatAmountTarget, users, activityIds, donationIds, budgetDonationIds, status } = milestoneOnChain;
         // Se obtiene la información del Milestone desde IPFS.
         const milestoneOnIpfs = await milestoneIpfsConnector.download(infoCid);
         const { title, description, imageCid, url } = milestoneOnIpfs;
@@ -334,6 +336,7 @@ class CrowdfundingContractApi {
             fiatAmountTarget: new BigNumber(fiatAmountTarget),
             activityIds: activityIds.map(e => parseInt(e)),
             donationIds: donationIds.map(e => parseInt(e)),
+            budgetDonationIds: budgetDonationIds.map(e => parseInt(e)),
             managerAddress: users[0],
             reviewerAddress: users[1],
             campaignReviewerAddress: users[2],
@@ -474,7 +477,7 @@ class CrowdfundingContractApi {
             amountRemainding,
             createdAt,
             entityId,
-            budgetId,
+            budgetEntityId,
             status } = donationOnChain;
 
         return new Donation({
@@ -485,7 +488,7 @@ class CrowdfundingContractApi {
             amountRemainding: new BigNumber(amountRemainding),
             createdAt: createdAt,
             entityId: parseInt(entityId),
-            budgetId: parseInt(budgetId),
+            budgetEntityId: parseInt(budgetEntityId),
             status: this.mapDonationStatus(parseInt(status))
         });
     }
