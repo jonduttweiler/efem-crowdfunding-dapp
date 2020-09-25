@@ -16,7 +16,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { selectDonation } from '../redux/reducers/donationsSlice'
 import { connect } from 'react-redux'
 
-class DonationItemSelectable extends Component {
+class DonationItemTransfer extends Component {
 
   constructor() {
     super();
@@ -29,9 +29,13 @@ class DonationItemSelectable extends Component {
   render() {
     const { donation, isChecked, classes, t } = this.props;
     const donationId = donation.id;
-    const labelId = `transfer-list-all-item-${donation.id}-label`;
+    const isTransferible = donation.isTransferible;
+    const labelId = `transfer-list-all-item-${donationId}-label`;
     return (
-      <ListItem role="listitem" button onClick={() => this.props.handleToggle(donationId)}>
+      <ListItem role="listitem"
+        button
+        disabled={!isTransferible}
+        onClick={() => this.props.handleToggle(donationId)}>
         <ListItemIcon>
           <Checkbox
             checked={isChecked}
@@ -50,7 +54,7 @@ class DonationItemSelectable extends Component {
   }
 }
 
-DonationItemSelectable.propTypes = {
+DonationItemTransfer.propTypes = {
   donationId: PropTypes.number.isRequired
 };
 
@@ -68,6 +72,6 @@ const mapDispatchToProps = { selectDonation }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(
-    withTranslation()(DonationItemSelectable)
+    withTranslation()(DonationItemTransfer)
   )
 );

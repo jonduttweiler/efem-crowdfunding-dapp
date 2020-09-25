@@ -1,53 +1,45 @@
 {
     "campaigns": "Campaigns",
     "campaign": "Campaign",
+    "milestone": "Milestone",
     "edit": "Edit",
-    "newCampaignTitle":"Start a new campaign!",
-    "editCampaignTitle":"Edit campaign",
+    "newCampaignTitle": "Start a new campaign!",
+    "editCampaignTitle": "Edit campaign",
     "campaignDescription": "A campaign solves a specific cause by executing a project via its Milestones. Funds raised by a campaign need to be delegated to its Milestones in order to be paid out.",
     "campaignTitleLabel": "What are you working on?",
-    "campaignTitlePlaceholder":"E.g. Installing 1000 solar panels.",
-    "campaignTitleHelp":"Describe your campaign in 1 sentence.",
-    "campaignTitleValidationMinLength":"Please provide at least 3 characters.",
-
-    "campaignDescriptionLabel":"Explain how you are going to do this successfully.",
+    "campaignTitlePlaceholder": "E.g. Installing 1000 solar panels.",
+    "campaignTitleHelp": "Describe your campaign in 1 sentence.",
+    "campaignTitleValidationMinLength": "Please provide at least 3 characters.",
+    "campaignDescriptionLabel": "Explain how you are going to do this successfully.",
     "campaignDescriptionHelp": "Make it as extensive as necessary. Your goal is to build trust, so that people donate to your campaign.",
     "campaignDescriptionPlaceholder": "Describe how you're going to execute your campaign successfully...",
     "campaignDescriptionError": "Please provide at least 10 characters.",
-
     "campaignUrlLabel": "Url to join your Community",
     "campaignUrlHelp": "Where can people join your Community? The dapp redirects people there.",
-    "campaignUrlError":"Please provide a url.",
-
+    "campaignUrlError": "Please provide a url.",
     "campaignReviewerLabel": "Select a reviewer",
     "campaignReviewerCta": "--- Select a reviewer ---",
     "campaignReviewerHelpText": "This person or smart contract will be reviewing your Campaign to increase trust for Givers.",
     "campaignReviewerError": "Please select a reviewer.",
-    
-    "campaignLoadingText":"Saving...",
-    "createCampaignBtn":"Create Campaign",
-    "updateCampaignBtn":"Update Campaign",
-
-    "unsavedChanges":"You have unsaved changes. Are you sure you want to navigate from this page?",
-    
+    "campaignLoadingText": "Saving...",
+    "createCampaignBtn": "Create Campaign",
+    "updateCampaignBtn": "Update Campaign",
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to navigate from this page?",
     "milestoneComplete": "Complete",
     "milestoneCompleteTitle": "Milestone complete",
     "milestoneCompleteDescription": "Describe what you've done to finish the work of this milestone and attach proof if necessary. This information will be publicly visible and emailed to the reviewer.",
     "milestoneCompleteMessagePlaceholder": "Describe what you've done",
     "milestoneCompleteMessageMinLength": "It is really appreciated if you write something meaningful",
-    
     "milestoneApprove": "Approve",
     "milestoneApproveTitle": "Milestone approve",
     "milestoneApproveDescription": "Explain why you approve the completion of this milestone. Compliments are appreciated! This information will be publicly visible and emailed to the milestone owner.",
     "milestoneApproveMessagePlaceholder": "Explain why you approve the completion of this milestone",
     "milestoneApproveMessageMinLength": "It is really appreciated if you write something meaningful",
-
     "milestoneReject": "Reject",
     "milestoneRejectTitle": "Milestone reject",
     "milestoneRejectDescription": "Explain why you rejected the completion of this milestone. This information will be publicly visible and emailed to the milestone owner.",
     "milestoneRejectMessagePlaceholder": "Explain why you rejected the completion of this milestone",
     "milestoneRejectMessageMinLength": "It is really appreciated if you write something meaningful",
-
     "donate": "Donate",
     "donateAmount": "Amount",
     "donateDacTitle": "Donate to DAC",
@@ -56,14 +48,15 @@
     "donateCampaignDescription": "You are committing your funds to this campaign. If you have filled out contact information in your profile you will be notified about how your funds are spent.",
     "donateMilestoneTitle": "Donate to milestone",
     "donateMilestoneDescription": "You are committing your funds to this milestone. If you have filled out contact information in your profile you will be notified about how your funds are spent.",
-
     "donations": "Donations",
+    "donationInitial": "Initial donation",
     "donationsEmpty": "No donations have been made yet. Be the first to donate!",
-
+    "donationsAvailables": "Donations availables",
+    "donationsToTransfer": "Donations to transfer",
     "transfer": "Transfer",
-    
+    "transferCampaignTitle": "Transfer from campaign",
+    "transferCampaignDescription": "Select the destination milestone and the donations you want to transfer from the campaign.",
     "tokenBalance": "Balance",
-
     "milestoneProofDescription": "Attach an expense, invoice or anything else that requires payment.",
     "activities": "Activities",
     "activitiesEmpty": "No activities have been done on the milestone yet.",
@@ -75,5 +68,7 @@
     "itemDescriptionPlaceholder": "My receipt",
     "imageAdd": "Add a picture",
     "imageAddHelp": "A picture says more than a thousand words. Select a PNG or JPG file",
-    "imageMinLength": "Please select a PNG or JPG file"
+    "imageMinLength": "Please select a PNG or JPG file",
+
+    "countSelected": "Selected"
 }

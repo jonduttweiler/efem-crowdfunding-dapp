@@ -1,61 +1,45 @@
 {
     "campaigns": "Campañas",
     "campaign": "Campaña",
+    "milestone": "Hito",
     "edit": "Editar",
-    "newCampaignTitle":"Comienza una nueva campaña!",
-    "editCampaignTitle":"Editar campaña",
-    "campaignDescription":"Una campaña resuelve una causa específica ejecutando un proyecto a través de sus Hitos. Los fondos recaudados por una campaña deben delegarse a sus Hitos para poder ser pagados.",
+    "newCampaignTitle": "Comienza una nueva campaña!",
+    "editCampaignTitle": "Editar campaña",
+    "campaignDescription": "Una campaña resuelve una causa específica ejecutando un proyecto a través de sus Hitos. Los fondos recaudados por una campaña deben delegarse a sus Hitos para poder ser pagados.",
     "campaignTitleLabel": "¿En que estás trabajando?",
-    
-    "campaignTitlePlaceholder":"Ej. Instalar 1000 paneles solares.",
-    "campaignTitleHelp":"Describe tu campaña en una oración.",
-    "campaignTitleValidationMinLength":"Proporciona al menos 3 caracteres",
-
-    "campaignDescriptionLabel":"Explique cómo va a hacer esto con éxito.",
+    "campaignTitlePlaceholder": "Ej. Instalar 1000 paneles solares.",
+    "campaignTitleHelp": "Describe tu campaña en una oración.",
+    "campaignTitleValidationMinLength": "Proporciona al menos 3 caracteres",
+    "campaignDescriptionLabel": "Explique cómo va a hacer esto con éxito.",
     "campaignDescriptionHelp": "Hágalo tan extenso como sea necesario. Su objetivo es generar confianza para que la gente done a su campaña.",
     "campaignDescriptionPlaceholder": "Describe cómo vas a ejecutar tu campaña con éxito...",
     "campaignDescriptionError": "Proporciona al menos 10 caracteres.",
-
     "campaignUrlLabel": "Url para unirse a su comunidad",
     "campaignUrlHelp": "¿Dónde pueden unirse las personas a su comunidad? El dapp redirige a las personas allí.",
-    "campaignUrlError":"Por favor proporciona una url.",
-
+    "campaignUrlError": "Por favor proporciona una url.",
     "campaignReviewerLabel": "Seleccione un revisor",
     "campaignReviewerCta": "--- Seleccione un revisor ---",
     "campaignReviewerHelpText": "Esta persona o contrato inteligente revisará su campaña para aumentar la confianza en los donantes.",
     "campaignReviewerError": "Por favor, seleccione un revisor.",
-    
-    "campaignLoadingText":"Guardando...",
-    "createCampaignBtn":"Crear Campaña",
-    "updateCampaignBtn":"Actualizar Campaña",
-
-
-
-
-
-
-
-    "unsavedChanges":"Tienes cambios sin guardar. ¿Estás seguro que deseas salir de esta página?",
-
-
+    "campaignLoadingText": "Guardando...",
+    "createCampaignBtn": "Crear Campaña",
+    "updateCampaignBtn": "Actualizar Campaña",
+    "unsavedChanges": "Tienes cambios sin guardar. ¿Estás seguro que deseas salir de esta página?",
     "milestoneComplete": "Completar",
     "milestoneCompleteTitle": "Completar hito",
     "milestoneCompleteDescription": "Describe lo que has hecho para terminar el trabajo de este hito y adjunta pruebas si es necesario. Esta información será visible públicamente y se enviará por correo electrónico al revisor.",
     "milestoneCompleteMessagePlaceholder": "Describe lo que has hecho",
     "milestoneCompleteMessageMinLength": "Se agradece mucho si escribe algo significativo",
-    
     "milestoneApprove": "Aprobar",
     "milestoneApproveTitle": "Aprobar hito",
     "milestoneApproveDescription": "Explique por qué aprueba la finalización de este hito. ¡Se agradecen los cumplidos! Esta información será visible públicamente y se enviará por correo electrónico al propietario del hito.",
     "milestoneApproveMessagePlaceholder": "Explique por qué aprueba la finalización de este hito.",
     "milestoneApproveMessageMinLength": "Se agradece mucho si escribe algo significativo",
-
     "milestoneReject": "Rechazar",
     "milestoneRejectTitle": "Rechazar hito",
     "milestoneRejectDescription": "Explique por qué rechazó la finalización de este hito. Esta información será visible públicamente y se enviará por correo electrónico al propietario del hito.",
     "milestoneRejectMessagePlaceholder": "Explique por qué rechazó la finalización de este hito",
     "milestoneRejectMessageMinLength": "Se agradece mucho si escribe algo significativo",
-
     "donate": "Donar",
     "donateAmount": "Monto",
     "donateDacTitle": "Donar a DAC",
@@ -64,14 +48,15 @@
     "donateCampaignDescription": "Está comprometiendo sus fondos para este campaña. Si ha completado la información de contacto en su perfil, se le notificará cómo se gastan sus fondos.",
     "donateMilestoneTitle": "Donar a hito",
     "donateMilestoneDescription": "Está comprometiendo sus fondos para este hito. Si ha completado la información de contacto en su perfil, se le notificará cómo se gastan sus fondos.",
-
     "donations": "Donaciones",
+    "donationInitial": "Donación inicial",
     "donationsEmpty": "Aún no se han realizado donaciones. Sé el primero en donar!",
-
+    "donationsAvailables": "Donaciones disponibles",
+    "donationsToTransfer": "Donaciones a transferir",
     "transfer": "Transferir",
-
+    "transferCampaignTitle": "Transferir desde campaña",
+    "transferCampaignDescription": "Seleccione el hito destino y las donaciones que desea transferir desde la campaña.",
     "tokenBalance": "Balance",
-
     "milestoneProofDescription": "Adjunte un gasto, factura o cualquier otra cosa que requiera pago.",
     "activities": "Actividades",
     "activitiesEmpty": "Aún no se han realizado actividades sobre el milestone.",
@@ -83,5 +68,7 @@
     "itemDescriptionPlaceholder": "Mi comprobante",
     "imageAdd": "Agrega una imagen",
     "imageAddHelp": "Una imagen vale más que mil palabras. Selecciona un archivo PNG o JPG",
-    "imageMinLength": "Por favor, selecciona un archivo PNG o JPG"
+    "imageMinLength": "Por favor, selecciona un archivo PNG o JPG",
+
+    "countSelected": "Seleccionados"
 }

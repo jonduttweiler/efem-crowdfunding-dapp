@@ -72,6 +72,13 @@ class Donation extends Model {
     return StatusUtils.build('Returned');
   }
 
+  /**
+   * Determina si la donación puede ser transferida o no.
+   */
+  get isTransferible() {
+    return this.status.name === Donation.AVAILABLE.name;
+  }
+
   get isPending() {
     return this.status.name === Donation.PENDING.name;
   }

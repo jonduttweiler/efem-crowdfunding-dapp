@@ -117,8 +117,6 @@ class ViewCampaign extends Component {
                   entity={campaign}
                   entityId={campaign.id}
                   entityCard={<CampaignCard campaign={campaign} />}
-                  title={t('donateCampaignTitle')}
-                  description={t('donateCampaignDescription')}
                   enabled={campaign.receiveFunds}>
                 </Transfer>
                 
@@ -226,7 +224,7 @@ class ViewCampaign extends Component {
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
                     <Balances entity={campaign} />
-                    <DonationList donationIds={campaign.donationIds}></DonationList>
+                    <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
                   </div>
                 </div>
                 <div className="row spacer-top-50 spacer-bottom-50">

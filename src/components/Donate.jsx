@@ -31,7 +31,6 @@ class Donate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      donationIsValid: false,
       open: false,
       amount: 0
     };
@@ -40,7 +39,6 @@ class Donate extends Component {
     this.handleDonate = this.handleDonate.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleAmountBlur = this.handleAmountBlur.bind(this);
-    this.checkDonation = this.checkDonation.bind(this);
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
   }
@@ -57,7 +55,6 @@ class Donate extends Component {
     this.setState({
       amount: event.target.value === '' ? '' : Number(event.target.value)
     });
-    this.checkDonation();
   };
 
   handleAmountBlur() {
@@ -73,19 +70,7 @@ class Donate extends Component {
         amount: max
       });
     }
-    this.checkDonation();
   };
-
-  checkDonation() {
-    const { amount } = this.state;
-    let donationIsValid = false;
-    if (amount > 0) {
-      donationIsValid = true;
-    }
-    this.setState({
-      donationIsValid: donationIsValid
-    });
-  }
 
   handleDonate() {
     const { amount } = this.state;
@@ -112,7 +97,7 @@ class Donate extends Component {
   }
 
   render() {
-    const { donationIsValid, open, amount } = this.state;
+    const { open, amount } = this.state;
     const { title, description, entityCard, enabled, currentUser, classes, t } = this.props;
 
     // TODO Definir parametrización de donación.
@@ -128,6 +113,11 @@ class Donate extends Component {
 
     let tokenConfig = config.tokens[this.props.tokenAddress];
     let tokenSymbol = tokenConfig.symbol;
+
+    let donationIsValid = false;
+    if (amount > 0) {
+      donationIsValid = true;
+    }
 
     return (
       <div>

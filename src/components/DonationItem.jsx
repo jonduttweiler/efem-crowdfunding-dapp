@@ -68,7 +68,7 @@ class DonationItem extends Component {
                   </Grid>
                   <Grid item xs={9}>
                     <Typography variant="h6" gutterBottom>
-                      Donación original
+                      {t('donationInitial')}
                     </Typography>
                     <ListItem alignItems="flex-start" className={classes.root}>
                       <ListItemAvatar>
@@ -123,7 +123,6 @@ const makeMapStateToProps = () => {
   const mapStateToProps = (state, ownProps) => {
     let props = {}
     props.donation = selectDonation(state, ownProps.donationId);
-    console.log('props.donation', props.donation);
     if (props.donation) {
       props.entity = entitySelect(state, {
         entityId: props.donation.entityId

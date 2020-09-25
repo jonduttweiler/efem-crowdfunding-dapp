@@ -25,7 +25,7 @@ import ListItem from '@material-ui/core/ListItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 import { fetchDonationsByIds, selectDonation, transferDonations } from '../redux/reducers/donationsSlice'
-import DonationItemSelectable from './DonationItemSelectable';
+import DonationItemTransfer from './DonationItemTransfer';
 import { selectMilestonesByCampaign } from '../redux/reducers/milestonesSlice';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -38,24 +38,16 @@ class Transfer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      transferIsValid: true,
       open: false,
       amount: 0,
       checked: [],
-      //left: [0, 1, 2, 3],
-      //right: [4, 5, 6, 7],
-      left: props.entity.donationIds,
+      left: props.entity.budgetDonationIds,
       right: []
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    // this.handleDonate = this.handleDonate.bind(this);
-    //this.handleAmountChange = this.handleAmountChange.bind(this);
-    //this.handleAmountBlur = this.handleAmountBlur.bind(this);
-    //this.checkDonation = this.checkDonation.bind(this);
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
-
     this.handleToggle = this.handleToggle.bind(this);
     this.setChecked = this.setChecked.bind(this);
     this.numberOfChecked = this.numberOfChecked.bind(this);
@@ -65,24 +57,20 @@ class Transfer extends Component {
     this.handleCheckedRight = this.handleCheckedRight.bind(this);
     this.handleCheckedLeft = this.handleCheckedLeft.bind(this);
     this.onChangeMilestone = this.onChangeMilestone.bind(this);
-    //this.getDonationById = this.getDonationById.bind(this);
-    //this.leftChecked = this.intersection(checked, left);
-    //this.rightChecked = this.intersection(checked, right);
-
     this.handleTransfer = this.handleTransfer.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (JSON.stringify(prevProps.entity.donationIds) !== JSON.stringify(this.props.entity.donationIds)) {
-      this.props.fetchDonationsByIds(this.props.entity.donationIds);
+    if (JSON.stringify(prevProps.entity.budgetDonationIds) !== JSON.stringify(this.props.entity.budgetDonationIds)) {
+      this.props.fetchDonationsByIds(this.props.entity.budgetDonationIds);
       this.setState({
-        left: this.props.entity.donationIds
+        left: this.props.entity.budgetDonationIds
       });
     }
   }
 
   handleTransfer() {
-    const { milestone, right, checked } = this.state;
+    const { milestone, right } = this.state;
     const { entity, transferDonations } = this.props;
     transferDonations({
       userAddress: entity.managerAddress,
@@ -193,7 +181,7 @@ class Transfer extends Component {
 
   customList(title, items) {
     const { checked, left, right } = this.state;
-    const { classes } = this.props;
+    const { classes, t } = this.props;
     return (
       <Card>
         <CardHeader
@@ -208,20 +196,18 @@ class Transfer extends Component {
             />
           }
           title={title}
-          subheader={`${this.numberOfChecked(items)}/${items.length} selected`}
+          subheader={`${this.numberOfChecked(items)}/${items.length} ${t('countSelected')}`}
         />
         <Divider />
         <List className={classes.list} dense component="div" role="list">
           {items.map((donationId) => {
-            //const labelId = `transfer-list-all-item-${value}-label`;
-            // let donation = this.props.selectDonation(donationId);
             return (
-              <DonationItemSelectable
+              <DonationItemTransfer
                 key={donationId}
                 donationId={donationId}
                 handleToggle={this.handleToggle}
                 isChecked={checked.indexOf(donationId) !== -1}>
-              </DonationItemSelectable>
+              </DonationItemTransfer>
             );
           })}
           <ListItem />
@@ -231,11 +217,16 @@ class Transfer extends Component {
   }
 
   render() {
-    const { transferIsValid, open, checked, left, right } = this.state;
-    const { milestones, title, description, entityCard, enabled, currentUser, classes, t } = this.props;
+    const { open, checked, left, right, milestone } = this.state;
+    const { milestones, entityCard, enabled, currentUser, classes, t } = this.props;
 
     let leftChecked = this.intersection(checked, left);
     let rightChecked = this.intersection(checked, right);
+
+    let transferIsValid = false;
+    if (milestone && right.length > 0) {
+      transferIsValid = true;
+    }
 
     return (
       <div>
@@ -251,7 +242,7 @@ class Transfer extends Component {
           </Button>)
         }
         <Dialog fullWidth={true}
-          maxWidth="md"
+          maxWidth="lg"
           open={open}
           onClose={this.handleClose}
           TransitionComponent={Transition}>
@@ -261,7 +252,7 @@ class Transfer extends Component {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" className={classes.title}>
-                {title}
+                {t('transferCampaignTitle')}
               </Typography>
               <Button autoFocus
                 color="inherit"
@@ -273,13 +264,13 @@ class Transfer extends Component {
           </AppBar>
           <div className={classes.root}>
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={3}>
                 {entityCard}
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={9}>
                 <Grid container>
                   <Typography variant="subtitle1" gutterBottom>
-                    {description}
+                    {t('transferCampaignDescription')}
                   </Typography>
 
                   <Autocomplete
@@ -291,12 +282,12 @@ class Transfer extends Component {
                     onChange={(event, newValue) => {
                       this.onChangeMilestone(newValue);
                     }}
-                    renderInput={(params) => <TextField {...params} label="Milestone" />}
+                    renderInput={(params) => <TextField {...params} label={t('milestone')} />}
                   />
 
-                  <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
-                    <Grid item>{this.customList('Choices', left)}</Grid>
-                    <Grid item>
+                  <Grid container spacing={2} justify="center" alignItems="center" className={classes.transferList}>
+                    <Grid item xs={5}>{this.customList(t('donationsAvailables'), left)}</Grid>
+                    <Grid item xs={2}>
                       <Grid container direction="column" alignItems="center">
                         <Button
                           variant="outlined"
@@ -320,7 +311,7 @@ class Transfer extends Component {
                       </Button>
                       </Grid>
                     </Grid>
-                    <Grid item>{this.customList('Chosen', right)}</Grid>
+                    <Grid item xs={5}>{this.customList(t('donationsToTransfer'), right)}</Grid>
                   </Grid>
 
                 </Grid>
@@ -371,13 +362,16 @@ const styles = theme => ({
     padding: theme.spacing(1, 2),
   },
   list: {
-    width: 200,
     height: 230,
     backgroundColor: theme.palette.background.paper,
     overflow: 'auto',
   },
   selectMilestone: {
     flexGrow: 1
+  },
+  transferList: {
+    flexGrow: 1,
+    marginTop: '1em'
   }
 });
 
