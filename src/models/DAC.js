@@ -11,6 +11,7 @@ class DAC extends Entity {
     super(data);
 
     const {
+      campaignIds = [],
       communityUrl = '',
       delegateAddress = '',
       requiredConfirmations = '',
@@ -18,6 +19,7 @@ class DAC extends Entity {
       status = DAC.PENDING.toStore(),
     } = data;
 
+    this._campaignIds = campaignIds;
     this._communityUrl = communityUrl;
     this._status = StatusUtils.build(status.name, status.isLocal);
     this._delegateAddress = delegateAddress;
@@ -32,6 +34,7 @@ class DAC extends Entity {
   toStore() {
     let entityStore = super.toStore();
     return Object.assign(entityStore, {
+      campaignIds: this._campaignIds,
       communityUrl: this._communityUrl,
       delegateAddress: this._delegateAddress,
       requiredConfirmations: this._requiredConfirmations,
@@ -67,6 +70,14 @@ class DAC extends Entity {
 
   get isPending() {
     return this.status.name === DAC.PENDING.name;
+  }
+
+  get campaignIds() {
+    return this._campaignIds;
+  }
+
+  set campaignIds(value) {
+    this._campaignIds = value;
   }
 
   get communityUrl() {

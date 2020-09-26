@@ -12,11 +12,13 @@ class Campaign extends Entity {
     super(data);
     const {
       dacIds = [],
+      milestoneIds = [],
       managerAddress = '',
       reviewerAddress = '',
       status = Campaign.PENDING.toStore()
     } = data;
     this._dacIds = dacIds;
+    this._milestoneIds = milestoneIds;
     this._managerAddress = managerAddress;
     this._reviewerAddress = reviewerAddress;
     this._status = StatusUtils.build(status.name, status.isLocal);
@@ -29,6 +31,7 @@ class Campaign extends Entity {
     let entityStore = super.toStore();
     return Object.assign(entityStore, {
       dacIds: this._dacIds,
+      milestoneIds: this._milestoneIds,
       managerAddress: this._managerAddress,
       reviewerAddress: this._reviewerAddress,
       status: this._status.toStore()
@@ -40,9 +43,9 @@ class Campaign extends Entity {
    * 
    * @param user a determinar si es el manager de la campaña.
    */
-   isManager(user) {
-     return user && user.address === this.managerAddress;
-   }
+  isManager(user) {
+    return user && user.address === this.managerAddress;
+  }
 
   /**
    * Determina si el usuario es revisor de la campaña.
@@ -101,6 +104,14 @@ class Campaign extends Entity {
 
   set dacIds(value) {
     this._dacIds = value;
+  }
+
+  get milestoneIds() {
+    return this._milestoneIds;
+  }
+
+  set milestoneIds(value) {
+    this._milestoneIds = value;
   }
 
   get managerAddress() {

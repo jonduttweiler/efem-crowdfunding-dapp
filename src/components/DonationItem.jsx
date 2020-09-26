@@ -11,6 +11,12 @@ import { withTranslation } from 'react-i18next';
 import ProfileCard from './ProfileCard';
 import CryptoAmount from './CryptoAmount';
 import StatusIndicator from './StatusIndicator';
+import { connect } from 'react-redux'
+import { selectDonation } from '../redux/reducers/donationsSlice'
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import makeEntitySelect from '../redux/selectors/entitiesSelector';
+import Avatar from '@material-ui/core/Avatar';
 
 class DonationItem extends Component {
 
@@ -33,20 +39,51 @@ class DonationItem extends Component {
 
   render() {
     const { user, open } = this.state;
-    const { donation, classes, t } = this.props;
+    const { donation, entity, classes, t } = this.props;
+
+    if (!donation) {
+      // TODO Implementar un Skeletor (https://material-ui.com/components/skeleton/) cuando no esté en Labs.
+      return (<div></div>)
+    }
+
     return (
       <React.Fragment>
         <ListItem alignItems="flex-start" onClick={this.handleClick}>
           <ListItemAvatar>
-            <ProfileCard address={donation.giverAddress} namePosition="bottom"/>
+            <ProfileCard address={donation.giverAddress} namePosition="bottom" />
           </ListItemAvatar>
           <ListItemText
             className={classes.text}
-            primary={<CryptoAmount amount={donation.amount} tokenAddress={donation.tokenAddress}/>}
+    
             secondary={
               <React.Fragment>
-                <StatusIndicator status={donation.status}></StatusIndicator>
-                <DateTimeViewer value={donation.createdAt}/>
+                <Grid container spacing={3}>
+                  <Grid item xs={3}>
+                    <Typography variant="h6">
+                      <CryptoAmount amount={donation.amountRemainding} tokenAddress={donation.tokenAddress} />
+                    </Typography>
+                    <StatusIndicator status={donation.status}></StatusIndicator>
+                  </Grid>
+                  <Grid item xs={9}>
+                    <Typography variant="h6" gutterBottom>
+                      {t('donationInitial')}
+                    </Typography>
+                    <ListItem alignItems="flex-start" className={classes.root}>
+                      <ListItemAvatar>
+                        <Avatar variant="rounded" src={entity.imageCidUrl} className={classes.entityLogo} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={entity.title}
+                        secondary={
+                          <React.Fragment>
+                            <CryptoAmount amount={donation.amount} tokenAddress={donation.tokenAddress} />
+                            <DateTimeViewer value={donation.createdAt} />
+                          </React.Fragment>
+                        }
+                      />
+                    </ListItem>
+                  </Grid>
+                </Grid>
               </React.Fragment>
             }
           />
@@ -57,9 +94,6 @@ class DonationItem extends Component {
   }
 }
 
-DonationItem.propTypes = {
-  donation: PropTypes.instanceOf(Donation).isRequired
-};
 
 const styles = theme => ({
   root: {
@@ -71,9 +105,34 @@ const styles = theme => ({
   },
   text: {
     marginLeft: '2em'
+  },
+  entityLogo: {
+    width: theme.spacing(6),
+    height: theme.spacing(6)
   }
 });
 
-export default withStyles(styles)(
-  withTranslation()(DonationItem)
+DonationItem.propTypes = {
+  donationId: PropTypes.number.isRequired
+};
+
+const makeMapStateToProps = () => {
+  const entitySelect = makeEntitySelect()
+  const mapStateToProps = (state, ownProps) => {
+    let props = {}
+    props.donation = selectDonation(state, ownProps.donationId);
+    if (props.donation) {
+      props.entity = entitySelect(state, props.donation.entityId);
+    }
+    return props;
+  }
+  return mapStateToProps
+}
+
+const mapDispatchToProps = {}
+
+export default connect(makeMapStateToProps, mapDispatchToProps)(
+  withStyles(styles)(
+    withTranslation()(DonationItem)
+  )
 );

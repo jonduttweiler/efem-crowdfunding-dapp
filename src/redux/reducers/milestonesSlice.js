@@ -25,7 +25,7 @@ export const milestonesSlice = createSlice({
       let milestoneStore = action.payload.toStore();
       state.push(milestoneStore);
     },
-    updateMilestoneById: (state, action) => {
+    updateMilestone: (state, action) => {
       if (action.payload) {
         let milestoneStore = action.payload.toStore();
         let index = state.findIndex(m => m.id === milestoneStore.id);
@@ -74,6 +74,7 @@ export const milestonesSlice = createSlice({
 
 export const {
   fetchMilestones,
+  fetchMilestone,
   resetMilestones,
   addMilestone,
   updateMilestoneByClientId,
@@ -83,7 +84,10 @@ export const {
 
 export const selectMilestone = (state, id) => {
   let milestoneStore = state.milestones.find(m => m.id === id);
-  return new Milestone(milestoneStore);
+  if(milestoneStore) {
+    return new Milestone(milestoneStore);
+  }
+  return undefined;
 }
 export const selectMilestones = state => {
   return state.milestones.map(function (milestoneStore) {
@@ -92,6 +96,11 @@ export const selectMilestones = state => {
 }
 export const selectMilestonesByCampaign = (state, campaignId) => {
   return state.milestones.filter(m => m.campaignId === campaignId).map(function (milestoneStore) {
+    return new Milestone(milestoneStore);
+  });
+}
+export const selectMilestonesByIds = (state, ids) => {
+  return state.milestones.filter(m => ids.includes(m.id)).map(function (milestoneStore) {
     return new Milestone(milestoneStore);
   });
 }

@@ -75,7 +75,10 @@ export const { fetchUserByAddress, fetchUsers } = usersSlice.actions;
 
 export const selectUserByAddress = (state, address) => {
     let userStore = state.users.find(u => u.address === address);
-    return new User(userStore);
+    if(userStore) {
+        return new User(userStore);
+    }
+    return undefined;
 }
 export const selectUsersByRoles = (state, roles) => {
     return state.users.map(userStore => new User(userStore)).filter(user => user.hasAnyRoles(roles));

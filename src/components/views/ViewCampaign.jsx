@@ -15,16 +15,15 @@ import { isOwner } from '../../lib/helpers';
 import { checkBalance } from '../../lib/middleware';
 import BackgroundImageHeader from '../BackgroundImageHeader';
 import Donate from '../Donate';
+import TransferCampaign from '../TransferCampaign';
 import Campaign from '../../models/Campaign';
 import CommunityButton from '../CommunityButton';
-import DelegateMultipleButton from '../DelegateMultipleButton';
 import DonationList from '../DonationList';
 import User from '../../models/User';
 import ErrorBoundary from '../ErrorBoundary';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
-import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 import ProfileCard from '../ProfileCard';
 import CampaignCard from '../CampaignCard';
 import { withTranslation } from 'react-i18next';
@@ -59,15 +58,15 @@ class ViewCampaign extends Component {
     });
   }
 
-  componentDidMount() {
+  /*componentDidMount() {
     this.props.fetchDonationsByIds(this.props.campaign.donationIds);
-  }
+  }*/
 
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
-    if (JSON.stringify(this.props.campaign.donationIds) !== JSON.stringify(prevProps.campaign.donationIds)) {
+    /*if (JSON.stringify(this.props.campaign.donationIds) !== JSON.stringify(prevProps.campaign.donationIds)) {
       this.props.fetchDonationsByIds(this.props.campaign.donationIds);
-    }
+    }*/
   }
 
   removeMilestone(id) {
@@ -112,6 +111,8 @@ class ViewCampaign extends Component {
                   description={t('donateCampaignDescription')}
                   enabled={campaign.receiveFunds}>
                 </Donate>
+
+                <TransferCampaign campaign={campaign}></TransferCampaign>
                 
                 <EditCampaignButton 
                   currentUser={currentUser}
@@ -120,14 +121,6 @@ class ViewCampaign extends Component {
                   >
                 </EditCampaignButton>
 
-                {currentUser && currentUser.authenticated && (
-                  <DelegateMultipleButton
-                    style={{ padding: '10px 10px' }}
-                    campaign={campaign}
-                    balance={balance}
-                    currentUser={currentUser}
-                  />
-                )}
                 {campaign.url && (
                   <CommunityButton className="btn btn-secondary" url={campaign.url}>
                     Join our community
@@ -217,7 +210,7 @@ class ViewCampaign extends Component {
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
                     <Balances entity={campaign} />
-                    <DonationList donations={donations}></DonationList>
+                    <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
                   </div>
                 </div>
                 <div className="row spacer-top-50 spacer-bottom-50">
@@ -253,7 +246,7 @@ ViewCampaign.defaultProps = {
   currentUser: undefined,
   campaign: new Campaign(),
   milestones: [],
-  donations: []
+  //donations: []
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -261,11 +254,11 @@ const mapStateToProps = (state, ownProps) => {
   return {
     campaign: selectCampaign(state, campaignId),
     milestones: selectMilestonesByCampaign(state, campaignId),
-    donations: selectDonationsByEntity(state, campaignId)
+    //donations: selectDonationsByEntity(state, campaignId)
   }
 }
 
-const mapDispatchToProps = { fetchDonationsByIds }
+const mapDispatchToProps = { }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withTranslation()(ViewCampaign)

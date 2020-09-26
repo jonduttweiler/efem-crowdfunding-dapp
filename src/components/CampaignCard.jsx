@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { getTruncatedText, history } from '../lib/helpers';
 import CardStats from './CardStats';
 import Campaign from '../models/Campaign';
-import messageUtils from '../utils/MessageUtils'
+import messageUtils from '../redux/utils/messageUtils'
 
 /**
  * Campaign Card visible in the DACs view.
@@ -49,7 +49,7 @@ class CampaignCard extends Component {
             <CardStats
               type="campaign"
               status={campaign.status}
-              donations={campaign.donationsCount}
+              donations={campaign.budgetDonationsCount}
             />
           </div>
         </div>

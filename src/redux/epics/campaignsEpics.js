@@ -19,6 +19,15 @@ export const fetchCampaignsEpic = action$ => action$.pipe(
   }))
 )
 
+export const fetchCampaignEpic = action$ => action$.pipe(
+  ofType('campaigns/fetchCampaign'),
+  mergeMap(action => crowdfundingContractApi.getCampaign(action.payload)),
+  map(campaign => ({
+    type: 'campaigns/updateCampaign',
+    payload: campaign
+  }))
+)
+
 /**
  * Epic que reacciona a la acción de almacenamiento de campaign local,
  * almacena la campaign en el smart contract y envía la acción de

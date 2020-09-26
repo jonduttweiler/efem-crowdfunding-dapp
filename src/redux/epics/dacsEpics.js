@@ -19,6 +19,15 @@ export const fetchDacsEpic = action$ => action$.pipe(
   }))
 )
 
+export const fetchDacEpic = action$ => action$.pipe(
+  ofType('dacs/fetchDac'),
+  mergeMap(action => crowdfundingContractApi.getDac(action.payload)),
+  map(dac => ({
+    type: 'dacs/updateDac',
+    payload: dac
+  }))
+)
+
 /**
  * Epic que reacciona a la acción de almacenamiento de dac local,
  * almacena la dac en el smart contract y envía la acción de

@@ -8,7 +8,8 @@ import extraGas from './extraGas';
 import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import messageUtils from '../../utils/MessageUtils'
+import messageUtils from '../../redux/utils/messageUtils'
+import entityUtils from '../../redux/utils/entityUtils'
 import dacIpfsConnector from '../../ipfs/DacIpfsConnector'
 import campaignIpfsConnector from '../../ipfs/CampaignIpfsConnector'
 import milestoneIpfsConnector from '../../ipfs/MilestoneIpfsConnector'
@@ -93,9 +94,6 @@ class CrowdfundingContractApi {
                 });
             }
         });
-
-
-
     };
 
     /**
@@ -106,7 +104,7 @@ class CrowdfundingContractApi {
      */
     async getDacById(dacId) {
         const crowdfunding = await this.getCrowdfunding();
-        const { id, infoCid, donationIds, users, status } = await crowdfunding.getDac(dacId);
+        const { id, infoCid, donationIds, campaignIds, budgetDonationIds, users, status } = await crowdfunding.getDac(dacId);
         // Se obtiene la información de la Dac desde IPFS.
         const dacOnIpfs = await dacIpfsConnector.download(infoCid);
         const { title, description, imageCid, url } = dacOnIpfs;
@@ -116,7 +114,9 @@ class CrowdfundingContractApi {
             description,
             imageCid,
             url,
+            campaignIds: campaignIds.map(e => parseInt(e)),
             donationIds: donationIds.map(e => parseInt(e)),
+            budgetDonationIds: budgetDonationIds.map(e => parseInt(e)),
             status: this.mapDACStatus(parseInt(status)),
             delegateAddress: users[0],
             commitTime: 0
@@ -147,6 +147,19 @@ class CrowdfundingContractApi {
         });
     }
 
+    /**
+     * Obtiene la Dac desde el Smart Contract.
+     */
+    getDac(id) {
+        return new Observable(async subscriber => {
+            try {
+                const dac = await this.getDacById(id);
+                subscriber.next(dac);
+            } catch (error) {
+                subscriber.error(error);
+            }
+        });
+    }
 
     /**
      * Obtiene todas las Campaigns desde el Smart Contract.
@@ -169,6 +182,20 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Obtiene la Campaign desde el Smart Contract.
+     */
+    getCampaign(id) {
+        return new Observable(async subscriber => {
+            try {
+                let campaign = await this.getCampaignById(id);
+                subscriber.next(campaign);
+            } catch (error) {
+                subscriber.error(error);
+            }
+        });
+    }
+
+    /**
      * Obtiene la Campaign a partir del ID especificado.
      * 
      * @param campaignId de la Campaign a obtener.
@@ -178,7 +205,7 @@ class CrowdfundingContractApi {
         const crowdfunding = await this.getCrowdfunding();
         const campaingOnChain = await crowdfunding.getCampaign(campaignId);
         // Se obtiene la información de la Campaign desde IPFS.
-        const { id, infoCid, dacIds, donationIds, users, status } = campaingOnChain;
+        const { id, infoCid, dacIds, milestoneIds, donationIds, budgetDonationIds, users, status } = campaingOnChain;
         // Se obtiene la información de la Campaign desde IPFS.
         const campaignOnIpfs = await campaignIpfsConnector.download(infoCid);
         const { title, description, imageCid, url } = campaignOnIpfs;
@@ -190,7 +217,9 @@ class CrowdfundingContractApi {
             imageCid: imageCid,
             url: url,
             dacIds: dacIds.map(e => parseInt(e)),
+            milestoneIds: milestoneIds.map(e => parseInt(e)),
             donationIds: donationIds.map(e => parseInt(e)),
+            budgetDonationIds: budgetDonationIds.map(e => parseInt(e)),
             managerAddress: users[0],
             reviewerAddress: users[1],
             status: this.mapCampaignStatus(parseInt(status))
@@ -292,20 +321,15 @@ class CrowdfundingContractApi {
     }
 
     /**
-     * Obtiene el Milestone desde el smart contract con los datos del milestone parámetro.
-     * 
-     * @param milestone a partir del cual se obtiene el milestone desde el smart contract
+     * Obtiene el Milestone desde el Smart Contract.
      */
-    getMilestone(milestone) {
-        return new Observable(subscriber => {
-            if (milestone.id) {
-                this.getMilestoneById(milestone.id).then(milestone => {
-                    subscriber.next(milestone);
-                }, error => {
-                    subscriber.error(error);
-                });
-            } else {
-                subscriber.next(undefined);
+    getMilestone(id) {
+        return new Observable(async subscriber => {
+            try {
+                let milestone = await this.getMilestoneById(id);
+                subscriber.next(milestone);
+            } catch (error) {
+                subscriber.error(error);
             }
         });
     }
@@ -319,7 +343,7 @@ class CrowdfundingContractApi {
     async getMilestoneById(milestoneId) {
         const crowdfunding = await this.getCrowdfunding();
         const milestoneOnChain = await crowdfunding.getMilestone(milestoneId);
-        const { id, campaignId, infoCid, fiatAmountTarget, users, activityIds, donationIds, status } = milestoneOnChain;
+        const { id, campaignId, infoCid, fiatAmountTarget, users, activityIds, donationIds, budgetDonationIds, status } = milestoneOnChain;
         // Se obtiene la información del Milestone desde IPFS.
         const milestoneOnIpfs = await milestoneIpfsConnector.download(infoCid);
         const { title, description, imageCid, url } = milestoneOnIpfs;
@@ -334,6 +358,7 @@ class CrowdfundingContractApi {
             fiatAmountTarget: new BigNumber(fiatAmountTarget),
             activityIds: activityIds.map(e => parseInt(e)),
             donationIds: donationIds.map(e => parseInt(e)),
+            budgetDonationIds: budgetDonationIds.map(e => parseInt(e)),
             managerAddress: users[0],
             reviewerAddress: users[1],
             campaignReviewerAddress: users[2],
@@ -473,7 +498,7 @@ class CrowdfundingContractApi {
             amountRemainding,
             createdAt,
             entityId,
-            budgetId,
+            budgetEntityId,
             status } = donationOnChain;
 
         return new Donation({
@@ -484,7 +509,7 @@ class CrowdfundingContractApi {
             amountRemainding: new BigNumber(amountRemainding),
             createdAt: createdAt,
             entityId: parseInt(entityId),
-            budgetId: parseInt(budgetId),
+            budgetEntityId: parseInt(budgetEntityId),
             status: this.mapDonationStatus(parseInt(status))
         });
     }
@@ -535,6 +560,7 @@ class CrowdfundingContractApi {
                                 text: `La donación ha sido confirmada`
                             });
                         });
+                        entityUtils.refreshEntity(donation.entityId);
                     })
                     .on('error', function (error) {
                         error.donation = donation;
@@ -558,6 +584,72 @@ class CrowdfundingContractApi {
     }
 
     /**
+     * Transfiere las donaciones en el Smart Contarct.
+     * 
+     * @param userAddress Dirección del usuario que realiza la transferencia.
+     * @param entityIdFrom ID de la entidad desde donde se transfieren las donaciones.
+     * @param entityIdTo ID de la entidad hacia donde se transfieren las donaciones.
+     * @param donationIds IDs de las donaciones a transferir.
+     */
+    transferDonations(userAddress, entityIdFrom, entityIdTo, donationIds) {
+
+        return new Observable(async subscriber => {
+
+            try {
+                let crowdfunding = await this.getCrowdfunding();
+
+                let thisApi = this;
+
+                let promiEvent = crowdfunding.transfer(
+                    entityIdFrom,
+                    entityIdTo,
+                    donationIds,
+                    {
+                        from: userAddress,
+                        $extraGas: extraGas()
+                    });
+
+                promiEvent
+                    .once('transactionHash', function (hash) {
+                        // La transacción ha sido creada.
+                        //subscriber.next();
+                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear realizar la transferencia.' });
+                    })
+                    .once('confirmation', function (confNumber, receipt) {
+                        // La transacción ha sido incluida en un bloque
+                        // sin bloques de confirmación (once).
+                        // TODO Aquí debería agregarse lógica para esperar
+                        // un número determinado de bloques confirmados (on, confNumber).
+                        subscriber.next(donationIds);
+                        messageUtils.addMessageSuccess({
+                            title: 'Felicitaciones!',
+                            text: `La transferencia ha sido confirmada`
+                        });
+                        entityUtils.refreshEntity(entityIdFrom);
+                        entityUtils.refreshEntity(entityIdTo);
+                    })
+                    .on('error', function (error) {
+                        //error.donation = donation;
+                        console.error(`Error procesando transacción de transferencia de donaciones.`, error);
+                        subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error transfiriendo las donaciones`,
+                            error: error
+                        });
+                    });
+            } catch (error) {
+                //error.donation = donation;
+                console.error(`Error realizando transferencia de donaciones`, error);
+                subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error transfiriendo las donaciones`,
+                    error: error
+                });
+            }
+        });
+    }
+
+    /**
      * Marca como completado un Milestone en el Smart Contarct.
      * 
      * @param milestone a marcar como completado.
@@ -565,7 +657,7 @@ class CrowdfundingContractApi {
     milestoneComplete(milestone, activity) {
 
         return new Observable(async subscriber => {
-console.log('Activityyyyyyyyy', activity);
+
             try {
                 let crowdfunding = await this.getCrowdfunding();
 

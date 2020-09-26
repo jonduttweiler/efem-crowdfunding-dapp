@@ -8,9 +8,9 @@ import { selectUserByAddress, fetchUserByAddress } from '../redux/reducers/users
 
 class ProfileCard extends Component {  //va a recibir como prop un address
     componentDidMount() {
-        if(this.props.address) {
+        if (this.props.address) {
             this.props.fetchUserByAddress(this.props.address);
-        }        
+        }
     }
 
     /*shouldComponentUpdate(nextProps, nextState) {
@@ -29,6 +29,10 @@ class ProfileCard extends Component {  //va a recibir como prop un address
     render() {
         const { user, namePosition } = this.props;
         const descriptionClass = namePosition === "left" || namePosition === "right" ? "" : "small";
+        if (!user) {
+            // TODO Implementar un Skeletor (https://material-ui.com/components/skeleton/) cuando no esté en Labs.
+            return (<div></div>)
+        }
         return (
             <div>
                 <Link className={`profile-card ${namePosition}`} to={`/profile/${user.address}`}>

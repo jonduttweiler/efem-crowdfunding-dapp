@@ -18,6 +18,7 @@ import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reduce
 import DacCard from '../DacCard';
 import { withTranslation } from 'react-i18next';
 import Donate from '../Donate';
+import TransferDac from '../TransferDac';
 
 /**
  * The DAC detail view mapped to /dac/id
@@ -67,6 +68,7 @@ class ViewDAC extends Component {
             description={t('donateDacDescription')}
             enabled={dac.receiveFunds}>
           </Donate>
+          <TransferDac dac={dac}></TransferDac>
           {dac.url && (
             <CommunityButton className="btn btn-secondary" url={dac.url}>
               Join our community
@@ -108,7 +110,7 @@ class ViewDAC extends Component {
           <div className="row spacer-top-50 spacer-bottom-50">
             <div className="col-md-8 m-auto">
               <Balances entity={dac} />
-              <DonationList donations={donations}></DonationList>
+              <DonationList donationIds={dac.budgetDonationIds}></DonationList>
             </div>
           </div>
         </div>

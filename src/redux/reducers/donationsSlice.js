@@ -59,6 +59,13 @@ export const donationsSlice = createSlice({
       if (index != -1) {
         state.splice(index, 1);
       }
+    },
+    transferDonations: (state, action) => {
+      const { donationIds } = action.payload;
+      donationIds.forEach(id => {
+        let donationStore = state.find(d => d.id === id);
+        donationStore.status = Donation.TRANSFERRING.toStore();
+      });
     }
   },
 });
@@ -68,11 +75,15 @@ export const { fetchDonations,
   fetchDonationsByIds,
   mergeDonations,
   addDonation,
-  updateDonationByClientId } = donationsSlice.actions;
+  updateDonationByClientId,
+  transferDonations } = donationsSlice.actions;
 
 export const selectDonation = (state, id) => {
   let donationStore = state.donations.find(d => d.id === id);
-  return new Donation(donationStore);
+  if (donationStore) {
+    return new Donation(donationStore);
+  }
+  return undefined;
 }
 export const selectDonations = state => {
   return state.donations.map(function (donationStore) {
