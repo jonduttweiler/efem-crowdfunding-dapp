@@ -9,9 +9,29 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 class MilestoneSelector extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      value: null
+    };
+    this.onChange = this.onChange.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (JSON.stringify(prevProps.milestoneIds) !== JSON.stringify(this.props.milestoneIds)) {
+      this.setState({
+        value: null
+      });
+    }
+  }
+
+  onChange(value) {
+    this.setState({
+      value: value
+    });
+    this.props.onChange(value);
   }
 
   render() {
+    const { value } = this.state;
     const { milestones, classes, t } = this.props;
     return (
       <Autocomplete
@@ -19,9 +39,9 @@ class MilestoneSelector extends Component {
         className={classes.root}
         options={milestones}
         getOptionLabel={(option) => option.title}
-        style={{ width: 300 }}
+        value={value}
         onChange={(event, newValue) => {
-          this.props.onChange(newValue);
+          this.onChange(newValue);
         }}
         renderInput={(params) => <TextField {...params} label={t('milestone')} />}
         disabled={milestones.length === 0}
@@ -36,7 +56,7 @@ MilestoneSelector.defaultProps = {
 
 const styles = theme => ({
   root: {
-    flexGrow: 1
+
   }
 });
 

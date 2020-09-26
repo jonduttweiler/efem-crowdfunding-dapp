@@ -23,9 +23,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import ListItem from '@material-ui/core/ListItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
-import { fetchDonationsByIds, selectDonation, transferDonations } from '../redux/reducers/donationsSlice'
+import { fetchDonationsByIds, transferDonations } from '../redux/reducers/donationsSlice'
 import DonationItemTransfer from './DonationItemTransfer';
-import { selectCampaignsByDac } from '../redux/reducers/campaignsSlice';
 import CampaignSelector from './CampaignSelector';
 import MilestoneSelector from './MilestoneSelector';
 import DacCard from './DacCard';
@@ -72,12 +71,16 @@ class TransferDac extends Component {
   }
 
   handleTransfer() {
-    const { campaign, right } = this.state;
+    const { campaign, milestone, right } = this.state;
     const { dac, transferDonations } = this.props;
+    let entityIdTo = campaign.id;
+    if (milestone) {
+      entityIdTo = milestone.id;
+    }
     transferDonations({
       userAddress: dac.delegate,
       entityIdFrom: dac.id,
-      entityIdTo: campaign.id,
+      entityIdTo: entityIdTo,
       donationIds: right
     });
     this.close();
@@ -231,7 +234,7 @@ class TransferDac extends Component {
 
   render() {
     const { open, checked, left, right, campaign, milestoneIds } = this.state;
-    const { dac, campaigns, currentUser, classes, t } = this.props;
+    const { dac, currentUser, classes, t } = this.props;
 
     let leftChecked = this.intersection(checked, left);
     let rightChecked = this.intersection(checked, right);
@@ -283,20 +286,27 @@ class TransferDac extends Component {
                 {<DacCard dac={dac} />}
               </Grid>
               <Grid item xs={9}>
-                <Grid container>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {t('transferDacDescription')}
-                  </Typography>
+                <Grid container spacing={2}>
 
-                  <CampaignSelector
-                    campaignIds={dac.campaignIds}
-                    onChange={this.onChangeCampaign}>
-                  </CampaignSelector>
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      {t('transferDacDescription')}
+                    </Typography>
+                  </Grid>
 
-                  <MilestoneSelector
-                    milestoneIds={milestoneIds}
-                    onChange={this.onChangeMilestone}>
-                  </MilestoneSelector>
+                  <Grid item xs={12} sm={6}>
+                    <CampaignSelector
+                      campaignIds={dac.campaignIds}
+                      onChange={this.onChangeCampaign}>
+                    </CampaignSelector>
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <MilestoneSelector
+                      milestoneIds={milestoneIds}
+                      onChange={this.onChangeMilestone}>
+                    </MilestoneSelector>
+                  </Grid>
 
                   <Grid container spacing={2} justify="center" alignItems="center" className={classes.transferList}>
                     <Grid item xs={5}>{this.customList(t('donationsAvailables'), left)}</Grid>
@@ -377,10 +387,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
     overflow: 'auto',
   },
-  selectCampaign: {
-    flexGrow: 1
-  },
-  selectMilestone: {
+  toSelectors: {
     flexGrow: 1
   },
   transferList: {
@@ -391,8 +398,7 @@ const styles = theme => ({
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: selectCurrentUser(state),
-    campaigns: selectCampaignsByDac(state, ownProps.dac.id),
+    currentUser: selectCurrentUser(state)
   }
 }
 
