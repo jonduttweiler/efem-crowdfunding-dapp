@@ -28,8 +28,12 @@ const parallaxStyle = {
     }
   },
   small: {
+    height: "250px"
+  },
+  medium: {
     height: "380px"
   }
+
 };
 
 export default parallaxStyle;

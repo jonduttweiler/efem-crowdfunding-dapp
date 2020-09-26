@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Prompt } from 'react-router-dom';
+import classNames from "classnames";
+
 import PropTypes from 'prop-types';
 import 'react-input-token/lib/style.css';
 import { Form, Input } from 'formsy-react-components';
@@ -21,8 +23,17 @@ import { campaignReviewers } from '../../redux/reducers/usersSlice';
 import { saveCampaign, selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { CAMPAIGN_REVIEWER_ROLE } from '../../constants/Role';
 
+import Header from "components/Header/Header.js";
+import Footer from "components/Footer/Footer.js";
+import Parallax from "components/Parallax/Parallax.js";
+import MainMenu from 'components/MainMenu';
+import GridContainer from "components/Grid/GridContainer.js";
+import GridItem from "components/Grid/GridItem.js";
 
+import { withStyles } from '@material-ui/core/styles';
+import styles from "assets/jss/material-kit-react/views/campaignPage.js";
 import { withTranslation } from 'react-i18next';
+
 /**
  * View to create or edit a Campaign
  *
@@ -137,137 +148,162 @@ class EditCampaign extends Component {
     const { isNew, t } = this.props;
     const { isLoading, isSaving, campaign, formIsValid, isBlocking } = this.state;
 
+    const { ...rest } = this.props;
+    const { classes } = this.props;
+
     return (
       <div id="edit-campaign-view">
-        <div className="container-fluid page-layout edit-view">
+        <Header
+          color="white"
+          brand="Give for forests"
+          rightLinks={<MainMenu />}
+          fixed
+          changeColorOnScroll={{
+            height: 0,
+            color: "white"
+          }}
+          {...rest}
+        />
+        <Parallax small image={require("assets/img/campaign-default-bg.jpg")} />
+        <div className={classNames(classes.main, classes.mainRaised)}>
           <div>
-            <div className="col-md-8 m-auto">
-              {isLoading && <Loader className="fixed" />}
+            <div className={classes.container}>
+              <GridContainer justify="center">
+                <GridItem xs={12} sm={12} md={6}>
 
-              {!isLoading && (
-                <div>
-                  <GoBackButton history={history} />
+                  {isLoading && <Loader className="fixed" />}
 
-                  <div className="form-header">
-                    {isNew && <h3>{t('newCampaignTitle')}</h3>}
+                  {!isLoading && (
+                    <div>
+                      <GoBackButton history={history} />
 
-                    {!isNew && <h3>{t('editCampaignTitle')} {campaign.title}</h3>}
-                    <p>
-                      <i className="fa fa-question-circle" />{t('campaignDescription')}
-                    </p>
-                  </div>
+                      <div className="form-header">
+                        {isNew && <h3>{t('newCampaignTitle')}</h3>}
 
-                  <Form
-                    onSubmit={this.submit}
-                    ref={this.form}
-                    mapping={inputs => {
-                      campaign.title = inputs.title;
-                      campaign.description = inputs.description;
-                      campaign.url = inputs.url;
-                      campaign.reviewerAddress = inputs.reviewerAddress;
-                      //campaign.summary = getTruncatedText(inputs.description, 100);
-                    }}
-                    onValid={() => this.toggleFormValid(true)}
-                    onInvalid={() => this.toggleFormValid(false)}
-                    onChange={e => this.triggerRouteBlocking(e)}
-                    layout="vertical"
-                  >
-                    <Prompt when={isBlocking} message={() => t('unsavedChanges')}/>
+                        {!isNew && <h3>{t('editCampaignTitle')} {campaign.title}</h3>}
+                        <p>
+                          <i className="fa fa-question-circle" />{t('campaignDescription')}
+                        </p>
+                      </div>
 
-                    <Input
-                      name="title"
-                      id="title-input"
-                      label={t('campaignTitleLabel')}
-                      type="text"
-                      value={campaign.title}
-                      placeholder={t('campaignTitlePlaceholder')}
-                      help={t('campaignTitleHelp')}
-                      validations="minLength:3"
-                      validationErrors={{
-                        minLength: t('campaignTitleValidationMinLength'),
-                      }}
-                      required
-                      autoFocus
-                    />
+                      <Form
+                        onSubmit={this.submit}
+                        ref={this.form}
+                        mapping={inputs => {
+                          campaign.title = inputs.title;
+                          campaign.description = inputs.description;
+                          campaign.url = inputs.url;
+                          campaign.reviewerAddress = inputs.reviewerAddress;
+                          //campaign.summary = getTruncatedText(inputs.description, 100);
+                        }}
+                        onValid={() => this.toggleFormValid(true)}
+                        onInvalid={() => this.toggleFormValid(false)}
+                        onChange={e => this.triggerRouteBlocking(e)}
+                        layout="vertical"
+                      >
+                        <Prompt when={isBlocking} message={() => t('unsavedChanges')}/>
 
-                    <QuillFormsy
-                      name="description"
-                      label={t('campaignDescriptionLabel')}
-                      helpText={t('campaignDescriptionHelp')}
-                      value={campaign.description}
-                      placeholder={t('campaignDescriptionPlaceholder')}
-                      validations="minLength:20"
-                      validationErrors={{
-                        minLength: t('campaignDescriptionError'),
-                      }}
-                      required
-                    />
-
-                    <div className="form-group">
-                      <FormsyImageUploader
-                        setImage={this.setImage}
-                        previewImage={campaign.imageCidUrl}
-                        isRequired={isNew}
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <Input
-                        name="url"
-                        id="url"
-                        label={t('campaignUrlLabel')}
-                        type="text"
-                        value={campaign.url}
-                        placeholder="https://slack.give4forests.com"
-                        help={t('campaignUrlHelp')}
-                        validations="isUrl"
-                        validationErrors={{ isUrl: t('campaignUrlError') }}
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      {
-                        <SelectUsers
-                          roles={[CAMPAIGN_REVIEWER_ROLE]}
-                          id="reviewer-select"
-                          name="reviewerAddress"
-                          label={t('campaignReviewerLabel')}
-                          helpText={t('campaignReviewerHelpText')}
-                          value={campaign.reviewerAddress}
-                          cta={t('campaignReviewerCta')}
-                          validations="isEtherAddress"
+                        <Input
+                          name="title"
+                          id="title-input"
+                          label={t('campaignTitleLabel')}
+                          type="text"
+                          value={campaign.title}
+                          placeholder={t('campaignTitlePlaceholder')}
+                          help={t('campaignTitleHelp')}
+                          validations="minLength:3"
                           validationErrors={{
-                            isEtherAddress: t('campaignReviewerError')
+                            minLength: t('campaignTitleValidationMinLength'),
+                          }}
+                          required
+                          autoFocus
+                        />
+
+                        <QuillFormsy
+                          name="description"
+                          label={t('campaignDescriptionLabel')}
+                          helpText={t('campaignDescriptionHelp')}
+                          value={campaign.description}
+                          placeholder={t('campaignDescriptionPlaceholder')}
+                          validations="minLength:20"
+                          validationErrors={{
+                            minLength: t('campaignDescriptionError'),
                           }}
                           required
                         />
-                      }
-                    </div>
 
-                    <div className="form-group row">
-                      <div className="col-md-6">
-                        <GoBackButton history={history} />
-                      </div>
-                      <div className="col-md-6">
-                        <LoaderButton
-                          className="btn btn-success pull-right"
-                          formNoValidate
-                          type="submit"
-                          disabled={isSaving || !formIsValid}
-                          isLoading={isSaving}
-                          loadingText={t('campaignLoadingText')}
-                        >
-                          {isNew ? t('createCampaignBtn'): t('updateCampaignBtn')} 
-                        </LoaderButton>
-                      </div>
+                        <div className="form-group">
+                          <FormsyImageUploader
+                            setImage={this.setImage}
+                            previewImage={campaign.imageCidUrl}
+                            isRequired={isNew}
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <Input
+                            name="url"
+                            id="url"
+                            label={t('campaignUrlLabel')}
+                            type="text"
+                            value={campaign.url}
+                            placeholder="https://slack.give4forests.com"
+                            help={t('campaignUrlHelp')}
+                            validations="isUrl"
+                            validationErrors={{ isUrl: t('campaignUrlError') }}
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          {
+                            <SelectUsers
+                              roles={[CAMPAIGN_REVIEWER_ROLE]}
+                              id="reviewer-select"
+                              name="reviewerAddress"
+                              label={t('campaignReviewerLabel')}
+                              helpText={t('campaignReviewerHelpText')}
+                              value={campaign.reviewerAddress}
+                              cta={t('campaignReviewerCta')}
+                              validations="isEtherAddress"
+                              validationErrors={{
+                                isEtherAddress: t('campaignReviewerError')
+                              }}
+                              required
+                            />
+                          }
+                        </div>
+
+                        <div className="form-group row">
+                          <div className="col-md-6">
+                            <GoBackButton history={history} />
+                          </div>
+                          <div className="col-md-6">
+                            <LoaderButton
+                              className="btn btn-success pull-right"
+                              formNoValidate
+                              type="submit"
+                              disabled={isSaving || !formIsValid}
+                              isLoading={isSaving}
+                              loadingText={t('campaignLoadingText')}
+                            >
+                              {isNew ? t('createCampaignBtn'): t('updateCampaignBtn')} 
+                            </LoaderButton>
+                          </div>
+                        </div>
+                      </Form>
                     </div>
-                  </Form>
-                </div>
-              )}
+                  )}
+
+
+                </GridItem>
+              </GridContainer>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
+
+
     );
   }
 }
@@ -301,4 +337,4 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = { saveCampaign }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation() (EditCampaign));
+export default connect(mapStateToProps,mapDispatchToProps)((withStyles(styles)(withTranslation() (EditCampaign))));

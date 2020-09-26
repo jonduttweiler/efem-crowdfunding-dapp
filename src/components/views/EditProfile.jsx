@@ -91,17 +91,17 @@ class EditProfile extends Component {
     return (
       <div>
         <Header
-          color="transparent"
+          color="white"
           brand="Give for forests"
           rightLinks={<MainMenu />}
           fixed
           changeColorOnScroll={{
-            height: 200,
+            height: 0,
             color: "white"
           }}
           {...rest}
         />
-        <Parallax small filter image={require("assets/img/profile-bg.jpg")} />
+        <Parallax small image={require("assets/img/profile-default-bg.jpg")} />
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div>
             <div className={classes.container}>

@@ -10,6 +10,8 @@ import { withTranslation } from 'react-i18next';
 import styles from "assets/jss/material-kit-react/views/landingPageSections/campaignsStyle.js";
 import { withStyles } from '@material-ui/core/styles';
 
+import Badge from "components/Badge/Badge.js";
+
 /**
  * The Campaigns view mapped to /campaigns
  */
@@ -33,7 +35,7 @@ class Campaigns extends Component {
     return (
       <div id="campaigns-view" className="card-view">
         <div className={classes.section}>
-          <h2 className={classes.title}>{t('campaigns')} {total > 0 && <span className="badge badge-success">{total}</span>}</h2>
+          <h2 className={classes.title}>{t('campaigns')} {total > 0 && <Badge color="success">{total}</Badge>}</h2>
           <h5 className={classes.description}>
             Nuestros emprendimientos de vida
           </h5>
