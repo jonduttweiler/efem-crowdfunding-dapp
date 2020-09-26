@@ -104,7 +104,7 @@ class MilestoneCard extends Component {
               type="milestone"
               fiatAmountTarget={milestone.fiatAmountTarget}
               status={milestone.status}
-              donations={milestone.donationsCount}
+              donations={milestone.budgetDonationsCount}
             />
           </div>
         </div>

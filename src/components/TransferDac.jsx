@@ -14,7 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
 import User from 'models/User';
 import DAC from 'models/DAC';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import FastForwardIcon from '@material-ui/icons/FastForward';
 import config from '../configuration';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 import List from '@material-ui/core/List';
@@ -253,7 +253,7 @@ class TransferDac extends Component {
             variant="contained"
             color="primary"
             className={classes.button}
-            startIcon={<FavoriteIcon />}
+            startIcon={<FastForwardIcon />}
             onClick={this.handleClickOpen}
           >
             {t('transfer')}

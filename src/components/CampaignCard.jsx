@@ -49,7 +49,7 @@ class CampaignCard extends Component {
             <CardStats
               type="campaign"
               status={campaign.status}
-              donations={campaign.donationsCount}
+              donations={campaign.budgetDonationsCount}
             />
           </div>
         </div>

@@ -14,7 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
 import User from 'models/User';
 import Campaign from 'models/Campaign';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import FastForwardIcon from '@material-ui/icons/FastForward';
 import config from '../configuration';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 import List from '@material-ui/core/List';
@@ -236,7 +236,7 @@ class TransferCampaign extends Component {
             variant="contained"
             color="primary"
             className={classes.button}
-            startIcon={<FavoriteIcon />}
+            startIcon={<FastForwardIcon />}
             onClick={this.handleClickOpen}
           >
             {t('transfer')}
@@ -269,15 +269,20 @@ class TransferCampaign extends Component {
                 {<CampaignCard campaign={campaign} />}
               </Grid>
               <Grid item xs={9}>
-                <Grid container>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {t('transferCampaignDescription')}
-                  </Typography>
+                <Grid container spacing={2}>
 
-                  <MilestoneSelector
-                    milestoneIds={campaign.milestoneIds}
-                    onChange={this.onChangeMilestone}>
-                  </MilestoneSelector>
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      {t('transferCampaignDescription')}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <MilestoneSelector
+                       milestoneIds={campaign.milestoneIds}
+                       onChange={this.onChangeMilestone}>
+                    </MilestoneSelector>
+                  </Grid>
 
                   <Grid container spacing={2} justify="center" alignItems="center" className={classes.transferList}>
                     <Grid item xs={5}>{this.customList(t('donationsAvailables'), left)}</Grid>
