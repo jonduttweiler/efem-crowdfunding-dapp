@@ -9,12 +9,8 @@ import Item from '../models/Item';
 
 class ItemList extends Component {
 
-  constructor() {
-    super();
-  }
-
   render() {
-    const { items, classes, t } = this.props;
+    const { items, classes} = this.props;
     return (
       <Container fixed>
         <List className={classes.root}>

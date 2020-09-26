@@ -7,10 +7,6 @@ import { withTranslation } from 'react-i18next'
 import { selectUserByAddress, fetchUserByAddress } from '../redux/reducers/usersSlice'
 
 class ProfileCard extends Component {  //va a recibir como prop un address
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         if(this.props.address) {
             this.props.fetchUserByAddress(this.props.address);

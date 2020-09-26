@@ -10,10 +10,6 @@ import FiatUtils from '../utils/FiatUtils';
  */
 class FiatAmount extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         let amountConfig = config.fiat;
         let amount = FiatUtils.centToDollar(this.props.amount).toFixed(amountConfig.showDecimals);

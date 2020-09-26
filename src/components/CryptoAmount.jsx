@@ -11,10 +11,6 @@ import Web3Utils from '../utils/Web3Utils';
  */
 class CryptoAmount extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         let tokenConfig = config.tokens[this.props.tokenAddress];
         let amount = Web3Utils.weiToEther(this.props.amount).toFixed(tokenConfig.showDecimals);
