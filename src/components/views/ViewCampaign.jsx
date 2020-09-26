@@ -18,7 +18,6 @@ import Donate from '../Donate';
 import TransferCampaign from '../TransferCampaign';
 import Campaign from '../../models/Campaign';
 import CommunityButton from '../CommunityButton';
-import DelegateMultipleButton from '../DelegateMultipleButton';
 import DonationList from '../DonationList';
 import User from '../../models/User';
 import ErrorBoundary from '../ErrorBoundary';
@@ -122,14 +121,6 @@ class ViewCampaign extends Component {
                   >
                 </EditCampaignButton>
 
-                {currentUser && currentUser.authenticated && (
-                  <DelegateMultipleButton
-                    style={{ padding: '10px 10px' }}
-                    campaign={campaign}
-                    balance={balance}
-                    currentUser={currentUser}
-                  />
-                )}
                 {campaign.url && (
                   <CommunityButton className="btn btn-secondary" url={campaign.url}>
                     Join our community

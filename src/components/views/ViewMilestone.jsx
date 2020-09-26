@@ -10,7 +10,6 @@ import GoBackButton from '../GoBackButton';
 import DonationList from '../DonationList';
 import Loader from '../Loader';
 import ActivityList from '../ActivityList';
-import DelegateMultipleButton from '../DelegateMultipleButton';
 import Milestone from '../../models/Milestone';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
@@ -113,27 +112,7 @@ class ViewMilestone extends Component {
                   description={t('donateMilestoneDescription')}
                   enabled={milestone.receiveFunds}>
                 </Donate>
-                {/*<DelegateMultipleButton
-                  milestone={milestone}
-                  campaign={campaign}
-                  balance={balance}
-                  user={user}
-                />*/}
-                {/*this.isActiveMilestone() && (
-                  <Fragment>
-                    {user && (
-                      <DelegateMultipleButton
-                        milestone={milestone}
-                        campaign={campaign}
-                        balance={balance}
-                        user={user}
-                      />
-                    )}
-                  </Fragment>
-                )*/}
-
-                {/* Milestone actions */}
-
+                
                 {user && (
                   <MilestoneActions milestone={milestone} user={user} balance={balance} />
                 )}
