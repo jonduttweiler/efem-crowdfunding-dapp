@@ -25,7 +25,7 @@ export const milestonesSlice = createSlice({
       let milestoneStore = action.payload.toStore();
       state.push(milestoneStore);
     },
-    updateMilestoneById: (state, action) => {
+    updateMilestone: (state, action) => {
       if (action.payload) {
         let milestoneStore = action.payload.toStore();
         let index = state.findIndex(m => m.id === milestoneStore.id);
@@ -74,6 +74,7 @@ export const milestonesSlice = createSlice({
 
 export const {
   fetchMilestones,
+  fetchMilestone,
   resetMilestones,
   addMilestone,
   updateMilestoneByClientId,

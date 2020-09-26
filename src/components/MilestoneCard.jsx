@@ -8,7 +8,7 @@ import Milestone from '../models/Milestone';
 import ProfileCard from './ProfileCard';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../redux/reducers/campaignsSlice'
-import messageUtils from '../utils/MessageUtils'
+import messageUtils from '../redux/utils/messageUtils'
 
 /**
  * A single milestone

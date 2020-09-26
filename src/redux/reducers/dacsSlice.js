@@ -8,6 +8,9 @@ export const DACsSlice = createSlice({
     fetchDacs: (state, action) => {
       //Las dacs se obtienen a traves del epic
     },
+    fetchDac: (state, action) => {
+      // Solo se obtiene el estado actual.
+    },
     resetDacs: (state, action) => {
       // Se resguardan las DACs Pendientes.
       var pendings = state.filter(d => d.status.name === DAC.PENDING.name);
@@ -35,11 +38,18 @@ export const DACsSlice = createSlice({
       if (index != -1) {
         state.splice(index, 1);
       }
+    },
+    updateDac: (state, action) => {
+      let dacStore = action.payload.toStore();
+      let index = state.findIndex(d => d.id === dacStore.id);
+      if (index != -1) {
+        state[index] = dacStore;
+      }
     }
   },
 });
 
-export const { addDac, updateDacByClientId, fetchDacs } = DACsSlice.actions;
+export const { addDac, updateDacByClientId, fetchDacs, fetchDac } = DACsSlice.actions;
 
 export const selectDacs = state => {
   return state.dacs.map(function (dacStore) {
@@ -48,7 +58,10 @@ export const selectDacs = state => {
 }
 export const selectDac = (state, id) => {
   let dacStore = state.dacs.find(d => d.id === id);
-  return new DAC(dacStore);
+  if (dacStore) {
+    return new DAC(dacStore);
+  }
+  return undefined;
 }
 
 export default DACsSlice.reducer;

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import User from '../models/User';
 import { ALL_ROLES } from '../constants/Role';
-import messageUtils from '../utils/MessageUtils'
+import messageUtils from '../redux/utils/messageUtils'
 
 class UserService {
 

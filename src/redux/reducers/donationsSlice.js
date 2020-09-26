@@ -61,12 +61,11 @@ export const donationsSlice = createSlice({
       }
     },
     transferDonations: (state, action) => {
-      // TODO
-      console.log(action.payload);
-    },
-    pendiente: (state, action) => {
-      // TODO
-      console.log('TRATAR CALLBACK DE TRANSFER');
+      const { donationIds } = action.payload;
+      donationIds.forEach(id => {
+        let donationStore = state.find(d => d.id === id);
+        donationStore.status = Donation.TRANSFERRING.toStore();
+      });
     }
   },
 });
@@ -81,10 +80,10 @@ export const { fetchDonations,
 
 export const selectDonation = (state, id) => {
   let donationStore = state.donations.find(d => d.id === id);
-  if(donationStore) {
+  if (donationStore) {
     return new Donation(donationStore);
   }
-  return undefined;  
+  return undefined;
 }
 export const selectDonations = state => {
   return state.donations.map(function (donationStore) {

@@ -15,10 +15,8 @@ import { connect } from 'react-redux'
 import { selectDonation } from '../redux/reducers/donationsSlice'
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import makeEntitySelect from '../redux/selectors/entitiesSelector';
 import Avatar from '@material-ui/core/Avatar';
-import { deepOrange, green } from '@material-ui/core/colors';
 
 class DonationItem extends Component {
 
@@ -124,9 +122,7 @@ const makeMapStateToProps = () => {
     let props = {}
     props.donation = selectDonation(state, ownProps.donationId);
     if (props.donation) {
-      props.entity = entitySelect(state, {
-        entityId: props.donation.entityId
-      });
+      props.entity = entitySelect(state, props.donation.entityId);
     }
     return props;
   }

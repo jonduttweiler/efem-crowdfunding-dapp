@@ -64,6 +64,10 @@ class Donation extends Model {
     return StatusUtils.build('Available');
   }
 
+  static get TRANSFERRING() {
+    return StatusUtils.build('Transferring', true);
+  }
+
   static get SPENT() {
     return StatusUtils.build('Spent');
   }

@@ -67,9 +67,9 @@ export const transferDonationsEpic = action$ => action$.pipe(
     action.payload.entityIdFrom,
     action.payload.entityIdTo,
     action.payload.donationIds)),
-  map(() => ({
-    type: 'donations/pendiente',
-    payload: undefined
+  map(donationIds => ({
+    type: 'donations/fetchDonationsByIds',
+    payload: donationIds
   })),
   catchError(error => of({
     type: 'donations/pendiente',

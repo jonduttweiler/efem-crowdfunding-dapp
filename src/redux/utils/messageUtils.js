@@ -1,6 +1,6 @@
-import Message, { Severity } from '../models/Message';
-import { store } from '../redux/store';
-import { addMessage } from '../redux/reducers/messagesSlice';
+import Message, { Severity } from '../../models/Message';
+import { store } from '../store';
+import { addMessage } from '../reducers/messagesSlice';
 
 /**
  * Clase utilitaria para el manejo de mensajes

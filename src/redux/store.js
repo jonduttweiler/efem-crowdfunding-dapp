@@ -11,7 +11,7 @@ import donationsReducer from './reducers/donationsSlice.js'
 import messagesReducer from './reducers/messagesSlice.js'
 
 import { registerCurrentUserEpic, loadCurrentUserEpic } from './epics/currentUserEpics';
-import { fetchDacsEpic, addDacEpic } from './epics/dacsEpics';
+import { fetchDacsEpic, fetchDacEpic, addDacEpic } from './epics/dacsEpics';
 import {
   fetchMilestonesEpic,
   fetchMilestoneEpic,
@@ -21,7 +21,7 @@ import {
   milestoneWithdrawEpic
 } from './epics/milestonesEpics'
 import { fetchActivitiesByIdsEpic } from './epics/activitiesEpics'
-import { fetchCampaignsEpic, saveCampaignEpic } from './epics/campaignsEpics'
+import { fetchCampaignsEpic, fetchCampaignEpic, saveCampaignEpic } from './epics/campaignsEpics'
 import { fetchUsersEpic, fetchUserByAddressEpic } from './epics/usersEpics';
 import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic, transferDonationsEpic } from './epics/donationsEpics'
 
@@ -29,8 +29,10 @@ const rootEpic = combineEpics(
   loadCurrentUserEpic,
   registerCurrentUserEpic,
   fetchDacsEpic,
+  fetchDacEpic,
   addDacEpic,
   fetchCampaignsEpic,
+  fetchCampaignEpic,
   saveCampaignEpic,
   fetchMilestonesEpic,
   fetchMilestoneEpic,

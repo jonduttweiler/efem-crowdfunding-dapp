@@ -8,6 +8,9 @@ export const campaignsSlice = createSlice({
     fetchCampaigns: (state, action) => {
       // Solo se obtiene el estado actual.
     },
+    fetchCampaign: (state, action) => {
+      // Solo se obtiene el estado actual.
+    },
     resetCampaigns: (state, action) => {
       // Se resguardan las Campaigns Pendientes.
       var pendings = state.filter(c => c.status.name === Campaign.PENDING.name);
@@ -43,11 +46,22 @@ export const campaignsSlice = createSlice({
       if (index != -1) {
         state.splice(index, 1);
       }
-    }
+    },
+    updateCampaign: (state, action) => {
+      let campaignStore = action.payload.toStore();
+      let index = state.findIndex(c => c.id === campaignStore.id);
+      if (index != -1) {
+        state[index] = campaignStore;
+      }
+    },
   },
 });
 
-export const { fetchCampaigns, resetCampaigns, saveCampaign, updateCampaignByClientId } = campaignsSlice.actions;
+export const { fetchCampaigns,
+  fetchCampaign,
+  resetCampaigns,
+  saveCampaign,
+  updateCampaignByClientId } = campaignsSlice.actions;
 
 export const selectCampaigns = state => {
   return state.campaigns.map(function (campaignStore) {
@@ -56,7 +70,10 @@ export const selectCampaigns = state => {
 }
 export const selectCampaign = (state, id) => {
   let campaignStore = state.campaigns.find(c => c.id === id);
-  return new Campaign(campaignStore);
+  if (campaignStore) {
+    return new Campaign(campaignStore);
+  }
+  return undefined;
 }
 export const selectCampaignsByDac = (state, dacId) => {
   return state.campaigns.filter(c => c.dacIds.includes(dacId)).map(function (campaignStore) {

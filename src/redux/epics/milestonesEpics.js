@@ -30,7 +30,7 @@ export const fetchMilestoneEpic = action$ => action$.pipe(
   ofType('milestones/fetchMilestone'),
   mergeMap(action => crowdfundingContractApi.getMilestone(action.payload)),
   map(milestone => ({
-    type: 'milestones/updateMilestoneById',
+    type: 'milestones/updateMilestone',
     payload: milestone
   }))
 )
@@ -72,7 +72,7 @@ export const milestoneCompleteEpic = action$ => action$.pipe(
   })),
   catchError(error => of({
     type: 'milestones/fetchMilestone',
-    payload: error.milestone
+    payload: error.milestone.id
   }))
 )
 
@@ -93,7 +93,7 @@ export const milestoneReviewEpic = action$ => action$.pipe(
   })),
   catchError(error => of({
     type: 'milestones/fetchMilestone',
-    payload: error.milestone
+    payload: error.milestone.id
   }))
 )
 
@@ -111,6 +111,6 @@ export const milestoneWithdrawEpic = action$ => action$.pipe(
   })),
   catchError(error => of({
     type: 'milestones/fetchMilestone',
-    payload: error.milestone
+    payload: error.milestone.id
   }))
 )

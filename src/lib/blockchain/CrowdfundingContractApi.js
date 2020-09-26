@@ -8,7 +8,8 @@ import extraGas from './extraGas';
 import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import messageUtils from '../../utils/MessageUtils'
+import messageUtils from '../../redux/utils/messageUtils'
+import entityUtils from '../../redux/utils/entityUtils'
 import dacIpfsConnector from '../../ipfs/DacIpfsConnector'
 import campaignIpfsConnector from '../../ipfs/CampaignIpfsConnector'
 import milestoneIpfsConnector from '../../ipfs/MilestoneIpfsConnector'
@@ -93,9 +94,6 @@ class CrowdfundingContractApi {
                 });
             }
         });
-
-
-
     };
 
     /**
@@ -149,6 +147,19 @@ class CrowdfundingContractApi {
         });
     }
 
+    /**
+     * Obtiene la Dac desde el Smart Contract.
+     */
+    getDac(id) {
+        return new Observable(async subscriber => {
+            try {
+                const dac = await this.getDacById(id);
+                subscriber.next(dac);
+            } catch (error) {
+                subscriber.error(error);
+            }
+        });
+    }
 
     /**
      * Obtiene todas las Campaigns desde el Smart Contract.
@@ -164,6 +175,20 @@ class CrowdfundingContractApi {
                     campaigns.push(campaign);
                 }
                 subscriber.next(campaigns);
+            } catch (error) {
+                subscriber.error(error);
+            }
+        });
+    }
+
+    /**
+     * Obtiene la Campaign desde el Smart Contract.
+     */
+    getCampaign(id) {
+        return new Observable(async subscriber => {
+            try {
+                let campaign = await this.getCampaignById(id);
+                subscriber.next(campaign);
             } catch (error) {
                 subscriber.error(error);
             }
@@ -296,20 +321,15 @@ class CrowdfundingContractApi {
     }
 
     /**
-     * Obtiene el Milestone desde el smart contract con los datos del milestone parámetro.
-     * 
-     * @param milestone a partir del cual se obtiene el milestone desde el smart contract
+     * Obtiene el Milestone desde el Smart Contract.
      */
-    getMilestone(milestone) {
-        return new Observable(subscriber => {
-            if (milestone.id) {
-                this.getMilestoneById(milestone.id).then(milestone => {
-                    subscriber.next(milestone);
-                }, error => {
-                    subscriber.error(error);
-                });
-            } else {
-                subscriber.next(undefined);
+    getMilestone(id) {
+        return new Observable(async subscriber => {
+            try {
+                let milestone = await this.getMilestoneById(id);
+                subscriber.next(milestone);
+            } catch (error) {
+                subscriber.error(error);
             }
         });
     }
@@ -447,7 +467,6 @@ class CrowdfundingContractApi {
      * @param ids IDs de las donaciones a obtener.
      */
     getDonationsByIds(ids) {
-        console.log('getDonationsByIds(ids) {', ids);
         return new Observable(async subscriber => {
             try {
                 let donations = [];
@@ -541,6 +560,7 @@ class CrowdfundingContractApi {
                                 text: `La donación ha sido confirmada`
                             });
                         });
+                        entityUtils.refreshEntity(donation.entityId);
                     })
                     .on('error', function (error) {
                         error.donation = donation;
@@ -600,24 +620,13 @@ class CrowdfundingContractApi {
                         // sin bloques de confirmación (once).
                         // TODO Aquí debería agregarse lógica para esperar
                         // un número determinado de bloques confirmados (on, confNumber).
-                        /* let id = parseInt(receipt.events['Transfer'].returnValues.entityIdFrom);
-                         uint256 entityIdFrom,
-                         uint256 entityIdTo,
-                         uint256 donationId,
-                         uint256 amount
-                         thisApi.getDonationById(id).then(donation => {
-                             donation.clientId = clientId;
-                             subscriber.next(donation);
-                             messageUtils.addMessageSuccess({
-                                 title: 'Gracias por tu ayuda!',
-                                 text: `La donación ha sido confirmada`
-                             });
-                         });*/
-                        subscriber.next();
+                        subscriber.next(donationIds);
                         messageUtils.addMessageSuccess({
                             title: 'Felicitaciones!',
                             text: `La transferencia ha sido confirmada`
                         });
+                        entityUtils.refreshEntity(entityIdFrom);
+                        entityUtils.refreshEntity(entityIdTo);
                     })
                     .on('error', function (error) {
                         //error.donation = donation;
