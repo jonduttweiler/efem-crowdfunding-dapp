@@ -63,5 +63,10 @@ export const selectCampaignsByDac = (state, dacId) => {
     return new Campaign(campaignStore);
   });
 }
+export const selectCampaignsByIds = (state, ids) => {
+  return state.campaigns.filter(c => ids.includes(c.id)).map(function (campaignStore) {
+    return new Campaign(campaignStore);
+  });
+}
 
 export default campaignsSlice.reducer;

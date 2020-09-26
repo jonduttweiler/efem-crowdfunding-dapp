@@ -12,9 +12,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
-import { addDonation } from '../redux/reducers/donationsSlice'
 import User from 'models/User';
-import Entity from 'models/Entity';
+import DAC from 'models/DAC';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import config from '../configuration';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
@@ -26,23 +25,25 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 import { fetchDonationsByIds, selectDonation, transferDonations } from '../redux/reducers/donationsSlice'
 import DonationItemTransfer from './DonationItemTransfer';
-import { selectMilestonesByCampaign } from '../redux/reducers/milestonesSlice';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { selectCampaignsByDac } from '../redux/reducers/campaignsSlice';
+import CampaignSelector from './CampaignSelector';
+import MilestoneSelector from './MilestoneSelector';
+import DacCard from './DacCard';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-class Transfer extends Component {
+class TransferDac extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
       amount: 0,
       checked: [],
-      left: props.entity.budgetDonationIds,
-      right: []
+      left: props.dac.budgetDonationIds,
+      right: [],
+      milestoneIds: []
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -56,26 +57,27 @@ class Transfer extends Component {
     this.setRight = this.setRight.bind(this);
     this.handleCheckedRight = this.handleCheckedRight.bind(this);
     this.handleCheckedLeft = this.handleCheckedLeft.bind(this);
+    this.onChangeCampaign = this.onChangeCampaign.bind(this);
     this.onChangeMilestone = this.onChangeMilestone.bind(this);
     this.handleTransfer = this.handleTransfer.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (JSON.stringify(prevProps.entity.budgetDonationIds) !== JSON.stringify(this.props.entity.budgetDonationIds)) {
-      this.props.fetchDonationsByIds(this.props.entity.budgetDonationIds);
+    if (JSON.stringify(prevProps.dac.budgetDonationIds) !== JSON.stringify(this.props.dac.budgetDonationIds)) {
+      this.props.fetchDonationsByIds(this.props.dac.budgetDonationIds);
       this.setState({
-        left: this.props.entity.budgetDonationIds
+        left: this.props.dac.budgetDonationIds
       });
     }
   }
 
   handleTransfer() {
-    const { milestone, right } = this.state;
-    const { entity, transferDonations } = this.props;
+    const { campaign, right } = this.state;
+    const { dac, transferDonations } = this.props;
     transferDonations({
-      userAddress: entity.managerAddress,
-      entityIdFrom: entity.id,
-      entityIdTo: milestone.id,
+      userAddress: dac.delegate,
+      entityIdFrom: dac.id,
+      entityIdTo: campaign.id,
       donationIds: right
     });
     this.close();
@@ -173,6 +175,17 @@ class Transfer extends Component {
     });
   }
 
+  onChangeCampaign(campaign) {
+    let milestoneIds = [];
+    if (campaign) {
+      milestoneIds = campaign.milestoneIds;
+    }
+    this.setState({
+      campaign: campaign,
+      milestoneIds: milestoneIds
+    });
+  }
+
   onChangeMilestone(milestone) {
     this.setState({
       milestone: milestone
@@ -217,20 +230,22 @@ class Transfer extends Component {
   }
 
   render() {
-    const { open, checked, left, right, milestone } = this.state;
-    const { milestones, entityCard, enabled, currentUser, classes, t } = this.props;
+    const { open, checked, left, right, campaign, milestoneIds } = this.state;
+    const { dac, campaigns, currentUser, classes, t } = this.props;
 
     let leftChecked = this.intersection(checked, left);
     let rightChecked = this.intersection(checked, right);
 
     let transferIsValid = false;
-    if (milestone && right.length > 0) {
+    if (campaign && right.length > 0) {
       transferIsValid = true;
     }
 
+    let buttonEnabled = true;
+
     return (
       <div>
-        {enabled && (
+        {buttonEnabled && (
           <Button
             variant="contained"
             color="primary"
@@ -252,7 +267,7 @@ class Transfer extends Component {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" className={classes.title}>
-                {t('transferCampaignTitle')}
+                {t('transferDacTitle')}
               </Typography>
               <Button autoFocus
                 color="inherit"
@@ -265,25 +280,23 @@ class Transfer extends Component {
           <div className={classes.root}>
             <Grid container spacing={3}>
               <Grid item xs={3}>
-                {entityCard}
+                {<DacCard dac={dac} />}
               </Grid>
               <Grid item xs={9}>
                 <Grid container>
                   <Typography variant="subtitle1" gutterBottom>
-                    {t('transferCampaignDescription')}
+                    {t('transferDacDescription')}
                   </Typography>
 
-                  <Autocomplete
-                    id="select-milestone"
-                    className={classes.selectMilestone}
-                    options={milestones}
-                    getOptionLabel={(option) => option.title}
-                    style={{ width: 300 }}
-                    onChange={(event, newValue) => {
-                      this.onChangeMilestone(newValue);
-                    }}
-                    renderInput={(params) => <TextField {...params} label={t('milestone')} />}
-                  />
+                  <CampaignSelector
+                    campaignIds={dac.campaignIds}
+                    onChange={this.onChangeCampaign}>
+                  </CampaignSelector>
+
+                  <MilestoneSelector
+                    milestoneIds={milestoneIds}
+                    onChange={this.onChangeMilestone}>
+                  </MilestoneSelector>
 
                   <Grid container spacing={2} justify="center" alignItems="center" className={classes.transferList}>
                     <Grid item xs={5}>{this.customList(t('donationsAvailables'), left)}</Grid>
@@ -324,16 +337,14 @@ class Transfer extends Component {
   }
 }
 
-Transfer.propTypes = {
+TransferDac.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,
-  entity: PropTypes.instanceOf(Entity).isRequired,
-  tokenAddress: PropTypes.string.isRequired,
-  enabled: PropTypes.bool.isRequired,
+  dac: PropTypes.instanceOf(DAC).isRequired,
+  tokenAddress: PropTypes.string.isRequired
 };
 
-Transfer.defaultProps = {
-  tokenAddress: config.nativeToken.address,
-  enabled: false
+TransferDac.defaultProps = {
+  tokenAddress: config.nativeToken.address
 };
 
 const styles = theme => ({
@@ -366,6 +377,9 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
     overflow: 'auto',
   },
+  selectCampaign: {
+    flexGrow: 1
+  },
   selectMilestone: {
     flexGrow: 1
   },
@@ -378,15 +392,14 @@ const styles = theme => ({
 const mapStateToProps = (state, ownProps) => {
   return {
     currentUser: selectCurrentUser(state),
-    //donations: selectDonationsByEntity(state, ownProps.entity.id)
-    milestones: selectMilestonesByCampaign(state, ownProps.entity.id),
+    campaigns: selectCampaignsByDac(state, ownProps.dac.id),
   }
 }
 
-const mapDispatchToProps = { addDonation, fetchDonationsByIds, selectDonation, transferDonations }
+const mapDispatchToProps = { fetchDonationsByIds, transferDonations }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(
-    withTranslation()(Transfer)
+    withTranslation()(TransferDac)
   )
 );

@@ -98,5 +98,10 @@ export const selectMilestonesByCampaign = (state, campaignId) => {
     return new Milestone(milestoneStore);
   });
 }
+export const selectMilestonesByIds = (state, ids) => {
+  return state.milestones.filter(m => ids.includes(m.id)).map(function (milestoneStore) {
+    return new Milestone(milestoneStore);
+  });
+}
 
 export default milestonesSlice.reducer;

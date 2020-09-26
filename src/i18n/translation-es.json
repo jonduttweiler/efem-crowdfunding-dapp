@@ -54,6 +54,8 @@
     "donationsAvailables": "Donaciones disponibles",
     "donationsToTransfer": "Donaciones a transferir",
     "transfer": "Transferir",
+    "transferDacTitle": "Transferir desde DAC",
+    "transferDacDescription": "Seleccione la campaña o hito destino y las donaciones que desea transferir desde la DAC.",
     "transferCampaignTitle": "Transferir desde campaña",
     "transferCampaignDescription": "Seleccione el hito destino y las donaciones que desea transferir desde la campaña.",
     "tokenBalance": "Balance",

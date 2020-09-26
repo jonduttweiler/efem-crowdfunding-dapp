@@ -54,6 +54,8 @@
     "donationsAvailables": "Donations availables",
     "donationsToTransfer": "Donations to transfer",
     "transfer": "Transfer",
+    "transferDacTitle": "Transfer from DAC",
+    "transferDacDescription": "Select the destination campaign or milestone and the donations you want to transfer from the DAC.",
     "transferCampaignTitle": "Transfer from campaign",
     "transferCampaignDescription": "Select the destination milestone and the donations you want to transfer from the campaign.",
     "tokenBalance": "Balance",
