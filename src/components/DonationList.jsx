@@ -64,7 +64,7 @@ const styles = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    a: 1
+
   }
 }
 

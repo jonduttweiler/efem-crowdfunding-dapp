@@ -19,6 +19,7 @@ import TransferCampaign from '../TransferCampaign';
 import Campaign from '../../models/Campaign';
 import CommunityButton from '../CommunityButton';
 import DonationList from '../DonationList';
+import DonationsBalance from '../DonationsBalance';
 import User from '../../models/User';
 import ErrorBoundary from '../ErrorBoundary';
 import { connect } from 'react-redux'
@@ -211,6 +212,8 @@ class ViewCampaign extends Component {
                   <div className="col-md-8 m-auto">
                     <Balances entity={campaign} />
                     <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
+                    <DonationsBalance donationIds={campaign.budgetDonationIds}></DonationsBalance>
+                    
                   </div>
                 </div>
                 <div className="row spacer-top-50 spacer-bottom-50">

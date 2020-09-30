@@ -34,8 +34,9 @@ import { fetchCampaigns } from '../redux/reducers/campaignsSlice'
 import { fetchMilestones } from '../redux/reducers/milestonesSlice'
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice';
 import { fetchUsers } from '../redux/reducers/usersSlice';
+import { fetchExchangeRates } from '../redux/reducers/exchangeRatesSlice'
 import MessageViewer from '../components/MessageViewer';
-import SwitchRoutes  from './SwitchRoutes';
+import SwitchRoutes from './SwitchRoutes';
 import Footer from '../components/Footer';
 
 
@@ -85,6 +86,7 @@ class Application extends Component {
     this.props.fetchCampaigns();
     this.props.fetchMilestones();
     this.props.fetchUsers();
+    this.props.fetchExchangeRates();
   }
 
   web3Loaded() {
@@ -140,13 +142,13 @@ class Application extends Component {
                                   {!userLoading && (
                                     <div>
                                       <MainMenu />
-                                      <SwitchRoutes 
-                                        currentUser = {currentUser}
-                                        balance = {balance}
-                                        isCorrectNetwork = {isCorrectNetwork}
+                                      <SwitchRoutes
+                                        currentUser={currentUser}
+                                        balance={balance}
+                                        isCorrectNetwork={isCorrectNetwork}
                                       />
                                       <Footer />
-                                     </div>
+                                    </div>
                                   )}
                                   <ToastContainer
                                     position="top-right"
@@ -185,7 +187,8 @@ const mapDispatchToProps = {
   fetchDacs,
   fetchCampaigns,
   fetchMilestones,
-  fetchUsers
+  fetchUsers,
+  fetchExchangeRates
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Application)

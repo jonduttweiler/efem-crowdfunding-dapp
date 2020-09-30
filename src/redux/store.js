@@ -9,6 +9,7 @@ import milestonesReducer from './reducers/milestonesSlice.js'
 import activitiesReducer from './reducers/activitiesSlice.js'
 import donationsReducer from './reducers/donationsSlice.js'
 import messagesReducer from './reducers/messagesSlice.js'
+import exchangeRatesReducer from './reducers/exchangeRatesSlice'
 
 import { registerCurrentUserEpic, loadCurrentUserEpic } from './epics/currentUserEpics';
 import { fetchDacsEpic, fetchDacEpic, addDacEpic } from './epics/dacsEpics';
@@ -24,6 +25,7 @@ import { fetchActivitiesByIdsEpic } from './epics/activitiesEpics'
 import { fetchCampaignsEpic, fetchCampaignEpic, saveCampaignEpic } from './epics/campaignsEpics'
 import { fetchUsersEpic, fetchUserByAddressEpic } from './epics/usersEpics';
 import { fetchDonationsEpic, fetchDonationsByIdsEpic, addDonationEpic, transferDonationsEpic } from './epics/donationsEpics'
+import { fetchExchangeRatesEpic } from './epics/exchangeRatesEpics'
 
 const rootEpic = combineEpics(
   loadCurrentUserEpic,
@@ -46,7 +48,8 @@ const rootEpic = combineEpics(
   addDonationEpic,
   transferDonationsEpic,
   fetchUsersEpic,
-  fetchUserByAddressEpic
+  fetchUserByAddressEpic,
+  fetchExchangeRatesEpic
 );
 
 const epicMiddleware = createEpicMiddleware();
@@ -65,7 +68,8 @@ const rootReducer = combineReducers({
   milestones: milestonesReducer,
   activities: activitiesReducer,
   donations: donationsReducer,
-  users: usersReducer  
+  users: usersReducer,
+  exchangeRates: exchangeRatesReducer
 });
 
 export const store = createStore(rootReducer, undefined, composedEnhancers)

@@ -14,6 +14,7 @@ import dacIpfsConnector from '../../ipfs/DacIpfsConnector'
 import campaignIpfsConnector from '../../ipfs/CampaignIpfsConnector'
 import milestoneIpfsConnector from '../../ipfs/MilestoneIpfsConnector'
 import activityIpfsConnector from '../../ipfs/ActivityIpfsConnector'
+import ExchangeRate from '../../models/ExchangeRate';
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -916,6 +917,32 @@ class CrowdfundingContractApi {
             action: action,
             message: message,
             items: items
+        });
+    }
+
+    /**
+     * Obtiene todas los tipos de cambios de token.
+     */
+    getExchangeRates() {
+        return new Observable(async subscriber => {
+            try {
+
+                // TODO Obtener los Exchage Rates desde el smart contract.
+                let exchangeRates = [];
+
+                // RBTC
+                let exchangeRate = new ExchangeRate({
+                    tokenAddress: '0x0000000000000000000000000000000000000000',
+                    rate: new BigNumber(100000000000000),
+                    date: Date.now()
+                });
+
+                exchangeRates.push(exchangeRate);
+
+                subscriber.next(exchangeRates);
+            } catch (error) {
+                subscriber.error(error);
+            }
         });
     }
 
