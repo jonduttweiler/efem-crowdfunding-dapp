@@ -5,7 +5,7 @@ const dacsStyle = {
   color: "#999",
 
   section: {
-    padding: "1em 0",
+    padding: "0",
     textAlign: "left"
   },
   title: {

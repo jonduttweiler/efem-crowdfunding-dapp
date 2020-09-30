@@ -110,7 +110,6 @@ class JoinGivethCommunity extends Component {
       >
         <div className="vertical-align">
           <center>
-            <h3><br /></h3>
             <OnlyRole role={CREATE_DAC_ROLE}>
               <Button color="primary" size="lg" className="btn btn-info" onClick={() => this.createDAC()}>
                 Crear una DAC

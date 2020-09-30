@@ -169,7 +169,7 @@ class EditCampaign extends Component {
           <div>
             <div className={classes.container}>
               <GridContainer justify="center">
-                <GridItem xs={12} sm={12} md={6}>
+                <GridItem xs={12} sm={12} md={8}>
 
                   {isLoading && <Loader className="fixed" />}
 
