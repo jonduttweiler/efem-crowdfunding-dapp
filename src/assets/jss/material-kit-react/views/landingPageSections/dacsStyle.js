@@ -1,11 +1,11 @@
 import { title } from "assets/jss/material-kit-react.js";
 
-const campaignsStyle = {
+const dacsStyle = {
 
   color: "#999",
 
   section: {
-    padding: "0",
+    padding: "0 1em",
     textAlign: "left"
   },
   title: {
@@ -22,4 +22,4 @@ const campaignsStyle = {
   }
 };
 
-export default campaignsStyle;
+export default dacsStyle;

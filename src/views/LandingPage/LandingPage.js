@@ -13,6 +13,7 @@ import Parallax from "components/Parallax/Parallax.js";
 
 // Sections for this page
 import Campaigns from "components/views/Campaigns.jsx";
+import DACs from 'components/views/DACs';
 import JoinGivethCommunity from 'components/JoinGivethCommunity.jsx';
 import MainMenu from "components/MainMenu.jsx";
 
@@ -53,7 +54,8 @@ export default function LandingPage(props) {
       <div className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.container}>
           <JoinGivethCommunity history={props.history} />
-          <Campaigns />
+            <DACs />
+            <Campaigns />
         </div>
       </div>
       <Footer />

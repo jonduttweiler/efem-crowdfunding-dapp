@@ -1,7 +1,12 @@
 {
+    "dacs": "Decentralized Funds",
+    "dac": "Decentralized Fund",
+    "dacsSectionDescription":"These Funds are solving causes. Help them realise their goals by giving Bitcoin or tokens!",
+
     "campaigns": "Campaigns",
     "campaign": "Campaign",
     "edit": "Edit",
+    "campaignsSectionDescription":"Our life endeavours",
     "newCampaignTitle":"Start a new campaign!",
     "editCampaignTitle":"Edit campaign",
     "campaignDescription": "A campaign solves a specific cause by executing a project via its Milestones. Funds raised by a campaign need to be delegated to its Milestones in order to be paid out.",

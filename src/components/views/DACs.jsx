@@ -3,6 +3,12 @@ import DACCard from '../DacCard';
 import Loader from '../Loader';
 import { connect } from 'react-redux'
 import { selectDacs } from '../../redux/reducers/dacsSlice'
+import { withTranslation } from 'react-i18next';
+
+import styles from "assets/jss/material-kit-react/views/landingPageSections/dacsStyle.js";
+import { withStyles } from '@material-ui/core/styles';
+
+import Badge from "components/Badge/Badge.js";
 
 /**
  * The DACs view mapped to /dacs
@@ -17,7 +23,7 @@ class DACs extends Component {
   }
 
   render() {
-    const { dacs } = this.props;
+    const { classes, t, dacs } = this.props;
     const { isLoading, hasError } = this.state;
     // TODO Por incorporación de Redux, se fija el total
     // como el tamaño de los milestones.
@@ -25,19 +31,15 @@ class DACs extends Component {
     var total = dacs.length;
     return (
       <div id="campaigns-view" className="card-view">
-        <div className="container-fluid page-layout reduced-padding">
-          <h4>
-            Decentralized Funds{' '}
-            {total > 0 && <span className="badge badge-success">{total}</span>}
-          </h4>
+        <div className={classes.section}>
+          <h3 className={classes.title}>{t('dacs')} {total > 0 && <Badge color="success">{total}</Badge>}</h3>
           {!hasError && isLoading && <Loader />}
           {// There are some DACs in the system, show them
           !hasError && !isLoading && dacs.length > 0 && (
             <div>
-              <p>
-                These Funds are solving causes. Help them realise their goals by giving Bitcoin or
-                tokens!
-              </p>
+              <h6 className={classes.description}>
+                {t('dacsSectionDescription')}
+              </h6>
               <div className="cards-grid-container">
                 {dacs.map(dac => (
                   <DACCard key={dac.clientId || dac.id} dac={dac} />
@@ -82,4 +84,6 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(DACs)
+export default connect(mapStateToProps)(
+  withTranslation()((withStyles(styles)(DACs))
+))

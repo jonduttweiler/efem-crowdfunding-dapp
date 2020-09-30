@@ -30,6 +30,16 @@ import CampaignCard from '../CampaignCard';
 import { withTranslation } from 'react-i18next';
 import EditCampaignButton from '../EditCampaignButton';
 
+import Header from "components/Header/Header.js";
+import Footer from "components/Footer/Footer.js";
+import Parallax from "components/Parallax/Parallax.js";
+import MainMenu from 'components/MainMenu';
+import GridContainer from "components/Grid/GridContainer.js";
+import GridItem from "components/Grid/GridItem.js";
+
+import { withStyles } from '@material-ui/core/styles';
+import styles from "assets/jss/material-kit-react/views/campaignPage.js";
+
 /**
  * The Campaign detail view mapped to /campaign/id
  *
@@ -268,5 +278,5 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = { fetchDonationsByIds }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation()(ViewCampaign)
+  (withStyles(styles)(withTranslation() (ViewCampaign)))
 )

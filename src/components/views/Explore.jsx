@@ -7,7 +7,7 @@ import JoinGivethCommunity from '../JoinGivethCommunity';
 const Explore = ({ history }) => (
   <div>
     <JoinGivethCommunity history={history} />
-    {/*<DACs />*/}
+    <DACs />
     <Campaigns />
     {/*<Milestones />*/}
   </div>
