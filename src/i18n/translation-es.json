@@ -35,13 +35,10 @@
     "updateCampaignBtn":"Actualizar Campaña",
 
 
-
-
-
-
-
     "unsavedChanges":"Tienes cambios sin guardar. ¿Estás seguro que deseas salir de esta página?",
 
+    "milestones": "Hitos",
+    "milestone": "Hito",
 
     "milestoneComplete": "Completar",
     "milestoneCompleteTitle": "Completar hito",

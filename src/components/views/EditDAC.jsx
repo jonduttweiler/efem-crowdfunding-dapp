@@ -181,7 +181,10 @@ class EditDAC extends Component {
           }}
           {...rest}
         />
-        <Parallax small image={require("assets/img/dac-default-bg.jpg")} />
+
+        {isNew && <Parallax small image={require("assets/img/dac-default-bg.jpg")}/>}
+        {!isNew && <Parallax small image={dac.image}/>}
+        
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div>
             <div className={classes.container}>

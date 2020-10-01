@@ -1,6 +1,8 @@
 /* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
 import { Prompt } from 'react-router-dom';
+import classNames from "classnames";
+
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { Form, Input } from 'formsy-react-components';
@@ -25,6 +27,16 @@ import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 import { addMilestone } from '../../redux/reducers/milestonesSlice';
 import { milestoneReviewers, recipients } from '../../redux/reducers/usersSlice';
 
+import Header from "components/Header/Header.js";
+import Footer from "components/Footer/Footer.js";
+import Parallax from "components/Parallax/Parallax.js";
+import MainMenu from 'components/MainMenu';
+import GridContainer from "components/Grid/GridContainer.js";
+import GridItem from "components/Grid/GridItem.js";
+
+import { withStyles } from '@material-ui/core/styles';
+import styles from "assets/jss/material-kit-react/views/milestonePage.js";
+import { withTranslation } from 'react-i18next';
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
 
@@ -277,194 +289,218 @@ class EditMilestone extends Component {
 
     const { isNew, isProposed, history, fiatTypes, reviewers, recipients } = this.props;
     const { isLoading, isSaving, formIsValid, campaign, isBlocking, milestone } = this.state;
+    const { classes } = this.props;
+    const { ...rest } = this.props;
 
     return (
       <div id="edit-milestone-view">
-        <div className="container-fluid page-layout edit-view">
+        <Header
+          color="white"
+          brand="Give for forests"
+          rightLinks={<MainMenu />}
+          fixed
+          changeColorOnScroll={{
+            height: 0,
+            color: "white"
+          }}
+          {...rest}
+        />
+
+        {isNew && <Parallax small image={require("assets/img/milestone-default-bg.jpg")}/>}
+        {!isNew && <Parallax small image={milestone.image}/>}
+
+        <div className={classNames(classes.main, classes.mainRaised)}>
           <div>
-            <div className="col-md-8 m-auto">
-              {isLoading && <Loader className="fixed" />}
+            <div className={classes.container}>
+              <GridContainer justify="center">
+                <GridItem xs={12} sm={12} md={8}>
 
-              {!isLoading && (
-                <div>
-                  <GoBackButton history={history} title={`Campaign: ${campaign.title}`} />
+                  {isLoading && <Loader className="fixed" />}
 
-                  <div className="form-header">
-                    {isNew && !isProposed && <h3>Add a new milestone</h3>}
+                  {!isLoading && (
+                    <div>
+                      <GoBackButton history={history} title={`Campaign: ${campaign.title}`} />
 
-                    {!isNew && !isProposed && (
-                      <h3>
-                        Edit milestone
-                        {milestone.title}
-                      </h3>
-                    )}
+                      <div className="form-header">
+                        {isNew && !isProposed && <h3>Add a new milestone</h3>}
 
-                    {isNew && isProposed && <h3>Propose a Milestone</h3>}
+                        {!isNew && !isProposed && (
+                          <h3>
+                            Edit milestone
+                            {milestone.title}
+                          </h3>
+                        )}
 
-                    <h6>
-                      Campaign: <strong>{getTruncatedText(campaign.title, 100)}</strong>
-                    </h6>
+                        {isNew && isProposed && <h3>Propose a Milestone</h3>}
 
-                    <p>
-                      <i className="fa fa-question-circle" />A Milestone is a single accomplishment
-                      within a project. In the end, all donations end up in Milestones. Once your
-                      Milestone is completed, you can request a payout.
-                    </p>
+                        <h6>
+                          Campaign: <strong>{getTruncatedText(campaign.title, 100)}</strong>
+                        </h6>
 
-                    {isProposed && (
-                      <p>
-                        <i className="fa fa-exclamation-triangle" />
-                        You are proposing a Milestone to the Campaign Owner. The Campaign Owner can
-                        accept or reject your Milestone
-                      </p>
-                    )}
-                  </div>
+                        <p>
+                          <i className="fa fa-question-circle" />A Milestone is a single accomplishment
+                          within a project. In the end, all donations end up in Milestones. Once your
+                          Milestone is completed, you can request a payout.
+                        </p>
 
-                  <Form
-                    id="edit-milestone-form"
-                    onSubmit={this.submit}
-                    ref={this.form}
-                    mapping={inputs => this.mapInputs(inputs)}
-                    onValid={() => this.toggleFormValid(true)}
-                    onInvalid={() => this.toggleFormValid(false)}
-                    onChange={e => this.triggerRouteBlocking(e)}
-                    layout="vertical"
-                  >
-                    <Prompt
-                      when={isBlocking}
-                      message={() =>
-                        `You have unsaved changes. Are you sure you want to navigate from this page?`
-                      }
-                    />
+                        {isProposed && (
+                          <p>
+                            <i className="fa fa-exclamation-triangle" />
+                            You are proposing a Milestone to the Campaign Owner. The Campaign Owner can
+                            accept or reject your Milestone
+                          </p>
+                        )}
+                      </div>
 
-                    <Input
-                      name="title"
-                      label="What are you going to accomplish in this Milestone?"
-                      id="title-input"
-                      type="text"
-                      value={milestone.title}
-                      placeholder="E.g. buying goods"
-                      help="Describe your Milestone in 1 sentence."
-                      validations="minLength:3"
-                      validationErrors={{
-                        minLength: 'Please provide at least 3 characters.',
-                      }}
-                      required
-                      autoFocus
-                    />
-                    <div className="form-group">
-                      <QuillFormsy
-                        name="description"
-                        label="Explain how you are going to do this successfully."
-                        helpText="Make it as extensive as necessary. Your goal is to build trust, so that people donate Ether to your Campaign. Don't hesitate to add a detailed budget for this Milestone"
-                        value={milestone.description}
-                        placeholder="Describe how you're going to execute your Milestone successfully..."
-                        help="Describe your Milestone."
-                        required
-                      />
-                    </div>
+                      <Form
+                        id="edit-milestone-form"
+                        onSubmit={this.submit}
+                        ref={this.form}
+                        mapping={inputs => this.mapInputs(inputs)}
+                        onValid={() => this.toggleFormValid(true)}
+                        onInvalid={() => this.toggleFormValid(false)}
+                        onChange={e => this.triggerRouteBlocking(e)}
+                        layout="vertical"
+                      >
+                        <Prompt
+                          when={isBlocking}
+                          message={() =>
+                            `You have unsaved changes. Are you sure you want to navigate from this page?`
+                          }
+                        />
 
-                    <div className="form-group">
-                      <FormsyImageUploader
-                        setImage={this.setImage}
-                        previewImage={milestone.image}
-                        required={isNew}
-                      />
-                    </div>
+                        <Input
+                          name="title"
+                          label="What are you going to accomplish in this Milestone?"
+                          id="title-input"
+                          type="text"
+                          value={milestone.title}
+                          placeholder="E.g. buying goods"
+                          help="Describe your Milestone in 1 sentence."
+                          validations="minLength:3"
+                          validationErrors={{
+                            minLength: 'Please provide at least 3 characters.',
+                          }}
+                          required
+                          autoFocus
+                        />
+                        <div className="form-group">
+                          <QuillFormsy
+                            name="description"
+                            label="Explain how you are going to do this successfully."
+                            helpText="Make it as extensive as necessary. Your goal is to build trust, so that people donate Ether to your Campaign. Don't hesitate to add a detailed budget for this Milestone"
+                            value={milestone.description}
+                            placeholder="Describe how you're going to execute your Milestone successfully..."
+                            help="Describe your Milestone."
+                            required
+                          />
+                        </div>
 
-                    <div className="form-group">
-                      <SelectFormsy
-                        name="reviewerAddress"
-                        id="reviewer-select"
-                        label="Select a reviewer"
-                        helpText="Each milestone needs a reviewer who verifies that the milestone is
-                          completed successfully"
-                        value={milestone.reviewerAddress}
-                        cta="--- Select a reviewer ---"
-                        options={reviewers.map(reviewer => ({ ...reviewer, title: reviewer.name, value: reviewer.address }))}
-                        validations="isEtherAddress"
-                        validationErrors={{
-                          isEtherAddress: 'Please select a reviewer.',
-                        }}
-                        //required
-                        disabled={!isNew && !isProposed}
-                      />
-                    </div>
-                    
-                    <div className="form-group">
-                      <SelectFormsy
-                        name="recipientAddress"
-                        id="recipient-select"
-                        label="Select a recipient"
-                        helpText="Cuenta RSK donde los fondos son depositados una vez aprobado el milestone"
-                        value={milestone.recipientAddress}
-                        cta="--- Select a recipient ---"
-                        options={recipients.map(recipient => ({ ...recipient, title: recipient.name, value: recipient.address }))}
-                        validations="isEtherAddress"
-                        validationErrors={{
-                          isEtherAddress: 'Please select a recipient.',
-                        }}
-                        //required
-                        disabled={!isNew && !isProposed}
-                      />
-                    </div>
+                        <div className="form-group">
+                          <FormsyImageUploader
+                            setImage={this.setImage}
+                            previewImage={milestone.image}
+                            required={isNew}
+                          />
+                        </div>
 
-                    <div className="card milestone-items-card">
-                      <div className="card-body">
-                        <div className="form-group row">
-                          <div className="col-6">
-                            <Input
-                              name="fiatAmountTarget"
-                              min="0"
-                              id="fiataAmountTarget-input"
-                              type="number"
-                              step="any"
-                              label={`Target amount in ${milestone.fiatType}`}
-                              placeholder="10"
-                              validations="greaterThan:0"
-                              validationErrors={{
-                                greaterEqualTo: 'Minimum value must be greater than 0',
-                              }}
-                            />
-                          </div>
+                        <div className="form-group">
+                          <SelectFormsy
+                            name="reviewerAddress"
+                            id="reviewer-select"
+                            label="Select a reviewer"
+                            helpText="Each milestone needs a reviewer who verifies that the milestone is
+                              completed successfully"
+                            value={milestone.reviewerAddress}
+                            cta="--- Select a reviewer ---"
+                            options={reviewers.map(reviewer => ({ ...reviewer, title: reviewer.name, value: reviewer.address }))}
+                            validations="isEtherAddress"
+                            validationErrors={{
+                              isEtherAddress: 'Please select a reviewer.',
+                            }}
+                            //required
+                            disabled={!isNew && !isProposed}
+                          />
+                        </div>
+                        
+                        <div className="form-group">
+                          <SelectFormsy
+                            name="recipientAddress"
+                            id="recipient-select"
+                            label="Select a recipient"
+                            helpText="Cuenta RSK donde los fondos son depositados una vez aprobado el milestone"
+                            value={milestone.recipientAddress}
+                            cta="--- Select a recipient ---"
+                            options={recipients.map(recipient => ({ ...recipient, title: recipient.name, value: recipient.address }))}
+                            validations="isEtherAddress"
+                            validationErrors={{
+                              isEtherAddress: 'Please select a recipient.',
+                            }}
+                            //required
+                            disabled={!isNew && !isProposed}
+                          />
+                        </div>
 
-                          <div className="col-6">
-                            <SelectFormsy
-                              name="fiatType"
-                              label="Currency"
-                              value={milestone.fiatType}
-                              options={fiatTypes}
-                              onChange={this.changeSelectedFiat}
-                              required
-                            />
+                        <div className="card milestone-items-card">
+                          <div className="card-body">
+                            <div className="form-group row">
+                              <div className="col-6">
+                                <Input
+                                  name="fiatAmountTarget"
+                                  min="0"
+                                  id="fiataAmountTarget-input"
+                                  type="number"
+                                  step="any"
+                                  label={`Target amount in ${milestone.fiatType}`}
+                                  placeholder="10"
+                                  validations="greaterThan:0"
+                                  validationErrors={{
+                                    greaterEqualTo: 'Minimum value must be greater than 0',
+                                  }}
+                                />
+                              </div>
+
+                              <div className="col-6">
+                                <SelectFormsy
+                                  name="fiatType"
+                                  label="Currency"
+                                  value={milestone.fiatType}
+                                  options={fiatTypes}
+                                  onChange={this.changeSelectedFiat}
+                                  required
+                                />
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <div className="form-group row">
-                      <div className="col-6">
-                        <GoBackButton history={history} title={`Campaign: ${campaign.title}`} />
-                      </div>
-                      <div className="col-6">
-                        <LoaderButton
-                          className="btn btn-success pull-right"
-                          formNoValidate
-                          type="submit"
-                          //disabled={isSaving || !formIsValid}
-                          isLoading={isSaving}
-                          loadingText="Saving..."
-                        >
-                          <span>{this.btnText()}</span>
-                        </LoaderButton>
-                      </div>
+                        <div className="form-group row">
+                          <div className="col-6">
+                            <GoBackButton history={history} title={`Campaign: ${campaign.title}`} />
+                          </div>
+                          <div className="col-6">
+                            <LoaderButton
+                              className="btn btn-success pull-right"
+                              formNoValidate
+                              type="submit"
+                              //disabled={isSaving || !formIsValid}
+                              isLoading={isSaving}
+                              loadingText="Saving..."
+                            >
+                              <span>{this.btnText()}</span>
+                            </LoaderButton>
+                          </div>
+                        </div>
+                      </Form>
                     </div>
-                  </Form>
-                </div>
-              )}
+                  )}
+
+                </GridItem>
+              </GridContainer>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -523,4 +559,4 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = { addMilestone }
 
-export default connect(mapStateToProps,mapDispatchToProps)(EdtMilestone);
+export default connect(mapStateToProps,mapDispatchToProps)((withStyles(styles)(withTranslation()(EdtMilestone))));

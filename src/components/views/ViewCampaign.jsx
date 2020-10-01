@@ -158,7 +158,7 @@ class ViewCampaign extends Component {
                       </CommunityButton>
                     )}
 
-                </center>
+                  </center>
                 </div>
               </Parallax>
 
@@ -250,7 +250,7 @@ class ViewCampaign extends Component {
                       </GridItem>
                     </GridContainer>
 
-                    <GridContainer justify="center">
+                    <GridContainer justify="center" className="spacer-bottom-50">
                       <GridItem xs={12} sm={12} md={8}>
                         <Balances entity={campaign} />
                         <DonationList donations={donations}></DonationList>

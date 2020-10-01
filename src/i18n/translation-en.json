@@ -35,6 +35,9 @@
 
     "unsavedChanges":"You have unsaved changes. Are you sure you want to navigate from this page?",
     
+    "milestones": "Milestones",
+    "milestone": "Milestone",
+
     "milestoneComplete": "Complete",
     "milestoneCompleteTitle": "Milestone complete",
     "milestoneCompleteDescription": "Describe what you've done to finish the work of this milestone and attach proof if necessary. This information will be publicly visible and emailed to the reviewer.",

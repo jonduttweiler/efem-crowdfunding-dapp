@@ -164,7 +164,10 @@ class EditCampaign extends Component {
           }}
           {...rest}
         />
-        <Parallax small image={require("assets/img/campaign-default-bg.jpg")} />
+
+        {isNew && <Parallax small image={require("assets/img/campaign-default-bg.jpg")}/>}
+        {!isNew && <Parallax small image={campaign.imageCidUrl}/>}
+        
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div>
             <div className={classes.container}>
@@ -294,7 +297,6 @@ class EditCampaign extends Component {
                     </div>
                   )}
 
-
                 </GridItem>
               </GridContainer>
             </div>
@@ -302,8 +304,6 @@ class EditCampaign extends Component {
         </div>
         <Footer />
       </div>
-
-
     );
   }
 }

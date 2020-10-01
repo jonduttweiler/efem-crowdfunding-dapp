@@ -7,16 +7,18 @@ const landingPageStyle = {
     ...container
   },
   entityType: {
-    color: "#FFF"
+    color: "#FFF",
+    margin: "0"
   },
   entityName: {
-    color: "#FFF"
+    color: "#FFF",
+    margin: "0"
   },
   title: {
     ...title,
     display: "inline-block",
     position: "relative",
-    marginTop: "30px",
+    margin: "30px",
     minHeight: "32px",
     color: "#212529",
     textDecoration: "none"
