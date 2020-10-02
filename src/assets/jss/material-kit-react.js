@@ -162,6 +162,8 @@ const title = {
 
 const cardTitle = {
   ...title,
+  color: "#999",
+  fontWeight: "700",
   marginTop: ".625rem"
 };
 

@@ -136,7 +136,7 @@ class ViewDAC extends Component {
                 </GridContainer>
               )}
 
-              <GridContainer justify="center">
+              <GridContainer justify="center" className="spacer-top-50">
                 <GridItem xs={12} sm={12} md={8}>
                   <Balances entity={dac} />
                   <DonationList donations={donations}></DonationList>

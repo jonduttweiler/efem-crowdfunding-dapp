@@ -1,8 +1,8 @@
 const cardStyle = {
   card: {
     border: "0",
-    marginBottom: "30px",
-    marginTop: "30px",
+    /*marginBottom: "30px",
+    marginTop: "30px",*/
     borderRadius: "6px",
     color: "rgba(0, 0, 0, 0.87)",
     background: "#fff",
@@ -15,8 +15,16 @@ const cardStyle = {
     minWidth: "0",
     wordWrap: "break-word",
     fontSize: ".875rem",
-    transition: "all 300ms linear"
+    transition: "all 300ms linear",
+    cursor: "pointer",
+    transition: "transform .2s ease-in-out",
+
+    "&:hover": {
+      willChange: "transform",
+      transform: "scale(1.01)"
+    }
   },
+
   cardPlain: {
     background: "transparent",
     boxShadow: "none"

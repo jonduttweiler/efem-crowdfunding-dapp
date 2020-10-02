@@ -10,6 +10,19 @@ import { connect } from 'react-redux'
 import { selectCampaign } from '../redux/reducers/campaignsSlice'
 import messageUtils from '../utils/MessageUtils'
 
+import Card from "components/Card/Card.js";
+import CardBody from "components/Card/CardBody.js";
+
+import imagesStyles from "assets/jss/material-kit-react/imagesStyles.js";
+import { cardTitle } from "assets/jss/material-kit-react.js";
+import { withStyles } from '@material-ui/core/styles';
+import { withTranslation } from 'react-i18next';
+
+const styles = {
+  ...imagesStyles,
+  cardTitle,
+};
+
 /**
  * A single milestone
  */
@@ -42,7 +55,7 @@ class MilestoneCard extends Component {
   }
 
   render() {
-    const { milestone, campaign, currentUser } = this.props;
+    const { classes, t, milestone, campaign, currentUser } = this.props;
     const colors = ['#76318f', '#50b0cf', '#1a1588', '#2A6813', '#95d114', '#155388', '#604a7d'];
     const color = colors[Math.floor(Math.random() * colors.length)];
 
@@ -54,61 +67,60 @@ class MilestoneCard extends Component {
     }
     
     return (
-      <div
-        className="card milestone-card overview-card"
+      <Card
         onClick={this.viewMilestone}
         onKeyPress={this.viewMilestone}
         role="button"
         tabIndex="0"
       >
-        <div className="card-body">
-          <div
-            className="card-avatar"
-            onClick={this.viewProfile}
-            onKeyPress={this.viewProfile}
-            role="button"
-            tabIndex="0"
-          >
-            <ProfileCard address={milestone.managerAddress} namePosition="right"/>
+        <div
+          className="card-avatar"
+          onClick={this.viewProfile}
+          onKeyPress={this.viewProfile}
+          role="button"
+          tabIndex="0"
+        >
+        
+        <ProfileCard address={milestone.managerAddress} namePosition="right"/>
 
-            {((milestone && milestone.managerAddress && isOwner(milestone.managerAddress, currentUser)) ||
-              isOwner(campaign.managerAddress, currentUser)) &&
-              ['Proposed', 'Rejected', 'InProgress', 'NeedsReview'].includes(milestone.status) && (
-                <span className="pull-right">
-                  <button
-                    type="button"
-                    className="btn btn-link btn-edit"
-                    onClick={e => this.editMilestone(e)}
-                  >
-                    <i className="fa fa-edit" />
-                  </button>
-                </span>
-              )}
-          </div>
-
-          <div
-            className="card-img"
-            style={{
-              backgroundColor: milestone.imageCidUrl ? 'white' : color,
-              backgroundImage: `url(${milestone.imageCidUrl || GivethLogo})`,
-            }}
-          />
-
-          <div className="card-content">
-            <h4 className="card-title">{getTruncatedText(milestone.title, 40)}</h4>
-            <div className="card-text">{getTruncatedText(milestone.description, 100)}</div>
-          </div>
-
-          <div className="card-footer">
-            <CardStats
-              type="milestone"
-              fiatAmountTarget={milestone.fiatAmountTarget}
-              status={milestone.status}
-              donations={milestone.donationsCount}
-            />
-          </div>
+          {((milestone && milestone.managerAddress && isOwner(milestone.managerAddress, currentUser)) ||
+            isOwner(campaign.managerAddress, currentUser)) &&
+            ['Proposed', 'Rejected', 'InProgress', 'NeedsReview'].includes(milestone.status) && (
+              <span className="pull-right">
+                <button
+                  type="button"
+                  className="btn btn-link btn-edit"
+                  onClick={e => this.editMilestone(e)}
+                >
+                  <i className="fa fa-edit" />
+                </button>
+              </span>
+          )}
         </div>
-      </div>
+
+        <img
+          style={{
+            backgroundColor: milestone.imageCidUrl ? 'white' : color}}
+          className={classes.imgCardTop}
+          src={milestone.imageCidUrl || GivethLogo}
+          alt="Card-img-cap"
+        />
+
+        <CardBody>
+          <h4 className={classes.cardTitle}>{getTruncatedText(milestone.title, 40)}</h4>
+          <p>{getTruncatedText(milestone.description, 100)}</p>
+        </CardBody>
+
+        <div className="card-footer">
+          <CardStats
+            type="milestone"
+            fiatAmountTarget={milestone.fiatAmountTarget}
+            status={milestone.status}
+            donations={milestone.donationsCount}
+          />
+        </div>
+
+      </Card>
     );
   }
 }
@@ -128,4 +140,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(MilestoneCard)
+export default connect(mapStateToProps)(withTranslation()(withStyles(styles)(MilestoneCard)))
