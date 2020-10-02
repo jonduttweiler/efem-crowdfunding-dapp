@@ -19,6 +19,7 @@ import DacCard from '../DacCard';
 import { withTranslation } from 'react-i18next';
 import Donate from '../Donate';
 import TransferDac from '../TransferDac';
+import DonationsBalance from '../DonationsBalance';
 
 /**
  * The DAC detail view mapped to /dac/id
@@ -111,6 +112,7 @@ class ViewDAC extends Component {
             <div className="col-md-8 m-auto">
               <Balances entity={dac} />
               <DonationList donationIds={dac.budgetDonationIds}></DonationList>
+              <DonationsBalance donationIds={dac.budgetDonationIds}></DonationsBalance>
             </div>
           </div>
         </div>

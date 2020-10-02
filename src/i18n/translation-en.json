@@ -73,5 +73,7 @@
     "imageAddHelp": "A picture says more than a thousand words. Select a PNG or JPG file",
     "imageMinLength": "Please select a PNG or JPG file",
 
-    "countSelected": "Selected"
+    "countSelected": "Selected",
+
+    "target": "Target"
 }

@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-import config from '../configuration';
 import FiatUtils from '../utils/FiatUtils';
 
 /**
@@ -15,11 +14,9 @@ class FiatAmount extends Component {
     }
 
     render() {
-        let amountConfig = config.fiat;
-        let amount = FiatUtils.centToDollar(this.props.amount).toFixed(amountConfig.showDecimals);
-        let symbol = amountConfig.symbol;
+        let fiatAmountFormatted = FiatUtils.format(this.props.amount);
         return (
-            <span>{amount}{' '}{symbol}</span>
+            <span>{fiatAmountFormatted}</span>
         );
     }
 }

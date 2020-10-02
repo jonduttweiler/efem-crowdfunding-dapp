@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { utils } from 'web3';
+import config from '../configuration';
 
 /**
  * Clase utilitaria para el manejo de dinero Fiat.
@@ -10,7 +11,7 @@ import { utils } from 'web3';
  * Se requiere que la momeda sea sub divisible por 100 unidades.
  */
 class FiatUtils {
-  
+
   /**
    * Convierte los centavos en dólares.
    *
@@ -29,6 +30,18 @@ class FiatUtils {
    */
   static dollarToCent(dollarAmount) {
     return dollarAmount.multipliedBy(100);
+  }
+
+  /**
+   * Formatea el monto pasado como parámetro como moneda FIAT con el símbolo por defecto.
+   * 
+   * @param centAmount monto en centavos a formatear.
+   */
+  static format(centAmount) {
+    let fiatConfig = config.fiat;
+    let amount = FiatUtils.centToDollar(centAmount).toFixed(fiatConfig.showDecimals);
+    let symbol = fiatConfig.symbol;
+    return amount + ' ' + symbol;
   }
 }
 

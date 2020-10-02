@@ -73,5 +73,7 @@
     "imageAddHelp": "Una imagen vale más que mil palabras. Selecciona un archivo PNG o JPG",
     "imageMinLength": "Por favor, selecciona un archivo PNG o JPG",
 
-    "countSelected": "Seleccionados"
+    "countSelected": "Seleccionados",
+
+    "target": "Objetivo"
 }

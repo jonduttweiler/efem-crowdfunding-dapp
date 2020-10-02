@@ -24,6 +24,7 @@ import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 import DateViewer from '../DateViewer';
 import MilestoneCard from '../MilestoneCard';
 import { withTranslation } from 'react-i18next';
+import DonationsBalance from '../DonationsBalance';
 
 class ViewMilestone extends Component {
   constructor(props) {
@@ -215,6 +216,7 @@ class ViewMilestone extends Component {
               <div className="row spacer-top-50 spacer-bottom-50">
                 <div className="col-md-8 m-auto">
                   <DonationList donationIds={milestone.budgetDonationIds}></DonationList>
+                  <DonationsBalance donationIds={milestone.budgetDonationIds} fiatTarget={milestone.fiatAmountTarget}></DonationsBalance>
                 </div>
               </div>
             </div>

@@ -213,7 +213,6 @@ class ViewCampaign extends Component {
                     <Balances entity={campaign} />
                     <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
                     <DonationsBalance donationIds={campaign.budgetDonationIds}></DonationsBalance>
-                    
                   </div>
                 </div>
                 <div className="row spacer-top-50 spacer-bottom-50">

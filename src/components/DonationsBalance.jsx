@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { withTranslation } from 'react-i18next';
 import makeSelectDonationsBalance from '../redux/selectors/donationsBalanceSelector'
 import { connect } from 'react-redux'
-import BigNumber from 'bignumber.js';
 import TokenBalance from './TokenBalance';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -15,11 +13,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import CardHeader from '@material-ui/core/CardHeader';
-import ExchangeRate from '../models/ExchangeRate';
-import config from '../configuration';
-import { selectExchangeRateByToken } from '../redux/reducers/exchangeRatesSlice'
 import FiatAmount from './FiatAmount'
 import { green } from '@material-ui/core/colors';
+import FiatTargetProgress from './FiatTargetProgress';
 
 class DonationsBalance extends Component {
 
@@ -28,15 +24,15 @@ class DonationsBalance extends Component {
   }
 
   render() {
-    const { balance, exchangeRate, donationIds, classes, t } = this.props;
-    const fiatAmount = balance.div(exchangeRate.rate);
+    const { balances, fiatTarget, donationIds, classes, t } = this.props;
     const donationsCount = donationIds.length;
+
     return (
       <Card className={classes.root}>
         <CardHeader
           className={classes.header}
           title={
-            <FiatAmount amount={fiatAmount}></FiatAmount>
+            <FiatAmount amount={balances.fiatTotalBalance}></FiatAmount>
           }
           subheader={t('donationsBalance')}>
         </CardHeader>
@@ -64,8 +60,18 @@ class DonationsBalance extends Component {
               }
             />
           </ListItem>
-
-          <TokenBalance balance={balance}></TokenBalance>
+          {balances.tokenBalances.map(b => (
+            <TokenBalance
+              tokenAddress={b.tokenAddress}
+              balance={b.tokenBalance}>
+            </TokenBalance>
+          ))}
+          {fiatTarget && (
+            <FiatTargetProgress
+              fiatBalance={balances.fiatTotalBalance}
+              fiatTarget={fiatTarget}>
+            </FiatTargetProgress>
+          )}
         </CardContent>
       </Card>
     );
@@ -73,13 +79,11 @@ class DonationsBalance extends Component {
 }
 
 DonationsBalance.propTypes = {
-  tokenAddress: PropTypes.string.isRequired,
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
-  exchangeRate: PropTypes.instanceOf(ExchangeRate).isRequired,
+
 };
 
 DonationsBalance.defaultProps = {
-  tokenAddress: config.nativeToken.address
+
 };
 
 const styles = theme => ({
@@ -103,13 +107,8 @@ const styles = theme => ({
 const makeMapStateToProps = () => {
   const selectDonationsBalance = makeSelectDonationsBalance()
   const mapStateToProps = (state, ownProps) => {
-    let tokenAddress = ownProps.tokenAddress;
-    if (!tokenAddress) {
-      tokenAddress = config.nativeToken.address;
-    }
     return {
-      exchangeRate: selectExchangeRateByToken(state, tokenAddress),
-      balance: selectDonationsBalance(state, ownProps.donationIds)
+      balances: selectDonationsBalance(state, ownProps.donationIds)
     };
   }
   return mapStateToProps

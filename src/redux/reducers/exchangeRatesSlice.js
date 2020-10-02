@@ -20,6 +20,12 @@ export const exchangeRatesSlice = createSlice({
 
 export const { fetchExchangeRates } = exchangeRatesSlice.actions;
 
+export const selectExchangeRates = (state) => {
+  return state.exchangeRates.map(function (exchangeRateStore) {
+    return new ExchangeRate(exchangeRateStore);
+  });
+};
+
 export const selectExchangeRateByToken = (state, tokenAddress) => {
   let exchangeRate = state.exchangeRates.find(er => er.tokenAddress === tokenAddress);
   if (exchangeRate) {
