@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import ReactHtmlParser from 'react-html-parser';
-import Balances from 'components/Balances';
 import Loader from '../Loader';
 import GoBackButton from '../GoBackButton';
 import BackgroundImageHeader from '../BackgroundImageHeader';
@@ -110,7 +109,6 @@ class ViewDAC extends Component {
 
           <div className="row spacer-top-50 spacer-bottom-50">
             <div className="col-md-8 m-auto">
-              <Balances entity={dac} />
               <DonationList donationIds={dac.budgetDonationIds}></DonationList>
               <DonationsBalance donationIds={dac.budgetDonationIds}></DonationsBalance>
             </div>

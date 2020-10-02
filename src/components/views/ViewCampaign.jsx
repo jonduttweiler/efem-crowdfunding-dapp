@@ -6,7 +6,6 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import ReactHtmlParser from 'react-html-parser';
 import BigNumber from 'bignumber.js';
 
-import Balances from 'components/Balances';
 import { feathersClient } from '../../lib/feathersClient';
 import Loader from '../Loader';
 import MilestoneCard from '../MilestoneCard';
@@ -210,7 +209,6 @@ class ViewCampaign extends Component {
 
                 <div className="row spacer-top-50 spacer-bottom-50">
                   <div className="col-md-8 m-auto">
-                    <Balances entity={campaign} />
                     <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
                     <DonationsBalance donationIds={campaign.budgetDonationIds}></DonationsBalance>
                   </div>
