@@ -24,6 +24,17 @@ const imagesStyles = {
     height: "180px",
     display: "block"
   },
+
+  cardImg: {
+    width: "100%",
+    height: "180px",
+    paddingTop: "0",
+    backgroundSize: "cover",
+    backgroundPosition: "50% 50%",
+    backgroundRepeat: "no-repeat",
+    borderRadius: "0",
+  },
+
   imgCardBottom: {
     width: "100%",
     borderBottomLeftRadius: "calc(.25rem - 1px)",

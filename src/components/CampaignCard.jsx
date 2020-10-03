@@ -51,11 +51,7 @@ class CampaignCard extends Component {
         tabIndex="0"
       >
       
-        <img
-          className={classes.imgCardTop}
-          src={campaign.imageCidUrl}
-          alt="Card-img-cap"
-        />
+        <div className={classes.cardImg} style={{ backgroundImage: `url(${campaign.imageCidUrl})` }} />
 
         <CardBody>
           <h4 className={classes.cardTitle}>{getTruncatedText(campaign.title, 40)}</h4>

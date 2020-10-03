@@ -74,14 +74,15 @@ class MilestoneCard extends Component {
         tabIndex="0"
       >
         <div
-          className="card-avatar"
+          className="card-avatar spacer-top-10"
           onClick={this.viewProfile}
           onKeyPress={this.viewProfile}
           role="button"
           tabIndex="0"
         >
         
-        <ProfileCard address={milestone.managerAddress} namePosition="right"/>
+        <ProfileCard 
+          address={milestone.managerAddress} namePosition="right"/>
 
           {((milestone && milestone.managerAddress && isOwner(milestone.managerAddress, currentUser)) ||
             isOwner(campaign.managerAddress, currentUser)) &&
@@ -98,13 +99,11 @@ class MilestoneCard extends Component {
           )}
         </div>
 
-        <img
+        <div
           style={{
-            backgroundColor: milestone.imageCidUrl ? 'white' : color}}
-          className={classes.imgCardTop}
-          src={milestone.imageCidUrl || GivethLogo}
-          alt="Card-img-cap"
-        />
+            backgroundColor: milestone.imageCidUrl ? 'white' : color,
+            backgroundImage: `url(${milestone.imageCidUrl})`}}
+          className={classes.cardImg}/>
 
         <CardBody>
           <h4 className={classes.cardTitle}>{getTruncatedText(milestone.title, 40)}</h4>

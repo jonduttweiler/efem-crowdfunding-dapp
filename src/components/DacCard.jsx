@@ -49,12 +49,9 @@ class DacCard extends Component {
         role="button"
         tabIndex="0"
       >
-        <img
-          className={classes.imgCardTop}
-          src={dac.imageCidUrl}
-          alt="Card-img-cap"
-        />
-        
+
+        <div className={classes.cardImg} style={{ backgroundImage: `url(${dac.imageCidUrl})` }} />
+
         <CardBody>
           <h4 className={classes.cardTitle}>{getTruncatedText(dac.title, 40)}</h4>
           <p>{getTruncatedText(dac.description,100)}</p>
