@@ -144,18 +144,21 @@ class ViewCampaign extends Component {
                     </EditCampaignButton>
 
                     {currentUser && currentUser.authenticated && (
-                      <DelegateMultipleButton
-                        style={{ padding: '10px 10px' }}
-                        campaign={campaign}
-                        balance={balance}
-                        currentUser={currentUser}
-                      />
+                      <span style={{ paddingLeft: '10px' }}>
+                        <DelegateMultipleButton
+                          campaign={campaign}
+                          balance={balance}
+                          currentUser={currentUser}
+                        />
+                      </span>
                     )}
 
                     {campaign.url && (
-                      <CommunityButton className="btn btn-secondary" url={campaign.url}>
-                        Join our community
-                      </CommunityButton>
+                      <span style={{ paddingLeft: '10px' }}>
+                        <CommunityButton className="btn btn-secondary" url={campaign.url}>
+                          Join our community
+                        </CommunityButton>
+                      </span>
                     )}
 
                   </center>

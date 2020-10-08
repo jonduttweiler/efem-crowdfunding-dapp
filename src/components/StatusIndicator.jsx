@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Status from '../models/Status';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 /**
  * Presenta un estado
@@ -11,10 +13,10 @@ class StatusIndicator extends Component {
     render() {
         let status = this.props.status;
         return (
-            <span>
-                {status.isLocal && (<i className="fa fa-circle-o-notch fa-spin" />)}
+            <p>
+                {status.isLocal && <FontAwesomeIcon icon={faCircleNotch} spin/>}
                 {status.name}
-            </span>
+            </p>
         );
     }
 }
