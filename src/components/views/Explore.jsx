@@ -3,6 +3,7 @@ import React from 'react';
 import Campaigns from './Campaigns';
 import Milestones from './Milestones';
 import JoinGivethCommunity from '../JoinGivethCommunity';
+import ConnectionBanner from "@rimble/connection-banner";
 
 const Explore = ({ history }) => (
   <div>
@@ -10,6 +11,11 @@ const Explore = ({ history }) => (
     {/*<DACs />*/}
     <Campaigns />
     {/*<Milestones />*/}
+    <ConnectionBanner
+      currentNetwork={1}
+      requiredNetwork={33}
+      onWeb3Fallback={false}
+    />
   </div>
 );
 

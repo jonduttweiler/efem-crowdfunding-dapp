@@ -44,6 +44,10 @@ export default () =>
         };
         const portis = new Portis('912ffb93-0aa8-4c63-b68f-9328fc9cfea7', myPrivateEthereumNode);
         newWeb3 = new Web3(portis.provider);
+        /*const web3Provider = new Web3.providers.HttpProvider(
+          "http://localhost:4444"
+        );
+        newWeb3 = new Web3(web3Provider);*/
       }
     }
 
