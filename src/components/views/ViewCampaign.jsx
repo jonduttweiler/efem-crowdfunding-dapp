@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import classNames from "classnames";
 
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import ReactHtmlParser from 'react-html-parser';
@@ -12,7 +13,6 @@ import MilestoneCard from '../MilestoneCard';
 import GoBackButton from '../GoBackButton';
 import { isOwner } from '../../lib/helpers';
 import { checkBalance } from '../../lib/middleware';
-import BackgroundImageHeader from '../BackgroundImageHeader';
 import Donate from '../Donate';
 import TransferCampaign from '../TransferCampaign';
 import Campaign from '../../models/Campaign';
@@ -28,6 +28,16 @@ import ProfileCard from '../ProfileCard';
 import CampaignCard from '../CampaignCard';
 import { withTranslation } from 'react-i18next';
 import EditCampaignButton from '../EditCampaignButton';
+
+import Header from "components/Header/Header.js";
+import Footer from "components/Footer/Footer.js";
+import Parallax from "components/Parallax/Parallax.js";
+import MainMenu from 'components/MainMenu';
+import GridContainer from "components/Grid/GridContainer.js";
+import GridItem from "components/Grid/GridItem.js";
+
+import { withStyles } from '@material-ui/core/styles';
+import styles from "assets/jss/material-kit-react/views/campaignView.js";
 
 /**
  * The Campaign detail view mapped to /campaign/id
@@ -91,8 +101,9 @@ class ViewCampaign extends Component {
 
   render() {
     const { isLoading, isLoadingMilestones, milestonesLoaded, milestonesTotal } = this.state;
-    const { campaign, milestones, donations, history, currentUser, balance, t } = this.props;
-    
+    const { classes, campaign, milestones, donations, history, currentUser, balance, t } = this.props;
+    const { ...rest } = this.props;
+
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
     return (
       <ErrorBoundary>
@@ -101,127 +112,159 @@ class ViewCampaign extends Component {
 
           {!isLoading && (
             <div>
-              <BackgroundImageHeader image={campaign.imageCidUrl} height={300}>
-                <h6>{t('campaign')}</h6>
-                <h1>{campaign.title}</h1>
-                <Donate
-                  entityId={campaign.id}
-                  entityCard={<CampaignCard campaign={campaign} />}
-                  title={t('donateCampaignTitle')}
-                  description={t('donateCampaignDescription')}
-                  enabled={campaign.receiveFunds}>
-                </Donate>
+              <Header
+                color="white"
+                brand="Give for forests"
+                rightLinks={<MainMenu />}
+                fixed
+                changeColorOnScroll={{
+                  height: 0,
+                  color: "white"
+                }}
+                {...rest}
+              />
+              <Parallax medium image={campaign.imageCidUrl}>
+                <div className="vertical-align">
+                  <center>
+                    <h6 className={classes.entityType}>{t('campaign')}</h6>
+                    <h1 className={classes.entityName}>{campaign.title}</h1>
+                    <Donate
+                      entityId={campaign.id}
+                      entityCard={<CampaignCard campaign={campaign} />}
+                      title={t('donateCampaignTitle')}
+                      description={t('donateCampaignDescription')}
+                      enabled={campaign.receiveFunds}>
+                    </Donate>
+                    
+					<TransferCampaign campaign={campaign}></TransferCampaign>
 
-                <TransferCampaign campaign={campaign}></TransferCampaign>
-                
-                <EditCampaignButton 
-                  currentUser={currentUser}
-                  campaign={campaign}
-                  title={t('donateCampaignTitle')}
-                  >
-                </EditCampaignButton>
-
-                {campaign.url && (
-                  <CommunityButton className="btn btn-secondary" url={campaign.url}>
-                    Join our community
-                  </CommunityButton>
-                )}
-              </BackgroundImageHeader>
-
-              <div className="container-fluid">
-                <div className="row">
-                  <div className="col-md-8 m-auto">
-                    <GoBackButton to="/" title={t("campaigns")} />
-
-                    <ProfileCard address={campaign.managerAddress} />
-
-                    <div className="card content-card ">
-                      <div className="card-body content">
-                        {ReactHtmlParser(campaign.description)}
-                      </div>
-                    </div>
-
-                    <div className="milestone-header spacer-top-50 card-view">
-                      <h3>Milestones</h3>
-                      {isOwner(campaign.managerAddress, currentUser) && (
-                        <Link
-                          className="btn btn-primary btn-sm pull-right"
-                          to={`/campaigns/${campaign.id}/milestones/new`}
-                        >
-                          Add Milestone
-                        </Link>
-                      )}
-
-                      {!isOwner(campaign.managerAddress, currentUser) && currentUser && (
-                        <Link
-                          className="btn btn-primary btn-sm pull-right"
-                          to={`/campaigns/${campaign.id}/milestones/propose`}
-                        >
-                          Propose Milestone
-                        </Link>
-                      )}
-
-                      {isLoadingMilestones && milestonesTotal === 0 && (
-                        <Loader className="relative" />
-                      )}
-                      <ResponsiveMasonry
-                        columnsCountBreakPoints={{
-                          0: 1,
-                          470: 2,
-                          900: 3,
-                          1200: 4,
-                        }}
+                    <EditCampaignButton 
+                      currentUser={currentUser}
+                      campaign={campaign}
+                      title={t('donateCampaignTitle')}
                       >
-                        <Masonry gutter="10px">
-                          {milestones.map(m => (
-                            <MilestoneCard
-                              milestone={m}
-                              currentUser={currentUser}
-                              key={m.clientId}
-                              history={history}
-                              balance={balance}
-                              removeMilestone={() => this.removeMilestone(m.clientId)}
-                            />
-                          ))}
-                        </Masonry>
-                      </ResponsiveMasonry>
+                    </EditCampaignButton>
 
-                      {milestonesLoaded < milestonesTotal && (
-                        <center>
-                          <button
-                            type="button"
-                            className="btn btn-info"
-                            onClick={() => this.loadMoreMilestones()}
-                            disabled={isLoadingMilestones}
+                    {campaign.url && (
+                      <span style={{ paddingLeft: '10px' }}>
+                        <CommunityButton className="btn btn-secondary" url={campaign.url}>
+                          Join our community
+                        </CommunityButton>
+                      </span>
+                    )}
+
+                  </center>
+                </div>
+              </Parallax>
+
+              <div className={classNames(classes.main, classes.mainRaised)}>
+                <div>
+                  <div className={classes.container}>
+
+                    <GridContainer justify="center">
+                      <GridItem xs={12} sm={12} md={8}>
+                        <GoBackButton to="/" title={t("campaigns")} />
+
+                        <ProfileCard address={campaign.managerAddress} />
+
+                        <div className="card content-card ">
+                          <div className="card-body content">
+                            {ReactHtmlParser(campaign.description)}
+                          </div>
+                        </div>
+
+                      </GridItem>
+                    </GridContainer>
+
+                    <GridContainer justify="center">
+                      <GridItem xs={12} sm={12} md={8}>
+
+                        <div className="milestone-header spacer-bottom-50 card-view">
+                          <h3>Milestones</h3>
+                          {isOwner(campaign.managerAddress, currentUser) && (
+                            <Link
+                              className="btn btn-primary btn-sm pull-right"
+                              to={`/campaigns/${campaign.id}/milestones/new`}
+                            >
+                              Add Milestone
+                            </Link>
+                          )}
+
+                          {!isOwner(campaign.managerAddress, currentUser) && currentUser && (
+                            <Link
+                              className="btn btn-primary btn-sm pull-right"
+                              to={`/campaigns/${campaign.id}/milestones/propose`}
+                            >
+                              Propose Milestone
+                            </Link>
+                          )}
+
+                          {isLoadingMilestones && milestonesTotal === 0 && (
+                            <Loader className="relative" />
+                          )}
+                          <ResponsiveMasonry
+                            columnsCountBreakPoints={{
+                              0: 1,
+                              470: 2,
+                              900: 3,
+                              1200: 4,
+                            }}
                           >
-                            {isLoadingMilestones && (
-                              <span>
-                                <i className="fa fa-circle-o-notch fa-spin" /> Loading
-                              </span>
-                            )}
-                            {!isLoadingMilestones && <span>Load More</span>}
-                          </button>
-                        </center>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                            <Masonry gutter="10px">
+                              {milestones.map(m => (
+                                <MilestoneCard
+                                  milestone={m}
+                                  currentUser={currentUser}
+                                  key={m.clientId}
+                                  history={history}
+                                  balance={balance}
+                                  removeMilestone={() => this.removeMilestone(m.clientId)}
+                                />
+                              ))}
+                            </Masonry>
+                          </ResponsiveMasonry>
 
-                <div className="row spacer-top-50 spacer-bottom-50">
-                  <div className="col-md-8 m-auto">
-                    <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
-                    <DonationsBalance donationIds={campaign.budgetDonationIds}></DonationsBalance>
-                  </div>
-                </div>
-                <div className="row spacer-top-50 spacer-bottom-50">
-                  <div className="col-md-8 m-auto">
-                    <h4>Campaign Reviewer</h4>
-                    <ProfileCard address={campaign.reviewerAddress} />
+                          {milestonesLoaded < milestonesTotal && (
+                            <center>
+                              <button
+                                type="button"
+                                className="btn btn-info"
+                                onClick={() => this.loadMoreMilestones()}
+                                disabled={isLoadingMilestones}
+                              >
+                                {isLoadingMilestones && (
+                                  <span>
+                                    <i className="fa fa-circle-o-notch fa-spin" /> Loading
+                                  </span>
+                                )}
+                                {!isLoadingMilestones && <span>Load More</span>}
+                              </button>
+                            </center>
+                          )}
+                        </div>
+                      </GridItem>
+                    </GridContainer>
+
+                    <GridContainer justify="center" className="spacer-bottom-50">
+                      <GridItem xs={12} sm={12} md={8}>
+	                    <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
+	                    <DonationsBalance donationIds={campaign.budgetDonationIds}></DonationsBalance>
+                      </GridItem>
+                    </GridContainer>
+
+                    <GridContainer justify="center">
+                      <GridItem xs={12} sm={12} md={8}>
+                        <h4>Campaign Reviewer</h4>
+                        <ProfileCard address={campaign.reviewerAddress} />
+                      </GridItem>
+                    </GridContainer>
+
                   </div>
                 </div>
               </div>
             </div>
           )}
+          <Footer />
         </div>
       </ErrorBoundary>
     );
@@ -261,5 +304,5 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = { }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation()(ViewCampaign)
+  (withStyles(styles)(withTranslation() (ViewCampaign)))
 )

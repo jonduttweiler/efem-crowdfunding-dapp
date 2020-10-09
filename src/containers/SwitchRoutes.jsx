@@ -15,7 +15,6 @@ import MyDACs from '../components/views/MyDACs';
 import MyCampaigns from '../components/views/MyCampaigns';
 import MyMilestones from '../components/views/MyMilestones';
 import NotFound from '../components/views/NotFound';
-import Explore from '../components/views/Explore';
 import Campaigns from '../components/views/Campaigns';
 import DACs from '../components/views/DACs';
 import TermsAndConditions from '../components/views/TermsAndConditions';
@@ -25,8 +24,13 @@ import EditCampaign from '../components/views/EditCampaign';
 import ViewCampaign from '../components/views/ViewCampaign';
 import EditMilestone from '../components/views/EditMilestone';
 
+// pages for this product
+import LandingPage from "views/LandingPage/LandingPage.js";
+import LoginPage from "views/LoginPage/LoginPage.js";
+
 const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
     <Switch>
+
         {/*NOTE order matters, wrong order breaks routes!*/}
         <Route
             exact
@@ -280,11 +284,13 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
             render={props => <Profile {...props} />}
         />
 
-        <Route
+        <Route path="/" render={props => <LandingPage {...props} />} />
+
+        {/*<Route
             exact
             path="/"
             render={props => <Explore {...props} />}
-        />
+        />*/}
         <Route
             exact
             path="/campaigns"
@@ -295,6 +301,12 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
             path="/dacs"
             render={props => <DACs {...props} />}
         />
+
+        {/* Other material react routes. Not used*/})
+        <Route path="/landing-page" render={props => <LandingPage {...props} />} />
+        <Route path="/login-page" component={LoginPage} />
+
+
 
         <Route component={NotFound} />
     </Switch>

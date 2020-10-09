@@ -10,10 +10,6 @@ import { withTranslation } from 'react-i18next';
 
 class ActivityList extends Component {
 
-  constructor() {
-    super();
-  }
-
   render() {
     const { activities, classes, t } = this.props;
     return (

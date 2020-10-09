@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
+// @material-ui/core components
+
 import CampaignCard from '../CampaignCard';
 import Loader from '../Loader';
 import { connect } from 'react-redux'
 import { selectCampaigns } from '../../redux/reducers/campaignsSlice'
 import { withTranslation } from 'react-i18next';
+
+import styles from "assets/jss/material-kit-react/views/landingPageSections/campaignsStyle.js";
+import { withStyles } from '@material-ui/core/styles';
+
+import Badge from "components/Badge/Badge.js";
 
 /**
  * The Campaigns view mapped to /campaigns
@@ -18,22 +25,23 @@ class Campaigns extends Component {
   }
 
   render() {
-    const { t, campaigns } = this.props;
+    const { classes, t, campaigns } = this.props;
     const { isLoading, hasError } = this.state;
+
     // TODO Por incorporación de Redux, se fija el total
     // como el tamaño de las campañas.
     // Falta el desarrollo del Paginado.
     var total = campaigns.length;
     return (
       <div id="campaigns-view" className="card-view">
-        <div className="container-fluid page-layout reduced-padding">
-          <h4>{t('campaigns')} {total > 0 && <span className="badge badge-success">{total}</span>}</h4>
+        <div className={classes.section}>
+          <h3 className={classes.title}>{t('campaigns')} {total > 0 && <Badge color="success">{total}</Badge>}</h3>
+          <h6 className={classes.description}>
+            {t('campaignsSectionDescription')}
+          </h6>
           {// There are some Campaigns in the system, show them
           !hasError && campaigns.length > 0 && (
             <div>
-              <p>
-                Nuestros emprendimientos de vida
-              </p>
               <div className="cards-grid-container">
                 {campaigns.map(campaign => (
                   <CampaignCard key={campaign.clientId} campaign={campaign} />
@@ -47,7 +55,7 @@ class Campaigns extends Component {
           !hasError && !isLoading && campaigns.length === 0 && (
             <div>
               <center>
-                <p>&iexcl;A&uacute;n no hay campa&ntilde;as!</p>
+                <p className={classes.description}>&iexcl;A&uacute;n no hay campa&ntilde;as!</p>
                 <img
                   className="empty-state-img"
                   src={`${process.env.PUBLIC_URL}/img/campaign.svg`}
@@ -79,5 +87,5 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 export default connect(mapStateToProps)(
-  withTranslation()(Campaigns)
-)
+  withTranslation()((withStyles(styles)(Campaigns))
+))

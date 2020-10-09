@@ -5,6 +5,20 @@ import CardStats from './CardStats';
 import Campaign from '../models/Campaign';
 import messageUtils from '../redux/utils/messageUtils'
 
+import Card from "components/Card/Card.js";
+import CardBody from "components/Card/CardBody.js";
+
+import imagesStyles from "assets/jss/material-kit-react/imagesStyles.js";
+import { cardTitle } from "assets/jss/material-kit-react.js";
+import { withStyles } from '@material-ui/core/styles';
+import { withTranslation } from 'react-i18next';
+
+const styles = {
+  ...imagesStyles,
+  cardTitle,
+};
+
+
 /**
  * Campaign Card visible in the DACs view.
  *
@@ -26,34 +40,33 @@ class CampaignCard extends Component {
   }
 
   render() {
-    const { campaign } = this.props;
+    const { classes, t, campaign } = this.props;
 
     return (
-      <div
-        className="card overview-card"
+      <Card
         id={campaign.id} // eslint-disable-line no-underscore-dangle
         onClick={this.viewCampaign}
         onKeyPress={this.viewCampaign}
         role="button"
         tabIndex="0"
       >
-        <div className="card-body">
-          <div className="card-img" style={{ backgroundImage: `url(${campaign.imageCidUrl})` }} />
+      
+        <div className={classes.cardImg} style={{ backgroundImage: `url(${campaign.imageCidUrl})` }} />
 
-          <div className="card-content">
-            <h4 className="card-title">{getTruncatedText(campaign.title, 40)}</h4>
-            <div className="card-text">{getTruncatedText(campaign.description, 100)}</div>
-          </div>
+        <CardBody>
+          <h4 className={classes.cardTitle}>{getTruncatedText(campaign.title, 40)}</h4>
+          <p>{getTruncatedText(campaign.description,100)}</p>
+        </CardBody>
 
-          <div className="card-footer">
+        <div className="card-footer">
             <CardStats
               type="campaign"
               status={campaign.status}
               donations={campaign.budgetDonationsCount}
             />
-          </div>
         </div>
-      </div>
+
+      </Card>
     );
   }
 }
@@ -64,4 +77,4 @@ CampaignCard.propTypes = {
 
 CampaignCard.defaultProps = {};
 
-export default CampaignCard;
+export default withTranslation()(withStyles(styles)(CampaignCard));

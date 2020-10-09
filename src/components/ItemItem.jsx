@@ -10,10 +10,6 @@ import DateViewer from './DateViewer';
 
 class ItemItem extends Component {
 
-  constructor() {
-    super();
-  }
-
   render() {
     const { item, classes } = this.props;
     return (

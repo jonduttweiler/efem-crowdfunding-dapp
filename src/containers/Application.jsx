@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+
 import { Helmet } from 'react-helmet';
 
 import { Router } from 'react-router-dom';
@@ -18,7 +19,7 @@ import { history } from '../lib/helpers';
 import config from '../configuration';
 
 // components
-import MainMenu from '../components/MainMenu';
+//import MainMenu from '../components/MainMenu';
 import Loader from '../components/Loader';
 import ErrorBoundary from '../components/ErrorBoundary';
 
@@ -37,7 +38,6 @@ import { fetchUsers } from '../redux/reducers/usersSlice';
 import { fetchExchangeRates } from '../redux/reducers/exchangeRatesSlice'
 import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes from './SwitchRoutes';
-import Footer from '../components/Footer';
 
 
 /* global document */
@@ -141,13 +141,11 @@ class Application extends Component {
 
                                   {!userLoading && (
                                     <div>
-                                      <MainMenu />
                                       <SwitchRoutes
                                         currentUser={currentUser}
                                         balance={balance}
                                         isCorrectNetwork={isCorrectNetwork}
                                       />
-                                      <Footer />
                                     </div>
                                   )}
                                   <ToastContainer

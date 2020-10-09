@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from "classnames";
+
 import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
 import BigNumber from 'bignumber.js';
 import User from 'models/User';
 import MilestoneActions from '../MilestoneActions';
-import BackgroundImageHeader from '../BackgroundImageHeader';
 import Donate from '../Donate';
 import GoBackButton from '../GoBackButton';
 import DonationList from '../DonationList';
@@ -23,6 +24,16 @@ import { fetchActivitiesByIds, selectActivitiesByMilestone } from '../../redux/r
 import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 import DateViewer from '../DateViewer';
 import MilestoneCard from '../MilestoneCard';
+
+import Header from "components/Header/Header.js";
+import Footer from "components/Footer/Footer.js";
+import Parallax from "components/Parallax/Parallax.js";
+import MainMenu from 'components/MainMenu';
+import GridContainer from "components/Grid/GridContainer.js";
+import GridItem from "components/Grid/GridItem.js";
+
+import { withStyles } from '@material-ui/core/styles';
+import styles from "assets/jss/material-kit-react/views/milestoneView.js";
 import { withTranslation } from 'react-i18next';
 import DonationsBalance from '../DonationsBalance';
 
@@ -79,7 +90,8 @@ class ViewMilestone extends Component {
   }
 
   render() {
-    const { donations, activities, history, user, balance, campaign, milestone, t } = this.props;
+    const { classes, donations, activities, history, user, balance, campaign, milestone, t } = this.props;
+    const { ...rest } = this.props;
 
     const {
       isLoading,
@@ -97,52 +109,82 @@ class ViewMilestone extends Component {
 
         {!isLoading && (
           <div>
-            <BackgroundImageHeader image={milestone.imageCidUrl} height={300}>
-              <h6>Milestone</h6>
-              <h1>{milestone.title}</h1>
+            <Header
+              color="white"
+              brand="Give for forests"
+              rightLinks={<MainMenu />}
+              fixed
+              changeColorOnScroll={{
+                height: 0,
+                color: "white"
+              }}
+              {...rest}
+            />
+            <Parallax medium image={milestone.imageCidUrl}>
+              <div className="vertical-align">
+                <center>
+                <h6 className={classes.entityType}>{t('milestone')}</h6>
+                  <h1 className={classes.entityName}>{milestone.title}</h1>
 
-              {!milestone.status === 'InProgress' && <p>This milestone is not active anymore</p>}
+                  {!milestone.status === 'InProgress' && <p>This milestone is not active anymore</p>}
 
-              <p>Campaign: {campaign.title} </p>
+                  <h6 className={classes.entityType}>Campaign: {campaign.title}</h6>
 
-              <div className="milestone-actions">
-                <Donate
-                  entityId={milestone.id}
-                  entityCard={<MilestoneCard milestone={milestone} />}
-                  title={t('donateMilestoneTitle')}
-                  description={t('donateMilestoneDescription')}
-                  enabled={milestone.receiveFunds}>
-                </Donate>
-                
-                {user && (
-                  <MilestoneActions milestone={milestone} user={user} balance={balance} />
-                )}
-              </div>
-            </BackgroundImageHeader>
+                  <div className="milestone-actions">
+                    <Donate
+                      entityId={milestone.id}
+                      entityCard={<MilestoneCard milestone={milestone} />}
+                      title={t('donateMilestoneTitle')}
+                      description={t('donateMilestoneDescription')}
+                      enabled={milestone.receiveFunds}>  
+                    </Donate>
+                    {/*this.isActiveMilestone() && (
+                      <Fragment>
+                        {user && (
+                          <DelegateMultipleButton
+                            milestone={milestone}
+                            campaign={campaign}
+                            balance={balance}
+                            user={user}
+                          />
+                        )}
+                      </Fragment>
+                    )*/}
 
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-md-8 m-auto">
-                  <div>
-                    <GoBackButton
-                      history={history}
-                      styleName="inline"
-                      title={`Campaign: ${campaign.title}`}
-                    />
+                    {/* Milestone actions */}
 
-                    <ProfileCard address={milestone.managerAddress} />
-
-                    <div className="card content-card">
-                      <div className="card-body content">{this.renderDescription()}</div>
-                    </div>
+                    {user && (
+                      <MilestoneActions milestone={milestone} user={user} balance={balance} />
+                    )}
                   </div>
-                </div>
+                </center>
               </div>
+            </Parallax>
 
-              <div className="row spacer-top-50">
-                <div className="col-md-8 m-auto">
-                  <div className="row">
-                    <div className="col-md-12">
+            <div className={classNames(classes.main, classes.mainRaised)}>
+              <div>
+                <div className={classes.container}>
+
+                  <GridContainer justify="center">
+                    <GridItem xs={12} sm={12} md={8}>
+                      <GoBackButton
+                        history={history}
+                        styleName="inline"
+                        title={`Campaign: ${campaign.title}`}
+                      />
+
+                      <ProfileCard address={milestone.managerAddress} />
+
+                      <div className="card content-card">
+                        <div className="card-body content">{this.renderDescription()}</div>
+                      </div>
+
+                    </GridItem>
+                  </GridContainer>
+
+                  <GridContainer justify="center" className="spacer-top-50">
+                    <GridItem xs={12} sm={12} md={8}>
+
                       <h4>Details</h4>
 
                       <div className="card details-card">
@@ -204,24 +246,28 @@ class ViewMilestone extends Component {
                           <StatusIndicator status={milestone.status}></StatusIndicator>
                         </div>
                       </div>
-                    </div>
+                    </GridItem>
+                  </GridContainer>
 
-                    <div className="col-md-12">
+                  <GridContainer justify="center" className="spacer-top-50">
+                    <GridItem xs={12} sm={12} md={8}>
                       <ActivityList activities={activities} />
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    </GridItem>
+                  </GridContainer>
 
-              <div className="row spacer-top-50 spacer-bottom-50">
-                <div className="col-md-8 m-auto">
-                  <DonationList donationIds={milestone.budgetDonationIds}></DonationList>
-                  <DonationsBalance donationIds={milestone.budgetDonationIds} fiatTarget={milestone.fiatAmountTarget}></DonationsBalance>
+                  <GridContainer justify="center" className="spacer-top-50">
+                    <GridItem xs={12} sm={12} md={8}>
+                      <DonationList donations={donations}></DonationList>
+	                  <DonationsBalance donationIds={milestone.budgetDonationIds} fiatTarget={milestone.fiatAmountTarget}></DonationsBalance>
+                    </GridItem>
+                  </GridContainer>
+
                 </div>
               </div>
             </div>
           </div>
         )}
+        <Footer />
       </div>
     );
   }
@@ -269,5 +315,5 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = { fetchActivitiesByIds }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation()(ViewMilestone)
+  (withStyles(styles)(withTranslation() (ViewMilestone)))
 )

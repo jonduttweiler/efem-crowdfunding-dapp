@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Loader from './Loader';
+import { Button } from '@material-ui/core';
 
 // Need to disable the button type because the rule does not allow prop values
 /* eslint react/button-has-type: 0 */
@@ -16,6 +17,7 @@ import Loader from './Loader';
  *  @param children       Elements / text showing when state is not loading
  */
 const LoaderButton = ({
+  color,
   className,
   formNoValidate,
   type,
@@ -25,16 +27,15 @@ const LoaderButton = ({
   children,
 }) => (
   <span>
-    <button className={className} formNoValidate={formNoValidate} type={type} disabled={disabled}>
+    <Button color={color} className={className} formNoValidate={formNoValidate} type={type} disabled={disabled}>
       {isLoading && (
         <span>
           <Loader className="small btn-loader" />
           {loadingText}
         </span>
       )}
-
       {!isLoading && <span>{children}</span>}
-    </button>
+    </Button>
   </span>
 );
 

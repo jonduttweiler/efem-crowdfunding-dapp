@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { goBackOnePath, history } from '../lib/helpers';
+import { Button } from '@material-ui/core';
+import { NavigateBefore } from '@material-ui/icons';
 
 const GoBackButton = ({ styleName, title, to }) => (
   <div
@@ -10,8 +12,9 @@ const GoBackButton = ({ styleName, title, to }) => (
     tabIndex="0"
     className={`go-back-button ${styleName}`}
   >
-    <i className="fa fa-long-arrow-left" />
-    {title}
+    <Button round size="sm">
+      <NavigateBefore/> {title}
+    </Button>
   </div>
 );
 

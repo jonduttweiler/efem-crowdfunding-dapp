@@ -22,8 +22,8 @@ const configurations = {
     language: {
       default: 'en',
       options: [
-        { key: "es", name: "Español" },
-        { key: "en", name: "English" }
+        { key: "es", name: "Español", flag: "ES" },
+        { key: "en", name: "English", flag: "US" }
       ]
     },
     title: 'localhost',
@@ -66,8 +66,8 @@ const configurations = {
     language: {
       default: 'en',
       options: [
-        { key: "es", name: "Español" },
-        { key: "en", name: "English" }
+        { key: "es", name: "Español", flag: "ES" },
+        { key: "en", name: "English", flag: "US" }
       ]
     },
     title: 'RSK Testnet',
@@ -110,8 +110,8 @@ const configurations = {
     language: {
       default: 'en',
       options: [
-        { key: "es", name: "Español" },
-        { key: "en", name: "English" }
+        { key: "es", name: "Español", flag: "ES" },
+        { key: "en", name: "English", flag: "US" }
       ]
     },
     title: 'RSK MainNet',

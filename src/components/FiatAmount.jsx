@@ -9,10 +9,6 @@ import FiatUtils from '../utils/FiatUtils';
  */
 class FiatAmount extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         let fiatAmountFormatted = FiatUtils.format(this.props.amount);
         return (

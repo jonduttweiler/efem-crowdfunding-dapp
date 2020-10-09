@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Prompt } from 'react-router-dom';
+import classNames from "classnames";
+
 import PropTypes from 'prop-types';
 import { Form, Input } from 'formsy-react-components';
 import GA from 'lib/GoogleAnalytics';
@@ -17,7 +19,15 @@ import { connect } from 'react-redux'
 import { addDac, selectDac } from '../../redux/reducers/dacsSlice';
 import { selectRoles , selectCurrentUser} from '../../redux/reducers/currentUserSlice';
 
+import Header from "components/Header/Header.js";
+import Footer from "components/Footer/Footer.js";
+import Parallax from "components/Parallax/Parallax.js";
+import MainMenu from 'components/MainMenu';
+import GridContainer from "components/Grid/GridContainer.js";
+import GridItem from "components/Grid/GridItem.js";
 
+import { withStyles } from '@material-ui/core/styles';
+import styles from "assets/jss/material-kit-react/views/dacPage.js";
 
 // Save dac
 const showToast = (msg, url, isSuccess = false) => {
@@ -155,138 +165,162 @@ class EditDAC extends Component {
     const { isNew } = this.props;
     const { isLoading, isSaving, dac, formIsValid, isBlocking } = this.state;
 
+    const { ...rest } = this.props;
+    const { classes } = this.props;
+
     return (
       <div id="edit-dac-view">
-        <div className="container-fluid page-layout edit-view">
+        <Header
+          color="white"
+          brand="Give for forests"
+          rightLinks={<MainMenu />}
+          fixed
+          changeColorOnScroll={{
+            height: 0,
+            color: "white"
+          }}
+          {...rest}
+        />
+
+        {isNew && <Parallax small image={require("assets/img/dac-default-bg.jpg")}/>}
+        {!isNew && <Parallax small image={dac.image}/>}
+        
+        <div className={classNames(classes.main, classes.mainRaised)}>
           <div>
-            <div className="col-md-8 m-auto">
-              {isLoading && <Loader className="fixed" />}
+            <div className={classes.container}>
+              <GridContainer justify="center">
+                <GridItem xs={12} sm={12} md={8}>
 
-              {!isLoading && (
-                <div>
-                  <GoBackButton history={history} />
+                  {isLoading && <Loader className="fixed" />}
 
-                  <div className="form-header">
-                    {isNew && <h3>Start a Decentralized Fund</h3>}
+                  {!isLoading && (
+                    <div>
+                      <GoBackButton history={history} />
 
-                    {!isNew && <h3>Edit Fund</h3>}
+                      <div className="form-header">
+                        {isNew && <h3>Start a Decentralized Fund</h3>}
 
-                    <p>
-                      <i className="fa fa-question-circle" />A Fund aims to solve a cause by raising
-                      funds and delegating those funds to Campaigns that solve its cause. Should you
-                      create a Campaign or Fund? Read more{' '}
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="https://wiki.giveth.io/documentation/glossary/"
+                        {!isNew && <h3>Edit Fund</h3>}
+
+                        <p>
+                          <i className="fa fa-question-circle" />A Fund aims to solve a cause by raising
+                          funds and delegating those funds to Campaigns that solve its cause. Should you
+                          create a Campaign or Fund? Read more{' '}
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href="https://wiki.giveth.io/documentation/glossary/"
+                          >
+                            here
+                          </a>
+                          .
+                        </p>
+                      </div>
+
+                      <Form
+                        onSubmit={this.submit}
+                        ref={this.form}
+                        mapping={inputs => {
+                          dac.title = inputs.title;
+                          dac.description = inputs.description;
+                          dac.url = inputs.communityUrl;
+                        }}
+                        onValid={() => this.toggleFormValid(true)}
+                        onInvalid={() => this.toggleFormValid(false)}
+                        onChange={e => this.triggerRouteBlocking(e)}
+                        layout="vertical"
                       >
-                        here
-                      </a>
-                      .
-                    </p>
-                  </div>
+                        <Prompt
+                          when={isBlocking}
+                          message={() =>
+                            `You have unsaved changes. Are you sure you want to navigate from this page?`
+                          }
+                        />
 
-                  <Form
-                    onSubmit={this.submit}
-                    ref={this.form}
-                    mapping={inputs => {
-                      dac.title = inputs.title;
-                      dac.description = inputs.description;
-                      dac.url = inputs.communityUrl;
-                    }}
-                    onValid={() => this.toggleFormValid(true)}
-                    onInvalid={() => this.toggleFormValid(false)}
-                    onChange={e => this.triggerRouteBlocking(e)}
-                    layout="vertical"
-                  >
-                    <Prompt
-                      when={isBlocking}
-                      message={() =>
-                        `You have unsaved changes. Are you sure you want to navigate from this page?`
-                      }
-                    />
+                        <Input
+                          name="title"
+                          id="title-input"
+                          label="Fund cause"
+                          type="text"
+                          value={dac.title}
+                          placeholder="e.g. Hurricane relief."
+                          help="Describe your Decentralized Fund in 1 sentence."
+                          validations="minLength:3"
+                          validationErrors={{
+                            minLength: 'Please provide at least 3 characters.',
+                          }}
+                          required
+                          autoFocus
+                        />
 
-                    <Input
-                      name="title"
-                      id="title-input"
-                      label="Fund cause"
-                      type="text"
-                      value={dac.title}
-                      placeholder="e.g. Hurricane relief."
-                      help="Describe your Decentralized Fund in 1 sentence."
-                      validations="minLength:3"
-                      validationErrors={{
-                        minLength: 'Please provide at least 3 characters.',
-                      }}
-                      required
-                      autoFocus
-                    />
+                        <div className="form-group">
+                          <QuillFormsy
+                            name="description"
+                            label="Explain your cause"
+                            helpText="Make it as extensive as necessary. Your goal is to build trust,
+                            so that people donate to your Fund."
+                            value={dac.description}
+                            placeholder="Describe how you're going to solve your cause..."
+                            validations="minLength:20"
+                            help="Describe your cause."
+                            validationErrors={{
+                              minLength: 'Please provide at least 10 characters.',
+                            }}
+                            required
+                          />
+                        </div>
 
-                    <div className="form-group">
-                      <QuillFormsy
-                        name="description"
-                        label="Explain your cause"
-                        helpText="Make it as extensive as necessary. Your goal is to build trust,
-                        so that people donate to your Fund."
-                        value={dac.description}
-                        placeholder="Describe how you're going to solve your cause..."
-                        validations="minLength:20"
-                        help="Describe your cause."
-                        validationErrors={{
-                          minLength: 'Please provide at least 10 characters.',
-                        }}
-                        required
-                      />
+                        <div className="form-group">
+                          <FormsyImageUploader
+                            name="image"
+                            setImage={this.setImage}
+                            previewImage={dac.image}
+                            isRequired={isNew}
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <Input
+                            name="communityUrl"
+                            id="community-url"
+                            label="Url to join your community"
+                            type="text"
+                            value={dac.url}
+                            placeholder="https://slack.giveth.com"
+                            help="Where can people join your community? Paste a link here for your community's website, social or chatroom."
+                            validations="isUrl"
+                            validationErrors={{
+                              isUrl: 'Please provide a url.',
+                            }}
+                          />
+                        </div>
+
+                        <div className="form-group row">
+                          <div className="col-6">
+                            <GoBackButton history={history} />
+                          </div>
+                          <div className="col-6">
+                            <LoaderButton
+                              className="btn btn-success pull-right"
+                              formNoValidate
+                              type="submit"
+                              disabled={isSaving || !formIsValid || (dac.id && dac.delegateId === 0)}
+                              isLoading={isSaving}
+                              loadingText="Saving..."
+                            >
+                              {isNew ? 'Create Fund' : 'Update Fund'}
+                            </LoaderButton>
+                          </div>
+                        </div>
+                      </Form>
                     </div>
-
-                    <div className="form-group">
-                      <FormsyImageUploader
-                        name="image"
-                        setImage={this.setImage}
-                        previewImage={dac.image}
-                        isRequired={isNew}
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <Input
-                        name="communityUrl"
-                        id="community-url"
-                        label="Url to join your community"
-                        type="text"
-                        value={dac.url}
-                        placeholder="https://slack.giveth.com"
-                        help="Where can people join your community? Paste a link here for your community's website, social or chatroom."
-                        validations="isUrl"
-                        validationErrors={{
-                          isUrl: 'Please provide a url.',
-                        }}
-                      />
-                    </div>
-
-                    <div className="form-group row">
-                      <div className="col-6">
-                        <GoBackButton history={history} />
-                      </div>
-                      <div className="col-6">
-                        <LoaderButton
-                          className="btn btn-success pull-right"
-                          formNoValidate
-                          type="submit"
-                          disabled={isSaving || !formIsValid || (dac.id && dac.delegateId === 0)}
-                          isLoading={isSaving}
-                          loadingText="Saving..."
-                        >
-                          {isNew ? 'Create Fund' : 'Update Fund'}
-                        </LoaderButton>
-                      </div>
-                    </div>
-                  </Form>
-                </div>
-              )}
+                  )}
+                </GridItem>
+              </GridContainer>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -316,4 +350,4 @@ const mapStateToProps = (state, props) => ({
 });
 const mapDispatchToProps = { addDac }
 
-export default connect(mapStateToProps,mapDispatchToProps)(EditDAC);
+export default connect(mapStateToProps,mapDispatchToProps)((withStyles(styles)(EditDAC)));
