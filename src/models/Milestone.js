@@ -87,6 +87,10 @@ export default class Milestone extends Entity {
     return user && user.address === this.recipientAddress;
   }
 
+  canComplete() {
+    return this.isActive || this.isRejected;
+  }
+
   static get PENDING() {
     return StatusUtils.build('Pending', true);
   }
@@ -145,6 +149,10 @@ export default class Milestone extends Entity {
 
   get isApproved() {
     return this.status.name === Milestone.APPROVED.name;
+  }
+
+  get isRejected() {
+    return this.status.name === Milestone.REJECTED.name;
   }
 
   static get type() {
