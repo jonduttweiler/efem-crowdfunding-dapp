@@ -101,7 +101,7 @@ class MilestoneComplete extends Component {
       open
     } = this.state;
     const { milestone, currentUser, classes, t } = this.props;
-    let showButton = milestone.isManager(currentUser) && milestone.isActive;
+    let showButton = milestone.isManager(currentUser) && milestone.canComplete();
 
     return (
       <div>
