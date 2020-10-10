@@ -136,7 +136,7 @@ class ViewMilestone extends Component {
                       entityCard={<MilestoneCard milestone={milestone} />}
                       title={t('donateMilestoneTitle')}
                       description={t('donateMilestoneDescription')}
-                      enabled={milestone.receiveFunds}>  
+                      enabled={milestone.canReceiveFunds}>  
                     </Donate>
                     {/*this.isActiveMilestone() && (
                       <Fragment>
@@ -257,8 +257,8 @@ class ViewMilestone extends Component {
 
                   <GridContainer justify="center" className="spacer-top-50">
                     <GridItem xs={12} sm={12} md={8}>
-                      <DonationList donations={donations}></DonationList>
-	                  <DonationsBalance donationIds={milestone.budgetDonationIds} fiatTarget={milestone.fiatAmountTarget}></DonationsBalance>
+                      <DonationList donationIds={milestone.budgetDonationIds}></DonationList>
+	                    <DonationsBalance donationIds={milestone.budgetDonationIds} fiatTarget={milestone.fiatAmountTarget}></DonationsBalance>
                     </GridItem>
                   </GridContainer>
 

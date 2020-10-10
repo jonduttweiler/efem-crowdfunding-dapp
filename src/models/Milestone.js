@@ -265,7 +265,7 @@ export default class Milestone extends Entity {
   /**
    * Determina si la entidad recibe fondos o no.
    */
-  get receiveFunds() {
-    return this.isActive || this.isCompleted || this.isApproved;
+  get canReceiveFunds() {
+    return this.isActive;
   }
 }

@@ -27,7 +27,7 @@ import { fetchDonationsByIds, transferDonations } from '../redux/reducers/donati
 import DonationItemTransfer from './DonationItemTransfer';
 import { selectMilestonesByCampaign } from '../redux/reducers/milestonesSlice';
 import CampaignCard from './CampaignCard';
-import MilestoneSelector from './MilestoneSelector';
+import TransferMilestoneSelector from './TransferMilestoneSelector';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -278,10 +278,10 @@ class TransferCampaign extends Component {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <MilestoneSelector
+                    <TransferMilestoneSelector
                        milestoneIds={campaign.milestoneIds}
                        onChange={this.onChangeMilestone}>
-                    </MilestoneSelector>
+                    </TransferMilestoneSelector>
                   </Grid>
 
                   <Grid container spacing={2} justify="center" alignItems="center" className={classes.transferList}>

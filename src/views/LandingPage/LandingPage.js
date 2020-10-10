@@ -54,7 +54,7 @@ export default function LandingPage(props) {
       <div className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.container}>
           <JoinGivethCommunity history={props.history} />
-            <DACs />
+            {/*<DACs />*/}
             <Campaigns />
         </div>
       </div>

@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux'
-import { selectMilestonesByIds } from '../redux/reducers/milestonesSlice';
+import { selectCampaignsByIds } from '../redux/reducers/campaignsSlice';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-class MilestoneSelector extends Component {
+class TransferCampaignSelector extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,7 +16,7 @@ class MilestoneSelector extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (JSON.stringify(prevProps.milestoneIds) !== JSON.stringify(this.props.milestoneIds)) {
+    if (JSON.stringify(prevProps.campaignIds) !== JSON.stringify(this.props.campaignIds)) {
       this.setState({
         value: null
       });
@@ -32,26 +32,27 @@ class MilestoneSelector extends Component {
 
   render() {
     const { value } = this.state;
-    const { milestones, classes, t } = this.props;
+    const { campaigns, classes, t } = this.props;
+    const campaignsCanReceiveFunds = campaigns.filter(m => m.canReceiveFunds);
     return (
       <Autocomplete
-        id="select-milestone"
+        id="select-campaign"
         className={classes.root}
-        options={milestones}
+        options={campaignsCanReceiveFunds}
         getOptionLabel={(option) => option.title}
         value={value}
         onChange={(event, newValue) => {
           this.onChange(newValue);
         }}
-        renderInput={(params) => <TextField {...params} label={t('milestone')} />}
-        disabled={milestones.length === 0}
+        renderInput={(params) => <TextField {...params} label={t('campaign')} />}
+        disabled={campaignsCanReceiveFunds.length === 0}
       />
     );
   }
 }
 
-MilestoneSelector.defaultProps = {
-  milestoneIds: []
+TransferCampaignSelector.defaultProps = {
+  campaignIds: []
 };
 
 const styles = theme => ({
@@ -62,7 +63,7 @@ const styles = theme => ({
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    milestones: selectMilestonesByIds(state, ownProps.milestoneIds),
+    campaigns: selectCampaignsByIds(state, ownProps.campaignIds),
   }
 }
 
@@ -70,6 +71,6 @@ const mapDispatchToProps = {}
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(
-    withTranslation()(MilestoneSelector)
+    withTranslation()(TransferCampaignSelector)
   )
 );

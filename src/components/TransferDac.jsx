@@ -25,8 +25,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 import { fetchDonationsByIds, transferDonations } from '../redux/reducers/donationsSlice'
 import DonationItemTransfer from './DonationItemTransfer';
-import CampaignSelector from './CampaignSelector';
-import MilestoneSelector from './MilestoneSelector';
+import CampaignSelector from './TransferCampaignSelector';
+import TransferMilestoneSelector from './TransferMilestoneSelector';
 import DacCard from './DacCard';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -302,10 +302,10 @@ class TransferDac extends Component {
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <MilestoneSelector
+                    <TransferMilestoneSelector
                       milestoneIds={milestoneIds}
                       onChange={this.onChangeMilestone}>
-                    </MilestoneSelector>
+                    </TransferMilestoneSelector>
                   </Grid>
 
                   <Grid container spacing={2} justify="center" alignItems="center" className={classes.transferList}>

@@ -38,6 +38,7 @@ import GridItem from "components/Grid/GridItem.js";
 
 import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/campaignView.js";
+import Typography from '@material-ui/core/Typography';
 
 /**
  * The Campaign detail view mapped to /campaign/id
@@ -98,7 +99,6 @@ class ViewCampaign extends Component {
         }
       });
   }
-
   render() {
     const { isLoading, isLoadingMilestones, milestonesLoaded, milestonesTotal } = this.state;
     const { classes, campaign, milestones, donations, history, currentUser, balance, t } = this.props;
@@ -133,10 +133,10 @@ class ViewCampaign extends Component {
                       entityCard={<CampaignCard campaign={campaign} />}
                       title={t('donateCampaignTitle')}
                       description={t('donateCampaignDescription')}
-                      enabled={campaign.receiveFunds}>
+                      enabled={campaign.canReceiveFunds}>
                     </Donate>
                     
-					<TransferCampaign campaign={campaign}></TransferCampaign>
+					          <TransferCampaign campaign={campaign}></TransferCampaign>
 
                     <EditCampaignButton 
                       currentUser={currentUser}
@@ -176,27 +176,25 @@ class ViewCampaign extends Component {
                       </GridItem>
                     </GridContainer>
 
+                    
+
                     <GridContainer justify="center">
                       <GridItem xs={12} sm={12} md={8}>
 
+                        <Typography variant="h5">
+                          {t('milestones')}
+                        </Typography>
+                        
                         <div className="milestone-header spacer-bottom-50 card-view">
-                          <h3>Milestones</h3>
-                          {isOwner(campaign.managerAddress, currentUser) && (
-                            <Link
-                              className="btn btn-primary btn-sm pull-right"
-                              to={`/campaigns/${campaign.id}/milestones/new`}
-                            >
-                              Add Milestone
-                            </Link>
-                          )}
 
-                          {!isOwner(campaign.managerAddress, currentUser) && currentUser && (
-                            <Link
-                              className="btn btn-primary btn-sm pull-right"
-                              to={`/campaigns/${campaign.id}/milestones/propose`}
-                            >
-                              Propose Milestone
-                            </Link>
+                          {isOwner(campaign.managerAddress, currentUser) && (
+                            <div>
+                              <Link
+                                className="btn btn-primary btn-sm pull-right"
+                                to={`/campaigns/${campaign.id}/milestones/new`}>
+                                Add Milestone
+                              </Link>
+                            </div>
                           )}
 
                           {isLoadingMilestones && milestonesTotal === 0 && (

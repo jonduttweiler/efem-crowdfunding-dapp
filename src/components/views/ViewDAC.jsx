@@ -92,8 +92,11 @@ class ViewDAC extends Component {
                 entityCard={<DacCard dac={dac} />}
                 title={t('donateDacTitle')}
                 description={t('donateDacDescription')}
-                enabled={dac.receiveFunds}>
+                enabled={dac.canReceiveFunds}>
               </Donate>
+
+              <TransferDac dac={dac}></TransferDac>
+
               {dac.url && (
                 <CommunityButton className="btn btn-secondary" url={dac.url}>
                   Join our community
@@ -139,7 +142,7 @@ class ViewDAC extends Component {
 
               <GridContainer justify="center" className="spacer-top-50">
                 <GridItem xs={12} sm={12} md={8}>
-                  <DonationList donations={donations}></DonationList>
+                  <DonationList donationIds={dac.budgetDonationIds}></DonationList>
 	                <DonationsBalance donationIds={dac.budgetDonationIds}></DonationsBalance>
                 </GridItem>
               </GridContainer>
