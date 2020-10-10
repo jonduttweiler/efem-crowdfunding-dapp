@@ -206,8 +206,8 @@ class EditProfile extends Component {
                             <Box my={2} display="flex" justifyContent="flex-end">
                               <Box>
                                 <LoaderButton
-                                  color="success"
-                                  className="btn btn-success"
+                                  color="primary"
+                                  className="btn btn-info"
                                   formNoValidate
                                   type="submit"
                                   disabled={isSaving || isPristine || (currentUser && currentUser.giverId === 0)}

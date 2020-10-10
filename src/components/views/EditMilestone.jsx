@@ -482,7 +482,8 @@ class EditMilestone extends Component {
                             </Box>
                             <Box>
                               <LoaderButton
-                                className="btn btn-success pull-right"
+                                color="primary"
+                                className="btn btn-info"
                                 formNoValidate
                                 type="submit"
                                 //disabled={isSaving || !formIsValid}

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Loader from './Loader';
-import { Button } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
+import Button from "components/CustomButtons/Button.js";
+
 
 // Need to disable the button type because the rule does not allow prop values
 /* eslint react/button-has-type: 0 */
@@ -30,8 +31,8 @@ const LoaderButton = ({
     <Button color={color} className={className} formNoValidate={formNoValidate} type={type} disabled={disabled}>
       {isLoading && (
         <span>
-          <Loader className="small btn-loader" />
           {loadingText}
+          <CircularProgress size={10} />
         </span>
       )}
       {!isLoading && <span>{children}</span>}
