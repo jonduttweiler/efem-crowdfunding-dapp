@@ -143,6 +143,11 @@ class ViewDAC extends Component {
               <GridContainer justify="center" className="spacer-top-50">
                 <GridItem xs={12} sm={12} md={8}>
                   <DonationList donationIds={dac.budgetDonationIds}></DonationList>
+                </GridItem>
+              </GridContainer>
+
+              <GridContainer justify="center" className="spacer-top-50">
+                <GridItem xs={12} sm={12} md={8}>
 	                <DonationsBalance donationIds={dac.budgetDonationIds}></DonationsBalance>
                 </GridItem>
               </GridContainer>

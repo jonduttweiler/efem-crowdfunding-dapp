@@ -258,6 +258,11 @@ class ViewMilestone extends Component {
                   <GridContainer justify="center" className="spacer-top-50">
                     <GridItem xs={12} sm={12} md={8}>
                       <DonationList donationIds={milestone.budgetDonationIds}></DonationList>
+                    </GridItem>
+                  </GridContainer>
+
+                  <GridContainer justify="center" className="spacer-top-50">
+                    <GridItem xs={12} sm={12} md={8}>
 	                    <DonationsBalance donationIds={milestone.budgetDonationIds} fiatTarget={milestone.fiatAmountTarget}></DonationsBalance>
                     </GridItem>
                   </GridContainer>

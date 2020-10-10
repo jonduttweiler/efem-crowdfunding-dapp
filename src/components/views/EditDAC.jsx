@@ -28,6 +28,7 @@ import GridItem from "components/Grid/GridItem.js";
 
 import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/dacPage.js";
+import { Box } from '@material-ui/core';
 
 // Save dac
 const showToast = (msg, url, isSuccess = false) => {
@@ -295,22 +296,24 @@ class EditDAC extends Component {
                           />
                         </div>
 
-                        <div className="form-group row">
-                          <div className="col-6">
-                            <GoBackButton history={history} />
-                          </div>
-                          <div className="col-6">
-                            <LoaderButton
-                              className="btn btn-success pull-right"
-                              formNoValidate
-                              type="submit"
-                              disabled={isSaving || !formIsValid || (dac.id && dac.delegateId === 0)}
-                              isLoading={isSaving}
-                              loadingText="Saving..."
-                            >
-                              {isNew ? 'Create Fund' : 'Update Fund'}
-                            </LoaderButton>
-                          </div>
+                        <div className="form-group">
+                          <Box my={2} display="flex" justifyContent="space-between">
+                            <Box>
+                              <GoBackButton history={history} />
+                            </Box>
+                            <Box>
+                              <LoaderButton
+                                className="btn btn-success pull-right"
+                                formNoValidate
+                                type="submit"
+                                disabled={isSaving || !formIsValid || (dac.id && dac.delegateId === 0)}
+                                isLoading={isSaving}
+                                loadingText="Saving..."
+                              >
+                                {isNew ? 'Create Fund' : 'Update Fund'}
+                              </LoaderButton>
+                            </Box>
+                          </Box>
                         </div>
                       </Form>
                     </div>

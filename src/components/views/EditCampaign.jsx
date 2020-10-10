@@ -33,6 +33,7 @@ import GridItem from "components/Grid/GridItem.js";
 import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/campaignPage.js";
 import { withTranslation } from 'react-i18next';
+import { Box } from '@material-ui/core';
 
 /**
  * View to create or edit a Campaign
@@ -274,24 +275,26 @@ class EditCampaign extends Component {
                               required
                             />
                           }
-                        </div>
+                          </div>
 
-                        <div className="form-group row">
-                          <div className="col-md-6">
-                            <GoBackButton history={history} />
-                          </div>
-                          <div className="col-md-6">
-                            <LoaderButton
-                              className="btn btn-success pull-right"
-                              formNoValidate
-                              type="submit"
-                              disabled={isSaving || !formIsValid}
-                              isLoading={isSaving}
-                              loadingText={t('campaignLoadingText')}
-                            >
-                              {isNew ? t('createCampaignBtn'): t('updateCampaignBtn')} 
-                            </LoaderButton>
-                          </div>
+                        <div className="form-group">
+                          <Box my={2} display="flex" justifyContent="space-between">
+                            <Box>
+                              <GoBackButton history={history} />
+                            </Box>
+                            <Box>
+                              <LoaderButton
+                                className="btn btn-success pull-right"
+                                formNoValidate
+                                type="submit"
+                                disabled={isSaving || !formIsValid}
+                                isLoading={isSaving}
+                                loadingText={t('campaignLoadingText')}
+                              >
+                                {isNew ? t('createCampaignBtn'): t('updateCampaignBtn')} 
+                              </LoaderButton>
+                            </Box>
+                          </Box>
                         </div>
                       </Form>
                     </div>

@@ -39,6 +39,7 @@ import GridItem from "components/Grid/GridItem.js";
 import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/campaignView.js";
 import Typography from '@material-ui/core/Typography';
+import { Box } from '@material-ui/core';
 
 /**
  * The Campaign detail view mapped to /campaign/id
@@ -181,22 +182,27 @@ class ViewCampaign extends Component {
                     <GridContainer justify="center">
                       <GridItem xs={12} sm={12} md={8}>
 
-                        <Typography variant="h5">
-                          {t('milestones')}
-                        </Typography>
-                        
                         <div className="milestone-header spacer-bottom-50 card-view">
 
-                          {isOwner(campaign.managerAddress, currentUser) && (
-                            <div>
-                              <Link
-                                className="btn btn-primary btn-sm pull-right"
-                                to={`/campaigns/${campaign.id}/milestones/new`}>
-                                Add Milestone
-                              </Link>
-                            </div>
-                          )}
-
+                          <Box display="flex">
+                            <Box my={2} flexGrow={1}>
+                              <Typography variant="h5">
+                                {t('milestones')}
+                              </Typography>
+                            </Box>
+                            <Box my={2}>
+                              {isOwner(campaign.managerAddress, currentUser) && (
+                                <div>
+                                  <Link
+                                    className="btn btn-primary btn-sm pull-right"
+                                    to={`/campaigns/${campaign.id}/milestones/new`}>
+                                    Add Milestone
+                                  </Link>
+                                </div>
+                              )}
+                            </Box>
+                          </Box>
+                          
                           {isLoadingMilestones && milestonesTotal === 0 && (
                             <Loader className="relative" />
                           )}
@@ -246,6 +252,11 @@ class ViewCampaign extends Component {
                     <GridContainer justify="center" className="spacer-bottom-50">
                       <GridItem xs={12} sm={12} md={8}>
 	                    <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
+                      </GridItem>
+                    </GridContainer>
+
+                    <GridContainer justify="center" className="spacer-bottom-50">
+                      <GridItem xs={12} sm={12} md={8}>
 	                    <DonationsBalance donationIds={campaign.budgetDonationIds}></DonationsBalance>
                       </GridItem>
                     </GridContainer>

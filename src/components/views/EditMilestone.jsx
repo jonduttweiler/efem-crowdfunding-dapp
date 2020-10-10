@@ -37,6 +37,7 @@ import GridItem from "components/Grid/GridItem.js";
 import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/milestonePage.js";
 import { withTranslation } from 'react-i18next';
+import { Box } from '@material-ui/core';
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
 
@@ -474,22 +475,24 @@ class EditMilestone extends Component {
                           </div>
                         </div>
 
-                        <div className="form-group row">
-                          <div className="col-6">
-                            <GoBackButton history={history} title={`Campaign: ${campaign.title}`} />
-                          </div>
-                          <div className="col-6">
-                            <LoaderButton
-                              className="btn btn-success pull-right"
-                              formNoValidate
-                              type="submit"
-                              //disabled={isSaving || !formIsValid}
-                              isLoading={isSaving}
-                              loadingText="Saving..."
-                            >
-                              <span>{this.btnText()}</span>
-                            </LoaderButton>
-                          </div>
+                        <div className="form-group">
+                          <Box my={2} display="flex" justifyContent="space-between">
+                            <Box>
+                              <GoBackButton history={history} title={`Campaign: ${campaign.title}`} />
+                            </Box>
+                            <Box>
+                              <LoaderButton
+                                className="btn btn-success pull-right"
+                                formNoValidate
+                                type="submit"
+                                //disabled={isSaving || !formIsValid}
+                                isLoading={isSaving}
+                                loadingText="Saving..."
+                              >
+                                <span>{this.btnText()}</span>
+                              </LoaderButton>
+                            </Box>
+                          </Box>
                         </div>
                       </Form>
                     </div>
