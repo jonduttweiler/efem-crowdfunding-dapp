@@ -21,6 +21,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
+import { Box } from '@material-ui/core';
 /**
  * Edición del usuario actual.
  *
@@ -201,17 +202,23 @@ class EditProfile extends Component {
                             />
                           </div>
 
-                          <LoaderButton
-                            color="success"
-                            className="btn btn-success"
-                            formNoValidate
-                            type="submit"
-                            disabled={isSaving || isPristine || (currentUser && currentUser.giverId === 0)}
-                            isLoading={isSaving}
-                            loadingText="Saving..."
-                          >
-                            Save profile
-                          </LoaderButton>
+                          <div className="form-group">
+                            <Box my={2} display="flex" justifyContent="flex-end">
+                              <Box>
+                                <LoaderButton
+                                  color="primary"
+                                  className="btn btn-info"
+                                  formNoValidate
+                                  type="submit"
+                                  disabled={isSaving || isPristine || (currentUser && currentUser.giverId === 0)}
+                                  isLoading={isSaving}
+                                  loadingText="Saving..."
+                                >
+                                  Save profile
+                                </LoaderButton>
+                              </Box>
+                            </Box>
+                          </div>
                         </Form>
                       </div>
                     )}
