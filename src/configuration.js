@@ -30,7 +30,7 @@ const configurations = {
     liquidPledgingAddress: '0x46579394802b5e4d2C0647436BFcc71A2d9E8478',
     lppCampaignFactoryAddress: '0xe3155F7A49897e7860476b5A625B258ebe43cA98',
     lppCappedMilestoneFactoryAddress: '0x1b6E4a9eB8264E46784a782c87e3529E203425Ca',
-    nodeConnection: 'http://localhost:8545',
+    nodeConnection: 'http://localhost:4444',
     networkName: 'ganache',
     nodeId: 88,
     etherscan: 'https://explorer.testnet.rsk.co/', // this won't work, only here so we can see links during development
@@ -74,7 +74,7 @@ const configurations = {
     liquidPledgingAddress: '0x581A2751C29F030730c99f9435c5f34A82BF4969',
     lppCampaignFactoryAddress: '0xcb5eea43731E1058e5c8FBc989CB2E221602Fb67',
     lppCappedMilestoneFactoryAddress: '0x43E3fC1f59C367b34Cab072AFb2dFE8CEA1CBAFa',
-    nodeConnection: 'https://testnet.node.b4h.world',
+    nodeConnection: 'https://public-node.testnet.rsk.co',
     networkName: 'rsk_testnet',
     nodeId: 31,
     etherscan: 'https://explorer.testnet.rsk.co/',
