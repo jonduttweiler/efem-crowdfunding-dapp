@@ -22,7 +22,6 @@ import styles from "assets/jss/material-kit-react/views/landingPage.js";
 const useStyles = makeStyles(styles);
 
 export default function LandingPage(props) {
-  console.log(JSON.stringify(props));
   const classes = useStyles();
   const { ...rest } = props;
   return (

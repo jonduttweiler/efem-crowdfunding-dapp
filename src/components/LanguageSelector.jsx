@@ -16,7 +16,6 @@ class LanguageSelector extends Component {
 
     constructor(props) {
         super(props);
-        console.log(JSON.stringify(config));
         this.state = {
             value: config.language.default
         };
@@ -26,7 +25,6 @@ class LanguageSelector extends Component {
     }
 
     changeValue(newVal) {
-        console.log(newVal);
         let value = newVal;
         this.setState({
             value: value
@@ -48,7 +46,7 @@ class LanguageSelector extends Component {
         const { classes } = this.props;
 
         const options = config.language.options.map(language => (
-            <ListItem className={classes.listItem}>
+            <ListItem key={language.key} className={classes.listItem}>
                 <Button title={language.name} justIcon link className={classes.margin5}>
                     <Flag country={language.flag} value={language.key} onClick={() => this.changeValue(language.key)} />
                 </Button>
