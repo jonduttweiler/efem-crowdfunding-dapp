@@ -198,6 +198,7 @@ class EditCampaign extends Component {
                           campaign.description = inputs.description;
                           campaign.url = inputs.url;
                           campaign.reviewerAddress = inputs.reviewerAddress;
+                          campaign.beneficiaries = inputs.beneficiaries;
                           //campaign.summary = getTruncatedText(inputs.description, 100);
                         }}
                         onValid={() => this.toggleFormValid(true)}
@@ -244,6 +245,21 @@ class EditCampaign extends Component {
                           />
                         </div>
 
+                        <Input
+                          name="beneficiaries"
+                          id="beneficiaries"
+                          label={t('campaignBeneficiariesLabel')}
+                          type="text"
+                          value={campaign.beneficiaries}
+                          placeholder={t('campaignBeneficiariesPlaceholder')}
+                          help={t('campaignBeneficiariesHelp')}
+                          validations="minLength:10"
+                          validationErrors={{
+                            minLength: t('campaignBeneficiariesValidationMinLength'),
+                          }}
+                          required
+                        />
+
                         <div className="form-group">
                           <Input
                             name="url"
@@ -253,8 +269,11 @@ class EditCampaign extends Component {
                             value={campaign.url}
                             placeholder="https://slack.give4forests.com"
                             help={t('campaignUrlHelp')}
-                            validations="isUrl"
-                            validationErrors={{ isUrl: t('campaignUrlError') }}
+                            validations="minLength:3"
+                            validationErrors={{
+                              minLength: t('campaignTitleValidationMinLength'),
+                            }}
+                            required
                           />
                         </div>
 

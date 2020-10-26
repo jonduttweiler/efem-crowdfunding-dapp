@@ -171,13 +171,15 @@ class ViewCampaign extends Component {
                         <div className="card content-card ">
                           <div className="card-body content">
                             {ReactHtmlParser(campaign.description)}
+                            {/*campaign.beneficiaries && */(
+                              <p>
+                                  {t('campaignBeneficiariesLabel')}: {campaign.beneficiaries}
+                              </p>
+                            )}
                           </div>
                         </div>
-
                       </GridItem>
                     </GridContainer>
-
-                    
 
                     <GridContainer justify="center">
                       <GridItem xs={12} sm={12} md={8}>

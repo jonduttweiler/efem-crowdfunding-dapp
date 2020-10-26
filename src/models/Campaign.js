@@ -15,13 +15,25 @@ class Campaign extends Entity {
       milestoneIds = [],
       managerAddress = '',
       reviewerAddress = '',
+      beneficiaries = '',
       status = Campaign.PENDING.toStore()
     } = data;
     this._dacIds = dacIds;
     this._milestoneIds = milestoneIds;
     this._managerAddress = managerAddress;
     this._reviewerAddress = reviewerAddress;
+    this._beneficiaries = beneficiaries;
     this._status = StatusUtils.build(status.name, status.isLocal);
+  }
+
+  /**
+   * Obtiene un objeto plano de la campaña para envíar a IPFS.
+   */
+  toIpfs() {
+    let entityIpfs = super.toIpfs();
+    return Object.assign(entityIpfs, {
+      beneficiaries: this._beneficiaries
+    });
   }
 
   /**
@@ -34,6 +46,7 @@ class Campaign extends Entity {
       milestoneIds: this._milestoneIds,
       managerAddress: this._managerAddress,
       reviewerAddress: this._reviewerAddress,
+      beneficiaries: this._beneficiaries,
       status: this._status.toStore()
     });
   }
@@ -146,6 +159,15 @@ class Campaign extends Entity {
    */
   get canReceiveFunds() {
     return this.isActive;
+  }
+
+  get beneficiaries() {
+    return this._beneficiaries;
+  }
+
+  set beneficiaries(value) {
+    this.checkType(value, ['string'], 'beneficiaries');
+    this._beneficiaries = value;
   }
 
 }
