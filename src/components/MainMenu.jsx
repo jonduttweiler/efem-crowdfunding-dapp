@@ -17,6 +17,9 @@ import CustomDropdown from './CustomDropdown/CustomDropdown';
 import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js";
 import { withStyles } from '@material-ui/core/styles';
 
+
+
+
 const signUpSwal = () => {
   React.swal({
     title: 'Sign Up!',
@@ -37,7 +40,7 @@ const signUpSwal = () => {
  * The main top menu
  */
 class MainMenu extends Component {
-
+  
   componentDidMount() {
     // when route changes, close the menu
     history.listen(() => this.setState({ showMobileMenu: false }));
@@ -50,11 +53,13 @@ class MainMenu extends Component {
   render() {
     const { classes, currentUser } = this.props;
     const registered =  currentUser && currentUser.registered || false;
-
+    
+    
     return (
       <Web3Consumer>
         {({ state: { validProvider, isEnabled, failedToLoad }, actions: { enableProvider } }) => (
           <List className={classes.list}>
+
 
           <ListItem className={classes.listItem}>
             <LanguageSelector ></LanguageSelector>

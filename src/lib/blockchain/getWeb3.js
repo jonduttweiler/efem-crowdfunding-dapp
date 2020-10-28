@@ -31,7 +31,7 @@ export default () =>
         web3.enable = enable.bind(web3);
         console.log('Configuración Web3: Browser Ethereum Provider.');
       } else {
-        var web3HttpProvider = new Web3HttpProvider(config.nodeConnection, {
+        var web3HttpProvider = new Web3HttpProvider(config.network.nodeUrl, {
           keepAlive: true,
           timeout: 20000, // milliseconds
         });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // nodejs library to set properties for components
@@ -15,6 +15,9 @@ import Menu from "@material-ui/icons/Menu";
 // core components
 import styles from "assets/jss/material-kit-react/components/headerStyle.js";
 import { NavLink } from "react-router-dom";
+import ConnectionBanner from '../../lib/blockchain/ConnectionBanner';
+import { AppTransactionContext } from '../../lib/blockchain/AppWeb3';
+import config from '../../configuration';
 
 const useStyles = makeStyles(styles);
 
@@ -63,7 +66,10 @@ export default function Header(props) {
   const brandComponent =  <NavLink className={classes.title} to="/">
                             {brand} 
                           </NavLink>;
+  const { network, web3Fallback } = useContext(AppTransactionContext);
+
   return (
+      
     <AppBar className={appBarClasses}>
       <Toolbar className={classes.container}>
         {leftLinks !== undefined ? brandComponent : null}
@@ -76,6 +82,7 @@ export default function Header(props) {
             brandComponent
           )}
         </div>
+        
         <Hidden smDown implementation="css">
           {rightLinks}
         </Hidden>
@@ -89,6 +96,7 @@ export default function Header(props) {
           </IconButton>
         </Hidden>
       </Toolbar>
+
       <Hidden mdUp implementation="js">
         <Drawer
           variant="temporary"
@@ -105,6 +113,13 @@ export default function Header(props) {
           </div>
         </Drawer>
       </Hidden>
+
+      <ConnectionBanner
+        currentNetwork={network.current.id}
+        requiredNetwork={config.network.requiredId}
+        onWeb3Fallback={web3Fallback}
+      />
+
     </AppBar>
   );
 }

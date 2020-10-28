@@ -39,6 +39,7 @@ import { fetchExchangeRates } from '../redux/reducers/exchangeRatesSlice'
 import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes from './SwitchRoutes';
 
+import AppWeb3 from "../lib/blockchain/AppWeb3";
 
 /* global document */
 /**
@@ -97,6 +98,8 @@ class Application extends Component {
     this.setState({ whiteListLoading: false });
   }
 
+
+
   render() {
     const { web3Loading, whiteListLoading } = this.state;
     const { currentUser } = this.props;
@@ -104,72 +107,89 @@ class Application extends Component {
 
     return (
       <ErrorBoundary>
-        <MessageViewer></MessageViewer>
-        {/* Header stuff goes here */}
-        {config.analytics.useHotjar && window.location.origin.includes('beta') && (
-          <Helmet>
-            <script>{`
-              (function(h,o,t,j,a,r){
-                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                h._hjSettings={hjid:944408,hjsv:6};
-                a=o.getElementsByTagName('head')[0];
-                r=o.createElement('script');r.async=1;
-                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                a.appendChild(r);
-              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-            `}</script>
-          </Helmet>
-        )}
-        <WhiteListProvider onLoaded={this.whiteListLoaded}>
-          <WhiteListConsumer>
-            {({ state: { fiatWhitelist } }) => (
-              <div>
-                {whiteListLoading && <Loader className="fixed" />}
-                {!whiteListLoading && (
-                  <Web3Provider onLoaded={this.web3Loaded}>
-                    <Web3Consumer>
-                      {({ state: { account, balance, isCorrectNetwork } }) => (
-                        <div>
-                          {web3Loading && <Loader className="fixed" />}
-                          {!web3Loading && (
-                            <ConversionRateProvider fiatWhitelist={fiatWhitelist}>
-                              <Router history={history}>
+        <AppWeb3>
+          <AppWeb3.Consumer>
+            {({
+              needsPreflight,
+              validBrowser,
+              userAgent,
+              web3,
+              account,
+              accountBalance,
+              accountBalanceLow,
+              initAccount,
+              rejectAccountConnect,
+              userRejectedConnect,
+              accountValidated,
+              accountValidationPending,
+              rejectValidation,
+              userRejectedValidation,
+              validateAccount,
+              connectAndValidateAccount,
+              modals,
+              network,
+              transaction,
+              web3Fallback
+            }) => (
+              
+              <React.Fragment>
+                
+                <MessageViewer></MessageViewer>
+    
+                <WhiteListProvider onLoaded={this.whiteListLoaded}>
+                  <WhiteListConsumer>
+                    {({ state: { fiatWhitelist } }) => (
+                      <div>
+                        {whiteListLoading && <Loader className="fixed" />}
+                        {!whiteListLoading && (
+                          <Web3Provider onLoaded={this.web3Loaded}>
+                            <Web3Consumer>
+                              {({ state: { account, balance, isCorrectNetwork } }) => (
                                 <div>
-                                  {GA.init() && <GA.RouteTracker />}
+                                  {web3Loading && <Loader className="fixed" />}
+                                  {!web3Loading && (
+                                    <ConversionRateProvider fiatWhitelist={fiatWhitelist}>
+                                      <Router history={history}>
+                                        <div>
+                                          {GA.init() && <GA.RouteTracker />}
 
-                                  {userLoading && <Loader className="fixed" />}
+                                          {userLoading && <Loader className="fixed" />}
 
-                                  {!userLoading && (
-                                    <div>
-                                      <SwitchRoutes
-                                        currentUser={currentUser}
-                                        balance={balance}
-                                        isCorrectNetwork={isCorrectNetwork}
-                                      />
-                                    </div>
+                                          {!userLoading && (
+                                            <div>
+                                              <SwitchRoutes
+                                                currentUser={currentUser}
+                                                balance={balance}
+                                                isCorrectNetwork={isCorrectNetwork}
+                                              />
+                                            </div>
+                                          )}
+                                          <ToastContainer
+                                            position="top-right"
+                                            type="default"
+                                            autoClose={5000}
+                                            hideProgressBar
+                                            newestOnTop={false}
+                                            closeOnClick
+                                            pauseOnHover
+                                          />
+                                        </div>
+                                      </Router>
+                                    </ConversionRateProvider>
                                   )}
-                                  <ToastContainer
-                                    position="top-right"
-                                    type="default"
-                                    autoClose={5000}
-                                    hideProgressBar
-                                    newestOnTop={false}
-                                    closeOnClick
-                                    pauseOnHover
-                                  />
                                 </div>
-                              </Router>
-                            </ConversionRateProvider>
-                          )}
-                        </div>
-                      )}
-                    </Web3Consumer>
-                  </Web3Provider>
-                )}
-              </div>
+                              )}
+                            </Web3Consumer>
+                          </Web3Provider>
+                        )}
+                      </div>
+                    )}
+                  </WhiteListConsumer>
+                </WhiteListProvider>
+              </React.Fragment>
             )}
-          </WhiteListConsumer>
-        </WhiteListProvider>
+          </AppWeb3.Consumer>
+        </AppWeb3>
       </ErrorBoundary>
     );
   }
