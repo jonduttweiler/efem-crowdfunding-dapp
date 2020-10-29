@@ -72,8 +72,8 @@ export default function Header(props) {
       
     <AppBar className={appBarClasses}>
       <Toolbar className={classes.container}>
-        {leftLinks !== undefined ? brandComponent : null}
-        <div className={classes.flex}>
+        {/*leftLinks !== undefined ? brandComponent : null*/}
+        {/*<div className={classes.flex}>
           {leftLinks !== undefined ? (
             <Hidden smDown implementation="css">
               {leftLinks}
@@ -81,8 +81,14 @@ export default function Header(props) {
           ) : (
             brandComponent
           )}
-        </div>
+        </div>*/}
         
+        <ConnectionBanner
+          currentNetwork={network.current.id}
+          requiredNetwork={config.network.requiredId}
+          onWeb3Fallback={web3Fallback}
+        />
+
         <Hidden smDown implementation="css">
           {rightLinks}
         </Hidden>
@@ -114,11 +120,7 @@ export default function Header(props) {
         </Drawer>
       </Hidden>
 
-      <ConnectionBanner
-        currentNetwork={network.current.id}
-        requiredNetwork={config.network.requiredId}
-        onWeb3Fallback={web3Fallback}
-      />
+      
 
     </AppBar>
   );

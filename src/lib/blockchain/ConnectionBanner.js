@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import RimbleUtils from './NetworkUtils';
+import NetworkUtils from './NetworkUtils';
 import { Box, Flex, Icon, Text, MetaMaskButton, Flash } from 'rimble-ui';
+import Typography from '@material-ui/core/Typography';
 import { useTranslation } from 'react-i18next';
 
 const WrongNetwork = ({
@@ -10,8 +11,8 @@ const WrongNetwork = ({
   onWrongNetworkMessage,
 }) => {
   const { t } = useTranslation();
-  const requiredNetworkName = RimbleUtils.getEthNetworkNameById(requiredNetwork);
-  const currentNetworkName = RimbleUtils.getEthNetworkNameById(currentNetwork);
+  const requiredNetworkName = NetworkUtils.getEthNetworkNameById(requiredNetwork);
+  const currentNetworkName = NetworkUtils.getEthNetworkNameById(currentNetwork);
   return (
     <div>
       {onWrongNetworkMessage === null ? (
@@ -19,20 +20,20 @@ const WrongNetwork = ({
         <Flash variant={'danger'}>
           <Flex alignItems="center">
             <Box pr={3}>
-              <Icon name="Warning" size="44" />
+              <Icon name="Warning" size="30" />
             </Box>
             <Flex flexDirection="column">
-              <Text fontWeight="bold" color={'inherit'}>
+              <Typography variant="subtitle2">
                 {t('web3WrongNetworkTitle', {
                   requiredNetwork: requiredNetworkName
                 })}
-              </Text>
-              <Text color={'inherit'}>
+              </Typography>
+              <Typography variant="body2">
                 {t('web3WrongNetworkDescription', {
                   requiredNetwork: requiredNetworkName,
                   currentNetwork: currentNetworkName
                 })}
-              </Text>
+              </Typography>
             </Flex>
           </Flex>
         </Flash>
@@ -53,12 +54,12 @@ const NoNetwork = ({ noNetworkAvailableMessage }) => {
           <Flex alignItems="center" justifyContent="space-between">
             <Flex alignItems="center" pr={'2'}>
               <Box pr={3}>
-                <Icon name="Warning" size="44" />
+                <Icon name="Warning" size="30" />
               </Box>
               <Flex flexDirection="column">
-                <Text  color={'inherit'}>
+                <Typography variant="body2">
                   {t('web3NoNetwork')}
-                </Text>
+                </Typography>
               </Flex>
             </Flex>
 
@@ -88,20 +89,20 @@ const NotWeb3Browser = ({ notWeb3CapableBrowserMessage }) => {
         <Flash variant={'danger'}>
           <Flex alignItems="center">
             <Box pr={3}>
-              <Icon name="Warning" size="44" />
+              <Icon name="Warning" size="30" />
             </Box>
             <Flex flexDirection="column">
-              <Text fontWeight="bold" color={'inherit'}>
+              <Typography variant="subtitle2">
                 {t('web3NotWeb3BrowserTitle')}
-              </Text>
-              {RimbleUtils.isMobileDevice() ? (
-                <Text color={'inherit'}>
+              </Typography>
+              {NetworkUtils.isMobileDevice() ? (
+                <Typography variant="body2">
                   {t('web3NotWeb3BrowserDescriptionMobile')}
-                </Text>
+                </Typography>
               ) : (
-                <Text color={'inherit'}>
+                <Typography variant="body2">
                   {t('web3NotWeb3BrowserDescription')}
-                </Text>
+                </Typography>
               )}
             </Flex>
           </Flex>
@@ -148,7 +149,7 @@ class ConnectionBanner extends Component {
   };
 
   componentDidMount() {
-    const browserIsWeb3Capable = RimbleUtils.browserIsWeb3Capable();
+    const browserIsWeb3Capable = NetworkUtils.browserIsWeb3Capable();
     //const browserIsWeb3Capable = false;
     this.setState({ browserIsWeb3Capable });
   }
@@ -168,7 +169,9 @@ class ConnectionBanner extends Component {
     } = this.props.children;
 
     return (
-      <div>
+      <div style={{
+          width: '50%'
+        }}>
         {this.state.browserIsWeb3Capable === false ? (
           <NotWeb3Browser
             notWeb3CapableBrowserMessage={notWeb3CapableBrowserMessage}

@@ -1,6 +1,6 @@
 import React from "react";
 import Web3 from "web3"; // uses latest 1.x.x version
-import RimbleUtils from "@rimble/utils";
+import NetworkUtils from "./NetworkUtils";
 import ConnectionModalUtil from "./ConnectionModalsUtil";
 import TransactionUtil from "./TransactionUtil";
 import config from '../../configuration';
@@ -133,7 +133,7 @@ class AppTransaction extends React.Component {
 
   // Validates user's browser is web3 capable
   checkModernBrowser = async () => {
-    const validBrowser = RimbleUtils.browserIsWeb3Capable();
+    const validBrowser = NetworkUtils.browserIsWeb3Capable();
     
     this.setState({
       validBrowser

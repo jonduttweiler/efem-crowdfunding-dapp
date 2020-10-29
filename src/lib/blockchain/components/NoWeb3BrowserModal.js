@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Heading, Text, Modal, Link } from "rimble-ui";
 import ModalCard from './ModalCard';
-import RimbleUtil from "@rimble/utils";
+import NetworkUtils from "../NetworkUtils";
 
 class NoWeb3BrowserModal extends React.Component {
   renderContent = () => {
@@ -16,7 +16,7 @@ class NoWeb3BrowserModal extends React.Component {
           Switch browsers to use the Rimble App Demo
         </Heading.h2>
 
-        {RimbleUtil.isMobileDevice() ? (
+        {NetworkUtils.isMobileDevice() ? (
           <Text my={4}>
             You can't use our blockchain features, like increasing the count
             value, in this browser. We recommend using{" "}

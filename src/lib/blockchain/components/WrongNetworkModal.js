@@ -10,7 +10,7 @@ import {
 } from "rimble-ui";
 import ModalCard from './ModalCard';
 import GeneralUtil from "../GeneralUtil";
-import RimbleUtils from "@rimble/utils";
+import NetworkUtils from "../NetworkUtils";
 
 class WrongNetworkModal extends React.Component {
   renderContent = () => {
@@ -34,7 +34,7 @@ class WrongNetworkModal extends React.Component {
           network.
         </Text>
 
-        {GeneralUtil.hasMetaMask() && !RimbleUtils.isMobileDevice() ? (
+        {GeneralUtil.hasMetaMask() && !NetworkUtils.isMobileDevice() ? (
           <Box bg={"#f6f6fc"} p={3} display={["none", "block"]}>
             <Flex alignItems={"center"}>
               <Box position={"relative"} width={"4em"}>
