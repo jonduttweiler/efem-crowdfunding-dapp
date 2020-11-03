@@ -285,7 +285,6 @@ class AppTransaction extends React.Component {
               // Only update if changed
               if (!accountBalance.isEqualTo(this.state.accountBalance)) {
                 this.setState({ accountBalance });
-                console.log("account balance: ", accountBalance);
                 this.updateCurrentUserBalance();
                 this.determineAccountLowBalance();
               }

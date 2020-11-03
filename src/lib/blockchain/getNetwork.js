@@ -45,13 +45,11 @@ export default async () => {
   if (network) return network;
 
   const web3 = await getWeb3();
-console.log('Networkkkkkkkkk', web3);
+
   network = Object.assign({}, config);
 
   // Definición de Smart Contract de Crowdfunding
   network.crowdfunding = new Crowdfunding(web3, network.crowdfundingAddress);
-
-  console.log(`%ccrowdfudingAddress: ${network.crowdfundingAddress}`,"color:white;font-weight:bold");
 
   network.tokens = {};
   const { tokenWhitelist } = await feathersClient.service('/whitelist').find();

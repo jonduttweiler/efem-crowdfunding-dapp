@@ -8,10 +8,6 @@ import config from '../configuration';
 import Web3Utils from './blockchain/Web3Utils';
 
 export const isOwner = (address, user) => {
-  console.log("isOwnerrrrrrrrr", address, user, user.address === address);
-  window.a1 = address;
-  window.a2 = user.address;
-  //return address !== undefined && user !== undefined && user.address === address;
   return address !== undefined && user !== undefined && Web3Utils.addressEquals(address, user.address);
 }
   

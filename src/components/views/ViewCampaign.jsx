@@ -12,7 +12,6 @@ import Loader from '../Loader';
 import MilestoneCard from '../MilestoneCard';
 import GoBackButton from '../GoBackButton';
 import { isOwner } from '../../lib/helpers';
-import { checkBalance } from '../../lib/middleware';
 import Donate from '../Donate';
 import TransferCampaign from '../TransferCampaign';
 import Campaign from '../../models/Campaign';
@@ -28,14 +27,12 @@ import ProfileCard from '../ProfileCard';
 import CampaignCard from '../CampaignCard';
 import { withTranslation } from 'react-i18next';
 import EditCampaignButton from '../EditCampaignButton';
-
 import Header from "components/Header/Header.js";
 import Footer from "components/Footer/Footer.js";
 import Parallax from "components/Parallax/Parallax.js";
 import MainMenu from 'components/MainMenu';
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-
 import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/campaignView.js";
 import Typography from '@material-ui/core/Typography';
@@ -46,7 +43,6 @@ import { Box } from '@material-ui/core';
  *
  * @param currentUser  Currently logged in user information
  * @param history      Browser history object
- * @param balance      User's current balance
  */
 class ViewCampaign extends Component {
   constructor(props) {
@@ -81,7 +77,7 @@ class ViewCampaign extends Component {
     }*/
   }
 
-  removeMilestone(id) {
+  /*removeMilestone(id) {
     checkBalance(this.props.balance)
       .then(() => {
         React.swal({
@@ -99,12 +95,13 @@ class ViewCampaign extends Component {
           // handle no balance error
         }
       });
-  }
+  }*/
+
   render() {
     const { isLoading, isLoadingMilestones, milestonesLoaded, milestonesTotal } = this.state;
-    const { classes, campaign, milestones, donations, history, currentUser, balance, t } = this.props;
+    const { classes, campaign, milestones, donations, history, currentUser, t } = this.props;
     const { ...rest } = this.props;
-console.log('currentUser Campaign', currentUser);
+
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
     return (
       <ErrorBoundary>
@@ -221,7 +218,6 @@ console.log('currentUser Campaign', currentUser);
                                   currentUser={currentUser}
                                   key={m.clientId}
                                   history={history}
-                                  balance={balance}
                                   removeMilestone={() => this.removeMilestone(m.clientId)}
                                 />
                               ))}
@@ -290,8 +286,7 @@ ViewCampaign.propTypes = {
     params: PropTypes.shape({
       id: PropTypes.string,
     }).isRequired,
-  }).isRequired,
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
+  }).isRequired
 };
 
 ViewCampaign.defaultProps = {

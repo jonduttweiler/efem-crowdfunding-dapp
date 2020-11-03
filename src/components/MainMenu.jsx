@@ -65,7 +65,7 @@ class MainMenu extends Component {
             <LanguageSelector ></LanguageSelector>
           </ListItem>
 
-          {validProvider && !failedToLoad && !isEnabled /*&& (
+          {/*validProvider && !failedToLoad && !isEnabled && (
               <ListItem className={classes.listItem}>
                 <Button
                   color="transparent"

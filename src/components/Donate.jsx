@@ -101,11 +101,10 @@ class Donate extends Component {
   render() {
     const { open, amount } = this.state;
     const { title, description, entityCard, enabled, currentUser, classes, t } = this.props;
-    //const { accountBalance } = this.context;
 
     // TODO Definir parametrización de donación.
     const balance = currentUser.balance;
-    //const balance = accountBalance;
+    
     const max = Web3Utils.weiToEther(balance);
     const inputProps = {
       step: 0.0001,

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from "classnames";
-
 import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
 import BigNumber from 'bignumber.js';
 import User from 'models/User';
@@ -90,7 +89,7 @@ class ViewMilestone extends Component {
   }
 
   render() {
-    const { classes, donations, activities, history, user, balance, campaign, milestone, t } = this.props;
+    const { classes, donations, activities, history, user, campaign, milestone, t } = this.props;
     const { ...rest } = this.props;
 
     const {
@@ -154,7 +153,7 @@ class ViewMilestone extends Component {
                     {/* Milestone actions */}
 
                     {user && (
-                      <MilestoneActions milestone={milestone} user={user} balance={balance} />
+                      <MilestoneActions milestone={milestone} user={user} />
                     )}
                   </div>
                 </center>

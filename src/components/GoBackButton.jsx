@@ -12,7 +12,7 @@ const GoBackButton = ({ styleName, title, to }) => (
     tabIndex="0"
     className={`go-back-button ${styleName}`}
   >
-    <Button round size="sm">
+    <Button size="small">
       <NavigateBefore/> {title}
     </Button>
   </div>

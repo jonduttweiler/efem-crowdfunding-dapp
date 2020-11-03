@@ -27,8 +27,17 @@ export const currentUserSlice = createSlice({
       return state;
     },
     setCurrentUser: (state, action) => {
-      action.payload.status = User.REGISTERED;
-      return action.payload.toStore();
+      let currentUserStore = action.payload.toStore();
+      state.address = currentUserStore.address;
+      state.authenticated = currentUserStore.authenticated;
+      state.avatar = currentUserStore.avatar;
+      state.email = currentUserStore.email;
+      state.name = currentUserStore.name;
+      state.roles = currentUserStore.roles;
+      state.registered = currentUserStore.registered;
+      state.url = currentUserStore.url;
+      state.status = User.REGISTERED;
+      return state;
     },
     registerCurrentUser: (state, action) => {
       action.payload.status = User.REGISTERING;
