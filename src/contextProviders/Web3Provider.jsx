@@ -7,9 +7,9 @@ import pollEvery from '../lib/pollEvery';
 import config from '../configuration';
 
 import { connect } from 'react-redux'
-import { initCurrentUser } from '../redux/reducers/currentUserSlice';
+//import { initCurrentUser } from '../redux/reducers/currentUserSlice';
 
-import Web3Utils from "../utils/Web3Utils";
+import Web3Utils from "../lib/blockchain/Web3Utils";
 
 const POLL_DELAY_ACCOUNT = 1000;
 const POLL_DELAY_NETWORK = 2000;
@@ -17,7 +17,7 @@ const POLL_DELAY_NETWORK = 2000;
 const Context = createContext();
 const { Provider, Consumer } = Context;
 
-const getAccount = async web3 => {
+/*const getAccount = async web3 => {
   try {
     const addrs = await web3.eth.getAccounts();
     if (addrs.length > 0) return addrs[0];
@@ -25,7 +25,7 @@ const getAccount = async web3 => {
     // ignore
   }
   return undefined;
-};
+};*/
 
 const pollAccount = pollEvery((web3, { onAccount = () => {}, onBalance = () => {} } = {}) => {
   let lastAccount = -1;
@@ -33,7 +33,7 @@ const pollAccount = pollEvery((web3, { onAccount = () => {}, onBalance = () => {
   return {
     request: async () => {
       try {
-        const account = await getAccount(web3);
+        /*const account = await getAccount(web3);
         if (!account) {
           throw new Error('no account');
         }
@@ -41,7 +41,7 @@ const pollAccount = pollEvery((web3, { onAccount = () => {}, onBalance = () => {
         return {
           account,
           balance: new BigNumber(balance),
-        };
+        };*/
       } catch (e) {
         return {
           balance: new BigNumber(0),
@@ -102,10 +102,8 @@ class Web3Provider extends Component {
 
     this.enableProvider = this.enableProvider.bind(this);
   }
-
-
  
-  componentDidUpdate(prevProps,prevState) {
+  /*componentDidUpdate(prevProps,prevState) {
 
     const currentAccount = this.state.account;
     const prevAccount = prevState.account;
@@ -114,7 +112,7 @@ class Web3Provider extends Component {
       console.log("Load user with account:", currentAccount);
       this.props.initCurrentUser();
     }
-  }
+  }*/
 
 
   componentWillMount() { //Necesita algo del DOM o lo podemos poner en el DidMount?
@@ -127,7 +125,7 @@ class Web3Provider extends Component {
         },
       });
 
-      if (!web3.defaultNode) {
+      /*if (!web3.defaultNode) {
         pollAccount(web3, {
           onAccount: async account => {
             // TODO: find a way for non metamask providers to check they are allowed
@@ -145,21 +143,21 @@ class Web3Provider extends Component {
             });
           },
         });
-      }
+      }*/
     });
 
     this.enableProvider();
   }
 
   showErrorOnProvider() {
-    React.swal({
+    /*React.swal({
       title: 'Web3 Connection Error',
       icon: "warning",
       text: "Unable to connect to the web3 provider. Please check if your MetaMask or other wallet is " +
         "connected to a valid network. If so try and restart your browser or open the DApp in " +
         "private window."
     });
-    this.setState({ setupTimeout: true }, () => this.props.onLoaded());
+    this.setState({ setupTimeout: true }, () => this.props.onLoaded());*/
   }
 
 
@@ -184,13 +182,13 @@ class Web3Provider extends Component {
     clearTimeout(timeout);
 
     if (web3.isEnabled) {
-      const account = await getAccount(web3);
+      /*const account = await getAccount(web3);
       this.setState({
         isEnabled: true,
         account: account
       },
         () => this.props.onLoaded(),
-      );
+      );*/
       return;
     }
 
@@ -265,6 +263,6 @@ Web3Provider.defaultProps = {};
 
 export { Consumer };
 
-export default connect(null, { initCurrentUser })(Web3Provider);
+export default connect(null, {/*initCurrentUser*/ })(Web3Provider);
 
 

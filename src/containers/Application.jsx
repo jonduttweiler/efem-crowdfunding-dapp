@@ -39,7 +39,7 @@ import { fetchExchangeRates } from '../redux/reducers/exchangeRatesSlice'
 import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes from './SwitchRoutes';
 
-import AppWeb3 from "../lib/blockchain/AppWeb3";
+import Web3App from "../lib/blockchain/Web3App";
 
 /* global document */
 /**
@@ -107,8 +107,8 @@ class Application extends Component {
 
     return (
       <ErrorBoundary>
-        <AppWeb3>
-          <AppWeb3.Consumer>
+        <Web3App>
+          <Web3App.Consumer>
             {({
               needsPreflight,
               validBrowser,
@@ -188,8 +188,8 @@ class Application extends Component {
                 </WhiteListProvider>
               </React.Fragment>
             )}
-          </AppWeb3.Consumer>
-        </AppWeb3>
+          </Web3App.Consumer>
+        </Web3App>
       </ErrorBoundary>
     );
   }

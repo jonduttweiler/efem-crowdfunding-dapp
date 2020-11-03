@@ -104,7 +104,7 @@ class ViewCampaign extends Component {
     const { isLoading, isLoadingMilestones, milestonesLoaded, milestonesTotal } = this.state;
     const { classes, campaign, milestones, donations, history, currentUser, balance, t } = this.props;
     const { ...rest } = this.props;
-
+console.log('currentUser Campaign', currentUser);
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
     return (
       <ErrorBoundary>

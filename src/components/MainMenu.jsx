@@ -65,7 +65,7 @@ class MainMenu extends Component {
             <LanguageSelector ></LanguageSelector>
           </ListItem>
 
-          {validProvider && !failedToLoad && !isEnabled && (
+          {validProvider && !failedToLoad && !isEnabled /*&& (
               <ListItem className={classes.listItem}>
                 <Button
                   color="transparent"
@@ -76,7 +76,7 @@ class MainMenu extends Component {
                   Enable Web3
                 </Button>
               </ListItem>
-            )}
+          )*/}
             {validProvider && !failedToLoad && isEnabled && !currentUser && (
               <small className="text-muted">Please unlock MetaMask</small>
             )}

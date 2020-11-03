@@ -9,20 +9,21 @@ import {
 } from "rimble-ui";
 import ModalCard from './ModalCard';
 import GeneralUtil from "../GeneralUtil";
+import { withTranslation } from 'react-i18next';
 
 class ConnectionPendingModal extends React.Component {
   renderContent = () => {
+    const { t } = this.props;
     return (
       <React.Fragment>
-        <Heading.h2 my={3}>Connect Ethereum account</Heading.h2>
+        <Heading.h2 my={3}>
+          {t('web3ConnectionPendingTitle')}
+        </Heading.h2>
 
         <Text my={4}>
-          Confirm the request that's just appeared. If you can't see a
-          request, open your{" "}
-          {GeneralUtil.hasMetaMask()
-            ? `MetaMask extension`
-            : `dApp browser settings`}
-          .
+          {GeneralUtil.hasMetaMask() ?
+            t('web3ConnectionPendingDescriptionMetaMask') :
+            t('web3ConnectionPendingDescriptionNoMetaMask')}
         </Text>
 
         <Box bg={"#f6f6fc"} p={3} display={["none", "block"]}>
@@ -34,9 +35,11 @@ class ConnectionPendingModal extends React.Component {
             </Box>
             <Box>
               <Text fontWeight={4}>
-                Waiting for connection confirmation...
+                {t('web3ConnectionPendingWaitTitle')}
               </Text>
-              <Text fontWeight={2}>This won’t cost you any Ether</Text>
+              <Text fontWeight={2}>
+                {t('web3ConnectionPendingWaitDescription')}
+              </Text>
             </Box>
           </Flex>
         </Box>
@@ -57,4 +60,4 @@ class ConnectionPendingModal extends React.Component {
   }
 }
 
-export default ConnectionPendingModal;
+export default withTranslation()(ConnectionPendingModal);

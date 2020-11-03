@@ -44,6 +44,9 @@ class CrowdfundingContractApi {
     saveDAC(dac) {
         return new Observable(async subscriber => {
             try {
+
+                console.log('alta dac', dac);
+                
                 const crowdfunding = await this.getCrowdfunding();
 
                 // Se almacena en IPFS toda la información de la Dac.
@@ -166,10 +169,13 @@ class CrowdfundingContractApi {
      * Obtiene todas las Campaigns desde el Smart Contract.
      */
     getCampaigns() {
+        console.log('Obteniendo CAMPIGssssssss');
         return new Observable(async subscriber => {
             try {
                 let crowdfunding = await this.getCrowdfunding();
+                console.log('Obteniendo CAMPIGssssssss', crowdfunding);
                 let ids = await crowdfunding.getCampaignIds();
+                console.log('Obteniendo CAMPIGssssssss', ids);
                 let campaigns = [];
                 for (let i = 0; i < ids.length; i++) {
                     let campaign = await this.getCampaignById(ids[i]);
@@ -177,6 +183,7 @@ class CrowdfundingContractApi {
                 }
                 subscriber.next(campaigns);
             } catch (error) {
+                console.log('Error obtiendo Campaigns', error);
                 subscriber.error(error);
             }
         });

@@ -40,7 +40,7 @@ export default function HeaderLinks(props) {
 
           <List className={classes.list}>
 
-            {validProvider && !failedToLoad && !isEnabled && (
+            {validProvider && !failedToLoad && !isEnabled /*&& (
               <ListItem className={classes.listItem}>
                 <Button
                   color="transparent"
@@ -51,7 +51,7 @@ export default function HeaderLinks(props) {
                   Enable Web3
                 </Button>
               </ListItem>
-            )}
+            )*/}
             {validProvider && !failedToLoad && isEnabled && !currentUser && (
               <small className="text-muted">Please unlock MetaMask</small>
             )}

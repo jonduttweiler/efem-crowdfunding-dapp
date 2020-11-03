@@ -17,7 +17,14 @@ export const currentUserSlice = createSlice({
     initCurrentUser: (state, action) => {
       // Cuando se carga el usuario, se obtiene un
       // estado inicial para ir cargándolo desde el Epic.
-      return currentUserInitialState;
+      const { account } = action.payload;
+      state.address = account;
+      return state;
+    },
+    updateCurrentUserBalance: (state, action) => {
+      const { balance } = action.payload;
+      state.balance = balance;
+      return state;
     },
     setCurrentUser: (state, action) => {
       action.payload.status = User.REGISTERED;
@@ -30,7 +37,7 @@ export const currentUserSlice = createSlice({
   },
 });
 
-export const { registerCurrentUser, initCurrentUser, setCurrentUser } = currentUserSlice.actions;
+export const { registerCurrentUser, initCurrentUser, updateCurrentUserBalance, setCurrentUser } = currentUserSlice.actions;
 
 export const selectCurrentUser = state => new User(state.currentUser);
 export const selectRoles = state => state.currentUser.roles;

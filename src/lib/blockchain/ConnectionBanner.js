@@ -118,6 +118,7 @@ class ConnectionBanner extends Component {
   static propTypes = {
     currentNetwork: PropTypes.number,
     requiredNetwork: PropTypes.number,
+    isCorrectNetwork: PropTypes.bool,
     onWeb3Fallback: PropTypes.bool,
     children: PropTypes.shape({
       notWeb3CapableBrowserMessage: PropTypes.node,
@@ -128,6 +129,7 @@ class ConnectionBanner extends Component {
   static defaultProps = {
     currentNetwork: null,
     requiredNetwork: null,
+    isCorrectNetwork: true,
     onWeb3Fallback: false,
     children: {
       notWeb3CapableBrowserMessage: null,
@@ -137,16 +139,16 @@ class ConnectionBanner extends Component {
   };
 
   state = {
-    isCorrectNetwork: null,
+    //isCorrectNetwork: null,
   };
 
-  checkCorrectNetwork = () => {
+  /*checkCorrectNetwork = () => {
     const isCorrectNetwork =
       this.props.currentNetwork === this.props.requiredNetwork;
     if (isCorrectNetwork !== this.state.isCorrectNetwork) {
       this.setState({ isCorrectNetwork });
     }
-  };
+  };*/
 
   componentDidMount() {
     const browserIsWeb3Capable = NetworkUtils.browserIsWeb3Capable();
@@ -156,7 +158,7 @@ class ConnectionBanner extends Component {
 
   componentDidUpdate() {
     if (this.props.currentNetwork && this.props.requiredNetwork) {
-      this.checkCorrectNetwork();
+      //this.checkCorrectNetwork();
     }
   }
 
@@ -170,7 +172,7 @@ class ConnectionBanner extends Component {
 
     return (
       <div style={{
-          width: '50%'
+          width: '60%'
         }}>
         {this.state.browserIsWeb3Capable === false ? (
           <NotWeb3Browser
@@ -178,7 +180,7 @@ class ConnectionBanner extends Component {
           />
         ) : onWeb3Fallback === true || currentNetwork === null ? (
           <NoNetwork noNetworkAvailableMessage={noNetworkAvailableMessage} />
-        ) : this.state.isCorrectNetwork === false ? (
+        ) : this.props.isCorrectNetwork === false ? (
           <WrongNetwork
             currentNetwork={currentNetwork}
             requiredNetwork={requiredNetwork}

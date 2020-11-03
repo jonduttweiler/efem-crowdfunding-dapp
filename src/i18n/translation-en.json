@@ -88,5 +88,11 @@
     "web3NotWeb3BrowserDescriptionMobile": "Try a mobile wallet browser like Status, Coinbase wallet or Cipher",
     "web3WrongNetworkTitle": "Switch to the {{requiredNetwork}} network in MetaMask",
     "web3WrongNetworkDescription": "To use our blockchain features, you need to be on the {{requiredNetwork}} network. You're currently on {{currentNetwork}}.",
-    "web3NoNetwork": "Install the MetaMask browser extension to use our blockchain features"
+    "web3NoNetwork": "Install the MetaMask browser extension to use our blockchain features",
+
+    "web3ConnectionPendingTitle": "Connect RSK account",
+    "web3ConnectionPendingDescriptionMetaMask": "Confirm the request that's just appeared. If you can't see a request, open your MetaMask extension.",
+    "web3ConnectionPendingDescriptionNoMetaMask": "Confirm the request that's just appeared. If you can't see a request, open your dApp browser settings.",
+    "web3ConnectionPendingWaitTitle": "Waiting for connection confirmation...",
+    "web3ConnectionPendingWaitDescription": "This won’t cost you any RBTC"
 }

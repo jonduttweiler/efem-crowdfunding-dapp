@@ -16,7 +16,7 @@ import Menu from "@material-ui/icons/Menu";
 import styles from "assets/jss/material-kit-react/components/headerStyle.js";
 import { NavLink } from "react-router-dom";
 import ConnectionBanner from '../../lib/blockchain/ConnectionBanner';
-import { AppTransactionContext } from '../../lib/blockchain/AppWeb3';
+import { AppTransactionContext } from '../../lib/blockchain/Web3App';
 import config from '../../configuration';
 
 const useStyles = makeStyles(styles);
@@ -86,6 +86,7 @@ export default function Header(props) {
         <ConnectionBanner
           currentNetwork={network.current.id}
           requiredNetwork={config.network.requiredId}
+          isCorrectNetwork={network.isCorrectNetwork}
           onWeb3Fallback={web3Fallback}
         />
 

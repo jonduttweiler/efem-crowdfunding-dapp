@@ -1,9 +1,14 @@
 import React from "react";
-import Web3 from "web3"; // uses latest 1.x.x version
+import getWeb3 from './getWeb3';
+import Web3HttpProvider from 'web3-providers-http';
 import NetworkUtils from "./NetworkUtils";
 import ConnectionModalUtil from "./ConnectionModalsUtil";
 import TransactionUtil from "./TransactionUtil";
 import config from '../../configuration';
+
+import { connect } from 'react-redux';
+import { initCurrentUser, updateCurrentUserBalance } from '../../redux/reducers/currentUserSlice';
+import BigNumber from 'bignumber.js';
 
 export const AppTransactionContext = React.createContext({
   contract: {},
@@ -147,30 +152,10 @@ class AppTransaction extends React.Component {
   initWeb3 = async () => {
     this.checkModernBrowser();
 
-    let web3 = {};
-
-    // Check for modern web3 provider
-    if (window.ethereum) {
-      console.log("Using modern web3 provider.");
-      web3 = new Web3(window.ethereum);
-    }
-    // Legacy dapp browsers, public wallet address always exposed
-    else if (window.web3) {
-      console.log("Legacy web3 provider. Try updating.");
-      web3 = new Web3(window.web3.currentProvider);
-    }
-    // Non-dapp browsers...
-    else {
-      console.log("Non-Ethereum browser detected. Using Infura fallback.");
-
-      const web3Provider = new Web3.providers.HttpProvider(
-        "https://rinkeby.infura.io/v3/c43d74f41ea4482d8eecfa96d47a8151"
-      );
-      web3 = new Web3(web3Provider);
-
-      // Set fallback property, used to show modal
-      this.setState({ web3Fallback: true });
-    }
+    let web3 = await getWeb3();
+    
+    // Set fallback property, used to show modal
+    this.setState({ web3Fallback: !web3.isThereWallet });
 
     this.setState({ web3 }, () => {
       // After setting the web3 provider, check network
@@ -214,10 +199,13 @@ class AppTransaction extends React.Component {
         // Request account access if needed
         await window.ethereum.enable().then(wallets => {
           const account = wallets[0];
+          
           this.closeConnectionPendingModal();
           this.setState({ account });
 
           console.log("wallet address:", this.state.account);
+
+          this.initCurrentUser();
 
           // After account is complete, get the balance
           this.getAccountBalance(account);
@@ -257,6 +245,20 @@ class AppTransaction extends React.Component {
     }
   };
 
+  initCurrentUser = async () => {
+    const { account } = this.state;
+    this.props.initCurrentUser({
+      account: account
+    });
+  }
+
+  updateCurrentUserBalance = async () => {
+    const { accountBalance } = this.state;
+    this.props.updateCurrentUserBalance({
+      balance: accountBalance
+    });
+  }
+
   // TODO: Can this be moved/combined?
   rejectAccountConnect = error => {
     let modals = { ...this.state.modals };
@@ -273,16 +275,18 @@ class AppTransaction extends React.Component {
           .getBalance(localAccount)
           .then(accountBalance => {
             if (!isNaN(accountBalance)) {
-              accountBalance = this.state.web3.utils.fromWei(
+              /*accountBalance = this.state.web3.utils.fromWei(
                 accountBalance,
                 "ether"
               );
-              accountBalance = parseFloat(accountBalance);
+              accountBalance = parseFloat(accountBalance);*/
+              accountBalance = new BigNumber(accountBalance);
 
               // Only update if changed
-              if (accountBalance !== this.state.accountBalance) {
+              if (!accountBalance.isEqualTo(this.state.accountBalance)) {
                 this.setState({ accountBalance });
                 console.log("account balance: ", accountBalance);
+                this.updateCurrentUserBalance();
                 this.determineAccountLowBalance();
               }
             } else {
@@ -449,8 +453,13 @@ class AppTransaction extends React.Component {
     this.setState({ network });
   };
 
-  getNetworkId = async () => {
-    try {
+  getNetworkId = /*async*/ () => {
+    let current = { ...this.state.network.current };
+    current.id = this.state.web3.walletNetworkId;
+    let network = { ...this.state.network };
+    network.current = current;
+    this.setState({ network });    
+    /*try {
       return this.state.web3.eth.net.getId((error, networkId) => {
         let current = { ...this.state.network.current };
         current.id = networkId;
@@ -460,7 +469,7 @@ class AppTransaction extends React.Component {
       });
     } catch (error) {
       console.log("Could not get network ID: ", error);
-    }
+    }*/
   };
 
   getNetworkName = async () => {
@@ -483,12 +492,18 @@ class AppTransaction extends React.Component {
     await this.getNetworkName();
 
     let network = { ...this.state.network };
-    network.isCorrectNetwork =
+    /*network.isCorrectNetwork = 
       this.state.network.current.id === this.state.network.required.id
         ? true
-        : false;
+        : false;*/
+    network.isCorrectNetwork = this.state.web3.walletIsCorrectNetwork;
 
-    this.setState({ network });
+    this.setState({ network }, () => {
+      // Is there a wallet?
+      if (!this.state.web3Fallback) {
+        this.initAccount();
+      }
+    });
   };
 
   pollAccountUpdates = () => {
@@ -1026,4 +1041,4 @@ class AppTransaction extends React.Component {
   }
 }
 
-export default AppTransaction;
+export default connect(null, { initCurrentUser, updateCurrentUserBalance })(AppTransaction);

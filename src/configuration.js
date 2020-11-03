@@ -21,7 +21,8 @@ const configurations = {
   localhost: {
     network: {
       requiredId: 33,
-      nodeUrl: 'http://localhost:4444'
+      nodeUrl: 'http://localhost:4444',
+      timeout: 20000
     },
     language: {
       default: 'en',
@@ -68,7 +69,8 @@ const configurations = {
   rsk_testnet: {
     network: {
       requiredId: 31,
-      nodeUrl: 'https://public-node.testnet.rsk.co'
+      nodeUrl: 'https://public-node.testnet.rsk.co',
+      timeout: 20000
     },
     language: {
       default: 'en',
@@ -115,7 +117,8 @@ const configurations = {
   rsk_mainnet: {
     network: {
       requiredId: 30,
-      nodeUrl: 'https://node.b4h.world'
+      nodeUrl: 'https://node.b4h.world',
+      timeout: 20000
     },
     language: {
       default: 'en',
