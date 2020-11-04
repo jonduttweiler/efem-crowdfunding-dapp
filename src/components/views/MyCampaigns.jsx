@@ -68,7 +68,7 @@ class MyCampaigns extends Component {
   }
 
   editCampaign(id) {
-    checkBalance(this.props.balance)
+    /*checkBalance(this.props.balance)
       .then(() => {
         history.push(`/campaigns/${id}/edit`);
       })
@@ -76,11 +76,11 @@ class MyCampaigns extends Component {
         if (err === 'noBalance') {
           // handle no balance error
         }
-      });
+      });*/
   }
 
   cancelCampaign(campaign) {
-    checkBalance(this.props.balance).then(() => {
+    /*checkBalance(this.props.balance).then(() => {
       const confirmCancelCampaign = () => {
         const afterCreate = url => {
           const msg = (
@@ -115,7 +115,7 @@ class MyCampaigns extends Component {
         campaign.cancel(this.props.currentUser.address, afterCreate, afterMined);
       };
       confirmationDialog('campaign', campaign.title, confirmCancelCampaign);
-    });
+    });*/
   }
 
   handlePageChanged(newPage) {
@@ -268,7 +268,7 @@ class MyCampaigns extends Component {
 
 MyCampaigns.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,
-  balance: PropTypes.objectOf(utils.BN).isRequired,
+  //balance: PropTypes.objectOf(utils.BN).isRequired,
 };
 
 export default MyCampaigns;

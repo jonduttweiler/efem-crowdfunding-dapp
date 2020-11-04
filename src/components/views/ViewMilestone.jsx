@@ -143,7 +143,6 @@ class ViewMilestone extends Component {
                           <DelegateMultipleButton
                             milestone={milestone}
                             campaign={campaign}
-                            balance={balance}
                             user={user}
                           />
                         )}
@@ -283,7 +282,6 @@ ViewMilestone.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   user: PropTypes.instanceOf(User),
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       milestoneId: PropTypes.string.isRequired,

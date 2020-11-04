@@ -4,54 +4,57 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 // react components for routing our app without refresh
 import { Link } from "react-router-dom";
-
-import { Consumer as Web3Consumer } from '../../contextProviders/Web3Provider';
-
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-
 // @material-ui/icons
 import { Apps, CloudDownload } from "@material-ui/icons";
-
-// core components
-import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
 import Button from "components/CustomButtons/Button.js";
-
 import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js";
-import LanguageSelector from "components/LanguageSelector";
-
 import { connect } from 'react-redux';
 import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
+import Web3App from "../../lib/blockchain/Web3App";
 
 const useStyles = makeStyles(styles);
 
 export default function HeaderLinks(props) {
 
   const classes = useStyles();
-  
+
   const { currentUser } = props;
-  const registered =  currentUser && currentUser.registered || false;
+  const registered = currentUser && currentUser.registered || false;
 
   return (
-    <Web3Consumer>
-        {({ state: { validProvider, isEnabled, failedToLoad }, actions: { enableProvider } }) => (
-
+    <Web3App.Consumer>
+      {({
+        needsPreflight,
+        validBrowser,
+        userAgent,
+        web3,
+        account,
+        accountBalance,
+        accountBalanceLow,
+        initAccount,
+        rejectAccountConnect,
+        userRejectedConnect,
+        accountValidated,
+        accountValidationPending,
+        rejectValidation,
+        userRejectedValidation,
+        validateAccount,
+        connectAndValidateAccount,
+        modals,
+        network,
+        transaction,
+        web3Fallback,
+        // Legacy
+        validProvider,
+        isEnabled,
+        failedToLoad
+      }) => (
           <List className={classes.list}>
 
-            {validProvider && !failedToLoad && !isEnabled /*&& (
-              <ListItem className={classes.listItem}>
-                <Button
-                  color="transparent"
-                  target="_blank"
-                  className={classes.navLink}
-                  onClick={() => enableProvider()}
-                >
-                  Enable Web3
-                </Button>
-              </ListItem>
-            )*/}
             {validProvider && !failedToLoad && isEnabled && !currentUser && (
               <small className="text-muted">Please unlock MetaMask</small>
             )}
@@ -96,51 +99,23 @@ export default function HeaderLinks(props) {
                   aria-labelledby="navbarDropdownYou"
                 >
                   <NavLink className="dropdown-item" to="/profile">
-                    {registered ? <span>Perfil</span> : <span>Reg&iacute;strate</span>} 
+                    {registered ? <span>Perfil</span> : <span>Reg&iacute;strate</span>}
                   </NavLink>
-                  {/* <NavLink className="dropdown-item" to="/wallet">
-                        Wallet
-                      </NavLink> */}
                 </div>
               </li>
             )}
-
-            <ListItem className={classes.listItem}>
-              <CustomDropdown
-                noLiPadding
-                buttonText="Components"
-                buttonProps={{
-                  className: classes.navLink,
-                  color: "transparent"
-                }}
-                buttonIcon={Apps}
-                dropdownList={[
-                  <Link to="/" className={classes.dropdownLink}>
-                    All components
-                  </Link>,
-                  <a
-                    href="https://creativetimofficial.github.io/material-kit-react/#/documentation?ref=mkr-navbar"
-                    target="_blank"
-                    className={classes.dropdownLink}
-                  >
-                    Documentation
-                  </a>
-                ]}
-              />
-            </ListItem>
-            </List>
-
+          </List>
         )}
-    </Web3Consumer>
+    </Web3App.Consumer>
   );
 }
 
 const mapStateToProps = (state, ownProps) => ({
   currentUser: selectCurrentUser(state)
 });
-const mapDispatchToProps = { };
+const mapDispatchToProps = {};
 
-const HeaderLinksConnected = connect(mapStateToProps,mapDispatchToProps)(HeaderLinks);
+const HeaderLinksConnected = connect(mapStateToProps, mapDispatchToProps)(HeaderLinks);
 
 //export default withRouter(HeaderLinksConnected);
 

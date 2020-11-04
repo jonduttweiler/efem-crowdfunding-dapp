@@ -25,7 +25,6 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 // context providers
 import ConversionRateProvider from '../contextProviders/ConversionRateProvider';
-import Web3Provider, { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 import WhiteListProvider, { Consumer as WhiteListConsumer } from '../contextProviders/WhiteListProvider';
 
 import '../lib/validators';
@@ -74,7 +73,7 @@ class Application extends Component {
     });
 
     this.state = {
-      web3Loading: true,
+      web3Loading: false,
       whiteListLoading: true,
     };
 
@@ -142,45 +141,37 @@ class Application extends Component {
                       <div>
                         {whiteListLoading && <Loader className="fixed" />}
                         {!whiteListLoading && (
-                          <Web3Provider onLoaded={this.web3Loaded}>
-                            <Web3Consumer>
-                              {({ state: { account, balance, isCorrectNetwork } }) => (
-                                <div>
-                                  {web3Loading && <Loader className="fixed" />}
-                                  {!web3Loading && (
-                                    <ConversionRateProvider fiatWhitelist={fiatWhitelist}>
-                                      <Router history={history}>
-                                        <div>
-                                          {GA.init() && <GA.RouteTracker />}
+                          <div>
+                            {web3Loading && <Loader className="fixed" />}
+                            {!web3Loading && (
+                              <ConversionRateProvider fiatWhitelist={fiatWhitelist}>
+                                <Router history={history}>
+                                  <div>
+                                    {GA.init() && <GA.RouteTracker />}
 
-                                          {userLoading && <Loader className="fixed" />}
+                                    {userLoading && <Loader className="fixed" />}
 
-                                          {!userLoading && (
-                                            <div>
-                                              <SwitchRoutes
-                                                currentUser={currentUser}
-                                                balance={balance}
-                                                isCorrectNetwork={isCorrectNetwork}
-                                              />
-                                            </div>
-                                          )}
-                                          <ToastContainer
-                                            position="top-right"
-                                            type="default"
-                                            autoClose={5000}
-                                            hideProgressBar
-                                            newestOnTop={false}
-                                            closeOnClick
-                                            pauseOnHover
-                                          />
-                                        </div>
-                                      </Router>
-                                    </ConversionRateProvider>
-                                  )}
-                                </div>
-                              )}
-                            </Web3Consumer>
-                          </Web3Provider>
+                                    {!userLoading && (
+                                      <div>
+                                        <SwitchRoutes
+                                          currentUser={currentUser}
+                                        />
+                                      </div>
+                                    )}
+                                    <ToastContainer
+                                      position="top-right"
+                                      type="default"
+                                      autoClose={5000}
+                                      hideProgressBar
+                                      newestOnTop={false}
+                                      closeOnClick
+                                      pauseOnHover
+                                    />
+                                  </div>
+                                </Router>
+                              </ConversionRateProvider>
+                            )}
+                          </div>
                         )}
                       </div>
                     )}

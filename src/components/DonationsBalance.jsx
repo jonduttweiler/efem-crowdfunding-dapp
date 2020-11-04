@@ -60,7 +60,6 @@ class DonationsBalance extends Component {
               }
             />
           </ListItem>
-          Un balance
           {balances.tokenBalances.map(b => (
             <TokenBalance
               tokenAddress={b.tokenAddress}

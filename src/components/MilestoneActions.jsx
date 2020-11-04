@@ -6,7 +6,6 @@ import BigNumber from 'bignumber.js';
 
 import DeleteProposedMilestoneButton from 'components/DeleteProposedMilestoneButton';
 import AcceptRejectProposedMilestoneButtons from 'components/AcceptRejectProposedMilestoneButtons';
-import ReproposeRejectedMilestoneButton from 'components/ReproposeRejectedMilestoneButton';
 import CancelMilestoneButton from 'components/CancelMilestoneButton';
 import MilestoneWithdrawButton from './MilestoneWithdrawButton';
 import MilestoneComplete from './MilestoneComplete';
@@ -42,9 +41,6 @@ class MilestoneActions extends Component {
         <AcceptRejectProposedMilestoneButtons
           milestone={milestone}
           currentUser={currentUser}/>
-        */}
-        {/*
-        <ReproposeRejectedMilestoneButton milestone={milestone} currentUser={currentUser} />
         */}
         {/*
         <CancelMilestoneButton

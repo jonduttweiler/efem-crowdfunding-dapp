@@ -22,7 +22,6 @@ import config from '../configuration';
 import TokenBalance from './TokenBalance';
 import Web3Utils from '../lib/blockchain/Web3Utils';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
-import { AppTransactionContext } from 'lib/blockchain/Web3App';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -104,7 +103,7 @@ class Donate extends Component {
 
     // TODO Definir parametrización de donación.
     const balance = currentUser.balance;
-    
+
     const max = Web3Utils.weiToEther(balance);
     const inputProps = {
       step: 0.0001,
@@ -196,8 +195,6 @@ class Donate extends Component {
     );
   }
 }
-
-Donate.contextType = AppTransactionContext;
 
 Donate.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,
