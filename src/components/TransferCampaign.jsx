@@ -28,6 +28,7 @@ import DonationItemTransfer from './DonationItemTransfer';
 import { selectMilestonesByCampaign } from '../redux/reducers/milestonesSlice';
 import CampaignCard from './CampaignCard';
 import TransferMilestoneSelector from './TransferMilestoneSelector';
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -232,16 +233,18 @@ class TransferCampaign extends Component {
     return (
       <div>
         {buttonEnabled && (
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<FastForwardIcon />}
-            onClick={this.handleClickOpen}
-          >
-            {t('transfer')}
-          </Button>)
-        }
+          <OnlyCorrectNetwork>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<FastForwardIcon />}
+              onClick={this.handleClickOpen}
+            >
+              {t('transfer')}
+            </Button>
+          </OnlyCorrectNetwork>
+        )}
         <Dialog fullWidth={true}
           maxWidth="lg"
           open={open}

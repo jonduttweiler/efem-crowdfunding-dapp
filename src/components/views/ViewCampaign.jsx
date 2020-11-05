@@ -37,6 +37,7 @@ import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/campaignView.js";
 import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
+import OnlyCorrectNetwork from 'components/OnlyCorrectNetwork';
 
 /**
  * The Campaign detail view mapped to /campaign/id
@@ -189,13 +190,15 @@ class ViewCampaign extends Component {
                             </Box>
                             <Box my={2}>
                               {isOwner(campaign.managerAddress, currentUser) && (
-                                <div>
-                                  <Link
-                                    className="btn btn-primary btn-sm pull-right"
-                                    to={`/campaigns/${campaign.id}/milestones/new`}>
-                                    Add Milestone
-                                  </Link>
-                                </div>
+                                <OnlyCorrectNetwork>
+                                  <div>
+                                    <Link
+                                      className="btn btn-primary btn-sm pull-right"
+                                      to={`/campaigns/${campaign.id}/milestones/new`}>
+                                      Add Milestone
+                                    </Link>
+                                  </div>
+                                </OnlyCorrectNetwork>                                
                               )}
                             </Box>
                           </Box>

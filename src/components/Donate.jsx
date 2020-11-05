@@ -22,6 +22,7 @@ import config from '../configuration';
 import TokenBalance from './TokenBalance';
 import Web3Utils from '../lib/blockchain/Web3Utils';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -124,16 +125,18 @@ class Donate extends Component {
     return (
       <div>
         {enabled && (
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<FavoriteIcon />}
-            onClick={this.handleClickOpen}
-          >
-            {t('donate')}
-          </Button>)
-        }
+          <OnlyCorrectNetwork>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<FavoriteIcon />}
+              onClick={this.handleClickOpen}
+            >
+              {t('donate')}
+            </Button>
+          </OnlyCorrectNetwork>
+        )}
         <Dialog fullWidth={true}
           maxWidth="md"
           open={open}

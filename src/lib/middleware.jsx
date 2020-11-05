@@ -6,6 +6,7 @@ import getWeb3 from './blockchain/getWeb3';
 import config from '../configuration';
 import BigNumber from 'bignumber.js';
 import { utils } from 'web3';
+import Web3Utils from './blockchain/Web3Utils';
 
 /**
  * Check if there is a currentUser. If not, routes back. If yes, resolves returned promise
@@ -41,13 +42,13 @@ const authenticate = async (address, redirectOnFail = true) => {
   const accessToken = await feathersClient.passport.getJWT();
   if (accessToken) {
     const payload = await feathersClient.passport.verifyJWT(accessToken);
-    if (address === payload.userId) {
+    if (Web3Utils.addressEquals(address, payload.userId)) {
       await feathersClient.authenticate(); // authenticate the socket connection
       return true;
     }
     await feathersClient.logout();
   }
-
+  
   try {
     await feathersClient.authenticate(authData);
     return true;
