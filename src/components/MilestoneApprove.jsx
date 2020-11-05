@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'formsy-react-components';
 import Milestone from '../models/Milestone';
-import MilestoneProof from './MilestoneProof';
 import Activity from '../models/Activity';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -21,6 +20,7 @@ import MilestoneCard from './MilestoneCard';
 import User from 'models/User';
 import TextField from '@material-ui/core/TextField';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -96,16 +96,18 @@ class MilestoneApprove extends Component {
     return (
       <div>
         {showButton && (
-
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<ThumbUpIcon />}
-            onClick={this.handleClickOpen}
-          >
-            {t('milestoneApprove')}
-          </Button>)
+          <OnlyCorrectNetwork>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<ThumbUpIcon />}
+              onClick={this.handleClickOpen}
+            >
+              {t('milestoneApprove')}
+            </Button>
+          </OnlyCorrectNetwork>
+          )
         }
         <Dialog fullWidth={true}
           maxWidth="md"

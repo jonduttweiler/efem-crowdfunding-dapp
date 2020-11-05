@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 
 import { withTranslation } from 'react-i18next';
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 
 class EditCampaignButton extends Component {
   editCampaign() {
@@ -20,14 +21,16 @@ class EditCampaignButton extends Component {
 
     if (campaign.isManager(currentUser)) {
       return (
-        <Button
-          color="primary"
-          variant="contained"
-          type="button"
-          startIcon={<EditIcon />}
-          onClick={() => this.editCampaign()}>
-          {t('edit')}
-        </Button>
+        <OnlyCorrectNetwork>
+          <Button
+            color="primary"
+            variant="contained"
+            type="button"
+            startIcon={<EditIcon />}
+            onClick={() => this.editCampaign()}>
+            {t('edit')}
+          </Button>
+        </OnlyCorrectNetwork>        
         );
     } else { //not allowed to edit campaign
       return null;

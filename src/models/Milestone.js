@@ -4,6 +4,7 @@ import { getStartOfDayUTC } from 'lib/helpers';
 import Item from './Item';
 import StatusUtils from '../utils/StatusUtils';
 import Status from './Status';
+import Web3Utils from 'lib/blockchain/Web3Utils';
 
 /**
  * Modelo Milestone de Dapp.
@@ -64,7 +65,7 @@ export default class Milestone extends Entity {
    * @param user a determinar si es el manager del milestone.
    */
   isManager(user) {
-    return user && user.address === this.managerAddress;
+    return user && Web3Utils.addressEquals(user.address, this.managerAddress);
   }
 
   /**
@@ -75,7 +76,11 @@ export default class Milestone extends Entity {
    * @param user a determinar si es revisor del milestone.
    */
   isReviewer(user) {
-    return user && (user.address === this.reviewerAddress || user.address === this.campaignReviewerAddress);
+    
+    return user && (
+      Web3Utils.addressEquals(user.address, this.reviewerAddress) || 
+      Web3Utils.addressEquals(user.address, this.campaignReviewerAddress)
+      );
   }
 
   /**
@@ -84,7 +89,7 @@ export default class Milestone extends Entity {
    * @param user a determinar si es el recipient del milestone.
    */
   isRecipient(user) {
-    return user && user.address === this.recipientAddress;
+    return user && Web3Utils.addressEquals(user.address, this.recipientAddress);
   }
 
   canComplete() {

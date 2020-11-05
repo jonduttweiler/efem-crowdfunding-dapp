@@ -29,7 +29,11 @@ class Web3Utils {
   }
 
   static addressEquals(address1, address2) {
-    return toChecksumAddress(address1) === toChecksumAddress(address2);
+    let checksumAddress1 = toChecksumAddress(address1);
+    let checksumAddress2 = toChecksumAddress(address2);
+    return checksumAddress1 != null &&
+      checksumAddress2 != null &&
+      checksumAddress1 === checksumAddress2;
   }
 }
 
@@ -40,6 +44,9 @@ class Web3Utils {
    * 
    */
 function toChecksumAddress(address) {
+  if(address == null && address == undefined) {
+    return null;
+  }
   const chainId = config.network.requiredId;
   const strip_address = stripHexPrefix(address).toLowerCase()
   const prefix = chainId != null ? (chainId.toString() + '0x') : ''
