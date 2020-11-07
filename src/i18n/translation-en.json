@@ -94,5 +94,15 @@
     "web3ConnectionPendingDescriptionMetaMask": "Confirm the request that's just appeared. If you can't see a request, open your MetaMask extension.",
     "web3ConnectionPendingDescriptionNoMetaMask": "Confirm the request that's just appeared. If you can't see a request, open your dApp browser settings.",
     "web3ConnectionPendingWaitTitle": "Waiting for connection confirmation...",
-    "web3ConnectionPendingWaitDescription": "This won’t cost you any RBTC"
+    "web3ConnectionPendingWaitDescription": "This won’t cost you any RBTC",
+
+    "transactionWaitConfirmationTitle": "Waiting for confirmation...",
+    "transactionWaitConfirmationDescription": "Don't see the MetaMask popup?",
+    "transactionNetwork": "Network",
+    "transactionAccount": "Your account",
+    
+    "transactionTitleCreateCampaign": "Confirm your creation of campaign in the wallet",
+    "transactionSubtitleCreateCampaign": "Double check the details here – your creation of campaign can't be refunded."
+    
+    
 }

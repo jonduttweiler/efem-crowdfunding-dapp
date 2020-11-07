@@ -94,6 +94,15 @@
     "web3ConnectionPendingDescriptionMetaMask": "Confirme la solicitud que acaba de aparecer. Si no puede ver una solicitud, abra su extensión MetaMask.",
     "web3ConnectionPendingDescriptionNoMetaMask": "Confirme la solicitud que acaba de aparecer. Si no puede ver una solicitud, abra la configuración del navegador de la dApp.",
     "web3ConnectionPendingWaitTitle": "Esperando confirmación de conexión...",
-    "web3ConnectionPendingWaitDescription": "Esto no le costará ningún RBTC"
+    "web3ConnectionPendingWaitDescription": "Esto no le costará ningún RBTC",
+
+    "transactionWaitConfirmationTitle": "Esperando confirmación...",
+    "transactionWaitConfirmationDescription": "¿No ve la ventana de MetaMask?",
+    "transactionNetwork": "Red",
+    "transactionAccount": "Tu dirección",
+    
+    "transactionTitleCreateCampaign": "Confirma tu creación de campaña en la billetera",
+    "transactionSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada."
+    
 
 }

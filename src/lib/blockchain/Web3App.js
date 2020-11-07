@@ -1,6 +1,5 @@
 import React from "react";
 import getWeb3 from './getWeb3';
-import Web3HttpProvider from 'web3-providers-http';
 import NetworkUtils from "./NetworkUtils";
 import ConnectionModalUtil from "./ConnectionModalsUtil";
 import TransactionUtil from "./TransactionUtil";
@@ -455,6 +454,7 @@ class AppTransaction extends React.Component {
   getNetworkId = /*async*/ () => {
     let current = { ...this.state.network.current };
     current.id = this.state.web3.walletNetworkId;
+    current.name = NetworkUtils.getEthNetworkNameById(current.id);
     let network = { ...this.state.network };
     network.current = current;
     this.setState({ network });    
@@ -471,7 +471,7 @@ class AppTransaction extends React.Component {
     }*/
   };
 
-  getNetworkName = async () => {
+ /*getNetworkName = async () => {
     try {
       return this.state.web3.eth.net.getNetworkType((error, networkName) => {
         let current = { ...this.state.network.current };
@@ -483,12 +483,12 @@ class AppTransaction extends React.Component {
     } catch (error) {
       console.log("Could not get network Name: ", error);
     }
-  };
+  };*/
 
   checkNetwork = async () => {
     this.getRequiredNetwork();
     await this.getNetworkId();
-    await this.getNetworkName();
+    //await this.getNetworkName();
 
     let network = { ...this.state.network };
     /*network.isCorrectNetwork = 

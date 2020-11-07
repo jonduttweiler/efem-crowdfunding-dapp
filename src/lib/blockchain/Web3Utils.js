@@ -35,6 +35,16 @@ class Web3Utils {
       checksumAddress2 != null &&
       checksumAddress1 === checksumAddress2;
   }
+
+  static abbreviateAddress(address) {
+    if(address) {
+      let first = address.substring(0, 6);
+      let middle = '...';
+      let last = address.substring(address.length - 4, address.length);
+      return first + middle + last;
+    }
+    return null;
+  }
 }
 
 /**
