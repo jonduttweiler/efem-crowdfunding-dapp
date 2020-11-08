@@ -39,6 +39,7 @@ import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes from './SwitchRoutes';
 
 import Web3App from "../lib/blockchain/Web3App";
+import TransactionViewer from 'components/TransactionViewer';
 
 /* global document */
 /**
@@ -133,6 +134,7 @@ class Application extends Component {
               
               <React.Fragment>
                 
+                <TransactionViewer></TransactionViewer>
                 <MessageViewer></MessageViewer>
     
                 <WhiteListProvider onLoaded={this.whiteListLoaded}>

@@ -19,11 +19,15 @@ import Web3App from '../Web3App'
 import { connect } from 'react-redux'
 import { selectCurrentUser } from '../../../redux/reducers/currentUserSlice'
 import Web3Utils from "../Web3Utils";
+import CryptoAmount from "components/CryptoAmount";
 
 class TransactionSummaryModal extends React.Component {
 
   render() {
-    const { currentUser, title, subtitle, t } = this.props;
+    const { currentUser, transaction, t } = this.props;
+    if(!transaction) {
+      return null;
+    }
     return (
       <Web3App.Consumer>
         {
@@ -47,12 +51,12 @@ class TransactionSummaryModal extends React.Component {
                         size="24px"
                       />
                       <Heading textAlign="center" as="h1" fontSize={[2, 3]} px={[3, 0]}>
-                        {title}
+                        {t(transaction.pendingTitleKey)}
                       </Heading>
                     </Flex>
                     <Flex justifyContent={"space-between"} flexDirection={"column"}>
                       <Text textAlign="center">
-                        {subtitle}
+                        {t(transaction.pendingSubtitleKey)}
                       </Text>
                       <Flex
                         alignItems={"stretch"}
@@ -193,10 +197,10 @@ class TransactionSummaryModal extends React.Component {
                               color="near-black"
                               fontWeight="bold"
                             >
-                              Transaction fee
+                              {t('transactionEstimatedFee')}
                             </Text>
                             <Tooltip
-                              message="Pays the Ethereum network to process your transaction. Spent even if the transaction fails."
+                              message={t('transactionEstimatedFeeDescription')}
                               position="top"
                             >
                               <Icon
@@ -206,7 +210,6 @@ class TransactionSummaryModal extends React.Component {
                                 color={"primary"}
                               />
                             </Tooltip>
-
                           </Flex>
                           <Flex
                             alignItems={["center", "flex-end"]}
@@ -218,10 +221,10 @@ class TransactionSummaryModal extends React.Component {
                               fontWeight="bold"
                               lineHeight={"1em"}
                             >
-                              $0.42
+                              0.42 USD 
                             </Text>
                             <Text color="mid-gray" fontSize={1}>
-                              0.00112 ETH
+                              <CryptoAmount amount={transaction.feeEstimated} />
                             </Text>
                           </Flex>
                         </Flex>
@@ -233,9 +236,13 @@ class TransactionSummaryModal extends React.Component {
                           flexDirection={["column", "row"]}
                         >
                           <Text color="near-black" fontWeight="bold">
-                            Estimated time
+                            {t('transactionEstimatedTime')}
                           </Text>
-                          <Text color={"mid-gray"}>Less than 2 minutes</Text>
+                          <Text color={"mid-gray"}>
+                            {t('transactionEstimatedTimeValue', {
+                              transactionEstimatedTime: config.network.transactionEstimatedTime
+                            })}
+                          </Text>
                         </Flex>
                       </Flex>
                       <Button.Outline>Cancel purchase</Button.Outline>

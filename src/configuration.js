@@ -23,7 +23,8 @@ const configurations = {
       requiredId: 33,
       nodeUrl: 'http://localhost:4444',
       timeout: 20000,
-      explorer: 'https://explorer.testnet.rsk.co/'
+      explorer: 'https://explorer.testnet.rsk.co/',
+      transactionEstimatedTime: 1 // Minutos
     },
     language: {
       default: 'en',
@@ -72,7 +73,8 @@ const configurations = {
       requiredId: 31,
       nodeUrl: 'https://public-node.testnet.rsk.co',
       timeout: 20000,
-      explorer: 'https://explorer.testnet.rsk.co/'
+      explorer: 'https://explorer.testnet.rsk.co/',
+      transactionEstimatedTime: 1 // Minutos
     },
     language: {
       default: 'en',
@@ -121,7 +123,8 @@ const configurations = {
       requiredId: 30,
       nodeUrl: 'https://node.b4h.world',
       timeout: 20000,
-      explorer: 'https://explorer.testnet.rsk.co/'
+      explorer: 'https://explorer.testnet.rsk.co/',
+      transactionEstimatedTime: 1 // Minutos
     },
     language: {
       default: 'en',

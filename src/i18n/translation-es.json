@@ -100,9 +100,13 @@
     "transactionWaitConfirmationDescription": "¿No ve la ventana de MetaMask?",
     "transactionNetwork": "Red",
     "transactionAccount": "Tu dirección",
-    
-    "transactionTitleCreateCampaign": "Confirma tu creación de campaña en la billetera",
-    "transactionSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada."
+    "transactionEstimatedFee": "Costo de transacción estimado",
+    "transactionEstimatedFeeDescription": "Pago a la red RSK para procesar tu transacción. Se paga de todas maneras si la transacción falla.",
+    "transactionEstimatedTime": "Tiempo de transacción estimado",
+    "transactionEstimatedTimeValue": "Menos de {{transactionEstimatedTime}} minuto(s)",
+
+    "transactionPendingTitleCreateCampaign": "Confirma tu creación de campaña en la billetera",
+    "transactionPendingSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada."
     
 
 }

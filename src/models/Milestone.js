@@ -1,7 +1,6 @@
 import Entity from './Entity';
 import BigNumber from 'bignumber.js';
 import { getStartOfDayUTC } from 'lib/helpers';
-import Item from './Item';
 import StatusUtils from '../utils/StatusUtils';
 import Status from './Status';
 import Web3Utils from 'lib/blockchain/Web3Utils';

@@ -9,12 +9,14 @@ import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import messageUtils from '../../redux/utils/messageUtils'
+import transactionUtils from '../../redux/utils/transactionUtils'
 import entityUtils from '../../redux/utils/entityUtils'
 import dacIpfsConnector from '../../ipfs/DacIpfsConnector'
 import campaignIpfsConnector from '../../ipfs/CampaignIpfsConnector'
 import milestoneIpfsConnector from '../../ipfs/MilestoneIpfsConnector'
 import activityIpfsConnector from '../../ipfs/ActivityIpfsConnector'
 import ExchangeRate from '../../models/ExchangeRate';
+import getWeb3 from './getWeb3';
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -46,7 +48,7 @@ class CrowdfundingContractApi {
             try {
 
                 console.log('alta dac', dac);
-                
+
                 const crowdfunding = await this.getCrowdfunding();
 
                 // Se almacena en IPFS toda la información de la Dac.
@@ -236,7 +238,7 @@ class CrowdfundingContractApi {
      * 
      * @param campaign a almacenar.
      */
-    saveCampaign(campaign) {
+    saveCampaign2(campaign) {
 
         return new Observable(async subscriber => {
 
@@ -270,6 +272,100 @@ class CrowdfundingContractApi {
                     subscriber.next(campaign);
                     messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la campaign' });
                 })
+                    .once('confirmation', (confNumber, receipt) => {
+                        // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
+                        // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
+                        const idFromEvent = parseInt(receipt.events['SaveCampaign'].returnValues.id);
+
+                        this.getCampaignById(idFromEvent).then(campaign => {
+                            campaign.clientId = clientId;
+                            subscriber.next(campaign);
+                            messageUtils.addMessageSuccess({
+                                title: 'Felicitaciones!',
+                                text: `La campaign ${campaign.title} ha sido ${isUpdating ? "actualizada" : "confirmada"}`
+                            });
+                        });
+                    })
+                    .on('error', function (error) {
+                        error.campaign = campaign;
+                        console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
+                        subscriber.error(error);
+                        messageUtils.addMessageError({
+                            text: `Se produjo un error creando la campaign ${campaign.title}`,
+                            error: error
+                        });
+                    });
+            } catch (error) {
+                error.campaign = campaign;
+                console.error(`Error almacenando campaign`, error);
+                subscriber.error(error);
+                messageUtils.addMessageError({
+                    text: `Se produjo un error creando la campaign ${campaign.title}`,
+                    error: error
+                });
+            }
+        });
+    }
+
+    /**
+     * Almacena una Campaing en el Smart Contarct.
+     * 
+     * @param campaign a almacenar.
+     */
+    saveCampaign(campaign) {
+
+        return new Observable(async subscriber => {
+
+            try {
+
+                const web3 = await getWeb3();
+
+                const dacId = 1; //preguntar a Mauri que vamos a hacer con esto, esto existe?
+                const crowdfunding = await this.getCrowdfundingRaw();
+                const campaignId = campaign.id || 0; //zero is for new campaigns;
+                const isUpdating = campaignId > 0;
+
+                //cannot upload string to ipfs
+                console.log("%csaveCampaign", "color:cyan", campaign)
+
+                // Se almacena en IPFS toda la información de la Campaign.
+                let infoCid = await campaignIpfsConnector.upload(campaign);
+                campaign.infoCid = infoCid;
+
+                const clientId = campaign.clientId;
+
+                const method = crowdfunding.methods.saveCampaign(
+                        campaign.infoCid,
+                        dacId,
+                        campaign.reviewerAddress,
+                        campaignId);                
+
+                const gasEstimated = await method.estimateGas({
+                    from: campaign.managerAddress,
+                });
+                const gasPrice = await this.getGasPrice();
+
+                let transaction = transactionUtils.addTransaction({
+                    gasEstimated: new BigNumber(gasEstimated),
+                    gasPrice: new BigNumber(gasPrice),
+                    pendingTitleKey: 'transactionPendingTitleCreateCampaign',
+                    pendingSubtitleKey: 'transactionPendingSubtitleCreateCampaign'
+                });
+
+                const promiEvent = method.send({
+                    from: campaign.managerAddress,
+                });
+
+                promiEvent
+                    .once('transactionHash', (hash) => { // La transacción ha sido creada.
+
+                        transaction.hash = hash;
+                        transactionUtils.updateTransaction(transaction);
+
+                        campaign.txHash = hash;
+                        subscriber.next(campaign);
+                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la campaign' });
+                    })
                     .once('confirmation', (confNumber, receipt) => {
                         // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
                         // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
@@ -1011,11 +1107,22 @@ class CrowdfundingContractApi {
         }
     }
 
+    async getGasPrice() {
+        //const gasPrice = await web3.eth.getGasPrice();
+        //return new BigNumber(parseInt(gasPrice));
+        return new BigNumber(10000000000000);
+    }
 
     async getCrowdfunding() {
         const network = await getNetwork();
         const { crowdfunding } = network;
         return crowdfunding;
+    }
+
+    async getCrowdfundingRaw() {
+        const network = await getNetwork();
+        const { crowdfundingRaw } = network;
+        return crowdfundingRaw;
     }
 }
 

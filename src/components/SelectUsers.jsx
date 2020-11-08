@@ -15,8 +15,6 @@ class SelectUsers extends React.Component {
     
     const options = users.map(user => ({ ...user, title: user.name, value: user.address }));
 
-    console.log('Optionssssssssss', options);
-
     return (
         <SelectFormsy
           id={id}

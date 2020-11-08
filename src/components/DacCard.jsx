@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { getTruncatedText, history } from '../lib/helpers';
 import CardStats from './CardStats';
 import DAC from '../models/DAC';
-import messageUtils from '../utils/MessageUtils'
+import messageUtils from '../redux/utils/messageUtils'
 
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";

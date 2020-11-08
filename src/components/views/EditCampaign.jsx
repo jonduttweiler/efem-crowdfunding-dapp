@@ -319,12 +319,12 @@ class EditCampaign extends Component {
             </div>
           </div>
         </div>
-        <TransactionSummaryModal
+        {/*<TransactionSummaryModal
           closeModal={this.state.modals.methods.closeTransactionSummaryModal}
           isOpen={this.state.modals.data.transactionSummary}
           title={t('transactionTitleCreateCampaign')}
           subtitle={t('transactionSubtitleCreateCampaign')}
-        ></TransactionSummaryModal>
+        ></TransactionSummaryModal>*/}
         <Footer />
       </div>
     );

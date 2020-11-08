@@ -100,9 +100,13 @@
     "transactionWaitConfirmationDescription": "Don't see the MetaMask popup?",
     "transactionNetwork": "Network",
     "transactionAccount": "Your account",
-    
-    "transactionTitleCreateCampaign": "Confirm your creation of campaign in the wallet",
-    "transactionSubtitleCreateCampaign": "Double check the details here – your creation of campaign can't be refunded."
+    "transactionEstimatedFee": "Estimated transaction fee",
+    "transactionEstimatedFeeDescription": "Pays the RSK network to process your transaction. Spent even if the transaction fails.",
+    "transactionEstimatedTime": "Estimated transaction time",
+    "transactionEstimatedTimeValue": "Less than {{transactionEstimatedTime}} minute(s)",
+
+    "transactionPendingTitleCreateCampaign": "Confirm your creation of campaign in the wallet",
+    "transactionPendingSubtitleCreateCampaign": "Double check the details here – your creation of campaign can't be refunded."
     
     
 }
