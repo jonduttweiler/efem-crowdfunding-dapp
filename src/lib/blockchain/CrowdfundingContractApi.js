@@ -209,7 +209,7 @@ class CrowdfundingContractApi {
         const { id, infoCid, dacIds, milestoneIds, donationIds, budgetDonationIds, users, status } = campaingOnChain;
         // Se obtiene la información de la Campaign desde IPFS.
         const campaignOnIpfs = await campaignIpfsConnector.download(infoCid);
-        const { title, description, imageCid, beneficiaries, url } = campaignOnIpfs;
+        const { title, description, imageCid, beneficiaries, categories, url } = campaignOnIpfs;
 
         return new Campaign({
             id: parseInt(id),
@@ -224,6 +224,7 @@ class CrowdfundingContractApi {
             managerAddress: users[0],
             reviewerAddress: users[1],
             beneficiaries: beneficiaries,
+            categories: categories, 
             status: this.mapCampaignStatus(parseInt(status))
         });
     }

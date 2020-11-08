@@ -34,6 +34,7 @@ import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/campaignPage.js";
 import { withTranslation } from 'react-i18next';
 import { Box } from '@material-ui/core';
+import CategorySelector from 'components/CategorySelector';
 
 /**
  * View to create or edit a Campaign
@@ -63,6 +64,7 @@ class EditCampaign extends Component {
 
     this.submit = this.submit.bind(this);
     this.setImage = this.setImage.bind(this);
+    this.setCategories = this.setCategories.bind(this);
   }
 
   componentDidMount() {
@@ -101,6 +103,12 @@ class EditCampaign extends Component {
   setImage(image) {
     const { campaign } = this.state;
     campaign.image = image;
+    this.setState({ campaign });
+  }
+
+  setCategories(categories) {
+    const { campaign } = this.state;
+    campaign.categories = categories;
     this.setState({ campaign });
   }
 
@@ -238,6 +246,17 @@ class EditCampaign extends Component {
                         />
 
                         <div className="form-group">
+                          <CategorySelector
+                            setCategories={this.setCategories}
+                            id="categories"
+                            name="categories"
+                            label={t('campaignCategoriesLabel')}
+                            helpText={t('campaignCategoriesHelp')}
+                            value={campaign.categories}
+                          />
+                        </div>
+
+                        <div className="form-group">
                           <FormsyImageUploader
                             setImage={this.setImage}
                             previewImage={campaign.imageCidUrl}
@@ -269,10 +288,8 @@ class EditCampaign extends Component {
                             value={campaign.url}
                             placeholder="https://slack.give4forests.com"
                             help={t('campaignUrlHelp')}
-                            validations="minLength:3"
-                            validationErrors={{
-                              minLength: t('campaignTitleValidationMinLength'),
-                            }}
+                            validations="isUrl"
+                            validationErrors={{ isUrl: t('campaignUrlError') }}
                             required
                           />
                         </div>

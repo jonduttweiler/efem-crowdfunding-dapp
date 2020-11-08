@@ -16,6 +16,7 @@ class Campaign extends Entity {
       managerAddress = '',
       reviewerAddress = '',
       beneficiaries = '',
+      categories = [],
       status = Campaign.PENDING.toStore()
     } = data;
     this._dacIds = dacIds;
@@ -23,6 +24,7 @@ class Campaign extends Entity {
     this._managerAddress = managerAddress;
     this._reviewerAddress = reviewerAddress;
     this._beneficiaries = beneficiaries;
+    this._categories = categories;
     this._status = StatusUtils.build(status.name, status.isLocal);
   }
 
@@ -32,7 +34,8 @@ class Campaign extends Entity {
   toIpfs() {
     let entityIpfs = super.toIpfs();
     return Object.assign(entityIpfs, {
-      beneficiaries: this._beneficiaries
+      beneficiaries: this._beneficiaries,
+      categories: this._categories
     });
   }
 
@@ -47,6 +50,7 @@ class Campaign extends Entity {
       managerAddress: this._managerAddress,
       reviewerAddress: this._reviewerAddress,
       beneficiaries: this._beneficiaries,
+      categories: this._categories,
       status: this._status.toStore()
     });
   }
@@ -168,6 +172,14 @@ class Campaign extends Entity {
   set beneficiaries(value) {
     this.checkType(value, ['string'], 'beneficiaries');
     this._beneficiaries = value;
+  }
+
+  get categories() {
+    return this._categories;
+  }
+
+  set categories(value) {
+    this._categories = value;
   }
 
 }
