@@ -929,13 +929,19 @@ class CrowdfundingContractApi {
         return new Observable(async subscriber => {
             try {
 
+                const RBTCAddress = '0x0000000000000000000000000000000000000000';
+                const { exrProviderP } = await getNetwork();
+                const exchangeRateProvider = await exrProviderP;
+
+                const rate = await exchangeRateProvider.getExchangeRate(RBTCAddress);
+                console.log(`RBTC/USD rate:${rate}`);
                 // TODO Obtener los Exchage Rates desde el smart contract.
                 let exchangeRates = [];
 
                 // RBTC
                 let exchangeRate = new ExchangeRate({
-                    tokenAddress: '0x0000000000000000000000000000000000000000',
-                    rate: new BigNumber(100000000000000),
+                    tokenAddress: RBTCAddress,
+                    rate: rate,
                     date: Date.now()
                 });
 

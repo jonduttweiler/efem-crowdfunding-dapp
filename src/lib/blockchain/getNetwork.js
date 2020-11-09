@@ -1,7 +1,4 @@
-import { Crowdfunding } from '@acdi/give4forests-crowdfunding-contract';
-//import { LiquidPledging } from 'giveth-liquidpledging';
-//import { LPPCampaignFactory } from 'lpp-campaign';
-//import { LPPCappedMilestoneFactory } from 'lpp-capped-native-milestone';
+import { Crowdfunding, ExchangeRateProvider} from '@acdi/give4forests-crowdfunding-contract';
 
 import getWeb3 from './getWeb3';
 import config from '../../configuration';
@@ -53,17 +50,15 @@ export default async () => {
   network = Object.assign({}, config);
 
   // Definición de Smart Contract de Crowdfunding
-  network.crowdfunding = new Crowdfunding(web3, network.crowdfundingAddress);
+  const crowdfunding = new Crowdfunding(web3, network.crowdfundingAddress);
+  network.crowdfunding = crowdfunding;
+  
+  network.exrProviderP = crowdfunding.exchangeRateProvider().then(exrAddress => {
+    console.log(`%cexchangeRateProviderAddress: ${exrAddress}`,"color:white;font-weight:bold");
+    return new ExchangeRateProvider(web3,exrAddress);
+  });
 
   console.log(`%ccrowdfudingAddress: ${network.crowdfundingAddress}`,"color:white;font-weight:bold");
-
-
-  //network.liquidPledging = new LiquidPledging(web3, network.liquidPledgingAddress);
-  //network.lppCampaignFactory = new LPPCampaignFactory(web3, network.lppCampaignFactoryAddress);
-  /*network.lppCappedMilestoneFactory = new LPPCappedMilestoneFactory(
-    web3,
-    network.lppCappedMilestoneFactoryAddress,
-  );*/
 
   network.tokens = {};
   const { tokenWhitelist } = await feathersClient.service('/whitelist').find();
