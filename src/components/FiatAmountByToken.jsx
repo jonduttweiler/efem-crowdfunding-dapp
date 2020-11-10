@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import FiatAmount from "./FiatAmount";
+import BigNumber from 'bignumber.js';
 import web3 from 'web3';
-import BN from 'bn.js';
 
 const RBTCAddress = '0x0000000000000000000000000000000000000000';
 
@@ -13,15 +14,11 @@ const FiatAmountByToken = ({ tokenAddress = RBTCAddress, tokenAmount }) => {
 
     useEffect(() => {
         try {
-            if (tokenAmount == "") {
-                tokenAmount = 0;
-            }
+            tokenAmount = (tokenAmount == "") ? 0 : tokenAmount;
             const asWei = web3.utils.toWei(tokenAmount.toString());
-            const tokenAmountWei = new BN(asWei);
-            const rawFiatAmount = tokenAmountWei.div(new BN(rate));
-            const fiatAmount = (rawFiatAmount.toNumber() / 100)//El rate representa 0.01 USD
-            setFiatAmount(fiatAmount.toFixed(2))
-            
+            const tokenAmountWei = new BigNumber(asWei);
+            const centsFiatAmount = tokenAmountWei.dividedBy(new BigNumber(rate));
+            setFiatAmount(centsFiatAmount.toString());
         } catch (err) {
             console.log(err)
         }
@@ -29,7 +26,7 @@ const FiatAmountByToken = ({ tokenAddress = RBTCAddress, tokenAmount }) => {
 
     return (
         <Typography variant="body1">
-            {tokenAmount} [RBTC] = {fiatAmount} USD
+            {tokenAmount} [RBTC] = <FiatAmount amount={new BigNumber(fiatAmount)}/>
         </Typography>
     )
 }
