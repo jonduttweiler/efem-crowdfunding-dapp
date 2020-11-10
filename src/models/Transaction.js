@@ -13,17 +13,17 @@ class Transaction extends Model {
     hash,
     gasEstimated,
     gasPrice,
-    pendingTitleKey,
-    pendingSubtitleKey,
-    status = Transaction.PENDING.toStore(),
+    createTitleKey,
+    createSubtitleKey,
+    status = Transaction.CREATED.toStore(),
   } = {}) {
     super();
     this._clientId = clientId;
     this._hash = hash;
     this._gasEstimated = gasEstimated;
     this._gasPrice = gasPrice;
-    this._pendingTitleKey = pendingTitleKey;
-    this._pendingSubtitleKey = pendingSubtitleKey;
+    this._createTitleKey = createTitleKey;
+    this._createSubtitleKey = createSubtitleKey;
     this._status = StatusUtils.build(status.name, status.isLocal);
   }
 
@@ -36,18 +36,30 @@ class Transaction extends Model {
       hash: this._hash,
       gasEstimated: this._gasEstimated,
       gasPrice: this._gasPrice,
-      pendingTitleKey: this._pendingTitleKey,
-      pendingSubtitleKey: this._pendingSubtitleKey,
+      createTitleKey: this._createTitleKey,
+      createSubtitleKey: this._createSubtitleKey,
       status: this._status.toStore()
     };
   }
 
-  static get PENDING() {
-    return StatusUtils.build('Pending', true);
+  static get CREATED() {
+    return StatusUtils.build('Created', true);
   }
 
-  get isPending() {
-    return this.status.name === Transaction.PENDING.name;
+  static get SUBMITTED() {
+    return StatusUtils.build('Submitted', true);
+  }
+
+  static get CONFIRMED() {
+    return StatusUtils.build('Confirmed');
+  }
+
+  static get REJECTED() {
+    return StatusUtils.build('Rejected');
+  }
+
+  get isCreated() {
+    return this.status.name === Transaction.CREATED.name;
   }
 
   get feeEstimated() {
@@ -89,20 +101,20 @@ class Transaction extends Model {
     this._gasPrice = value;
   }
 
-  get pendingTitleKey() {
-    return this._pendingTitleKey;
+  get createTitleKey() {
+    return this._createTitleKey;
   }
 
-  set pendingTitleKey(value) {
-    this._pendingTitleKey = value;
+  set createTitleKey(value) {
+    this._createTitleKey = value;
   }
   
-  get pendingSubtitleKey() {
-    return this._pendingSubtitleKey;
+  get createSubtitleKey() {
+    return this._createSubtitleKey;
   }
 
-  set pendingSubtitleKey(value) {
-    this._pendingSubtitleKey = value;
+  set createSubtitleKey(value) {
+    this._createSubtitleKey = value;
   }
 
   get status() {

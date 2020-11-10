@@ -51,12 +51,12 @@ class TransactionSummaryModal extends React.Component {
                         size="24px"
                       />
                       <Heading textAlign="center" as="h1" fontSize={[2, 3]} px={[3, 0]}>
-                        {t(transaction.pendingTitleKey)}
+                        {t(transaction.createTitleKey)}
                       </Heading>
                     </Flex>
                     <Flex justifyContent={"space-between"} flexDirection={"column"}>
                       <Text textAlign="center">
-                        {t(transaction.pendingSubtitleKey)}
+                        {t(transaction.createSubtitleKey)}
                       </Text>
                       <Flex
                         alignItems={"stretch"}
@@ -245,7 +245,6 @@ class TransactionSummaryModal extends React.Component {
                           </Text>
                         </Flex>
                       </Flex>
-                      <Button.Outline>Cancel purchase</Button.Outline>
                     </Flex>
                   </Box>
                 </ModalCard.Body>

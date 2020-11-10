@@ -17,6 +17,7 @@ import milestoneIpfsConnector from '../../ipfs/MilestoneIpfsConnector'
 import activityIpfsConnector from '../../ipfs/ActivityIpfsConnector'
 import ExchangeRate from '../../models/ExchangeRate';
 import getWeb3 from './getWeb3';
+import Transaction from 'models/Transaction';
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -348,8 +349,8 @@ class CrowdfundingContractApi {
                 let transaction = transactionUtils.addTransaction({
                     gasEstimated: new BigNumber(gasEstimated),
                     gasPrice: new BigNumber(gasPrice),
-                    pendingTitleKey: 'transactionPendingTitleCreateCampaign',
-                    pendingSubtitleKey: 'transactionPendingSubtitleCreateCampaign'
+                    createTitleKey: 'transactionCreatedTitleCreateCampaign',
+                    createSubtitleKey: 'transactionCreatedSubtitleCreateCampaign'
                 });
 
                 const promiEvent = method.send({
@@ -360,6 +361,7 @@ class CrowdfundingContractApi {
                     .once('transactionHash', (hash) => { // La transacción ha sido creada.
 
                         transaction.hash = hash;
+                        transaction.status = Transaction.SUBMITTED;
                         transactionUtils.updateTransaction(transaction);
 
                         campaign.txHash = hash;
@@ -367,6 +369,10 @@ class CrowdfundingContractApi {
                         messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la campaign' });
                     })
                     .once('confirmation', (confNumber, receipt) => {
+
+                        transaction.status = Transaction.CONFIRMED;
+                        transactionUtils.updateTransaction(transaction);
+
                         // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
                         // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
                         const idFromEvent = parseInt(receipt.events['SaveCampaign'].returnValues.id);
@@ -381,6 +387,10 @@ class CrowdfundingContractApi {
                         });
                     })
                     .on('error', function (error) {
+
+                        transaction.status = Transaction.REJECTED;
+                        transactionUtils.updateTransaction(transaction);
+
                         error.campaign = campaign;
                         console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
                         subscriber.error(error);

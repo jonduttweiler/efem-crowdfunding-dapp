@@ -16,7 +16,7 @@ class TransactionViewer extends Component {
     this.state = {
       modals: {
         data: {
-          transactionSummary: false
+          transactionSummaryOpen: false
         },
         methods: {
           closeTransactionSummaryModal: false
@@ -25,16 +25,51 @@ class TransactionViewer extends Component {
     };
   }
 
-  render() {
-    const { transaction, t } = this.props;
-    let openSummary = false;
-    if (transaction && transaction.isPending) {
-      openSummary = true;
+  componentDidUpdate(prevProps) {
+    const { transaction } = this.props;
+    const prevTransaction = prevProps.transaction;
+    const isDifferentTransaction = !prevTransaction || prevTransaction.clientId !== transaction.clientId;
+    let modals = { ...this.state.modals };
+
+    if (transaction) {
+
+      if (modals.data.transactionSummaryOpen === false) {
+
+        // El transaction summary modal está cerrado
+
+        if (transaction.isCreated && isDifferentTransaction) {
+          modals.data.transactionSummaryOpen = true;
+          this.setState({ modals });
+        }
+
+      } else {
+
+        // El transaction summary modal está abierto        
+
+        if (!transaction.isCreated) {
+          modals.data.transactionSummaryOpen = false;
+          this.setState({ modals });
+        }
+      }
     }
+  }
+
+  closeTransactionSummaryModal = e => {
+    if (typeof e !== "undefined") {
+      e.preventDefault();
+    }
+    let modals = { ...this.state.modals };
+    modals.data.transactionSummaryOpen = false;
+    this.setState({ modals });
+  };
+
+  render() {
+    const { transaction } = this.props;
+    let modals = { ...this.state.modals };
     return (
       <TransactionSummaryModal
-        closeModal={this.state.modals.methods.closeTransactionSummaryModal}
-        isOpen={openSummary}
+        closeModal={this.closeTransactionSummaryModal}
+        isOpen={modals.data.transactionSummaryOpen}
         transaction={transaction}>
       </TransactionSummaryModal>
     );

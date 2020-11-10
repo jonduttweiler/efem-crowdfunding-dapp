@@ -105,8 +105,8 @@
     "transactionEstimatedTime": "Estimated transaction time",
     "transactionEstimatedTimeValue": "Less than {{transactionEstimatedTime}} minute(s)",
 
-    "transactionPendingTitleCreateCampaign": "Confirm your creation of campaign in the wallet",
-    "transactionPendingSubtitleCreateCampaign": "Double check the details here – your creation of campaign can't be refunded."
+    "transactionCreatedTitleCreateCampaign": "Confirm your creation of campaign in the wallet",
+    "transactionCreatedSubtitleCreateCampaign": "Double check the details here – your creation of campaign can't be refunded."
     
     
 }

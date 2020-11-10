@@ -105,8 +105,8 @@
     "transactionEstimatedTime": "Tiempo de transacción estimado",
     "transactionEstimatedTimeValue": "Menos de {{transactionEstimatedTime}} minuto(s)",
 
-    "transactionPendingTitleCreateCampaign": "Confirma tu creación de campaña en la billetera",
-    "transactionPendingSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada."
+    "transactionCreatedTitleCreateCampaign": "Confirma tu creación de campaña en la billetera",
+    "transactionCreatedSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada."
     
 
 }
