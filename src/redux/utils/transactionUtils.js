@@ -19,15 +19,17 @@ class TransactionUtils {
     hash,
     gasEstimated,
     gasPrice,
-    createTitleKey,
-    createSubtitleKey
+    createdTitleKey,
+    createdSubtitleKey,
+    submittedTitleKey
   }) {
     let transaction = new Transaction({
       hash: hash,
       gasEstimated: gasEstimated,
       gasPrice: gasPrice,
-      createTitleKey: createTitleKey,
-      createSubtitleKey: createSubtitleKey
+      createdTitleKey: createdTitleKey,
+      createdSubtitleKey: createdSubtitleKey,
+      submittedTitleKey: submittedTitleKey
     });
     store.dispatch(addTransaction(transaction));
     return transaction;

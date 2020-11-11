@@ -5,6 +5,7 @@ import Transaction from '../models/Transaction';
 import { connect } from 'react-redux'
 import { selectFirst, deleteTransaction } from '../redux/reducers/transactionsSlice';
 import TransactionSummaryModal from '../lib/blockchain/components/TransactionSummaryModal';
+import TransactionProgressBanner from 'lib/blockchain/components/TransactionProgressBanner';
 
 /**
  * Componente encargado de la visualización de transacciones.
@@ -67,11 +68,19 @@ class TransactionViewer extends Component {
     const { transaction } = this.props;
     let modals = { ...this.state.modals };
     return (
-      <TransactionSummaryModal
-        closeModal={this.closeTransactionSummaryModal}
-        isOpen={modals.data.transactionSummaryOpen}
-        transaction={transaction}>
-      </TransactionSummaryModal>
+      <React.Fragment>
+        
+        <TransactionSummaryModal
+          closeModal={this.closeTransactionSummaryModal}
+          isOpen={modals.data.transactionSummaryOpen}
+          transaction={transaction}>
+        </TransactionSummaryModal>
+
+        <TransactionProgressBanner
+          transaction={transaction}>
+        </TransactionProgressBanner>
+      </React.Fragment>
+
     );
   }
 }

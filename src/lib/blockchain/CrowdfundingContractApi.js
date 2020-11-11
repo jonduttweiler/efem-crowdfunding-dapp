@@ -349,8 +349,9 @@ class CrowdfundingContractApi {
                 let transaction = transactionUtils.addTransaction({
                     gasEstimated: new BigNumber(gasEstimated),
                     gasPrice: new BigNumber(gasPrice),
-                    createTitleKey: 'transactionCreatedTitleCreateCampaign',
-                    createSubtitleKey: 'transactionCreatedSubtitleCreateCampaign'
+                    createdTitleKey: 'transactionCreatedTitleCreateCampaign',
+                    createdSubtitleKey: 'transactionCreatedSubtitleCreateCampaign',
+                    submittedTitleKey: 'transactionSubmittedTitleCreateCampaign'
                 });
 
                 const promiEvent = method.send({
@@ -360,8 +361,7 @@ class CrowdfundingContractApi {
                 promiEvent
                     .once('transactionHash', (hash) => { // La transacción ha sido creada.
 
-                        transaction.hash = hash;
-                        transaction.status = Transaction.SUBMITTED;
+                        transaction.submitted(hash);
                         transactionUtils.updateTransaction(transaction);
 
                         campaign.txHash = hash;

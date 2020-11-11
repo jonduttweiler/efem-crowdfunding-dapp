@@ -24,7 +24,8 @@ const configurations = {
       nodeUrl: 'http://localhost:4444',
       timeout: 20000,
       explorer: 'https://explorer.testnet.rsk.co/',
-      transactionEstimatedTime: 1 // Minutos
+      transactionEstimatedTime: 1, // Minutos
+      transactionEstimatedTimeMilliseconds: 60000
     },
     language: {
       default: 'en',
@@ -74,7 +75,8 @@ const configurations = {
       nodeUrl: 'https://public-node.testnet.rsk.co',
       timeout: 20000,
       explorer: 'https://explorer.testnet.rsk.co/',
-      transactionEstimatedTime: 1 // Minutos
+      transactionEstimatedTime: 1, // Minutos
+      transactionEstimatedTimeMilliseconds: 60000
     },
     language: {
       default: 'en',
@@ -124,7 +126,8 @@ const configurations = {
       nodeUrl: 'https://node.b4h.world',
       timeout: 20000,
       explorer: 'https://explorer.testnet.rsk.co/',
-      transactionEstimatedTime: 1 // Minutos
+      transactionEstimatedTime: 1, // Minutos
+      transactionEstimatedTimeMilliseconds: 60000
     },
     language: {
       default: 'en',

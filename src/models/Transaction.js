@@ -13,8 +13,10 @@ class Transaction extends Model {
     hash,
     gasEstimated,
     gasPrice,
-    createTitleKey,
-    createSubtitleKey,
+    submittedTime,
+    createdTitleKey,
+    createdSubtitleKey,
+    submittedTitleKey,
     status = Transaction.CREATED.toStore(),
   } = {}) {
     super();
@@ -22,8 +24,10 @@ class Transaction extends Model {
     this._hash = hash;
     this._gasEstimated = gasEstimated;
     this._gasPrice = gasPrice;
-    this._createTitleKey = createTitleKey;
-    this._createSubtitleKey = createSubtitleKey;
+    this._submittedTime = submittedTime;
+    this._createdTitleKey = createdTitleKey;
+    this._createdSubtitleKey = createdSubtitleKey;
+    this._submittedTitleKey = submittedTitleKey;
     this._status = StatusUtils.build(status.name, status.isLocal);
   }
 
@@ -36,10 +40,18 @@ class Transaction extends Model {
       hash: this._hash,
       gasEstimated: this._gasEstimated,
       gasPrice: this._gasPrice,
-      createTitleKey: this._createTitleKey,
-      createSubtitleKey: this._createSubtitleKey,
+      submittedTime: this._submittedTime,
+      createdTitleKey: this._createdTitleKey,
+      createdSubtitleKey: this._createdSubtitleKey,
+      submittedTitleKey: this._submittedTitleKey,
       status: this._status.toStore()
     };
+  }
+
+  submitted(hash) {
+    this.hash = hash;
+    this.status = Transaction.SUBMITTED;
+    this.submittedTime = Date.now();
   }
 
   static get CREATED() {
@@ -101,20 +113,36 @@ class Transaction extends Model {
     this._gasPrice = value;
   }
 
-  get createTitleKey() {
-    return this._createTitleKey;
+  get submittedTime() {
+    return this._submittedTime;
   }
 
-  set createTitleKey(value) {
-    this._createTitleKey = value;
+  set submittedTime(value) {
+    this._submittedTime = value;
+  }
+
+  get createdTitleKey() {
+    return this._createdTitleKey;
+  }
+
+  set createdTitleKey(value) {
+    this._createdTitleKey = value;
   }
   
-  get createSubtitleKey() {
-    return this._createSubtitleKey;
+  get createdSubtitleKey() {
+    return this._createdSubtitleKey;
   }
 
-  set createSubtitleKey(value) {
-    this._createSubtitleKey = value;
+  set createdSubtitleKey(value) {
+    this._createdSubtitleKey = value;
+  }
+
+  get submittedTitleKey() {
+    return this._submittedTitleKey;
+  }
+
+  set submittedTitleKey(value) {
+    this._submittedTitleKey = value;
   }
 
   get status() {
