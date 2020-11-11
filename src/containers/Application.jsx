@@ -39,6 +39,9 @@ import { fetchExchangeRates } from '../redux/reducers/exchangeRatesSlice'
 import MessageViewer from '../components/MessageViewer';
 import SwitchRoutes from './SwitchRoutes';
 
+import initExchangeRateListener from "../lib/blockchain/listeners/exchangeRateListener"
+
+
 
 /* global document */
 /**
@@ -87,6 +90,7 @@ class Application extends Component {
     this.props.fetchMilestones();
     this.props.fetchUsers();
     this.props.fetchExchangeRates();
+    initExchangeRateListener();
   }
 
   web3Loaded() {
