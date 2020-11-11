@@ -16,6 +16,8 @@ import milestoneIpfsConnector from '../../ipfs/MilestoneIpfsConnector'
 import activityIpfsConnector from '../../ipfs/ActivityIpfsConnector'
 import ExchangeRate from '../../models/ExchangeRate';
 
+const RBTCAddress = "0x0000000000000000000000000000000000000000"; //TODO: Leer desde config
+
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
  */
@@ -928,26 +930,22 @@ class CrowdfundingContractApi {
     getExchangeRates() {
         return new Observable(async subscriber => {
             try {
-
-                const RBTCAddress = '0x0000000000000000000000000000000000000000';
-                const { exrProviderP } = await getNetwork();
-                const exchangeRateProvider = await exrProviderP;
-
+                const exchangeRateProvider = await this.getExchangeRateProvider();
                 const rate = await exchangeRateProvider.getExchangeRate(RBTCAddress);
                 console.log(`RBTC/USD rate:${rate}`);
-                // TODO Obtener los Exchage Rates desde el smart contract.
+                // TODO Obtener otros Exchage Rates desde el smart contract.
                 let exchangeRates = [];
 
                 // RBTC
                 let exchangeRate = new ExchangeRate({
                     tokenAddress: RBTCAddress,
-                    rate: rate,
+                    rate: new BigNumber(rate),
                     date: Date.now()
                 });
 
                 exchangeRates.push(exchangeRate);
-
                 subscriber.next(exchangeRates);
+
             } catch (error) {
                 subscriber.error(error);
             }
@@ -1020,6 +1018,12 @@ class CrowdfundingContractApi {
         const network = await getNetwork();
         const { crowdfunding } = network;
         return crowdfunding;
+    }
+
+    async getExchangeRateProvider(){
+        const { exrProviderP } = await getNetwork();
+        this.exchangeRateProvider = await exrProviderP;
+        return this.exchangeRateProvider;
     }
 }
 
