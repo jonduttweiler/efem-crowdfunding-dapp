@@ -19,6 +19,7 @@
     "campaignDescriptionError": "Please provide at least 10 characters.",
     "campaignCategoriesLabel": "Categories",
     "campaignCategoriesHelp": "Which of these categories best describes your campaign?",
+    "campaignCategoriesAllLabel": "All",
     "campaignBeneficiariesLabel": "Beneficiaries",
     "campaignBeneficiariesPlaceholder": "E.g. 30 families in the area",
     "campaignBeneficiariesHelp": "Tell us in a few words who or how many will be the beneficiaries of this campaign.",

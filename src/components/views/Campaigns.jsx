@@ -11,6 +11,14 @@ import styles from "assets/jss/material-kit-react/views/landingPageSections/camp
 import { withStyles } from '@material-ui/core/styles';
 
 import Badge from "components/Badge/Badge.js";
+import CustomTabs from 'components/CustomTabs/CustomTabs';
+
+const categories = [
+  {id: 1, description: 'Ambiente'},
+  {id: 2, description: 'Crecimiento personal'},
+  {id: 3, description: 'Educación'},
+  {id: 4, description: 'Trabajo'}
+];
 
 /**
  * The Campaigns view mapped to /campaigns
@@ -22,6 +30,7 @@ class Campaigns extends Component {
     this.state = {
       isLoading: false
     };
+
   }
 
   render() {
@@ -32,6 +41,7 @@ class Campaigns extends Component {
     // como el tamaño de las campañas.
     // Falta el desarrollo del Paginado.
     var total = campaigns.length;
+    
     return (
       <div id="campaigns-view" className="card-view">
         <div className={classes.section}>
@@ -41,13 +51,34 @@ class Campaigns extends Component {
           </h6>
           {// There are some Campaigns in the system, show them
           !hasError && campaigns.length > 0 && (
-            <div>
-              <div className="cards-grid-container">
-                {campaigns.map(campaign => (
-                  <CampaignCard key={campaign.clientId} campaign={campaign} />
-                ))}
-              </div>
-            </div>
+            <CustomTabs
+              plainTabs
+              headerColor="info"
+              customClasses={classes.cardHeader}
+              tabs={[
+                {
+                  tabName: t('campaignCategoriesAllLabel'),
+                  tabContent: (
+                    <div className="cards-grid-container">
+                      {campaigns.map(campaign => (
+                        <CampaignCard key={campaign.clientId} campaign={campaign} />
+                      ))}
+                    </div>
+                  )
+                }].concat(categories.map(cat => (
+                  {
+                  tabName: cat.description,
+                  tabContent: (
+                    <div className="cards-grid-container">
+                      {campaigns
+                        .filter(campaign => campaign.categories.indexOf(cat.id) !== -1)
+                        .map(campaign => (<CampaignCard key={campaign.clientId} campaign={campaign} />
+                      ))}
+                    </div>
+                  )
+                })))
+              }
+            />
           )}
           {!hasError && isLoading && <Loader />}
 

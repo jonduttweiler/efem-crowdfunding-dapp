@@ -25,14 +25,14 @@ export default function CustomTabs(props) {
     setValue(value);
   };
   const classes = useStyles();
-  const { headerColor, plainTabs, tabs, title, rtlActive } = props;
+  const { headerColor, plainTabs, tabs, title, rtlActive, customClasses } = props;
   const cardTitle = classNames({
     [classes.cardTitle]: true,
     [classes.cardTitleRTL]: rtlActive
   });
   return (
     <Card plain={plainTabs}>
-      <CardHeader color={headerColor} plain={plainTabs}>
+      <CardHeader classcolor={headerColor} plain={plainTabs} className={customClasses}>
         {title !== undefined ? <div className={cardTitle}>{title}</div> : null}
         <Tabs
           value={value}
