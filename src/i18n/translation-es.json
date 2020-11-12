@@ -96,6 +96,7 @@
     "web3ConnectionPendingWaitTitle": "Esperando confirmación de conexión...",
     "web3ConnectionPendingWaitDescription": "Esto no le costará ningún RBTC",
 
+    "transactionExplore": "Explorar",
     "transactionWaitConfirmationTitle": "Esperando confirmación...",
     "transactionWaitConfirmationDescription": "¿No ve la ventana de MetaMask?",
     "transactionNetwork": "Red",
@@ -107,6 +108,6 @@
 
     "transactionCreatedTitleCreateCampaign": "Confirma tu creación de campaña en la billetera",
     "transactionCreatedSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada.",
-    "transactionSubmittedTitleCreateCampaign": "Creando campaña..."
+    "transactionPendingTitleCreateCampaign": "Creando campaña..."
 
 }

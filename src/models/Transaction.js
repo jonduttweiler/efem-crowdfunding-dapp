@@ -50,16 +50,24 @@ class Transaction extends Model {
 
   submitted(hash) {
     this.hash = hash;
-    this.status = Transaction.SUBMITTED;
+    this.status = Transaction.PENDING;
     this.submittedTime = Date.now();
+  }
+
+  confirmed() {
+    this.status = Transaction.CONFIRMED;
+  }
+
+  rejected() {
+    this.status = Transaction.REJECTED;
   }
 
   static get CREATED() {
     return StatusUtils.build('Created', true);
   }
 
-  static get SUBMITTED() {
-    return StatusUtils.build('Submitted', true);
+  static get PENDING() {
+    return StatusUtils.build('Pending', true);
   }
 
   static get CONFIRMED() {

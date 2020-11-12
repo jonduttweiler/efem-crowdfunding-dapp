@@ -133,7 +133,7 @@ class EditCampaign extends Component {
     //Esto tiene que comprobar aunque sea que se hayan cargado los requeridos
     const afterSave = campaign => {
       //React.toast.success('Your Campaign has been saved!');
-      //history.push(`/`);
+      history.push(`/`);
     };
 
     let modals = { ...this.state.modals };

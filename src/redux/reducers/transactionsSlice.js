@@ -28,11 +28,20 @@ export const transactionsSlice = createSlice({
 
 export const { addTransaction, updateTransaction, deleteTransaction } = transactionsSlice.actions;
 
-export const selectFirst = (state) => {
-  if (state.transactions.length > 0) {
-    return new Transaction(state.transactions[0]);
-  }
-  return undefined;
+export const selectLastCreated = (state) => {
+  let transactionsCreated = state.transactions.filter(t => t.status.name === Transaction.CREATED.name);
+  let length = transactionsCreated.length;
+  if(length > 0) {
+    return new Transaction(state.transactions[length - 1]);
+  } else {
+    return undefined;
+  }  
 };
+
+export const selectPendings = (state) => {
+  return state.transactions.filter(t => t.status.name === Transaction.PENDING.name).map(function (transactionStore) {
+    return new Transaction(transactionStore);
+  });
+}
 
 export default transactionsSlice.reducer;

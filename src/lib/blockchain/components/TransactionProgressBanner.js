@@ -1,17 +1,14 @@
 import React from "react";
-import {
-  Text,
-  Flex,
-  Box,
-  Link,
-  Icon,
-} from "rimble-ui";
+import Link from '@material-ui/core/Link';
 import { withTranslation } from 'react-i18next';
 import Web3App from '../Web3App'
 import { connect } from 'react-redux'
-import { selectCurrentUser } from '../../../redux/reducers/currentUserSlice'
 import config from '../../../configuration'
-
+import CircularProgressWithLabel from '../../../components/CircularProgressWithLabel'
+import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import { Flash } from 'rimble-ui';
 /**
  * https://reactjs.org/docs/state-and-lifecycle.html
  */
@@ -52,62 +49,46 @@ class TransactionProgressBanner extends React.Component {
     }
   }
 
+
+
   render() {
-    const { currentUser, transaction, t } = this.props;
+    const { transaction, t } = this.props;
     const { progress } = this.state;
     if (!transaction) {
       return null;
     }
-    const progressText = `${progress}%`
+    const preventDefault = (event) => event.preventDefault();
     return (
       <Web3App.Consumer>
         {
           ({
             network
           }) =>
-            <Flex flexDirection="column">
-              <Box width={progressText} height="8px" bg="success" />
-              <Box p={[2, 3]} color="near-white" width="100%" bg="dark-gray">
-                <Flex
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Flex alignItems="center">
-                    <Flex
-                      mr={[2, 3]}
-                      bg={"silver"}
-                      borderRadius={"50%"}
-                      height={"3em"}
-                      width={"3em"}
-                      minWidth={"3em"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                    >
-                      <Text>
-                        {progressText}
-                      </Text>
-                    </Flex>
-                    <Flex flexDirection="column">
-                      <Text fontWeight="bold">
-                        {t(transaction.submittedTitleKey)}
-                      </Text>
-                      <Text fontSize={1}>
-                        {t('transactionEstimatedTimeValue', {
-                          transactionEstimatedTime: config.network.transactionEstimatedTime
-                        })}
-                      </Text>
-                    </Flex>
-                  </Flex>
-                  <Link color="primary-lighter" ml={[2, 3]}>
-                    <Flex alignItems="center">
-                      Details
-                      <Icon ml={1} name="Launch" size="16px" />
-                    </Flex>
+            <Flash variant="info">
+              <Grid container
+                spacing={2}
+                alignItems="center">
+                <Grid item xs={1}>
+                  <CircularProgressWithLabel value={progress} />
+                </Grid>
+                <Grid item xs={9}>
+                  <Typography variant="h6">
+                    {t(transaction.submittedTitleKey)}
+                  </Typography>
+                  <Typography variant="body2">
+                    {t('transactionEstimatedTimeValue', {
+                      transactionEstimatedTime: config.network.transactionEstimatedTime
+                    })}
+                  </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Link href={config.network.explorer + 'tx/' + transaction.hash} onClick={preventDefault}>
+                    {t('transactionExplore')}
                   </Link>
-                </Flex>
-              </Box>
-            </Flex>
+                </Grid>
+              </Grid>
+            </Flash>
+
         }
       </Web3App.Consumer>
     );
@@ -116,12 +97,18 @@ class TransactionProgressBanner extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: selectCurrentUser(state)
+
   }
 }
 
 const mapDispatchToProps = {}
 
+const styles = theme => ({
+  
+});
+
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation()(TransactionProgressBanner)
+  withStyles(styles)(
+    withTranslation()(TransactionProgressBanner)
+  )
 );

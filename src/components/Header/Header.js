@@ -15,7 +15,7 @@ import Menu from "@material-ui/icons/Menu";
 // core components
 import styles from "assets/jss/material-kit-react/components/headerStyle.js";
 import { NavLink } from "react-router-dom";
-import ConnectionBanner from '../../lib/blockchain/ConnectionBanner';
+import Web3Banner from '../../lib/blockchain/Web3Banner';
 import { AppTransactionContext } from '../../lib/blockchain/Web3App';
 import config from '../../configuration';
 
@@ -83,7 +83,7 @@ export default function Header(props) {
           )}
         </div>*/}
         
-        <ConnectionBanner
+        <Web3Banner
           currentNetwork={network.current.id}
           requiredNetwork={config.network.requiredId}
           isCorrectNetwork={network.isCorrectNetwork}

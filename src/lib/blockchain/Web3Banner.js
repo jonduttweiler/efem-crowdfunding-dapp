@@ -4,6 +4,10 @@ import NetworkUtils from './NetworkUtils';
 import { Box, Flex, Icon, Text, MetaMaskButton, Flash } from 'rimble-ui';
 import Typography from '@material-ui/core/Typography';
 import { useTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
+import { connect } from 'react-redux'
+import { selectLastCreated, selectPendings, deleteTransaction } from '../../redux/reducers/transactionsSlice';
+import TransactionProgressBanner from './components/TransactionProgressBanner';
 
 const WrongNetwork = ({
   currentNetwork,
@@ -38,9 +42,9 @@ const WrongNetwork = ({
           </Flex>
         </Flash>
       ) : (
-        // Show custom banner
-        onWrongNetworkMessage
-      )}
+          // Show custom banner
+          onWrongNetworkMessage
+        )}
     </div>
   );
 };
@@ -69,14 +73,14 @@ const NoNetwork = ({ noNetworkAvailableMessage }) => {
               target="_blank"
               color={'white'}
               size="small"
-            >     
+            >
               {t('web3InstallMetaMask')}
             </MetaMaskButton>
           </Flex>
         </Flash>
       ) : (
-        noNetworkAvailableMessage
-      )}
+          noNetworkAvailableMessage
+        )}
     </div>
   );
 };
@@ -100,21 +104,21 @@ const NotWeb3Browser = ({ notWeb3CapableBrowserMessage }) => {
                   {t('web3NotWeb3BrowserDescriptionMobile')}
                 </Typography>
               ) : (
-                <Typography variant="body2">
-                  {t('web3NotWeb3BrowserDescription')}
-                </Typography>
-              )}
+                  <Typography variant="body2">
+                    {t('web3NotWeb3BrowserDescription')}
+                  </Typography>
+                )}
             </Flex>
           </Flex>
         </Flash>
       ) : (
-        notWeb3CapableBrowserMessage
-      )}
+          notWeb3CapableBrowserMessage
+        )}
     </div>
   );
 };
 
-class ConnectionBanner extends Component {
+class Web3Banner extends Component {
   static propTypes = {
     currentNetwork: PropTypes.number,
     requiredNetwork: PropTypes.number,
@@ -163,7 +167,11 @@ class ConnectionBanner extends Component {
   }
 
   render() {
-    const { currentNetwork, requiredNetwork, onWeb3Fallback } = this.props;
+    const { currentNetwork,
+      requiredNetwork,
+      onWeb3Fallback,
+      transactionCreated,
+      transactionsPendings } = this.props;
     const {
       notWeb3CapableBrowserMessage,
       noNetworkAvailableMessage,
@@ -171,9 +179,10 @@ class ConnectionBanner extends Component {
     } = this.props.children;
 
     return (
+
       <div style={{
-          width: '60%'
-        }}>
+        width: '60%'
+      }}>
         {this.state.browserIsWeb3Capable === false ? (
           <NotWeb3Browser
             notWeb3CapableBrowserMessage={notWeb3CapableBrowserMessage}
@@ -187,9 +196,29 @@ class ConnectionBanner extends Component {
             onWrongNetworkMessage={onWrongNetworkMessage}
           />
         ) : null}
+
+        {transactionsPendings.map(transaction => (
+          <TransactionProgressBanner
+            key={transaction.cliendId}
+            transaction={transaction}>
+          </TransactionProgressBanner>
+        ))}
+
       </div>
+
     );
   }
 }
 
-export default ConnectionBanner;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    transactionCreated: selectLastCreated(state),
+    transactionsPendings: selectPendings(state)
+  }
+}
+
+const mapDispatchToProps = { deleteTransaction }
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withTranslation()(Web3Banner)
+)

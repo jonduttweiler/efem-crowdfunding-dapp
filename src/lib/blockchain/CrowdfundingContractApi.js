@@ -351,7 +351,7 @@ class CrowdfundingContractApi {
                     gasPrice: new BigNumber(gasPrice),
                     createdTitleKey: 'transactionCreatedTitleCreateCampaign',
                     createdSubtitleKey: 'transactionCreatedSubtitleCreateCampaign',
-                    submittedTitleKey: 'transactionSubmittedTitleCreateCampaign'
+                    submittedTitleKey: 'transactionPendingTitleCreateCampaign'
                 });
 
                 const promiEvent = method.send({
@@ -366,11 +366,10 @@ class CrowdfundingContractApi {
 
                         campaign.txHash = hash;
                         subscriber.next(campaign);
-                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la campaign' });
                     })
                     .once('confirmation', (confNumber, receipt) => {
 
-                        transaction.status = Transaction.CONFIRMED;
+                        transaction.confirmed();
                         transactionUtils.updateTransaction(transaction);
 
                         // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
@@ -388,7 +387,7 @@ class CrowdfundingContractApi {
                     })
                     .on('error', function (error) {
 
-                        transaction.status = Transaction.REJECTED;
+                        transaction.rejected();
                         transactionUtils.updateTransaction(transaction);
 
                         error.campaign = campaign;
