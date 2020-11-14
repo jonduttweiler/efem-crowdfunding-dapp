@@ -1,15 +1,13 @@
 import React from "react";
-import { Heading, Text, Modal, Flex, Box, Icon } from "rimble-ui";
+import { Heading, Text, Modal, Flex, Box, Icon, Link, Button } from "rimble-ui";
 import ModalCard from './ModalCard';
 import { withTranslation } from 'react-i18next';
 import Web3App from '../Web3App'
 import { connect } from 'react-redux'
 import { selectCurrentUser } from '../../../redux/reducers/currentUserSlice'
-import { selectLastConfirmed, deleteTransaction } from '../../../redux/reducers/transactionsSlice';
-import Link from '@material-ui/core/Link';
-import config from '../../../configuration'
+import { selectLastFailured, deleteTransaction } from '../../../redux/reducers/transactionsSlice';
 
-class TransactionConfirmedModal extends React.Component {
+class TransactionFailuredModal extends React.Component {
 
   constructor() {
     super();
@@ -33,7 +31,7 @@ class TransactionConfirmedModal extends React.Component {
 
         // El transaction modal está cerrado
 
-        if (transaction.isConfirmed && isDifferentTransaction) {
+        if (transaction.isFailured && isDifferentTransaction) {
           this.setState({
             isOpen: true
           });
@@ -43,7 +41,7 @@ class TransactionConfirmedModal extends React.Component {
 
         // El transaction modal está abierto        
 
-        if (!transaction.isConfirmed) {
+        if (!transaction.isFailured) {
           this.setState({
             isOpen: false
           });
@@ -69,7 +67,6 @@ class TransactionConfirmedModal extends React.Component {
     if (!transaction) {
       return null;
     }
-    const preventDefault = (event) => event.preventDefault();
     return (
       <Web3App.Consumer>
         {
@@ -79,7 +76,7 @@ class TransactionConfirmedModal extends React.Component {
             <Modal isOpen={isOpen}>
               <ModalCard closeFunc={this.closeModal}>
                 <ModalCard.Body>
-                  <Box height="4px" bg="success" borderRadius={["1rem 1rem 0 0"]} />
+                  <Box height="4px" bg="danger" borderRadius={["1rem 1rem 0 0"]} />
                   <Flex
                     justifyContent="space-between"
                     alignItems="center"
@@ -88,28 +85,14 @@ class TransactionConfirmedModal extends React.Component {
                     p={[3, 4]}
                     pb={3}
                   >
-                    <Icon name="CheckCircle" color="success" aria-label="Success" />
+                    <Icon name="Warning" color="danger" aria-label="Warning" />
                     <Heading textAlign="center" as="h1" fontSize={[2, 3]} px={[3, 0]}>
-                      {t(transaction.confirmedTitle.key, transaction.confirmedTitle.args)}
+                      {t(transaction.failuredTitle.key, transaction.failuredTitle.args)}
                     </Heading>
                   </Flex>
-                  <Box p={[3, 4]} pb={2}>
-                    <Text textAlign="center" mt={2}>
-                      {t(transaction.confirmedDescription.key, transaction.confirmedDescription.args)}
-                    </Text>
-                  </Box>
-                  <Flex
-                    p={[3, 4]}
-                    borderTop={1}
-                    borderColor="near-white"
-                    justifyContent="flex-end"
-                    flexDirection={["column", "row"]}
-                    alignItems="center"
-                  >
-                    <Link href={config.network.explorer + 'tx/' + transaction.hash} onClick={preventDefault}>
-                      {t('transactionExplore')}
-                    </Link>
-                  </Flex>
+                  <Text p={[3, 4]}>
+                    {t(transaction.failuredDescription.key, transaction.failuredDescription.args)}
+                  </Text>
                 </ModalCard.Body>
               </ModalCard>
             </Modal>
@@ -122,7 +105,7 @@ class TransactionConfirmedModal extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     currentUser: selectCurrentUser(state),
-    transaction: selectLastConfirmed(state)
+    transaction: selectLastFailured(state)
   }
 }
 
@@ -131,5 +114,5 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation()(TransactionConfirmedModal)
+  withTranslation()(TransactionFailuredModal)
 );

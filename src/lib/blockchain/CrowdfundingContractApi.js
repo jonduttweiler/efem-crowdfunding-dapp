@@ -372,6 +372,15 @@ class CrowdfundingContractApi {
                     },
                     confirmedDescription: {
                         key: 'transactionConfirmedDescriptionCreateCampaign'
+                    },
+                    failuredTitle: {
+                        key: 'transactionFailuredTitleCreateCampaign',
+                        args: {
+                            campaignTitle: campaign.title
+                        }
+                    },
+                    failuredDescription: {
+                        key: 'transactionFailuredDescriptionCreateCampaign'
                     }
                 });
 
@@ -382,7 +391,7 @@ class CrowdfundingContractApi {
                 promiEvent
                     .once('transactionHash', (hash) => { // La transacción ha sido creada.
 
-                        transaction.submitted(hash);
+                        transaction.submit(hash);
                         transactionUtils.updateTransaction(transaction);
 
                         campaign.txHash = hash;
@@ -390,7 +399,7 @@ class CrowdfundingContractApi {
                     })
                     .once('confirmation', (confNumber, receipt) => {
 
-                        transaction.confirmed();
+                        transaction.confirme();
                         transactionUtils.updateTransaction(transaction);
 
                         // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
@@ -408,16 +417,16 @@ class CrowdfundingContractApi {
                     })
                     .on('error', function (error) {
 
-                        transaction.rejected();
+                        transaction.fail();
                         transactionUtils.updateTransaction(transaction);
 
                         error.campaign = campaign;
                         console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
                         subscriber.error(error);
-                        messageUtils.addMessageError({
+                        /*messageUtils.addMessageError({
                             text: `Se produjo un error creando la campaign ${campaign.title}`,
                             error: error
-                        });
+                        });*/
                     });
             } catch (error) {
                 error.campaign = campaign;

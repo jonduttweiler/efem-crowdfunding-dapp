@@ -96,7 +96,7 @@
     "web3ConnectionPendingWaitTitle": "Esperando confirmación de conexión...",
     "web3ConnectionPendingWaitDescription": "Esto no le costará ningún RBTC",
 
-    "transactionExplore": "Explorar",
+    "transactionExplore": "Ver en Etherscan",
     "transactionWaitConfirmationTitle": "Esperando confirmación...",
     "transactionWaitConfirmationDescription": "¿No ve la ventana de MetaMask?",
     "transactionNetwork": "Red",
@@ -110,5 +110,7 @@
     "transactionCreatedSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada.",
     "transactionPendingTitleCreateCampaign": "Creando campaña '{{campaignTitle}}'...",
     "transactionConfirmedTitleCreateCampaign": "La campaña '{{campaignTitle}}' ha sido creada",
-    "transactionConfirmedDescriptionCreateCampaign": "Felicitaciones! La campaña ha sido creada y está disponible para agregar hitos y recibir fondos."
+    "transactionConfirmedDescriptionCreateCampaign": "Felicitaciones! La campaña ha sido creada y está disponible para agregar hitos y recibir fondos.",
+    "transactionFailuredTitleCreateCampaign": "No se creó la campaña '{{campaignTitle}}'",
+    "transactionFailuredDescriptionCreateCampaign": "Ocurrió una falla durante la creación de la campaña."
 }

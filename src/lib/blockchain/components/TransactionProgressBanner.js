@@ -49,8 +49,6 @@ class TransactionProgressBanner extends React.Component {
     }
   }
 
-
-
   render() {
     const { transaction, t } = this.props;
     const { progress } = this.state;

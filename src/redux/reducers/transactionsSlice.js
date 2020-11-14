@@ -58,4 +58,14 @@ export const selectLastConfirmed = (state) => {
   }  
 };
 
+export const selectLastFailured = (state) => {
+  let transactionsFailured = state.transactions.filter(t => t.status.name === Transaction.FAILURED.name);
+  let length = transactionsFailured.length;
+  if(length > 0) {
+    return new Transaction(transactionsFailured[length - 1]);
+  } else {
+    return undefined;
+  }  
+};
+
 export default transactionsSlice.reducer;

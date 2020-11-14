@@ -96,7 +96,7 @@
     "web3ConnectionPendingWaitTitle": "Waiting for connection confirmation...",
     "web3ConnectionPendingWaitDescription": "This won’t cost you any RBTC",
 
-    "transactionExplore": "Explore",
+    "transactionExplore": "View on Etherscan",
     "transactionWaitConfirmationTitle": "Waiting for confirmation...",
     "transactionWaitConfirmationDescription": "Don't see the MetaMask popup?",
     "transactionNetwork": "Network",
@@ -110,6 +110,8 @@
     "transactionCreatedSubtitleCreateCampaign": "Double check the details here – your creation of campaign can't be refunded.",
     "transactionPendingTitleCreateCampaign": "Creating campaign '{{campaignTitle}}'...",
     "transactionConfirmedTitleCreateCampaign": "The campaign '{{campaignTitle}}' has been created",
-    "transactionConfirmedDescriptionCreateCampaign": "Congratulations! The campaign has been created and is available to add milestones and receive funds."
+    "transactionConfirmedDescriptionCreateCampaign": "Congratulations! The campaign has been created and is available to add milestones and receive funds.",
+    "transactionFailuredTitleCreateCampaign": "The campaign '{{campaignTitle}}' was not created",
+    "transactionFailuredDescriptionCreateCampaign": "A failure occurred during campaign creation."
     
 }

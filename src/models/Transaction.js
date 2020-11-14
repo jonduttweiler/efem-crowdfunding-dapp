@@ -19,6 +19,8 @@ class Transaction extends Model {
     pendingTitle,
     confirmedTitle,
     confirmedDescription,
+    failuredTitle,
+    failuredDescription,
     status = Transaction.CREATED.toStore(),
   } = {}) {
     super();
@@ -32,6 +34,8 @@ class Transaction extends Model {
     this._pendingTitle = pendingTitle;
     this._confirmedTitle = confirmedTitle;
     this._confirmedDescription = confirmedDescription;
+    this._failuredTitle = failuredTitle;
+    this._failuredDescription = failuredDescription;
     this._status = StatusUtils.build(status.name, status.isLocal);
   }
 
@@ -50,22 +54,24 @@ class Transaction extends Model {
       pendingTitle: this._pendingTitle,
       confirmedTitle: this._confirmedTitle,
       confirmedDescription: this._confirmedDescription,
+      failuredTitle: this._failuredTitle,
+      failuredDescription: this._failuredDescription,
       status: this._status.toStore()
     };
   }
 
-  submitted(hash) {
+  submit(hash) {
     this.hash = hash;
     this.status = Transaction.PENDING;
     this.submittedTime = Date.now();
   }
 
-  confirmed() {
+  confirme() {
     this.status = Transaction.CONFIRMED;
   }
 
-  rejected() {
-    this.status = Transaction.REJECTED;
+  fail() {
+    this.status = Transaction.FAILURED;
   }
 
   static get CREATED() {
@@ -80,8 +86,8 @@ class Transaction extends Model {
     return StatusUtils.build('Confirmed');
   }
 
-  static get REJECTED() {
-    return StatusUtils.build('Rejected');
+  static get FAILURED() {
+    return StatusUtils.build('Failured');
   }
 
   get isCreated() {
@@ -90,6 +96,10 @@ class Transaction extends Model {
 
   get isConfirmed() {
     return this.status.name === Transaction.CONFIRMED.name;
+  }
+
+  get isFailured() {
+    return this.status.name === Transaction.FAILURED.name;
   }
 
   get feeEstimated() {
@@ -177,6 +187,22 @@ class Transaction extends Model {
 
   set confirmedDescription(value) {
     this._confirmedDescription = value;
+  }
+
+  get failuredTitle() {
+    return this._failuredTitle;
+  }
+
+  set failuredTitle(value) {
+    this._failuredTitle = value;
+  }
+
+  get failuredDescription() {
+    return this._failuredDescription;
+  }
+
+  set failuredDescription(value) {
+    this._failuredDescription = value;
   }
 
   get status() {

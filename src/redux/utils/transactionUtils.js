@@ -23,7 +23,9 @@ class TransactionUtils {
     createdSubtitle,
     pendingTitle,
     confirmedTitle,
-    confirmedDescription
+    confirmedDescription,
+    failuredTitle,
+    failuredDescription
   }) {
     let transaction = new Transaction({
       hash: hash,
@@ -33,7 +35,9 @@ class TransactionUtils {
       createdSubtitle: createdSubtitle,
       pendingTitle: pendingTitle,
       confirmedTitle: confirmedTitle,
-      confirmedDescription: confirmedDescription
+      confirmedDescription: confirmedDescription,
+      failuredTitle: failuredTitle,
+      failuredDescription: failuredDescription
     });
     store.dispatch(addTransaction(transaction));
     return transaction;
