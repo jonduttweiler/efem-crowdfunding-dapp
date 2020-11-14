@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux'
-import { selectLastCreated, selectPendings, deleteTransaction } from '../redux/reducers/transactionsSlice';
+import { selectLastCreated, deleteTransaction } from '../redux/reducers/transactionsSlice';
 import TransactionSummaryModal from '../lib/blockchain/components/TransactionSummaryModal';
-import TransactionProgressBanner from 'lib/blockchain/components/TransactionProgressBanner';
 
 /**
  * Componente encargado de la visualización de transacciones.
@@ -65,7 +64,7 @@ class TransactionViewer extends Component {
   };
 
   render() {
-    const { transaction, transactionsPendings } = this.props;
+    const { transaction } = this.props;
     let modals = { ...this.state.modals };
     return (
       <React.Fragment>
@@ -76,13 +75,6 @@ class TransactionViewer extends Component {
           transaction={transaction}>
         </TransactionSummaryModal>
 
-        {/*transactionsPendings.map(transaction => (
-          <TransactionProgressBanner
-            key={transaction.cliendId}
-            transaction={transaction}>
-          </TransactionProgressBanner>
-        ))*/}
-
       </React.Fragment>
     );
   }
@@ -90,8 +82,7 @@ class TransactionViewer extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    transaction: selectLastCreated(state),
-    transactionsPendings: selectPendings(state)
+    transaction: selectLastCreated(state)
   }
 }
 

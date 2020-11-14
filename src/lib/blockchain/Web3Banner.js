@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NetworkUtils from './NetworkUtils';
-import { Box, Flex, Icon, Text, MetaMaskButton, Flash } from 'rimble-ui';
+import { Icon, MetaMaskButton, Flash } from 'rimble-ui';
 import Typography from '@material-ui/core/Typography';
 import { useTranslation } from 'react-i18next';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux'
-import { selectLastCreated, selectPendings, deleteTransaction } from '../../redux/reducers/transactionsSlice';
+import { selectLastCreated, selectFirstPending, deleteTransaction } from '../../redux/reducers/transactionsSlice';
 import TransactionProgressBanner from './components/TransactionProgressBanner';
+import Grid from '@material-ui/core/Grid';
 
 const WrongNetwork = ({
   currentNetwork,
@@ -22,11 +23,13 @@ const WrongNetwork = ({
       {onWrongNetworkMessage === null ? (
         // Show default banner
         <Flash variant={'danger'}>
-          <Flex alignItems="center">
-            <Box pr={3}>
+          <Grid container
+            spacing={2}
+            alignItems="center">
+            <Grid item xs={1}>
               <Icon name="Warning" size="30" />
-            </Box>
-            <Flex flexDirection="column">
+            </Grid>
+            <Grid item xs={11}>
               <Typography variant="subtitle2">
                 {t('web3WrongNetworkTitle', {
                   requiredNetwork: requiredNetworkName
@@ -38,8 +41,8 @@ const WrongNetwork = ({
                   currentNetwork: currentNetworkName
                 })}
               </Typography>
-            </Flex>
-          </Flex>
+            </Grid>
+          </Grid>
         </Flash>
       ) : (
           // Show custom banner
@@ -55,28 +58,29 @@ const NoNetwork = ({ noNetworkAvailableMessage }) => {
     <div>
       {noNetworkAvailableMessage === null ? (
         <Flash variant={'danger'}>
-          <Flex alignItems="center" justifyContent="space-between">
-            <Flex alignItems="center" pr={'2'}>
-              <Box pr={3}>
-                <Icon name="Warning" size="30" />
-              </Box>
-              <Flex flexDirection="column">
-                <Typography variant="body2">
-                  {t('web3NoNetwork')}
-                </Typography>
-              </Flex>
-            </Flex>
-
-            <MetaMaskButton
-              as="a"
-              href="https://metamask.io/"
-              target="_blank"
-              color={'white'}
-              size="small"
-            >
-              {t('web3InstallMetaMask')}
-            </MetaMaskButton>
-          </Flex>
+          <Grid container
+            spacing={2}
+            alignItems="center">
+            <Grid item xs={1}>
+              <Icon name="Warning" size="30" />
+            </Grid>
+            <Grid item xs={7}>
+              <Typography variant="body2">
+                {t('web3NoNetwork')}
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <MetaMaskButton
+                as="a"
+                href="https://metamask.io/"
+                target="_blank"
+                color={'white'}
+                size="small"
+              >
+                {t('web3InstallMetaMask')}
+              </MetaMaskButton>
+            </Grid>
+          </Grid>
         </Flash>
       ) : (
           noNetworkAvailableMessage
@@ -91,11 +95,13 @@ const NotWeb3Browser = ({ notWeb3CapableBrowserMessage }) => {
     <div>
       {notWeb3CapableBrowserMessage === null ? (
         <Flash variant={'danger'}>
-          <Flex alignItems="center">
-            <Box pr={3}>
+          <Grid container
+            spacing={2}
+            alignItems="center">
+            <Grid item xs={1}>
               <Icon name="Warning" size="30" />
-            </Box>
-            <Flex flexDirection="column">
+            </Grid>
+            <Grid item xs={11}>
               <Typography variant="subtitle2">
                 {t('web3NotWeb3BrowserTitle')}
               </Typography>
@@ -108,8 +114,8 @@ const NotWeb3Browser = ({ notWeb3CapableBrowserMessage }) => {
                     {t('web3NotWeb3BrowserDescription')}
                   </Typography>
                 )}
-            </Flex>
-          </Flex>
+            </Grid>
+          </Grid>
         </Flash>
       ) : (
           notWeb3CapableBrowserMessage
@@ -143,26 +149,17 @@ class Web3Banner extends Component {
   };
 
   state = {
-    //isCorrectNetwork: null,
+    
   };
-
-  /*checkCorrectNetwork = () => {
-    const isCorrectNetwork =
-      this.props.currentNetwork === this.props.requiredNetwork;
-    if (isCorrectNetwork !== this.state.isCorrectNetwork) {
-      this.setState({ isCorrectNetwork });
-    }
-  };*/
 
   componentDidMount() {
     const browserIsWeb3Capable = NetworkUtils.browserIsWeb3Capable();
-    //const browserIsWeb3Capable = false;
     this.setState({ browserIsWeb3Capable });
   }
 
   componentDidUpdate() {
     if (this.props.currentNetwork && this.props.requiredNetwork) {
-      //this.checkCorrectNetwork();
+    
     }
   }
 
@@ -170,8 +167,7 @@ class Web3Banner extends Component {
     const { currentNetwork,
       requiredNetwork,
       onWeb3Fallback,
-      transactionCreated,
-      transactionsPendings } = this.props;
+      transactionFirstPending } = this.props;
     const {
       notWeb3CapableBrowserMessage,
       noNetworkAvailableMessage,
@@ -197,15 +193,11 @@ class Web3Banner extends Component {
           />
         ) : null}
 
-        {transactionsPendings.map(transaction => (
-          <TransactionProgressBanner
-            key={transaction.cliendId}
-            transaction={transaction}>
-          </TransactionProgressBanner>
-        ))}
+        <TransactionProgressBanner
+          transaction={transactionFirstPending}>
+        </TransactionProgressBanner>
 
       </div>
-
     );
   }
 }
@@ -213,7 +205,7 @@ class Web3Banner extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     transactionCreated: selectLastCreated(state),
-    transactionsPendings: selectPendings(state)
+    transactionFirstPending: selectFirstPending(state)
   }
 }
 

@@ -32,16 +32,20 @@ export const selectLastCreated = (state) => {
   let transactionsCreated = state.transactions.filter(t => t.status.name === Transaction.CREATED.name);
   let length = transactionsCreated.length;
   if(length > 0) {
-    return new Transaction(state.transactions[length - 1]);
+    return new Transaction(transactionsCreated[length - 1]);
   } else {
     return undefined;
   }  
 };
 
-export const selectPendings = (state) => {
-  return state.transactions.filter(t => t.status.name === Transaction.PENDING.name).map(function (transactionStore) {
-    return new Transaction(transactionStore);
-  });
-}
+export const selectFirstPending = (state) => {
+  let transactionsPending = state.transactions.filter(t => t.status.name === Transaction.PENDING.name);
+  let length = transactionsPending.length;
+  if(length > 0) {
+    return new Transaction(transactionsPending[0]);
+  } else {
+    return undefined;
+  }  
+};
 
 export default transactionsSlice.reducer;
