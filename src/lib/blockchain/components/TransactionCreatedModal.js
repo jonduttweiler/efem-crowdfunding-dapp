@@ -20,11 +20,63 @@ import { connect } from 'react-redux'
 import { selectCurrentUser } from '../../../redux/reducers/currentUserSlice'
 import Web3Utils from "../Web3Utils";
 import CryptoAmount from "components/CryptoAmount";
+import { selectLastCreated } from '../../../redux/reducers/transactionsSlice';
 
-class TransactionSummaryModal extends React.Component {
+class TransactionCreatedModal extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
+      isOpen: false
+    };
+    this.closeModal = this.closeModal.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+
+    const { transaction } = this.props;
+    const { isOpen } = this.state;
+
+    if (transaction) {
+
+      const prevTransaction = prevProps.transaction;
+      const isDifferentTransaction = !prevTransaction || prevTransaction.clientId !== transaction.clientId;
+
+      if (isOpen === false) {
+
+        // El transaction modal está cerrado
+
+        if (transaction.isCreated && isDifferentTransaction) {
+          this.setState({
+            isOpen: true
+          });
+        }
+
+      } else {
+
+        // El transaction modal está abierto        
+
+        if (!transaction.isCreated) {
+          this.setState({
+            isOpen: false
+          });
+        }
+      }
+    }
+  }
+
+  closeModal = e => {
+    if (typeof e !== "undefined") {
+      e.preventDefault();
+    }
+    this.setState({
+      isOpen: false
+    });
+  };
 
   render() {
     const { currentUser, transaction, t } = this.props;
+    const { isOpen } = this.state;
     if(!transaction) {
       return null;
     }
@@ -34,8 +86,8 @@ class TransactionSummaryModal extends React.Component {
           ({
             network
           }) =>
-            <Modal isOpen={this.props.isOpen}>
-              <ModalCard closeFunc={this.props.closeModal}>
+            <Modal isOpen={isOpen}>
+              <ModalCard closeFunc={this.closeModal}>
                 <ModalCard.Body>
                   <Box >
                     <Flex
@@ -51,12 +103,12 @@ class TransactionSummaryModal extends React.Component {
                         size="24px"
                       />
                       <Heading textAlign="center" as="h1" fontSize={[2, 3]} px={[3, 0]}>
-                        {t(transaction.createdTitleKey)}
+                        {t(transaction.createdTitle.key, transaction.createdTitle.args)}
                       </Heading>
                     </Flex>
                     <Flex justifyContent={"space-between"} flexDirection={"column"}>
                       <Text textAlign="center">
-                        {t(transaction.createdSubtitleKey)}
+                        {t(transaction.createdSubtitle.key, transaction.createdSubtitle.args)}
                       </Text>
                       <Flex
                         alignItems={"stretch"}
@@ -258,12 +310,13 @@ class TransactionSummaryModal extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: selectCurrentUser(state)
+    currentUser: selectCurrentUser(state),
+    transaction: selectLastCreated(state)
   }
 }
 
 const mapDispatchToProps = { }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTranslation()(TransactionSummaryModal)
+    withTranslation()(TransactionCreatedModal)
 );

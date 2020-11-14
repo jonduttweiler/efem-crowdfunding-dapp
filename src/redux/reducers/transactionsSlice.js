@@ -48,4 +48,14 @@ export const selectFirstPending = (state) => {
   }  
 };
 
+export const selectLastConfirmed = (state) => {
+  let transactionsConfirmed = state.transactions.filter(t => t.status.name === Transaction.CONFIRMED.name);
+  let length = transactionsConfirmed.length;
+  if(length > 0) {
+    return new Transaction(transactionsConfirmed[length - 1]);
+  } else {
+    return undefined;
+  }  
+};
+
 export default transactionsSlice.reducer;

@@ -73,7 +73,7 @@ class TransactionProgressBanner extends React.Component {
                 </Grid>
                 <Grid item xs={9}>
                   <Typography variant="h6">
-                    {t(transaction.submittedTitleKey)}
+                    {t(transaction.pendingTitle.key, transaction.pendingTitle.args)}
                   </Typography>
                   <Typography variant="body2">
                     {t('transactionEstimatedTimeValue', {

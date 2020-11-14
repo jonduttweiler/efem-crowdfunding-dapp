@@ -14,9 +14,11 @@ class Transaction extends Model {
     gasEstimated,
     gasPrice,
     submittedTime,
-    createdTitleKey,
-    createdSubtitleKey,
-    submittedTitleKey,
+    createdTitle,
+    createdSubtitle,
+    pendingTitle,
+    confirmedTitle,
+    confirmedDescription,
     status = Transaction.CREATED.toStore(),
   } = {}) {
     super();
@@ -25,9 +27,11 @@ class Transaction extends Model {
     this._gasEstimated = gasEstimated;
     this._gasPrice = gasPrice;
     this._submittedTime = submittedTime;
-    this._createdTitleKey = createdTitleKey;
-    this._createdSubtitleKey = createdSubtitleKey;
-    this._submittedTitleKey = submittedTitleKey;
+    this._createdTitle = createdTitle;
+    this._createdSubtitle = createdSubtitle;
+    this._pendingTitle = pendingTitle;
+    this._confirmedTitle = confirmedTitle;
+    this._confirmedDescription = confirmedDescription;
     this._status = StatusUtils.build(status.name, status.isLocal);
   }
 
@@ -41,9 +45,11 @@ class Transaction extends Model {
       gasEstimated: this._gasEstimated,
       gasPrice: this._gasPrice,
       submittedTime: this._submittedTime,
-      createdTitleKey: this._createdTitleKey,
-      createdSubtitleKey: this._createdSubtitleKey,
-      submittedTitleKey: this._submittedTitleKey,
+      createdTitle: this._createdTitle,
+      createdSubtitle: this._createdSubtitle,
+      pendingTitle: this._pendingTitle,
+      confirmedTitle: this._confirmedTitle,
+      confirmedDescription: this._confirmedDescription,
       status: this._status.toStore()
     };
   }
@@ -80,6 +86,10 @@ class Transaction extends Model {
 
   get isCreated() {
     return this.status.name === Transaction.CREATED.name;
+  }
+
+  get isConfirmed() {
+    return this.status.name === Transaction.CONFIRMED.name;
   }
 
   get feeEstimated() {
@@ -129,28 +139,44 @@ class Transaction extends Model {
     this._submittedTime = value;
   }
 
-  get createdTitleKey() {
-    return this._createdTitleKey;
+  get createdTitle() {
+    return this._createdTitle;
   }
 
-  set createdTitleKey(value) {
-    this._createdTitleKey = value;
+  set createdTitle(value) {
+    this._createdTitle = value;
   }
   
-  get createdSubtitleKey() {
-    return this._createdSubtitleKey;
+  get createdSubtitle() {
+    return this._createdSubtitle;
   }
 
-  set createdSubtitleKey(value) {
-    this._createdSubtitleKey = value;
+  set createdSubtitle(value) {
+    this._createdSubtitle = value;
   }
 
-  get submittedTitleKey() {
-    return this._submittedTitleKey;
+  get pendingTitle() {
+    return this._pendingTitle;
   }
 
-  set submittedTitleKey(value) {
-    this._submittedTitleKey = value;
+  set pendingTitle(value) {
+    this._pendingTitle = value;
+  }
+
+  get confirmedTitle() {
+    return this._confirmedTitle;
+  }
+
+  set confirmedTitle(value) {
+    this._confirmedTitle = value;
+  }
+
+  get confirmedDescription() {
+    return this._confirmedDescription;
+  }
+
+  set confirmedDescription(value) {
+    this._confirmedDescription = value;
   }
 
   get status() {

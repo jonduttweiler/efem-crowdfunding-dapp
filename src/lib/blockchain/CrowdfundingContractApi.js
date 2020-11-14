@@ -349,9 +349,30 @@ class CrowdfundingContractApi {
                 let transaction = transactionUtils.addTransaction({
                     gasEstimated: new BigNumber(gasEstimated),
                     gasPrice: new BigNumber(gasPrice),
-                    createdTitleKey: 'transactionCreatedTitleCreateCampaign',
-                    createdSubtitleKey: 'transactionCreatedSubtitleCreateCampaign',
-                    submittedTitleKey: 'transactionPendingTitleCreateCampaign'
+                    createdTitle: {
+                        key: 'transactionCreatedTitleCreateCampaign',
+                        args: {
+                            campaignTitle: campaign.title
+                        }
+                    },
+                    createdSubtitle: {
+                        key: 'transactionCreatedSubtitleCreateCampaign'
+                    },
+                    pendingTitle: {
+                        key: 'transactionPendingTitleCreateCampaign',
+                        args: {
+                            campaignTitle: campaign.title
+                        }
+                    },
+                    confirmedTitle: {
+                        key: 'transactionConfirmedTitleCreateCampaign',
+                        args: {
+                            campaignTitle: campaign.title
+                        }
+                    },
+                    confirmedDescription: {
+                        key: 'transactionConfirmedDescriptionCreateCampaign'
+                    }
                 });
 
                 const promiEvent = method.send({
@@ -379,10 +400,10 @@ class CrowdfundingContractApi {
                         this.getCampaignById(idFromEvent).then(campaign => {
                             campaign.clientId = clientId;
                             subscriber.next(campaign);
-                            messageUtils.addMessageSuccess({
+                            /*messageUtils.addMessageSuccess({
                                 title: 'Felicitaciones!',
                                 text: `La campaign ${campaign.title} ha sido ${isUpdating ? "actualizada" : "confirmada"}`
-                            });
+                            });*/
                         });
                     })
                     .on('error', function (error) {

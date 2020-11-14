@@ -106,8 +106,10 @@
     "transactionEstimatedTime": "Estimated transaction time",
     "transactionEstimatedTimeValue": "Less than {{transactionEstimatedTime}} minute(s)",
 
-    "transactionCreatedTitleCreateCampaign": "Confirm your creation of campaign in the wallet",
+    "transactionCreatedTitleCreateCampaign": "Confirm your creation of campaign '{{campaignTitle}}' in the wallet",
     "transactionCreatedSubtitleCreateCampaign": "Double check the details here – your creation of campaign can't be refunded.",
-    "transactionPendingTitleCreateCampaign": "Creating campaign..."
+    "transactionPendingTitleCreateCampaign": "Creating campaign '{{campaignTitle}}'...",
+    "transactionConfirmedTitleCreateCampaign": "The campaign '{{campaignTitle}}' has been created",
+    "transactionConfirmedDescriptionCreateCampaign": "Congratulations! The campaign has been created and is available to add milestones and receive funds."
     
 }

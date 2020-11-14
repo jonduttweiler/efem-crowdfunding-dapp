@@ -34,7 +34,6 @@ import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/campaignPage.js";
 import { withTranslation } from 'react-i18next';
 import { Box } from '@material-ui/core';
-import TransactionSummaryModal from 'lib/blockchain/components/TransactionSummaryModal';
 
 /**
  * View to create or edit a Campaign
@@ -57,15 +56,7 @@ class EditCampaign extends Component {
       isSaving: false,
       formIsValid: false,
       campaign: campaign,
-      isBlocking: false,
-      modals: {
-        data: {
-          transactionSummary: false
-        },
-        methods: {
-          closeTransactionSummaryModal: false
-        }        
-      }
+      isBlocking: false
     };
 
     this.form = React.createRef();
@@ -135,10 +126,6 @@ class EditCampaign extends Component {
       //React.toast.success('Your Campaign has been saved!');
       history.push(`/`);
     };
-
-    let modals = { ...this.state.modals };
-    modals.data.transactionSummary = true;
-    this.setState({ modals });
 
     this.setState({ isSaving: true, isBlocking: false }, () => {
       // Save the campaign

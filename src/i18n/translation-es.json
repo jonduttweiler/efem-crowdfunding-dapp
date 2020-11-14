@@ -106,8 +106,9 @@
     "transactionEstimatedTime": "Tiempo de transacción estimado",
     "transactionEstimatedTimeValue": "Menos de {{transactionEstimatedTime}} minuto(s)",
 
-    "transactionCreatedTitleCreateCampaign": "Confirma tu creación de campaña en la billetera",
+    "transactionCreatedTitleCreateCampaign": "Confirma tu creación de campaña '{{campaignTitle}}' en la billetera",
     "transactionCreatedSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada.",
-    "transactionPendingTitleCreateCampaign": "Creando campaña..."
-
+    "transactionPendingTitleCreateCampaign": "Creando campaña '{{campaignTitle}}'...",
+    "transactionConfirmedTitleCreateCampaign": "La campaña '{{campaignTitle}}' ha sido creada",
+    "transactionConfirmedDescriptionCreateCampaign": "Felicitaciones! La campaña ha sido creada y está disponible para agregar hitos y recibir fondos."
 }
