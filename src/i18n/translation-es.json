@@ -106,11 +106,51 @@
     "transactionEstimatedTime": "Tiempo de transacción estimado",
     "transactionEstimatedTimeValue": "Menos de {{transactionEstimatedTime}} minuto(s)",
 
+    "transactionCreatedTitleCreateDac": "Confirma tu creación de DAC '{{dacTitle}}' en la billetera",
+    "transactionCreatedSubtitleCreateDac": "Verifique los detalles aquí - su creación de DAC no puede ser reembolsada.",
+    "transactionPendingTitleCreateDac": "Creando DAC '{{dacTitle}}'...",
+    "transactionConfirmedTitleCreateDac": "La DAC '{{dacTitle}}' ha sido creada",
+    "transactionConfirmedDescriptionCreateDac": "Felicitaciones! La DAC ha sido creada y está disponible para agregar campañas y recibir fondos.",
+    "transactionFailuredTitleCreateDac": "No se creó la DAC '{{dacTitle}}'",
+    "transactionFailuredDescriptionCreateDac": "Ocurrió una falla durante la creación de la DAC.",
+
     "transactionCreatedTitleCreateCampaign": "Confirma tu creación de campaña '{{campaignTitle}}' en la billetera",
     "transactionCreatedSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada.",
     "transactionPendingTitleCreateCampaign": "Creando campaña '{{campaignTitle}}'...",
     "transactionConfirmedTitleCreateCampaign": "La campaña '{{campaignTitle}}' ha sido creada",
     "transactionConfirmedDescriptionCreateCampaign": "Felicitaciones! La campaña ha sido creada y está disponible para agregar hitos y recibir fondos.",
     "transactionFailuredTitleCreateCampaign": "No se creó la campaña '{{campaignTitle}}'",
-    "transactionFailuredDescriptionCreateCampaign": "Ocurrió una falla durante la creación de la campaña."
+    "transactionFailuredDescriptionCreateCampaign": "Ocurrió una falla durante la creación de la campaña.",
+
+    "transactionCreatedTitleCreateMilestone": "Confirma tu creación de hito '{{milestoneTitle}}' en la billetera",
+    "transactionCreatedSubtitleCreateMilestone": "Verifique los detalles aquí - su creación de hito no puede ser reembolsada.",
+    "transactionPendingTitleCreateMilestone": "Creando hito '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleCreateMilestone": "El hito '{{milestoneTitle}}' ha sido creado",
+    "transactionConfirmedDescriptionCreateMilestone": "Felicitaciones! El hito ha sido creado y está disponible para recibir fondos.",
+    "transactionFailuredTitleCreateMilestone": "No se creó el hito '{{milestoneTitle}}'",
+    "transactionFailuredDescriptionCreateMilestone": "Ocurrió una falla durante la creación del hito.",
+
+    "transactionCreatedTitleDonate": "Confirma tu donación en la billetera",
+    "transactionCreatedSubtitleDonate": "Verifique los detalles aquí - su donación no puede ser reembolsada.",
+    "transactionPendingTitleDonate": "Donando...",
+    "transactionConfirmedTitleDonate": "La donación ha sido confirmada",
+    "transactionConfirmedDescriptionDonate": "¡Muchas gracias por su ayuda!",
+    "transactionFailuredTitleDonate": "La donación no fue confirmada",
+    "transactionFailuredDescriptionDonate": "Ocurrió una falla durante la donación.",
+
+    "transactionCreatedTitleTransfer": "Confirme su transferencia de fondos en la billetera",
+    "transactionCreatedSubtitleTransfer": "Verifique los detalles aquí - su transferencia de fondos no se puede reembolsar.",
+    "transactionPendingTitleTransfer": "Transfiriendo fondos...",
+    "transactionConfirmedTitleTransfer": "La transferencia de fondos ha sido confirmada.",
+    "transactionConfirmedDescriptionTransfer": "¡Muchas gracias por su transferencia de fondos!",
+    "transactionFailuredTitleTransfer": "La transferencia de fondos no fue confirmada",
+    "transactionFailuredDescriptionTransfer": "Ocurrió una falla durante la transferencia de fondos.",
+
+    "transactionCreatedTitleMilestoneComplete": "Confirme el hito '{{milestoneTitle}}' como completo en la billetera",
+    "transactionCreatedSubtitleMilestoneComplete": "Verifique los detalles aquí - el hito completado no se puede reembolsar.",
+    "transactionPendingTitleMilestoneComplete": "Completando hito '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleMilestoneComplete": "El hito '{{milestoneTitle}}' ha sido completado",
+    "transactionConfirmedDescriptionMilestoneComplete": "Felicitaciones! El hito ha sido completado y ahora puede ser revisado.",
+    "transactionFailuredTitleMilestoneComplete": "No se completó el hito '{{milestoneTitle}}'",
+    "transactionFailuredDescriptionMilestoneComplete": "Ocurrió una falla completando el hito."
 }

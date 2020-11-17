@@ -106,12 +106,52 @@
     "transactionEstimatedTime": "Estimated transaction time",
     "transactionEstimatedTimeValue": "Less than {{transactionEstimatedTime}} minute(s)",
 
+    "transactionCreatedTitleCreateDac": "Confirm your creation of DAC '{{dacTitle}}' in the wallet",
+    "transactionCreatedSubtitleCreateDac": "Double check the details here – your creation of DAC can't be refunded.",
+    "transactionPendingTitleCreateDac": "Creating DAC '{{dacTitle}}'...",
+    "transactionConfirmedTitleCreateDac": "The DAC '{{dacTitle}}' has been created",
+    "transactionConfirmedDescriptionCreateDac": "Congratulations! The DAC has been created and is available to add campaigns and receive funds.",
+    "transactionFailuredTitleCreateDac": "The DAC '{{dacTitle}}' was not created",
+    "transactionFailuredDescriptionCreateDac": "A failure occurred during DAC creation.",
+
     "transactionCreatedTitleCreateCampaign": "Confirm your creation of campaign '{{campaignTitle}}' in the wallet",
     "transactionCreatedSubtitleCreateCampaign": "Double check the details here – your creation of campaign can't be refunded.",
     "transactionPendingTitleCreateCampaign": "Creating campaign '{{campaignTitle}}'...",
     "transactionConfirmedTitleCreateCampaign": "The campaign '{{campaignTitle}}' has been created",
     "transactionConfirmedDescriptionCreateCampaign": "Congratulations! The campaign has been created and is available to add milestones and receive funds.",
     "transactionFailuredTitleCreateCampaign": "The campaign '{{campaignTitle}}' was not created",
-    "transactionFailuredDescriptionCreateCampaign": "A failure occurred during campaign creation."
+    "transactionFailuredDescriptionCreateCampaign": "A failure occurred during campaign creation.",
+
+    "transactionCreatedTitleCreateMilestone": "Confirm your creation of milestone '{{milestoneTitle}}' in the wallet",
+    "transactionCreatedSubtitleCreateMilestone": "Double check the details here – your creation of milestone can't be refunded.",
+    "transactionPendingTitleCreateMilestone": "Creating milestone '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleCreateMilestone": "The milestone '{{milestoneTitle}}' has been created",
+    "transactionConfirmedDescriptionCreateMilestone": "Congratulations! The milestone has been created and is available to receive funds.",
+    "transactionFailuredTitleCreateMilestone": "The milestone '{{milestoneTitle}}' was not created",
+    "transactionFailuredDescriptionCreateMilestone": "A failure occurred during milestone creation.",
+
+    "transactionCreatedTitleDonate": "Confirm your donation in the wallet",
+    "transactionCreatedSubtitleDonate": "Double check the details here – your donation can't be refunded.",
+    "transactionPendingTitleDonate": "Donating...",
+    "transactionConfirmedTitleDonate": "The donation has been confirmed",
+    "transactionConfirmedDescriptionDonate": "Thank you very much for your donation!",
+    "transactionFailuredTitleDonate": "The donation was not confirmed",
+    "transactionFailuredDescriptionDonate": "A failure occurred during donation.",
+
+    "transactionCreatedTitleTransfer": "Confirm your funds transfer in the wallet",
+    "transactionCreatedSubtitleTransfer": "Double check the details here – your funds transfer can't be refunded.",
+    "transactionPendingTitleTransfer": "Transferring funds...",
+    "transactionConfirmedTitleTransfer": "The funds transfer has been confirmed",
+    "transactionConfirmedDescriptionTransfer": "Thank you very much for your funds transfer!",
+    "transactionFailuredTitleTransfer": "The funds transfer was not confirmed",
+    "transactionFailuredDescriptionTransfer": "A failure occurred during funds transfer.",
+
+    "transactionCreatedTitleMilestoneComplete": "Confirm milestone '{{milestoneTitle}}' as complete in wallet",
+    "transactionCreatedSubtitleMilestoneComplete": "Double check the details here - the completed milestone cannot be refunded.",
+    "transactionPendingTitleMilestoneComplete": "Completing milestone '{{milestoneTitle}}' ...",
+    "transactionConfirmedTitleMilestoneComplete": "Milestone '{{milestoneTitle}}' has been completed",
+    "transactionConfirmedDescriptionMilestoneComplete": "Congratulations! The milestone has been completed and can be reviewed.",
+    "transactionFailuredTitleMilestoneComplete": "Milestone '{{milestoneTitle}}' was not completed",
+    "transactionFailuredDescriptionMilestoneComplete": "A failure occurred completing milestone."
     
 }
