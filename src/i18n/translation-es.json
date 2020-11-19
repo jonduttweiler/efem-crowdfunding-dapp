@@ -122,6 +122,14 @@
     "transactionFailuredTitleCreateCampaign": "No se creó la campaña '{{campaignTitle}}'",
     "transactionFailuredDescriptionCreateCampaign": "Ocurrió una falla durante la creación de la campaña.",
 
+    "transactionCreatedTitleUpdateCampaign": "Confirma tu edición de campaña '{{campaignTitle}}' en la billetera",
+    "transactionCreatedSubtitleUpdateCampaign": "Verifique los detalles aquí - su edición de campaña no puede ser reembolsada.",
+    "transactionPendingTitleUpdateCampaign": "Editando campaña '{{campaignTitle}}'...",
+    "transactionConfirmedTitleUpdateCampaign": "La campaña '{{campaignTitle}}' ha sido editada",
+    "transactionConfirmedDescriptionUpdateCampaign": "Felicitaciones! La campaña ha sido editada.",
+    "transactionFailuredTitleUpdateCampaign": "No se editó la campaña '{{campaignTitle}}'",
+    "transactionFailuredDescriptionUpdateCampaign": "Ocurrió una falla durante la edición de la campaña.",
+
     "transactionCreatedTitleCreateMilestone": "Confirma tu creación de hito '{{milestoneTitle}}' en la billetera",
     "transactionCreatedSubtitleCreateMilestone": "Verifique los detalles aquí - su creación de hito no puede ser reembolsada.",
     "transactionPendingTitleCreateMilestone": "Creando hito '{{milestoneTitle}}'...",
@@ -152,5 +160,29 @@
     "transactionConfirmedTitleMilestoneComplete": "El hito '{{milestoneTitle}}' ha sido completado",
     "transactionConfirmedDescriptionMilestoneComplete": "Felicitaciones! El hito ha sido completado y ahora puede ser revisado.",
     "transactionFailuredTitleMilestoneComplete": "No se completó el hito '{{milestoneTitle}}'",
-    "transactionFailuredDescriptionMilestoneComplete": "Ocurrió una falla completando el hito."
+    "transactionFailuredDescriptionMilestoneComplete": "Ocurrió una falla completando el hito.",
+
+    "transactionCreatedTitleMilestoneApprove": "Confirmar el hito '{{milestoneTitle}}' como aprobado en la billetera",
+    "transactionCreatedSubtitleMilestoneApprove": "Verifique los detalles aquí - el hito aprobado no se puede reembolsar.",
+    "transactionPendingTitleMilestoneApprove": "Aprobando hito '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleMilestoneApprove": "El hito '{{milestoneTitle}}' ha sido aprobado",
+    "transactionConfirmedDescriptionMilestoneApprove": "Felicitaciones! El hito ha sido aprobado y ahora pueden retirarse sus fondos.",
+    "transactionFailuredTitleMilestoneApprove": "No se aprobó el hito '{{milestoneTitle}}'",
+    "transactionFailuredDescriptionMilestoneApprove": "Ocurrió una falla aprobando el hito.",
+
+    "transactionCreatedTitleMilestoneReject": "Confirmar el hito '{{milestoneTitle}}' como rechazado en la billetera",
+    "transactionCreatedSubtitleMilestoneReject": "Verifique los detalles aquí - el hito rechazado no se puede reembolsar.",
+    "transactionPendingTitleMilestoneReject": "Rezando hito '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleMilestoneRejecte": "El hito '{{milestoneTitle}}' ha sido rechazado",
+    "transactionConfirmedDescriptionMilestoneReject": "¡Lo sentimos! El hito ha sido rechazado y debe ser completado nuevamente.",
+    "transactionFailuredTitleMilestoneReject": "No se rechazó el hito '{{milestoneTitle}}'",
+    "transactionFailuredDescriptionMilestoneReject": "Ocurrió una falla rechazando el hito.",
+
+    "transactionCreatedTitleMilestoneWithdraw": "Confirmar retiro de fondos de hito '{{milestoneTitle}}' en la billetera",
+    "transactionCreatedSubtitleMilestoneWithdraw": "Verifique los detalles aquí - los fondos retirados no se pueden reembolsar.",
+    "transactionPendingTitleMilestoneWithdraw": "Retirando fondos del hito '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleMilestoneWithdraw": "Se han retirado los fondos del hito '{{milestoneTitle}}'",
+    "transactionConfirmedDescriptionMilestoneWithdraw": "¡Felicidades! Los fondos del hito se han retirado al destinatario.",
+    "transactionFailuredTitleMilestoneWithdraw": "Los fondos del hito '{{milestoneTitle}}' no se retiraron",
+    "transactionFailuredDescriptionMilestoneWithdraw": "Ocurrió una falla retirando fondos del hito."
 }

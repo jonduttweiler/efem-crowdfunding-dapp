@@ -122,6 +122,14 @@
     "transactionFailuredTitleCreateCampaign": "The campaign '{{campaignTitle}}' was not created",
     "transactionFailuredDescriptionCreateCampaign": "A failure occurred during campaign creation.",
 
+    "transactionCreatedTitleUpdateCampaign": "Confirm your update of campaign '{{campaignTitle}}' in the wallet",
+    "transactionCreatedSubtitleUpdateCampaign": "Double check the details here – your update of campaign can't be refunded.",
+    "transactionPendingTitleUpdateCampaign": "Updating campaign '{{campaignTitle}}'...",
+    "transactionConfirmedTitleUpdateCampaign": "The campaign '{{campaignTitle}}' has been updated",
+    "transactionConfirmedDescriptionUpdateCampaign": "Congratulations! The campaign has been updated.",
+    "transactionFailuredTitleUpdateCampaign": "The campaign '{{campaignTitle}}' was not updated",
+    "transactionFailuredDescriptionUpdateCampaign": "A failure occurred during campaign update.",
+
     "transactionCreatedTitleCreateMilestone": "Confirm your creation of milestone '{{milestoneTitle}}' in the wallet",
     "transactionCreatedSubtitleCreateMilestone": "Double check the details here – your creation of milestone can't be refunded.",
     "transactionPendingTitleCreateMilestone": "Creating milestone '{{milestoneTitle}}'...",
@@ -146,12 +154,36 @@
     "transactionFailuredTitleTransfer": "The funds transfer was not confirmed",
     "transactionFailuredDescriptionTransfer": "A failure occurred during funds transfer.",
 
-    "transactionCreatedTitleMilestoneComplete": "Confirm milestone '{{milestoneTitle}}' as complete in wallet",
+    "transactionCreatedTitleMilestoneComplete": "Confirm milestone '{{milestoneTitle}}' as completed in wallet",
     "transactionCreatedSubtitleMilestoneComplete": "Double check the details here - the completed milestone cannot be refunded.",
-    "transactionPendingTitleMilestoneComplete": "Completing milestone '{{milestoneTitle}}' ...",
+    "transactionPendingTitleMilestoneComplete": "Completing milestone '{{milestoneTitle}}'...",
     "transactionConfirmedTitleMilestoneComplete": "Milestone '{{milestoneTitle}}' has been completed",
     "transactionConfirmedDescriptionMilestoneComplete": "Congratulations! The milestone has been completed and can be reviewed.",
     "transactionFailuredTitleMilestoneComplete": "Milestone '{{milestoneTitle}}' was not completed",
-    "transactionFailuredDescriptionMilestoneComplete": "A failure occurred completing milestone."
+    "transactionFailuredDescriptionMilestoneComplete": "A failure occurred completing milestone.",
+
+    "transactionCreatedTitleMilestoneApprove": "Confirm milestone '{{milestoneTitle}}' as approved in wallet",
+    "transactionCreatedSubtitleMilestoneApprove": "Double check the details here - the approved milestone cannot be refunded.",
+    "transactionPendingTitleMilestoneApprove": "Approving milestone '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleMilestoneApprove": "Milestone '{{milestoneTitle}}' has been approved",
+    "transactionConfirmedDescriptionMilestoneApprove": "Congratulations! The milestone has been approved and can be withdrawn.",
+    "transactionFailuredTitleMilestoneApprove": "Milestone '{{milestoneTitle}}' was not approved",
+    "transactionFailuredDescriptionMilestoneApprove": "A failure occurred approving milestone.",
+
+    "transactionCreatedTitleMilestoneReject": "Confirm milestone '{{milestoneTitle}}' as rejected in wallet",
+    "transactionCreatedSubtitleMilestoneReject": "Double check the details here - the rejected milestone cannot be refunded.",
+    "transactionPendingTitleMilestoneReject": "Rejecting milestone '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleMilestoneReject": "Milestone '{{milestoneTitle}}' has been rejected",
+    "transactionConfirmedDescriptionMilestoneReject": "We are sorry! The milestone has been rejected and mush to be completed again.",
+    "transactionFailuredTitleMilestoneReject": "Milestone '{{milestoneTitle}}' was not rejected",
+    "transactionFailuredDescriptionMilestoneReject": "A failure occurred rejecting milestone.",
+
+    "transactionCreatedTitleMilestoneWithdraw": "Confirm milestone '{{milestoneTitle}}' withdraw funds in wallet",
+    "transactionCreatedSubtitleMilestoneWithdraw": "Double check the details here - the withdraw funds cannot be refunded.",
+    "transactionPendingTitleMilestoneWithdraw": "Withdrawing funds from milestone '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleMilestoneWithdraw": "Milestone '{{milestoneTitle}}' funds has been withdrawn",
+    "transactionConfirmedDescriptionMilestoneWithdraw": "Congratulations! The funds of milestone have been withdrawn to the recipient.",
+    "transactionFailuredTitleMilestoneWithdraw": "Milestone '{{milestoneTitle}}' funds was not withdrawn",
+    "transactionFailuredDescriptionMilestoneWithdraw": "A failure occurred withdrawing funds from milestone."
     
 }

@@ -19,18 +19,15 @@ class MilestoneActions extends Component {
     return (
       <Fragment>
         <MilestoneComplete
-          milestone={milestone}
-          currentUser={user}>
+          milestone={milestone}>
         </MilestoneComplete>
 
         <MilestoneApprove
-          milestone={milestone}
-          currentUser={user}>
+          milestone={milestone}>
         </MilestoneApprove>
 
         <MilestoneReject
-          milestone={milestone}
-          currentUser={user}>
+          milestone={milestone}>
         </MilestoneReject>
 
         <MilestoneWithdrawButton
