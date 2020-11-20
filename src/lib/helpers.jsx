@@ -5,9 +5,12 @@ import moment from 'moment';
 
 import DefaultAvatar from '../assets/avatar-100.svg';
 import config from '../configuration';
+import Web3Utils from './blockchain/Web3Utils';
 
-export const isOwner = (address, user) =>
-  address !== undefined && user !== undefined && user.address === address;
+export const isOwner = (address, user) => {
+  return address !== undefined && user !== undefined && Web3Utils.addressEquals(address, user.address);
+}
+  
 
 export const getTruncatedText = (text = '', maxLength = 45) => {
   const txt = text

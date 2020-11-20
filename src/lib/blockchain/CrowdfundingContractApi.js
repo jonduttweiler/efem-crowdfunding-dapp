@@ -9,12 +9,15 @@ import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import messageUtils from '../../redux/utils/messageUtils'
+import transactionUtils from '../../redux/utils/transactionUtils'
 import entityUtils from '../../redux/utils/entityUtils'
 import dacIpfsConnector from '../../ipfs/DacIpfsConnector'
 import campaignIpfsConnector from '../../ipfs/CampaignIpfsConnector'
 import milestoneIpfsConnector from '../../ipfs/MilestoneIpfsConnector'
 import activityIpfsConnector from '../../ipfs/ActivityIpfsConnector'
 import ExchangeRate from '../../models/ExchangeRate';
+import getWeb3 from './getWeb3';
+import Transaction from 'models/Transaction';
 
 const RBTCAddress = "0x0000000000000000000000000000000000000000"; //TODO: Leer desde config
 
@@ -29,7 +32,7 @@ class CrowdfundingContractApi {
         try {
             const crowdfunding = await this.getCrowdfunding();
             const hashedRole = web3.utils.keccak256(role);
-            const response = await crowdfunding.canPerform(address, hashedRole, []);
+            const response = await crowdfunding.methods.canPerform(address, hashedRole, []).call();
             //console.log(address,role,response);
             return response;
         } catch (err) {
@@ -45,57 +48,97 @@ class CrowdfundingContractApi {
      */
     saveDAC(dac) {
         return new Observable(async subscriber => {
-            try {
-                const crowdfunding = await this.getCrowdfunding();
 
-                // Se almacena en IPFS toda la información de la Dac.
-                let infoCid = await dacIpfsConnector.upload(dac);
+            let thisApi = this;
 
-                let thisApi = this;
-                let clientId = dac.clientId;
+            const crowdfunding = await this.getCrowdfunding();
 
-                const promiEvent = crowdfunding.newDac(infoCid, {
-                    from: dac.delegateAddress,
-                    $extraGas: extraGas()
-                });
+            // Se almacena en IPFS toda la información de la Dac.
+            let infoCid = await dacIpfsConnector.upload(dac);
 
-                promiEvent
-                    .once('transactionHash', hash => {
-                        dac.txHash = hash;
+            let clientId = dac.clientId;
+
+            const method = crowdfunding.methods.newDac(infoCid);
+
+            const gasEstimated = await method.estimateGas({
+                from: dac.delegateAddress
+            });
+            const gasPrice = await this.getGasPrice();
+
+            let transaction = transactionUtils.addTransaction({
+                gasEstimated: new BigNumber(gasEstimated),
+                gasPrice: gasPrice,
+                createdTitle: {
+                    key: 'transactionCreatedTitleCreateDac',
+                    args: {
+                        dacTitle: dac.title
+                    }
+                },
+                createdSubtitle: {
+                    key: 'transactionCreatedSubtitleCreateDac'
+                },
+                pendingTitle: {
+                    key: 'transactionPendingTitleCreateDac',
+                    args: {
+                        dacTitle: dac.title
+                    }
+                },
+                confirmedTitle: {
+                    key: 'transactionConfirmedTitleCreateDac',
+                    args: {
+                        dacTitle: dac.title
+                    }
+                },
+                confirmedDescription: {
+                    key: 'transactionConfirmedDescriptionCreateDac'
+                },
+                failuredTitle: {
+                    key: 'transactionFailuredTitleCreateDac',
+                    args: {
+                        dacTitle: dac.title
+                    }
+                },
+                failuredDescription: {
+                    key: 'transactionFailuredDescriptionCreateDac'
+                }
+            });
+
+            const promiEvent = method.send({
+                from: dac.delegateAddress
+            });
+
+            promiEvent
+                .once('transactionHash', (hash) => { // La transacción ha sido creada.
+
+                    transaction.submit(hash);
+                    transactionUtils.updateTransaction(transaction);
+
+                    dac.txHash = hash;
+                    subscriber.next(dac);
+                })
+                .once('confirmation', (confNumber, receipt) => {
+
+                    transaction.confirme();
+                    transactionUtils.updateTransaction(transaction);
+
+                    // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
+                    // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
+                    const idFromEvent = parseInt(receipt.events['NewDac'].returnValues.id);
+
+                    thisApi.getDacById(idFromEvent).then(dac => {
+                        dac.clientId = clientId;
                         subscriber.next(dac);
-                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la DAC' });
-                    })
-                    .once('confirmation', function (confNumber, receipt) {
-                        let id = parseInt(receipt.events['NewDac'].returnValues.id);
-                        thisApi.getDacById(id).then(dac => {
-                            dac.clientId = clientId;
-                            subscriber.next(dac);
-                            messageUtils.addMessageSuccess({
-                                title: 'Felicitaciones!',
-                                text: `La DAC ${dac.title} ha sido confirmada`
-                            });
-                        });
-                    })
-
-                    .on('error', function (error) {
-                        error.dac = dac;
-                        console.error(`Error procesando transacción de almacenamiento de dac.`, error);
-                        subscriber.error(error);
-                        messageUtils.addMessageError({
-                            text: `Se produjo un error creando la DAC ${dac.title}`,
-                            error: error
-                        });
                     });
+                })
+                .on('error', function (error) {
 
-            } catch (error) {
-                error.dac = dac;
-                console.log(error);
-                subscriber.error(error);
-                messageUtils.addMessageError({
-                    text: `Se produjo un error creando la DAC ${dac.title}`,
-                    error: error
+                    transaction.fail();
+                    transactionUtils.updateTransaction(transaction);
+
+                    error.dac = dac;
+                    console.error(`Error procesando transacción de almacenamiento de dac.`, error);
+                    subscriber.error(error);
                 });
-            }
         });
     };
 
@@ -107,7 +150,7 @@ class CrowdfundingContractApi {
      */
     async getDacById(dacId) {
         const crowdfunding = await this.getCrowdfunding();
-        const { id, infoCid, donationIds, campaignIds, budgetDonationIds, users, status } = await crowdfunding.getDac(dacId);
+        const { id, infoCid, donationIds, campaignIds, budgetDonationIds, users, status } = await crowdfunding.methods.getDac(dacId).call();
         // Se obtiene la información de la Dac desde IPFS.
         const dacOnIpfs = await dacIpfsConnector.download(infoCid);
         const { title, description, imageCid, url } = dacOnIpfs;
@@ -133,7 +176,7 @@ class CrowdfundingContractApi {
         return new Observable(async subscriber => {
             try {
                 const crowdfunding = await this.getCrowdfunding();
-                const ids = await crowdfunding.getDacIds();
+                const ids = await crowdfunding.methods.getDacIds().call();
                 const dacs = [];
                 if (ids.length > 0) {
                     for (let i = 0; i < ids.length; i++) {
@@ -171,7 +214,7 @@ class CrowdfundingContractApi {
         return new Observable(async subscriber => {
             try {
                 let crowdfunding = await this.getCrowdfunding();
-                let ids = await crowdfunding.getCampaignIds();
+                let ids = await crowdfunding.methods.getCampaignIds().call();
                 let campaigns = [];
                 for (let i = 0; i < ids.length; i++) {
                     let campaign = await this.getCampaignById(ids[i]);
@@ -179,6 +222,7 @@ class CrowdfundingContractApi {
                 }
                 subscriber.next(campaigns);
             } catch (error) {
+                console.log('Error obtiendo Campaigns', error);
                 subscriber.error(error);
             }
         });
@@ -206,7 +250,7 @@ class CrowdfundingContractApi {
      */
     async getCampaignById(campaignId) {
         const crowdfunding = await this.getCrowdfunding();
-        const campaingOnChain = await crowdfunding.getCampaign(campaignId);
+        const campaingOnChain = await crowdfunding.methods.getCampaign(campaignId).call();
         // Se obtiene la información de la Campaign desde IPFS.
         const { id, infoCid, dacIds, milestoneIds, donationIds, budgetDonationIds, users, status } = campaingOnChain;
         // Se obtiene la información de la Campaign desde IPFS.
@@ -240,68 +284,104 @@ class CrowdfundingContractApi {
 
         return new Observable(async subscriber => {
 
-            try {
-                const dacId = 1; //preguntar a Mauri que vamos a hacer con esto, esto existe?
-                const crowdfunding = await this.getCrowdfunding();
-                const campaignId = campaign.id || 0; //zero is for new campaigns;
-                const isUpdating = campaignId > 0;
+            let thisApi = this;
 
-                //cannot upload string to ipfs
-                console.log("%csaveCampaign", "color:cyan", campaign)
+            const dacId = 1; //preguntar a Mauri que vamos a hacer con esto, esto existe?
+            const crowdfunding = await this.getCrowdfunding();
+            const campaignId = campaign.id || 0; //zero is for new campaigns;
+            const isNew = campaignId === 0;
 
-                // Se almacena en IPFS toda la información de la Campaign.
-                let infoCid = await campaignIpfsConnector.upload(campaign);
-                campaign.infoCid = infoCid;
+            // Se almacena en IPFS toda la información de la Campaign.
+            let infoCid = await campaignIpfsConnector.upload(campaign);
+            campaign.infoCid = infoCid;
 
-                const clientId = campaign.clientId;
+            const clientId = campaign.clientId;
 
-                const promiEvent = crowdfunding.saveCampaign(
-                    campaign.infoCid,
-                    dacId,
-                    campaign.reviewerAddress,
-                    campaignId,
-                    {
-                        from: campaign.managerAddress,
-                        $extraGas: extraGas()
-                    });
+            const method = crowdfunding.methods.saveCampaign(
+                campaign.infoCid,
+                dacId,
+                campaign.reviewerAddress,
+                campaignId);
 
-                promiEvent.once('transactionHash', (hash) => { // La transacción ha sido creada.
+            const gasEstimated = await method.estimateGas({
+                from: campaign.managerAddress,
+            });
+            const gasPrice = await this.getGasPrice();
+
+            let transaction = transactionUtils.addTransaction({
+                gasEstimated: new BigNumber(gasEstimated),
+                gasPrice: gasPrice,
+                createdTitle: {
+                    key: isNew ? 'transactionCreatedTitleCreateCampaign' : 'transactionCreatedTitleUpdateCampaign',
+                    args: {
+                        campaignTitle: campaign.title
+                    }
+                },
+                createdSubtitle: {
+                    key: isNew ? 'transactionCreatedSubtitleCreateCampaign' : 'transactionCreatedSubtitleUpdateCampaign'
+                },
+                pendingTitle: {
+                    key: isNew ? 'transactionPendingTitleCreateCampaign' : 'transactionPendingTitleUpdateCampaign',
+                    args: {
+                        campaignTitle: campaign.title
+                    }
+                },
+                confirmedTitle: {
+                    key: isNew ? 'transactionConfirmedTitleCreateCampaign' : 'transactionConfirmedTitleUpdateCampaign',
+                    args: {
+                        campaignTitle: campaign.title
+                    }
+                },
+                confirmedDescription: {
+                    key: isNew ? 'transactionConfirmedDescriptionCreateCampaign' : 'transactionConfirmedDescriptionUpdateCampaign'
+                },
+                failuredTitle: {
+                    key: isNew ? 'transactionFailuredTitleCreateCampaign' : 'transactionFailuredTitleUpdateCampaign',
+                    args: {
+                        campaignTitle: campaign.title
+                    }
+                },
+                failuredDescription: {
+                    key: isNew ? 'transactionFailuredDescriptionCreateCampaign' : 'transactionFailuredDescriptionUpdateCampaign'
+                }
+            });
+
+            const promiEvent = method.send({
+                from: campaign.managerAddress,
+            });
+
+            promiEvent
+                .once('transactionHash', (hash) => { // La transacción ha sido creada.
+
+                    transaction.submit(hash);
+                    transactionUtils.updateTransaction(transaction);
+
                     campaign.txHash = hash;
                     subscriber.next(campaign);
-                    messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la campaign' });
                 })
-                    .once('confirmation', (confNumber, receipt) => {
-                        // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
-                        // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
-                        const idFromEvent = parseInt(receipt.events['SaveCampaign'].returnValues.id);
+                .once('confirmation', (confNumber, receipt) => {
 
-                        this.getCampaignById(idFromEvent).then(campaign => {
-                            campaign.clientId = clientId;
-                            subscriber.next(campaign);
-                            messageUtils.addMessageSuccess({
-                                title: 'Felicitaciones!',
-                                text: `La campaign ${campaign.title} ha sido ${isUpdating ? "actualizada" : "confirmada"}`
-                            });
-                        });
-                    })
-                    .on('error', function (error) {
-                        error.campaign = campaign;
-                        console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
-                        subscriber.error(error);
-                        messageUtils.addMessageError({
-                            text: `Se produjo un error creando la campaign ${campaign.title}`,
-                            error: error
-                        });
+                    transaction.confirme();
+                    transactionUtils.updateTransaction(transaction);
+
+                    // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
+                    // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
+                    const idFromEvent = parseInt(receipt.events['SaveCampaign'].returnValues.id);
+
+                    thisApi.getCampaignById(idFromEvent).then(campaign => {
+                        campaign.clientId = clientId;
+                        subscriber.next(campaign);
                     });
-            } catch (error) {
-                error.campaign = campaign;
-                console.error(`Error almacenando campaign`, error);
-                subscriber.error(error);
-                messageUtils.addMessageError({
-                    text: `Se produjo un error creando la campaign ${campaign.title}`,
-                    error: error
+                })
+                .on('error', function (error) {
+
+                    transaction.fail();
+                    transactionUtils.updateTransaction(transaction);
+
+                    error.campaign = campaign;
+                    console.error(`Error procesando transacción de almacenamiento de campaign.`, error);
+                    subscriber.error(error);
                 });
-            }
         });
     }
 
@@ -312,7 +392,7 @@ class CrowdfundingContractApi {
         return new Observable(async subscriber => {
             try {
                 let crowdfunding = await this.getCrowdfunding();
-                let ids = await crowdfunding.getMilestoneIds();
+                let ids = await crowdfunding.methods.getMilestoneIds().call();
                 let milestones = [];
                 for (let i = 0; i < ids.length; i++) {
                     let milestone = await this.getMilestoneById(ids[i]);
@@ -347,7 +427,7 @@ class CrowdfundingContractApi {
      */
     async getMilestoneById(milestoneId) {
         const crowdfunding = await this.getCrowdfunding();
-        const milestoneOnChain = await crowdfunding.getMilestone(milestoneId);
+        const milestoneOnChain = await crowdfunding.methods.getMilestone(milestoneId).call();
         const { id, campaignId, infoCid, fiatAmountTarget, users, activityIds, donationIds, budgetDonationIds, status } = milestoneOnChain;
         // Se obtiene la información del Milestone desde IPFS.
         const milestoneOnIpfs = await milestoneIpfsConnector.download(infoCid);
@@ -381,67 +461,102 @@ class CrowdfundingContractApi {
 
         return new Observable(async subscriber => {
 
-            try {
-                let crowdfunding = await this.getCrowdfunding();
+            let thisApi = this;
 
-                // Se almacena en IPFS toda la información del Milestone.
-                let infoCid = await milestoneIpfsConnector.upload(milestone);
+            const crowdfunding = await this.getCrowdfunding();
 
-                let thisApi = this;
-                let clientId = milestone.clientId;
+            // Se almacena en IPFS toda la información del Milestone.
+            let infoCid = await milestoneIpfsConnector.upload(milestone);
 
-                let promiEvent = crowdfunding.newMilestone(
-                    infoCid,
-                    milestone.campaignId,
-                    milestone.fiatAmountTarget,
-                    milestone.reviewerAddress,
-                    milestone.recipientAddress,
-                    milestone.campaignReviewerAddress,
-                    {
-                        from: milestone.managerAddress,
-                        $extraGas: extraGas()
-                    });
+            let clientId = milestone.clientId;
 
-                promiEvent
-                    .once('transactionHash', function (hash) {
-                        // La transacción ha sido creada.
-                        milestone.txHash = hash;
+            const method = crowdfunding.methods.newMilestone(
+                infoCid,
+                milestone.campaignId,
+                milestone.fiatAmountTarget,
+                milestone.reviewerAddress,
+                milestone.recipientAddress,
+                milestone.campaignReviewerAddress);
+
+            const gasEstimated = await method.estimateGas({
+                from: milestone.managerAddress
+            });
+            const gasPrice = await this.getGasPrice();
+
+            let transaction = transactionUtils.addTransaction({
+                gasEstimated: new BigNumber(gasEstimated),
+                gasPrice: gasPrice,
+                createdTitle: {
+                    key: 'transactionCreatedTitleCreateMilestone',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                createdSubtitle: {
+                    key: 'transactionCreatedSubtitleCreateMilestone'
+                },
+                pendingTitle: {
+                    key: 'transactionPendingTitleCreateMilestone',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                confirmedTitle: {
+                    key: 'transactionConfirmedTitleCreateMilestone',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                confirmedDescription: {
+                    key: 'transactionConfirmedDescriptionCreateMilestone'
+                },
+                failuredTitle: {
+                    key: 'transactionFailuredTitleCreateMilestone',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                failuredDescription: {
+                    key: 'transactionFailuredDescriptionCreateMilestone'
+                }
+            });
+
+            const promiEvent = method.send({
+                from: milestone.managerAddress
+            });
+
+            promiEvent
+                .once('transactionHash', (hash) => { // La transacción ha sido creada.
+
+                    transaction.submit(hash);
+                    transactionUtils.updateTransaction(transaction);
+
+                    milestone.txHash = hash;
+                    subscriber.next(milestone);
+                })
+                .once('confirmation', (confNumber, receipt) => {
+
+                    transaction.confirme();
+                    transactionUtils.updateTransaction(transaction);
+
+                    // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
+                    // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
+                    const idFromEvent = parseInt(receipt.events['NewMilestone'].returnValues.id);
+
+                    thisApi.getMilestoneById(idFromEvent).then(milestone => {
+                        milestone.clientId = clientId;
                         subscriber.next(milestone);
-                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear el milestone' });
-                    })
-                    .once('confirmation', function (confNumber, receipt) {
-                        // La transacción ha sido incluida en un bloque
-                        // sin bloques de confirmación (once).
-                        // TODO Aquí debería agregarse lógica para esperar
-                        // un número determinado de bloques confirmados (on, confNumber).
-                        let id = parseInt(receipt.events['NewMilestone'].returnValues.id);
-                        thisApi.getMilestoneById(id).then(milestone => {
-                            milestone.clientId = clientId;
-                            subscriber.next(milestone);
-                            messageUtils.addMessageSuccess({
-                                title: 'Felicitaciones!',
-                                text: `El milestone ${milestone.title} ha sido confirmado`
-                            });
-                        });
-                    })
-                    .on('error', function (error) {
-                        error.milestone = milestone;
-                        console.error(`Error procesando transacción de almacenamiento de milestone.`, error);
-                        subscriber.error(error);
-                        messageUtils.addMessageError({
-                            text: `Se produjo un error creando el milestone ${milestone.title}`,
-                            error: error
-                        });
                     });
-            } catch (error) {
-                error.milestone = milestone;
-                console.error(`Error almacenando milestone`, error);
-                subscriber.error(error);
-                messageUtils.addMessageError({
-                    text: `Se produjo un error creando el milestone ${milestone.title}`,
-                    error: error
+                })
+                .on('error', function (error) {
+
+                    transaction.fail();
+                    transactionUtils.updateTransaction(transaction);
+
+                    error.milestone = milestone;
+                    console.error(`Error procesando transacción de almacenamiento de dac.`, error);
+                    subscriber.error(error);
                 });
-            }
         });
     }
 
@@ -452,7 +567,7 @@ class CrowdfundingContractApi {
         return new Observable(async subscriber => {
             try {
                 let crowdfunding = await this.getCrowdfunding();
-                let ids = await crowdfunding.getDonationIds();
+                let ids = await crowdfunding.methods.getDonationIds().call();
                 let donations = [];
                 for (let i = 0; i < ids.length; i++) {
                     let donation = await this.getDonationById(ids[i]);
@@ -494,7 +609,7 @@ class CrowdfundingContractApi {
      */
     async getDonationById(donationId) {
         const crowdfunding = await this.getCrowdfunding();
-        const donationOnChain = await crowdfunding.getDonation(donationId);
+        const donationOnChain = await crowdfunding.methods.getDonation(donationId).call();
         // Se obtiene la información de la Donación desde IPFS.
         const { id,
             giver,
@@ -528,63 +643,86 @@ class CrowdfundingContractApi {
 
         return new Observable(async subscriber => {
 
-            try {
-                let crowdfunding = await this.getCrowdfunding();
+            let thisApi = this;
 
-                let thisApi = this;
-                let clientId = donation.clientId;
+            const crowdfunding = await this.getCrowdfunding();
 
-                let promiEvent = crowdfunding.donate(
-                    donation.entityId,
-                    donation.tokenAddress,
-                    donation.amount,
-                    {
-                        from: donation.giverAddress,
-                        value: donation.amount,
-                        $extraGas: extraGas()
-                    });
+            let clientId = donation.clientId;
 
-                promiEvent
-                    .once('transactionHash', function (hash) {
-                        // La transacción ha sido creada.
-                        donation.txHash = hash;
+            const method = crowdfunding.methods.donate(
+                donation.entityId,
+                donation.tokenAddress,
+                donation.amount);
+
+            const gasEstimated = await method.estimateGas({
+                from: donation.giverAddress,
+                value: donation.amount
+            });
+            const gasPrice = await this.getGasPrice();
+
+            let transaction = transactionUtils.addTransaction({
+                gasEstimated: new BigNumber(gasEstimated),
+                gasPrice: gasPrice,
+                createdTitle: {
+                    key: 'transactionCreatedTitleDonate'
+                },
+                createdSubtitle: {
+                    key: 'transactionCreatedSubtitleDonate'
+                },
+                pendingTitle: {
+                    key: 'transactionPendingTitleDonate'
+                },
+                confirmedTitle: {
+                    key: 'transactionConfirmedTitleDonate'
+                },
+                confirmedDescription: {
+                    key: 'transactionConfirmedDescriptionDonate'
+                },
+                failuredTitle: {
+                    key: 'transactionFailuredTitleDonate'
+                },
+                failuredDescription: {
+                    key: 'transactionFailuredDescriptionDonate'
+                }
+            });
+
+            const promiEvent = method.send({
+                from: donation.giverAddress,
+                value: donation.amount
+            });
+
+            promiEvent
+                .once('transactionHash', (hash) => { // La transacción ha sido creada.
+
+                    transaction.submit(hash);
+                    transactionUtils.updateTransaction(transaction);
+
+                    donation.txHash = hash;
+                    subscriber.next(donation);
+                })
+                .once('confirmation', (confNumber, receipt) => {
+
+                    transaction.confirme();
+                    transactionUtils.updateTransaction(transaction);
+
+                    // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
+                    // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
+                    const idFromEvent = parseInt(receipt.events['NewDonation'].returnValues.id);
+                    thisApi.getDonationById(idFromEvent).then(donation => {
+                        donation.clientId = clientId;
                         subscriber.next(donation);
-                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear la donación' });
-                    })
-                    .once('confirmation', function (confNumber, receipt) {
-                        // La transacción ha sido incluida en un bloque
-                        // sin bloques de confirmación (once).
-                        // TODO Aquí debería agregarse lógica para esperar
-                        // un número determinado de bloques confirmados (on, confNumber).
-                        let id = parseInt(receipt.events['NewDonation'].returnValues.id);
-                        thisApi.getDonationById(id).then(donation => {
-                            donation.clientId = clientId;
-                            subscriber.next(donation);
-                            messageUtils.addMessageSuccess({
-                                title: 'Gracias por tu ayuda!',
-                                text: `La donación ha sido confirmada`
-                            });
-                        });
-                        entityUtils.refreshEntity(donation.entityId);
-                    })
-                    .on('error', function (error) {
-                        error.donation = donation;
-                        console.error(`Error procesando transacción de almacenamiento de donación.`, error);
-                        subscriber.error(error);
-                        messageUtils.addMessageError({
-                            text: `Se produjo un error creando la donación`,
-                            error: error
-                        });
                     });
-            } catch (error) {
-                error.donation = donation;
-                console.error(`Error almacenando donación`, error);
-                subscriber.error(error);
-                messageUtils.addMessageError({
-                    text: `Se produjo un error creando la donación`,
-                    error: error
+                    entityUtils.refreshEntity(donation.entityId);
+                })
+                .on('error', function (error) {
+
+                    transaction.fail();
+                    transactionUtils.updateTransaction(transaction);
+
+                    error.donation = donation;
+                    console.error(`Error procesando transacción de almacenamiento de dac.`, error);
+                    subscriber.error(error);
                 });
-            }
         });
     }
 
@@ -600,57 +738,72 @@ class CrowdfundingContractApi {
 
         return new Observable(async subscriber => {
 
-            try {
-                let crowdfunding = await this.getCrowdfunding();
+            const crowdfunding = await this.getCrowdfunding();
 
-                let thisApi = this;
+            const method = crowdfunding.methods.transfer(
+                entityIdFrom,
+                entityIdTo,
+                donationIds);
 
-                let promiEvent = crowdfunding.transfer(
-                    entityIdFrom,
-                    entityIdTo,
-                    donationIds,
-                    {
-                        from: userAddress,
-                        $extraGas: extraGas()
-                    });
+            const gasEstimated = await method.estimateGas({
+                from: userAddress
+            });
+            const gasPrice = await this.getGasPrice();
 
-                promiEvent
-                    .once('transactionHash', function (hash) {
-                        // La transacción ha sido creada.
-                        //subscriber.next();
-                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para crear realizar la transferencia.' });
-                    })
-                    .once('confirmation', function (confNumber, receipt) {
-                        // La transacción ha sido incluida en un bloque
-                        // sin bloques de confirmación (once).
-                        // TODO Aquí debería agregarse lógica para esperar
-                        // un número determinado de bloques confirmados (on, confNumber).
-                        subscriber.next(donationIds);
-                        messageUtils.addMessageSuccess({
-                            title: 'Felicitaciones!',
-                            text: `La transferencia ha sido confirmada`
-                        });
-                        entityUtils.refreshEntity(entityIdFrom);
-                        entityUtils.refreshEntity(entityIdTo);
-                    })
-                    .on('error', function (error) {
-                        //error.donation = donation;
-                        console.error(`Error procesando transacción de transferencia de donaciones.`, error);
-                        subscriber.error(error);
-                        messageUtils.addMessageError({
-                            text: `Se produjo un error transfiriendo las donaciones`,
-                            error: error
-                        });
-                    });
-            } catch (error) {
-                //error.donation = donation;
-                console.error(`Error realizando transferencia de donaciones`, error);
-                subscriber.error(error);
-                messageUtils.addMessageError({
-                    text: `Se produjo un error transfiriendo las donaciones`,
-                    error: error
+            let transaction = transactionUtils.addTransaction({
+                gasEstimated: new BigNumber(gasEstimated),
+                gasPrice: gasPrice,
+                createdTitle: {
+                    key: 'transactionCreatedTitleTransfer'
+                },
+                createdSubtitle: {
+                    key: 'transactionCreatedSubtitleTransfer'
+                },
+                pendingTitle: {
+                    key: 'transactionPendingTitleTransfer'
+                },
+                confirmedTitle: {
+                    key: 'transactionConfirmedTitleTransfer'
+                },
+                confirmedDescription: {
+                    key: 'transactionConfirmedDescriptionTransfer'
+                },
+                failuredTitle: {
+                    key: 'transactionFailuredTitleTransfer'
+                },
+                failuredDescription: {
+                    key: 'transactionFailuredDescriptionTransfer'
+                }
+            });
+
+            const promiEvent = method.send({
+                from: userAddress
+            });
+
+            promiEvent
+                .once('transactionHash', (hash) => { // La transacción ha sido creada.
+
+                    transaction.submit(hash);
+                    transactionUtils.updateTransaction(transaction);
+                })
+                .once('confirmation', (confNumber, receipt) => {
+
+                    transaction.confirme();
+                    transactionUtils.updateTransaction(transaction);
+
+                    subscriber.next(donationIds);
+
+                    entityUtils.refreshEntity(entityIdFrom);
+                    entityUtils.refreshEntity(entityIdTo);
+                })
+                .on('error', function (error) {
+
+                    transaction.fail();
+                    transactionUtils.updateTransaction(transaction);
+
+                    console.error(`Error procesando transacción de transferencia de donaciones.`, error);
+                    subscriber.error(error);
                 });
-            }
         });
     }
 
@@ -663,63 +816,96 @@ class CrowdfundingContractApi {
 
         return new Observable(async subscriber => {
 
-            try {
-                let crowdfunding = await this.getCrowdfunding();
+            let thisApi = this;
 
-                // Se almacena en IPFS toda la información del Activity.
-                let activityInfoCid = await activityIpfsConnector.upload(activity);
+            const crowdfunding = await this.getCrowdfunding();
 
-                let thisApi = this;
-                let clientId = milestone.clientId;
+            // Se almacena en IPFS toda la información del Activity.
+            let activityInfoCid = await activityIpfsConnector.upload(activity);
 
-                let promiEvent = crowdfunding.milestoneComplete(
-                    milestone.id,
-                    activityInfoCid,
-                    {
-                        from: activity.userAddress,
-                        $extraGas: extraGas()
-                    });
+            let clientId = milestone.clientId;
 
-                promiEvent
-                    .once('transactionHash', function (hash) {
-                        // La transacción ha sido creada.
-                        milestone.txHash = hash;
+            const method = crowdfunding.methods.milestoneComplete(
+                milestone.id,
+                activityInfoCid);
+
+            const gasEstimated = await method.estimateGas({
+                from: activity.userAddress
+            });
+            const gasPrice = await this.getGasPrice();
+
+            let transaction = transactionUtils.addTransaction({
+                gasEstimated: new BigNumber(gasEstimated),
+                gasPrice: gasPrice,
+                createdTitle: {
+                    key: 'transactionCreatedTitleMilestoneComplete',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                createdSubtitle: {
+                    key: 'transactionCreatedSubtitleMilestoneComplete'
+                },
+                pendingTitle: {
+                    key: 'transactionPendingTitleMilestoneComplete',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                confirmedTitle: {
+                    key: 'transactionConfirmedTitleMilestoneComplete',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                confirmedDescription: {
+                    key: 'transactionConfirmedDescriptionMilestoneComplete'
+                },
+                failuredTitle: {
+                    key: 'transactionFailuredTitleMilestoneComplete',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                failuredDescription: {
+                    key: 'transactionFailuredDescriptionMilestoneComplete'
+                }
+            });
+
+            const promiEvent = method.send({
+                from: activity.userAddress
+            });
+
+            promiEvent
+                .once('transactionHash', (hash) => { // La transacción ha sido creada.
+
+                    transaction.submit(hash);
+                    transactionUtils.updateTransaction(transaction);
+
+                    // La transacción ha sido creada.
+                    milestone.txHash = hash;
+                    subscriber.next(milestone);
+                })
+                .once('confirmation', (confNumber, receipt) => {
+
+                    transaction.confirme();
+                    transactionUtils.updateTransaction(transaction);
+
+                    let milestoneId = parseInt(receipt.events['MilestoneComplete'].returnValues.milestoneId);
+                    thisApi.getMilestoneById(milestoneId).then(milestone => {
+                        milestone.clientId = clientId;
                         subscriber.next(milestone);
-                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para completar el milestone' });
-                    })
-                    .once('confirmation', function (confNumber, receipt) {
-                        // La transacción ha sido incluida en un bloque
-                        // sin bloques de confirmación (once).
-                        // TODO Aquí debería agregarse lógica para esperar
-                        // un número determinado de bloques confirmados (on, confNumber).
-                        let milestoneId = parseInt(receipt.events['MilestoneComplete'].returnValues.milestoneId);
-                        thisApi.getMilestoneById(milestoneId).then(milestone => {
-                            milestone.clientId = clientId;
-                            subscriber.next(milestone);
-                            messageUtils.addMessageSuccess({
-                                title: 'Felicitaciones!',
-                                text: `El milestone ${milestone.title} ha sido completado`
-                            });
-                        });
-                    })
-                    .on('error', function (error) {
-                        error.milestone = milestone;
-                        console.error(`Error procesando transacción para completar el milestone.`, error);
-                        subscriber.error(error);
-                        messageUtils.addMessageError({
-                            text: `Se produjo un error completando el milestone ${milestone.title}`,
-                            error: error
-                        });
                     });
-            } catch (error) {
-                error.milestone = milestone;
-                console.error(`Error completando milestone`, error);
-                subscriber.error(error);
-                messageUtils.addMessageError({
-                    text: `Se produjo un error completando el milestone ${milestone.title}`,
-                    error: error
+                })
+                .on('error', function (error) {
+
+                    transaction.fail();
+                    transactionUtils.updateTransaction(transaction);
+
+                    error.milestone = milestone;
+                    console.error(`Error procesando transacción para completar el milestone.`, error);
+                    subscriber.error(error);
                 });
-            }
         });
     }
 
@@ -731,81 +917,104 @@ class CrowdfundingContractApi {
     milestoneReview(milestone, activity) {
 
         return new Observable(async subscriber => {
-            console.log('activity.isApprove', activity.isApprove);
-            console.log('activity', activity);
-            try {
-                let crowdfunding = await this.getCrowdfunding();
 
-                // Se almacena en IPFS toda la información del Activity.
-                let activityInfoCid = await activityIpfsConnector.upload(activity);
+            let thisApi = this;
 
-                let thisApi = this;
-                let clientId = milestone.clientId;
+            const crowdfunding = await this.getCrowdfunding();
 
-                let promiEvent = crowdfunding.milestoneReview(
-                    milestone.id,
-                    activity.isApprove,
-                    activityInfoCid,
-                    {
-                        from: activity.userAddress,
-                        $extraGas: extraGas()
-                    });
+            // Se almacena en IPFS toda la información del Activity.
+            let activityInfoCid = await activityIpfsConnector.upload(activity);
 
-                promiEvent
-                    .once('transactionHash', function (hash) {
-                        // La transacción ha sido creada.
-                        milestone.txHash = hash;
+            let clientId = milestone.clientId;
+
+            const method = crowdfunding.methods.milestoneReview(
+                milestone.id,
+                activity.isApprove,
+                activityInfoCid);
+
+            const gasEstimated = await method.estimateGas({
+                from: activity.userAddress
+            });
+            const gasPrice = await this.getGasPrice();
+
+            let transaction = transactionUtils.addTransaction({
+                gasEstimated: new BigNumber(gasEstimated),
+                gasPrice: gasPrice,
+                createdTitle: {
+                    key: activity.isApprove ? 'transactionCreatedTitleMilestoneApprove' : 'transactionCreatedTitleMilestoneReject',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                createdSubtitle: {
+                    key: activity.isApprove ? 'transactionCreatedSubtitleMilestoneApprove' : 'transactionCreatedSubtitleMilestoneReject'
+                },
+                pendingTitle: {
+                    key: activity.isApprove ? 'transactionPendingTitleMilestoneApprove' : 'transactionPendingTitleMilestoneReject',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                confirmedTitle: {
+                    key: activity.isApprove ? 'transactionConfirmedTitleMilestoneApprove' : 'transactionConfirmedTitleMilestoneReject',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                confirmedDescription: {
+                    key: activity.isApprove ? 'transactionConfirmedDescriptionMilestoneApprove' : 'transactionConfirmedDescriptionMilestoneReject'
+                },
+                failuredTitle: {
+                    key: activity.isApprove ? 'transactionFailuredTitleMilestoneApprove' : 'transactionFailuredTitleMilestoneReject',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                failuredDescription: {
+                    key: activity.isApprove ? 'transactionFailuredDescriptionMilestoneApprove' : 'transactionFailuredDescriptionMilestoneReject'
+                }
+            });
+
+            const promiEvent = method.send({
+                from: activity.userAddress
+            });
+
+            promiEvent
+                .once('transactionHash', (hash) => { // La transacción ha sido creada.
+
+                    transaction.submit(hash);
+                    transactionUtils.updateTransaction(transaction);
+
+                    // La transacción ha sido creada.
+                    milestone.txHash = hash;
+                    subscriber.next(milestone);
+                })
+                .once('confirmation', (confNumber, receipt) => {
+
+                    transaction.confirme();
+                    transactionUtils.updateTransaction(transaction);
+
+                    let milestoneId;
+                    if (activity.isApprove) {
+                        milestoneId = parseInt(receipt.events['MilestoneApprove'].returnValues.milestoneId);
+                    } else {
+                        milestoneId = parseInt(receipt.events['MilestoneReject'].returnValues.milestoneId);
+                    }
+                    thisApi.getMilestoneById(milestoneId).then(milestone => {
+                        milestone.clientId = clientId;
                         subscriber.next(milestone);
-                        let text = activity.isApprove ?
-                            'Se inició la transacción para aprobar el milestone' :
-                            'Se inició la transacción para rechazar el milestone';
-                        messageUtils.addMessageInfo({ text: text });
-                    })
-                    .once('confirmation', function (confNumber, receipt) {
-                        // La transacción ha sido incluida en un bloque
-                        // sin bloques de confirmación (once).
-                        // TODO Aquí debería agregarse lógica para esperar
-                        // un número determinado de bloques confirmados (on, confNumber).
-                        let milestoneId;
-                        if (activity.isApprove) {
-                            milestoneId = parseInt(receipt.events['MilestoneApprove'].returnValues.milestoneId);
-                        } else {
-                            milestoneId = parseInt(receipt.events['MilestoneReject'].returnValues.milestoneId);
-                        }
-                        thisApi.getMilestoneById(milestoneId).then(milestone => {
-                            milestone.clientId = clientId;
-                            subscriber.next(milestone);
-                            if (activity.isApprove) {
-                                messageUtils.addMessageSuccess({
-                                    title: 'Felicitaciones!',
-                                    text: `El milestone ${milestone.title} ha sido aprobado`
-                                });
-                            } else {
-                                messageUtils.addMessageSuccess({
-                                    title: 'Qué pena!',
-                                    text: `El milestone ${milestone.title} ha sido rechazado`
-                                });
-                            }
-                        });
-                    })
-                    .on('error', function (error) {
-                        error.milestone = milestone;
-                        console.error(`Error procesando transacción para revisión el milestone.`, error);
-                        subscriber.error(error);
-                        messageUtils.addMessageError({
-                            text: `Se produjo un error revisando el milestone ${milestone.title}`,
-                            error: error
-                        });
                     });
-            } catch (error) {
-                error.milestone = milestone;
-                console.error(`Error revisando milestone`, error);
-                subscriber.error(error);
-                messageUtils.addMessageError({
-                    text: `Se produjo un error revisando el milestone ${milestone.title}`,
-                    error: error
+
+                })
+                .on('error', function (error) {
+
+                    transaction.fail();
+                    transactionUtils.updateTransaction(transaction);
+
+                    error.milestone = milestone;
+                    console.error(`Error procesando transacción para revisión el milestone.`, error);
+                    subscriber.error(error);
                 });
-            }
         });
     }
 
@@ -818,63 +1027,93 @@ class CrowdfundingContractApi {
 
         return new Observable(async subscriber => {
 
-            try {
-                let crowdfunding = await this.getCrowdfunding();
+            let thisApi = this;
 
-                let thisApi = this;
-                let clientId = milestone.clientId;
+            const crowdfunding = await this.getCrowdfunding();
 
-                let promiEvent = crowdfunding.milestoneWithdraw(
-                    milestone.id,
-                    {
-                        from: milestone.recipientAddress,
-                        $extraGas: extraGas()
-                    });
+            let clientId = milestone.clientId;
 
-                promiEvent
-                    .once('transactionHash', function (hash) {
-                        // La transacción ha sido creada.
-                        milestone.txHash = hash;
+            const method = crowdfunding.methods.milestoneWithdraw(
+                milestone.id);
+
+            const gasEstimated = await method.estimateGas({
+                from: milestone.recipientAddress
+            });
+            const gasPrice = await this.getGasPrice();
+
+            let transaction = transactionUtils.addTransaction({
+                gasEstimated: new BigNumber(gasEstimated),
+                gasPrice: gasPrice,
+                createdTitle: {
+                    key: 'transactionCreatedTitleMilestoneWithdraw',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                createdSubtitle: {
+                    key: 'transactionCreatedSubtitleMilestoneWithdraw'
+                },
+                pendingTitle: {
+                    key: 'transactionPendingTitleMilestoneWithdraw',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                confirmedTitle: {
+                    key: 'transactionConfirmedTitleMilestoneWithdraw',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                confirmedDescription: {
+                    key: 'transactionConfirmedDescriptionMilestoneWithdraw'
+                },
+                failuredTitle: {
+                    key: 'transactionFailuredTitleMilestoneWithdraw',
+                    args: {
+                        milestoneTitle: milestone.title
+                    }
+                },
+                failuredDescription: {
+                    key: 'transactionFailuredDescriptionMilestoneWithdraw'
+                }
+            });
+
+            const promiEvent = method.send({
+                from: milestone.recipientAddress
+            });
+
+            promiEvent
+                .once('transactionHash', (hash) => { // La transacción ha sido creada.
+
+                    transaction.submit(hash);
+                    transactionUtils.updateTransaction(transaction);
+
+                    // La transacción ha sido creada.
+                    milestone.txHash = hash;
+                    subscriber.next(milestone);
+                })
+                .once('confirmation', (confNumber, receipt) => {
+
+                    transaction.confirme();
+                    transactionUtils.updateTransaction(transaction);
+
+
+                    let milestoneId = parseInt(receipt.events['MilestoneWithdraw'].returnValues.milestoneId);
+                    thisApi.getMilestoneById(milestoneId).then(milestone => {
+                        milestone.clientId = clientId;
                         subscriber.next(milestone);
-                        messageUtils.addMessageInfo({ text: 'Se inició la transacción para retirar los fondos del milestone' });
-                    })
-                    .once('confirmation', function (confNumber, receipt) {
-                        // La transacción ha sido incluida en un bloque
-                        // sin bloques de confirmación (once).
-                        // TODO Aquí debería agregarse lógica para esperar
-                        // un número determinado de bloques confirmados (on, confNumber).
-                        let milestoneId = parseInt(receipt.events['MilestoneWithdraw'].returnValues.milestoneId);
-                        thisApi.getMilestoneById(milestoneId).then(milestone => {
-                            milestone.clientId = clientId;
-                            subscriber.next(milestone);
-                            messageUtils.addMessageSuccess({
-                                title: 'Felicitaciones!',
-                                text: `Los fondos del milestone ${milestone.title} han sido retirados`
-                            });
-                        });
-                    })
-                    .on('error', function (error) {
-                        error.milestone = milestone;
-                        console.error(`Error procesando transacción de retiro de fondos de milestone.`, error);
-                        //let reason = await getRevertReason(milestone.txHash); // 'I accidentally killed it.'
-                        //console.log(reason);
-                        subscriber.error(error);
-                        messageUtils.addMessageError({
-                            text: `Se produjo un error retirando los fondos del milestone ${milestone.title}`,
-                            error: error
-                        });
-                    })/*.catch(revertReason => {
-                        console.log('revertReason', revertReason);
-                    })*/;
-            } catch (error) {
-                error.milestone = milestone;
-                console.error(`Error retirando fondos de milestone`, error);
-                subscriber.error(error);
-                messageUtils.addMessageError({
-                    text: `Se produjo un error retirando los fondos del milestone ${milestone.title}`,
-                    error: error
+                    });
+                })
+                .on('error', function (error) {
+
+                    transaction.fail();
+                    transactionUtils.updateTransaction(transaction);
+
+                    error.milestone = milestone;
+                    console.error(`Error procesando transacción de retiro de fondos de milestone.`, error);
+                    subscriber.error(error);
                 });
-            }
         });
     }
 
@@ -907,7 +1146,7 @@ class CrowdfundingContractApi {
      */
     async getActivityById(activityId) {
         const crowdfunding = await this.getCrowdfunding();
-        const activityOnChain = await crowdfunding.getActivity(activityId);
+        const activityOnChain = await crowdfunding.methods.getActivity(activityId).call();
         console.log('activityOnChain', activityOnChain);
         const { id, infoCid, user, createdAt, milestoneId } = activityOnChain;
         // Se obtiene la información del Activity desde IPFS.
@@ -1013,11 +1252,16 @@ class CrowdfundingContractApi {
         }
     }
 
+    async getGasPrice() {
+        //const gasPrice = await web3.eth.getGasPrice();
+        //return new BigNumber(parseInt(gasPrice));
+        return new BigNumber(10000000000000);
+    }
 
     async getCrowdfunding() {
         const network = await getNetwork();
-        const { crowdfunding } = network;
-        return crowdfunding;
+        const { crowdfundingRaw } = network;
+        return crowdfundingRaw;
     }
 
     async getExchangeRateProvider(){

@@ -20,16 +20,17 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import config from '../configuration';
 import TokenBalance from './TokenBalance';
-import Web3Utils from '../utils/Web3Utils';
+import Web3Utils from '../lib/blockchain/Web3Utils';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 import FiatAmountByToken from './FiatAmountByToken';
-
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 class Donate extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -104,6 +105,7 @@ class Donate extends Component {
 
     // TODO Definir parametrización de donación.
     const balance = currentUser.balance;
+
     const max = Web3Utils.weiToEther(balance);
     const inputProps = {
       step: 0.0001,
@@ -124,16 +126,18 @@ class Donate extends Component {
     return (
       <div>
         {enabled && (
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<FavoriteIcon />}
-            onClick={this.handleClickOpen}
-          >
-            {t('donate')}
-          </Button>)
-        }
+          <OnlyCorrectNetwork>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<FavoriteIcon />}
+              onClick={this.handleClickOpen}
+            >
+              {t('donate')}
+            </Button>
+          </OnlyCorrectNetwork>
+        )}
         <Dialog fullWidth={true}
           maxWidth="md"
           open={open}

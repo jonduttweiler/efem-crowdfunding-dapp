@@ -54,7 +54,6 @@ class DonationItem extends Component {
           </ListItemAvatar>
           <ListItemText
             className={classes.text}
-    
             secondary={
               <React.Fragment>
                 <Grid container spacing={3}>

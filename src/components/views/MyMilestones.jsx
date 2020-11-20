@@ -4,13 +4,11 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import Pagination from 'react-js-pagination';
 import BigNumber from 'bignumber.js';
-
 import MilestoneActions from 'components/MilestoneActions';
 import { isLoggedIn } from 'lib/middleware';
 import Loader from '../Loader';
 import User from '../../models/User';
 import { getTruncatedText, getReadableStatus } from '../../lib/helpers';
-
 import MilestoneService from '../../services/MilestoneService';
 import Milestone from '../../models/Milestone';
 import DateViewer from '../DateViewer';
@@ -170,7 +168,6 @@ class MyMilestones extends Component {
                                 <td className="td-actions">
                                   <MilestoneActions
                                     milestone={m}
-                                    balance={balance}
                                     currentUser={currentUser}
                                   />
                                 </td>

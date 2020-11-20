@@ -28,6 +28,7 @@ import DonationItemTransfer from './DonationItemTransfer';
 import CampaignSelector from './TransferCampaignSelector';
 import TransferMilestoneSelector from './TransferMilestoneSelector';
 import DacCard from './DacCard';
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -249,16 +250,18 @@ class TransferDac extends Component {
     return (
       <div>
         {buttonEnabled && (
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<FastForwardIcon />}
-            onClick={this.handleClickOpen}
-          >
-            {t('transfer')}
-          </Button>)
-        }
+          <OnlyCorrectNetwork>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<FastForwardIcon />}
+              onClick={this.handleClickOpen}
+            >
+              {t('transfer')}
+            </Button>
+          </OnlyCorrectNetwork>
+        )}
         <Dialog fullWidth={true}
           maxWidth="lg"
           open={open}

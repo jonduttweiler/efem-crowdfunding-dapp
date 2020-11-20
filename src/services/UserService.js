@@ -1,7 +1,6 @@
 import { feathersClient } from '../lib/feathersClient';
 import ErrorPopup from '../components/ErrorPopup';
 import ipfsService from '../ipfs/IpfsService';
-import walletApi from '../lib/blockchain/WalletApi';
 import crowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -26,16 +25,9 @@ class UserService {
 
       try {
 
-        // Se carga la cuenta del usuario desde la wallet
-        let address = await walletApi.getAccountAddress();
-        currentUser.address = address;
-        subscriber.next(currentUser);
+        let address = currentUser.address;
 
         if (address) {
-          // Se obtiene el balance del usuario.
-          let balance = await walletApi.getBalance(address);
-          currentUser.balance = new BigNumber(balance);
-          subscriber.next(currentUser);
 
           feathersClient.service('/users').get(address).then(data => {
             const { name, email, avatar, url } = data;

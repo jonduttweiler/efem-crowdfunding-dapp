@@ -12,6 +12,7 @@ import OnlyRole from '../components/OnlyRole';
 import { CREATE_DAC_ROLE, CREATE_CAMPAIGN_ROLE } from "../constants/Role";
 
 import Button from "components/CustomButtons/Button.js";
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 
 /**
  * The join Giveth community top-bar
@@ -110,16 +111,18 @@ class JoinGivethCommunity extends Component {
       >
         <div className="vertical-align">
           <center>
-            <OnlyRole role={CREATE_DAC_ROLE}>
-              <Button color="primary" size="lg" className="btn btn-info" onClick={() => this.createDAC()}>
-                Crear una DAC
-              </Button>
-            </OnlyRole>
-            <OnlyRole role={CREATE_CAMPAIGN_ROLE}>
-              <Button color="primary" size="lg" className="btn btn-info" onClick={() => this.createCampaign()}>
-                Iniciar una campa&ntilde;a
-              </Button>
-            </OnlyRole>
+            <OnlyCorrectNetwork>
+              <OnlyRole role={CREATE_DAC_ROLE}>
+                <Button color="primary" size="lg" className="btn btn-info" onClick={() => this.createDAC()}>
+                  Crear una DAC
+                </Button>
+              </OnlyRole>
+              <OnlyRole role={CREATE_CAMPAIGN_ROLE}>
+                <Button color="primary" size="lg" className="btn btn-info" onClick={() => this.createCampaign()}>
+                  Iniciar una campa&ntilde;a
+                </Button>
+              </OnlyRole>
+            </OnlyCorrectNetwork>            
           </center>
         </div>
       </div>

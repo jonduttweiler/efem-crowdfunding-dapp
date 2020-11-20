@@ -57,7 +57,7 @@ class EditCampaign extends Component {
       isSaving: false,
       formIsValid: false,
       campaign: campaign,
-      isBlocking: false,
+      isBlocking: false
     };
 
     this.form = React.createRef();

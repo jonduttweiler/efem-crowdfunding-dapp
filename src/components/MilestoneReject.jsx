@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'formsy-react-components';
 import Milestone from '../models/Milestone';
-import MilestoneProof from './MilestoneProof';
 import Activity from '../models/Activity';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -21,6 +20,8 @@ import MilestoneCard from './MilestoneCard';
 import User from 'models/User';
 import TextField from '@material-ui/core/TextField';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
+import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -54,10 +55,11 @@ class MilestoneReject extends Component {
   };
 
   handleApprove() {
-    const { milestone } = this.props;
+    const { milestone, currentUser } = this.props;
     const { activity } = this.state;
     milestone.status = Milestone.REJECTING;
     activity.action = Activity.ACTION_REJECT;
+    activity.userAddress = currentUser.address;
     this.props.review({
       milestone,
       activity
@@ -96,15 +98,17 @@ class MilestoneReject extends Component {
     return (
       <div>
         {showButton && (
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            startIcon={<ThumbDownIcon />}
-            onClick={this.handleClickOpen}
-          >
-            {t('milestoneReject')}
-          </Button>
+          <OnlyCorrectNetwork>
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button}
+              startIcon={<ThumbDownIcon />}
+              onClick={this.handleClickOpen}
+            >
+              {t('milestoneReject')}
+            </Button>
+          </OnlyCorrectNetwork>
         )
         }
         <Dialog fullWidth={true}
@@ -197,6 +201,7 @@ const styles = theme => ({
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    currentUser: selectCurrentUser(state)
   }
 }
 

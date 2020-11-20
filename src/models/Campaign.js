@@ -2,6 +2,7 @@ import Entity from './Entity';
 import CampaignService from '../services/CampaignService';
 import StatusUtils from '../utils/StatusUtils';
 import Status from './Status';
+import Web3Utils from 'lib/blockchain/Web3Utils';
 
 /**
  * The DApp Campaign model
@@ -61,7 +62,7 @@ class Campaign extends Entity {
    * @param user a determinar si es el manager de la campaña.
    */
   isManager(user) {
-    return user && user.address === this.managerAddress;
+    return user && Web3Utils.addressEquals(user.address, this.managerAddress);
   }
 
   /**
@@ -69,7 +70,7 @@ class Campaign extends Entity {
    * @param user a determinar si es revisor de la campaña.
    */
   isReviewer(user) {
-    return user && user.address === this.reviewerAddress;
+    return user && Web3Utils.addressEquals(user.address, this.reviewerAddress);
   }
 
   static get PENDING() {

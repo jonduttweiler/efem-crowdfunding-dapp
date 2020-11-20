@@ -8,7 +8,6 @@ import User from 'models/User';
 import BigNumber from 'bignumber.js';
 import DeleteProposedMilestoneButton from 'components/DeleteProposedMilestoneButton';
 import AcceptRejectProposedMilestoneButtons from 'components/AcceptRejectProposedMilestoneButtons';
-import ReproposeRejectedMilestoneButton from 'components/ReproposeRejectedMilestoneButton';
 import MilestoneCompleteButton from './MilestoneCompleteButton';
 import MilestoneReviewButtons from './MilestoneReviewButtons';
 import MilestoneWithdrawButton from 'components/MilestoneWithdrawButton';
@@ -57,11 +56,7 @@ class MilestoneConversationAction extends Component {
       case 'proposedRejected':
         return (
           <Fragment>
-            <ReproposeRejectedMilestoneButton
-              milestone={milestone}
-              balance={balance}
-              currentUser={currentUser}
-            />
+           
             <DeleteProposedMilestoneButton
               milestone={milestone}
               balance={balance}
