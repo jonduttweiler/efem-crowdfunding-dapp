@@ -1,5 +1,6 @@
-import { Crowdfunding, ExchangeRateProvider} from '@acdi/give4forests-crowdfunding-contract';
-import { Crowdfunding, CrowdfundingAbi } from '@acdi/give4forests-crowdfunding-contract';
+import { Crowdfunding,
+  CrowdfundingAbi,
+  ExchangeRateProvider} from '@acdi/give4forests-crowdfunding-contract';
 import getWeb3 from './getWeb3';
 import config from '../../configuration';
 import { feathersClient } from '../feathersClient';
@@ -54,14 +55,16 @@ export default async () => {
 
   // Definición de Smart Contract de Crowdfunding
   
-  network.exrProviderP = crowdfunding.exchangeRateProvider().then(exrAddress => {
+  console.log(`%ccrowdfudingAddress: ${network.crowdfundingAddress}`,"color:white;font-weight:bold");
+  network.crowdfunding = new Crowdfunding(web3, network.crowdfundingAddress);
+  network.crowdfundingRaw = new web3.eth.Contract(CrowdfundingAbi, network.crowdfundingAddress);
+
+  network.exrProviderP = network.crowdfunding.exchangeRateProvider().then(exrAddress => {
     console.log(`%cexchangeRateProviderAddress: ${exrAddress}`,"color:white;font-weight:bold");
     return new ExchangeRateProvider(web3,exrAddress);
   });
 
-  console.log(`%ccrowdfudingAddress: ${network.crowdfundingAddress}`,"color:white;font-weight:bold");
-  network.crowdfunding = new Crowdfunding(web3, network.crowdfundingAddress);
-  network.crowdfundingRaw = new web3.eth.Contract(CrowdfundingAbi, network.crowdfundingAddress);
+  
 
   network.tokens = {};
   const { tokenWhitelist } = await feathersClient.service('/whitelist').find();

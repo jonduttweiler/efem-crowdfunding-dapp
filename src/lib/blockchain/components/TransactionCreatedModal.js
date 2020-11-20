@@ -20,6 +20,7 @@ import { connect } from 'react-redux'
 import { selectCurrentUser } from '../../../redux/reducers/currentUserSlice'
 import Web3Utils from "../Web3Utils";
 import CryptoAmount from "components/CryptoAmount";
+import FiatAmountByToken from "components/FiatAmountByToken";
 import { selectLastCreated } from '../../../redux/reducers/transactionsSlice';
 
 class TransactionCreatedModal extends React.Component {
@@ -273,7 +274,7 @@ class TransactionCreatedModal extends React.Component {
                               fontWeight="bold"
                               lineHeight={"1em"}
                             >
-                              0.42 USD 
+                              {/*<FiatAmountByToken tokenAmount={transaction.feeEstimated}/>*/}
                             </Text>
                             <Text color="mid-gray" fontSize={1}>
                               <CryptoAmount amount={transaction.feeEstimated} />
