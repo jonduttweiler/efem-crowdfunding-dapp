@@ -22,7 +22,6 @@
     "axios": "^0.19.2",
     "bignumber.js": "^8.0.2",
     "bowser": "^2.11.0",
-    "eth-contract-class": "0.0.12",
     "ethereumjs-abi": "^0.6.5",
     "feathers-hooks-common": "^4.20.2",
     "feathers-reactive": "^0.7.2",

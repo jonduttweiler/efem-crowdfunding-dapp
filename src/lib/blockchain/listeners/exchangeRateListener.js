@@ -22,11 +22,10 @@ async function initExchangeRateListener(){
 
     const pollingRateInterval = 60000;
     
-    const { exrProviderP } = await getNetwork();
-    const exchangeRateProvider = await exrProviderP;
+    const { exchangeRateProvider } = await getNetwork();
     
     async function fetchExchangeRate() {
-        const rate = await exchangeRateProvider.getExchangeRate(RBTCAddress);
+        const rate = await exchangeRateProvider.methods.getExchangeRate(RBTCAddress).call();
         /* console.log(`[${new Date().toISOString()}] RBTC/USD rate:${rate}`); */
         
         const exchangeRate = new ExchangeRate({

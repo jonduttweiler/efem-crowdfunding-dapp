@@ -1170,8 +1170,8 @@ class CrowdfundingContractApi {
         return new Observable(async subscriber => {
             try {
                 const exchangeRateProvider = await this.getExchangeRateProvider();
-                const rate = await exchangeRateProvider.getExchangeRate(RBTCAddress);
-                console.log(`RBTC/USD rate:${rate}`);
+                const rate = await exchangeRateProvider.methods.getExchangeRate(RBTCAddress).call();
+                console.log(`RBTC/USD rate: ${rate}`);
                 // TODO Obtener otros Exchage Rates desde el smart contract.
                 let exchangeRates = [];
 
@@ -1260,14 +1260,14 @@ class CrowdfundingContractApi {
 
     async getCrowdfunding() {
         const network = await getNetwork();
-        const { crowdfundingRaw } = network;
-        return crowdfundingRaw;
+        const { crowdfunding } = network;
+        return crowdfunding;
     }
 
     async getExchangeRateProvider(){
-        const { exrProviderP } = await getNetwork();
-        this.exchangeRateProvider = await exrProviderP;
-        return this.exchangeRateProvider;
+        const network = await getNetwork();
+        const { exchangeRateProvider } = network;
+        return exchangeRateProvider;
     }
 }
 

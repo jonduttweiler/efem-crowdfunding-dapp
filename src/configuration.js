@@ -4,6 +4,7 @@ const {
   REACT_APP_FEATHERJS_CONNECTION_URL,
   REACT_APP_NODE_CONNECTION_URL,
   REACT_APP_CROWDFUNDING_ADDRESS,
+  REACT_APP_EXCHANGE_RATE_PROVIDER_ADDRESS,
   REACT_APP_LIQUIDPLEDGING_ADDRESS,
   REACT_APP_CAMPAIGN_FACTORY_ADDRESS,
   REACT_APP_CAPPED_MILESTONE_FACTORY_ADDRESS,
@@ -186,6 +187,7 @@ const config = Object.assign({}, configurations[REACT_APP_ENVIRONMENT]);
 
 // Overwrite the environment values with parameters
 config.crowdfundingAddress = REACT_APP_CROWDFUNDING_ADDRESS || config.crowdfundingAddress;
+config.exchangeRateProviderAddress = REACT_APP_EXCHANGE_RATE_PROVIDER_ADDRESS || config.exchangeRateProviderAddress;
 config.liquidPledgingAddress = REACT_APP_LIQUIDPLEDGING_ADDRESS || config.liquidPledgingAddress;
 config.campaignFactoryAddress =
   REACT_APP_CAMPAIGN_FACTORY_ADDRESS || config.lppCampaignFactoryAddress;
