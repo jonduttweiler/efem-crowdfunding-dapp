@@ -274,7 +274,7 @@ class TransactionCreatedModal extends React.Component {
                               fontWeight="bold"
                               lineHeight={"1em"}
                             >
-                              {/*<FiatAmountByToken tokenAmount={transaction.feeEstimated}/>*/}
+                              {<FiatAmountByToken amount={transaction.feeEstimated}/>}
                             </Text>
                             <Text color="mid-gray" fontSize={1}>
                               <CryptoAmount amount={transaction.feeEstimated} />

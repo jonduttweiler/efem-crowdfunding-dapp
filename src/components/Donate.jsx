@@ -24,8 +24,6 @@ import Web3Utils from '../lib/blockchain/Web3Utils';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 import FiatAmountByToken from './FiatAmountByToken';
 import OnlyCorrectNetwork from './OnlyCorrectNetwork';
-import web3 from 'web3';
-import BigNumber from 'bignumber.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -124,18 +122,9 @@ class Donate extends Component {
     if (amount > 0) {
       donationIsValid = true;
     }
-
-    
-    let tokenAmountWei = new BigNumber(0);
-    try{
-      let tokenAmount = (this.state.amount) ? this.state.amount : 0;
-      const asWei = web3.utils.toWei(tokenAmount.toString());
-      tokenAmountWei = new BigNumber(asWei);
-    } catch(err){
-      console.log(err);
-    }
-
-
+console.log('amountamount', amount);
+    let amountWei = Web3Utils.etherToWei(amount);
+    console.log('amountWei', amountWei);
     return (
       <div>
         {enabled && (
@@ -203,7 +192,7 @@ class Donate extends Component {
                     }
                     inputProps={inputProps}
                   />
-                  <FiatAmountByToken amount={tokenAmountWei}/>
+                  <FiatAmountByToken amount={amountWei}/>
                 </Grid>
               </Grid>
             </Grid>

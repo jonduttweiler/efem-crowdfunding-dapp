@@ -4,9 +4,9 @@ import { Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { selectExchangeRateByToken } from '../redux/reducers/exchangeRatesSlice';
 import FiatAmount from "./FiatAmount";
-import web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import config from '../configuration';
+import Web3Utils from '../lib/blockchain/Web3Utils';
 
 const { nativeToken } = config;
 
@@ -21,7 +21,7 @@ const FiatAmountByToken = ({ tokenAddress = nativeToken.address, amount: tokenAm
     useEffect(() => {
         try {
             const centsFiatAmount = tokenAmountWei.dividedBy(rate);
-            const tokenAmount = web3.utils.fromWei(tokenAmountWei.toString());
+            //const tokenAmount = Web3Utils.weiToEther(tokenAmountWei);
             setFiatAmount(centsFiatAmount.toString());
             setTokenAmount(tokenAmount);
         } catch (err) {
@@ -31,7 +31,8 @@ const FiatAmountByToken = ({ tokenAddress = nativeToken.address, amount: tokenAm
 
     return (
         <Typography variant="body1">
-            {tokenAmount} [{symbol}] = <FiatAmount amount={new BigNumber(fiatAmount)}/>
+            {/*{tokenAmount} [{symbol}] = <FiatAmount amount={new BigNumber(fiatAmount)}/>*/}
+            <FiatAmount amount={new BigNumber(fiatAmount)}/>
         </Typography>
     )
 }
