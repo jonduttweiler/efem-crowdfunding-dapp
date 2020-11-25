@@ -77,7 +77,7 @@ const configurations = {
       timeout: 20000,
       explorer: 'https://explorer.testnet.rsk.co/',
       transactionEstimatedTime: 1, // Minutos
-      transactionEstimatedTimeMilliseconds: 30000
+      transactionEstimatedTimeMilliseconds: 32000
     },
     language: {
       default: 'en',

@@ -4,11 +4,9 @@ import Milestone from '../../models/Milestone';
 import Activity from '../../models/Activity';
 import Donation from '../../models/Donation';
 import getNetwork from './getNetwork';
-import extraGas from './extraGas';
 import { Observable } from 'rxjs'
 import web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import messageUtils from '../../redux/utils/messageUtils'
 import transactionUtils from '../../redux/utils/transactionUtils'
 import entityUtils from '../../redux/utils/entityUtils'
 import dacIpfsConnector from '../../ipfs/DacIpfsConnector'
@@ -17,9 +15,7 @@ import milestoneIpfsConnector from '../../ipfs/MilestoneIpfsConnector'
 import activityIpfsConnector from '../../ipfs/ActivityIpfsConnector'
 import ExchangeRate from '../../models/ExchangeRate';
 import getWeb3 from './getWeb3';
-import Transaction from 'models/Transaction';
-
-const RBTCAddress = "0x0000000000000000000000000000000000000000"; //TODO: Leer desde config
+import config from '../../configuration';
 
 /**
  * API encargada de la interacción con el Crowdfunding Smart Contract.
@@ -1170,14 +1166,14 @@ class CrowdfundingContractApi {
         return new Observable(async subscriber => {
             try {
                 const exchangeRateProvider = await this.getExchangeRateProvider();
-                const rate = await exchangeRateProvider.methods.getExchangeRate(RBTCAddress).call();
+                const rate = await exchangeRateProvider.methods.getExchangeRate(config.nativeToken.address).call();
                 console.log(`RBTC/USD rate: ${rate}`);
                 // TODO Obtener otros Exchage Rates desde el smart contract.
                 let exchangeRates = [];
 
                 // RBTC
                 let exchangeRate = new ExchangeRate({
-                    tokenAddress: RBTCAddress,
+                    tokenAddress: config.nativeToken.address,
                     rate: new BigNumber(rate),
                     date: Date.now()
                 });
@@ -1253,9 +1249,9 @@ class CrowdfundingContractApi {
     }
 
     async getGasPrice() {
-        //const gasPrice = await web3.eth.getGasPrice();
-        //return new BigNumber(parseInt(gasPrice));
-        return new BigNumber(10000000000000);
+        const web3 = await getWeb3();
+        const gasPrice = await web3.eth.getGasPrice();
+        return new BigNumber(gasPrice);
     }
 
     async getCrowdfunding() {
