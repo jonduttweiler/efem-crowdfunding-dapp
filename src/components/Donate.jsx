@@ -24,6 +24,7 @@ import Web3Utils from '../lib/blockchain/Web3Utils';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 import FiatAmountByToken from './FiatAmountByToken';
 import OnlyCorrectNetwork from './OnlyCorrectNetwork';
+import ProfileCard from './ProfileCard';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -114,7 +115,6 @@ class Donate extends Component {
       size: 31
     };
 
-
     let tokenConfig = config.tokens[this.props.tokenAddress];
     let tokenSymbol = tokenConfig.symbol;
 
@@ -122,9 +122,7 @@ class Donate extends Component {
     if (amount > 0) {
       donationIsValid = true;
     }
-console.log('amountamount', amount);
     let amountWei = Web3Utils.etherToWei(amount);
-    console.log('amountWei', amountWei);
     return (
       <div>
         {enabled && (
@@ -171,6 +169,7 @@ console.log('amountamount', amount);
                   <Typography variant="subtitle1" gutterBottom>
                     {description}
                   </Typography>
+                  <ProfileCard address={currentUser.address} />
                   <TokenBalance balance={balance}></TokenBalance>
                   <TextField
                     id="donate-amount"

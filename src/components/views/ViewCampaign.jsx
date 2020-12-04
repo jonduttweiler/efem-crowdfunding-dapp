@@ -23,7 +23,7 @@ import ErrorBoundary from '../ErrorBoundary';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
-import ProfileCard from '../ProfileCard';
+import ProfileCardMini from '../ProfileCardMini';
 import CampaignCard from '../CampaignCard';
 import { withTranslation } from 'react-i18next';
 import EditCampaignButton from '../EditCampaignButton';
@@ -164,7 +164,7 @@ class ViewCampaign extends Component {
                       <GridItem xs={12} sm={12} md={8}>
                         <GoBackButton to="/" title={t("campaigns")} />
 
-                        <ProfileCard address={campaign.managerAddress} />
+                        <ProfileCardMini address={campaign.managerAddress} />
 
                         <div className="card content-card ">
                           <div className="card-body content">
@@ -270,7 +270,7 @@ class ViewCampaign extends Component {
                     <GridContainer justify="center">
                       <GridItem xs={12} sm={12} md={8}>
                         <h4>Campaign Reviewer</h4>
-                        <ProfileCard address={campaign.reviewerAddress} />
+                        <ProfileCardMini address={campaign.reviewerAddress} />
                       </GridItem>
                     </GridContainer>
 
@@ -310,8 +310,7 @@ const mapStateToProps = (state, ownProps) => {
   const campaignId = parseInt(ownProps.match.params.id);
   return {
     campaign: selectCampaign(state, campaignId),
-    milestones: selectMilestonesByCampaign(state, campaignId),
-    //donations: selectDonationsByEntity(state, campaignId)
+    milestones: selectMilestonesByCampaign(state, campaignId)
   }
 }
 

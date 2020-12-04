@@ -15,7 +15,7 @@ import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestone } from '../../redux/reducers/milestonesSlice';
 import FiatAmount from '../FiatAmount';
-import ProfileCard from '../ProfileCard';
+import ProfileCardMini from '../ProfileCardMini';
 import Campaign from '../../models/Campaign';
 import StatusIndicator from '../StatusIndicator';
 import { selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
@@ -171,7 +171,7 @@ class ViewMilestone extends Component {
                         title={`Campaign: ${campaign.title}`}
                       />
 
-                      <ProfileCard address={milestone.managerAddress} />
+                      <ProfileCardMini address={milestone.managerAddress} />
 
                       <div className="card content-card">
                         <div className="card-body content">{this.renderDescription()}</div>
@@ -191,7 +191,7 @@ class ViewMilestone extends Component {
                           <small className="form-text">
                             This person will review the actual completion of the Milestone
                           </small>
-                          <ProfileCard address={milestone.reviewerAddress} namePosition="right" />
+                          <ProfileCardMini address={milestone.reviewerAddress} namePosition="right" />
                         </div>
 
 
@@ -200,7 +200,7 @@ class ViewMilestone extends Component {
                           <small className="form-text">
                             Where the funds go after successful completion of the Milestone
                           </small>
-                          <ProfileCard address={milestone.recipientAddress} namePosition="right" />
+                          <ProfileCardMini address={milestone.recipientAddress} namePosition="right" />
                         </div>
 
                         {milestone.date && (

@@ -10,7 +10,7 @@ import DonationList from '../DonationList';
 import CommunityButton from '../CommunityButton';
 import CampaignCard from '../CampaignCard';
 import DAC from '../../models/DAC';
-import ProfileCard from '../ProfileCard';
+import ProfileCardMini from '../ProfileCardMini';
 import { connect } from 'react-redux'
 import { selectDac } from '../../redux/reducers/dacsSlice'
 import { selectCampaignsByDac } from '../../redux/reducers/campaignsSlice';
@@ -113,7 +113,7 @@ class ViewDAC extends Component {
                 <GridItem xs={12} sm={12} md={8}>
                   <GoBackButton to="/" title="Communities" />
 
-                  <ProfileCard address={dac.delegateAddress} />
+                  <ProfileCardMini address={dac.delegateAddress} />
 
                   <div className="card content-card">
                     <div className="card-body content">{ReactHtmlParser(dac.description)}</div>

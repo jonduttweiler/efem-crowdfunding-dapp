@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { getTruncatedText, isOwner, history } from '../lib/helpers';
 import User from '../models/User';
 import CardStats from './CardStats';
-import GivethLogo from '../assets/logo.png';
 import Milestone from '../models/Milestone';
-import ProfileCard from './ProfileCard';
+import ProfileCardMini from './ProfileCardMini';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../redux/reducers/campaignsSlice'
 import messageUtils from '../redux/utils/messageUtils'
@@ -81,8 +80,7 @@ class MilestoneCard extends Component {
           tabIndex="0"
         >
         
-        <ProfileCard 
-          address={milestone.managerAddress} namePosition="right"/>
+        <ProfileCardMini address={milestone.managerAddress} namePosition="right"/>
 
           {((milestone && milestone.managerAddress && isOwner(milestone.managerAddress, currentUser)) ||
             isOwner(campaign.managerAddress, currentUser)) &&
