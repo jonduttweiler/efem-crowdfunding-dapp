@@ -22,14 +22,12 @@ class ProfileCardAnonymous extends Component {
                 <ListItemText
                     primary={<AddressLink address={address} />}
                     secondary={
-                        <React.Fragment>
-                            <Typography
-                                variant="body2"
-                                color="textSecondary"
-                            >
-                                {t('userAnonymous')}
-                            </Typography>
-                        </React.Fragment>
+                        <Typography
+                            variant="body2"
+                            color="textSecondary"
+                        >
+                            {t('userAnonymous')}
+                        </Typography>
                     } />
             </ListItem>
         );

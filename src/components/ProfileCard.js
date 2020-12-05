@@ -30,7 +30,7 @@ class ProfileCard extends Component {
 
     render() {
         const { address, user, classes } = this.props;
-        if (!user) {
+        if (!user || !user.registered) {
             return (
                 <ProfileCardAnonymous address={address} />
             )
