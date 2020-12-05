@@ -62,6 +62,7 @@ class DonationsBalance extends Component {
           </ListItem>
           {balances.tokenBalances.map(b => (
             <TokenBalance
+              key={b.tokenAddress}
               tokenAddress={b.tokenAddress}
               balance={b.tokenBalance}>
             </TokenBalance>
