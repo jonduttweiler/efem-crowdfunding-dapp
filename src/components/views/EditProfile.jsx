@@ -14,11 +14,11 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
-import FormProfile from 'componets/FormProfile';
+import FormProfile from 'components/FormProfile';
 import { isLoggedIn } from '../../lib/middleware';
 import Loader from '../Loader';
 import { connect } from 'react-redux';
-
+ 
 /**
  * Edición del usuario actual.
  *

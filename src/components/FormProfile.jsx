@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Box } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { Form, Input } from 'formsy-react-components';
-import FormsyImageUploader from '../FormsyImageUploader';
-import LoaderButton from '../LoaderButton';
+import FormsyImageUploader from './FormsyImageUploader';
+import LoaderButton from './LoaderButton';
+import GridItem from './Grid/GridItem';
 
-const FormProfile = ({ user, isSaving, onSubmit }) => {
-
+const FormProfile = ({ user, isSaving, onSubmit, showSubmit = true }) => {
+    
     const [isPristine, setIsPristine] = useState(true);
     const [image, setImage] = useState("");
 
-    useEffect(()=>{ 
+    useEffect(() => {
         user.newAvatar = image;
-    },[image])
+    }, [image])
 
     const saveDisabled = isSaving || isPristine || (user && user.giverId === 0);
 
     return (
+
         <Form
             onSubmit={() => onSubmit(user)}
             mapping={inputs => {
@@ -26,34 +28,40 @@ const FormProfile = ({ user, isSaving, onSubmit }) => {
             onChange={(currentValues, isChanged) => setIsPristine(!isChanged)}
             layout="vertical"
         >
-            <div className="form-group">
-                <Input
-                    name="name"
-                    autoComplete="name"
-                    id="name-input"
-                    label="Your name"
-                    type="text"
-                    value={user.name}
-                    placeholder="John Doe."
-                    validations="minLength:3"
-                    validationErrors={{ minLength: 'Please enter your name', }}
-                    required
-                    autoFocus
-                />
-            </div>
+            <Grid container direction="row">
+                <GridItem xs={12} sm={12} md={6}>
+                    <div className="form-group">
+                        <Input
+                            name="name"
+                            autoComplete="name"
+                            id="name-input"
+                            label="Your name"
+                            type="text"
+                            value={user.name}
+                            placeholder="John Doe."
+                            validations="minLength:3"
+                            validationErrors={{ minLength: 'Please enter your name', }}
+                            required
+                            autoFocus
+                        />
+                    </div>
+                </GridItem>
 
-            <div className="form-group">
-                <Input
-                    name="email"
-                    autoComplete="email"
-                    label="Email"
-                    value={user.email}
-                    placeholder="email@example.com"
-                    validations="isEmail"
-                    help="Please enter your email address."
-                    validationErrors={{ isEmail: "Oops, that's not a valid email address.", }}
-                />
-            </div>
+                <GridItem xs={12} sm={12} md={6}>
+                    <div className="form-group">
+                        <Input
+                            name="email"
+                            autoComplete="email"
+                            label="Email"
+                            value={user.email}
+                            placeholder="email@example.com"
+                            validations="isEmail"
+                            help="Please enter your email address."
+                            validationErrors={{ isEmail: "Oops, that's not a valid email address.", }}
+                        />
+                    </div>
+                </GridItem>
+            </Grid>
 
             <FormsyImageUploader
                 setImage={setImage}
@@ -76,23 +84,25 @@ const FormProfile = ({ user, isSaving, onSubmit }) => {
                 />
             </div>
 
-            <div className="form-group">
-                <Box my={2} display="flex" justifyContent="flex-end">
-                    <Box>
-                        <LoaderButton
-                            color="primary"
-                            className="btn btn-info"
-                            formNoValidate
-                            type="submit"
-                            disabled={saveDisabled}
-                            isLoading={isSaving}
-                            loadingText="Saving..."
-                        >
-                            Save profile
+            {showSubmit &&
+                (<div className="form-group">
+                    <Box my={2} display="flex" justifyContent="flex-end">
+                        <Box>
+                            <LoaderButton
+                                color="primary"
+                                className="btn btn-info"
+                                formNoValidate
+                                type="submit"
+                                disabled={saveDisabled}
+                                isLoading={isSaving}
+                                loadingText="Saving..."
+                            >
+                                Save profile
                         </LoaderButton>
+                        </Box>
                     </Box>
-                </Box>
-            </div>
+                </div>)
+            }
         </Form>
     )
 }
