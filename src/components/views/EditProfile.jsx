@@ -2,14 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from "classnames";
 
-import { Form, Input } from 'formsy-react-components';
-import Loader from '../Loader';
-import FormsyImageUploader from '../FormsyImageUploader';
-import { isLoggedIn } from '../../lib/middleware';
-import LoaderButton from '../LoaderButton';
 import { history } from '../../lib/helpers';
-
-import { connect } from 'react-redux';
 import { registerCurrentUser, selectCurrentUser } from '../../redux/reducers/currentUserSlice';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -21,7 +14,11 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
-import { Box } from '@material-ui/core';
+import FormProfile from './FormProfile';
+import { isLoggedIn } from '../../lib/middleware';
+import Loader from '../Loader';
+import { connect } from 'react-redux';
+
 /**
  * Edición del usuario actual.
  *
@@ -34,12 +31,7 @@ class EditProfile extends Component {
     this.state = {
       isLoading: true,
       isSaving: false,
-      isPristine: true,
     };
-
-    this.submit = this.submit.bind(this);
-    this.setImage = this.setImage.bind(this);
-    this.togglePristine = this.togglePristine.bind(this);
   }
 
   componentDidMount() {
@@ -62,23 +54,8 @@ class EditProfile extends Component {
     }
   }
 
-  setImage(image) {
-    const { currentUser } = this.props;
-    currentUser.newAvatar = image;
-    this.setState({ isPristine: false });
-  }
-  
-  togglePristine(currentValues, isChanged) {
-    this.setState({ isPristine: !isChanged });
-  }
-  
-  submit() {
-    this.setState({ isSaving: true, });
-    this.props.registerCurrentUser(this.props.currentUser);
-  }
-
   render() {
-    const { isLoading, isSaving, isPristine } = this.state;
+    const { isLoading, isSaving } = this.state;
     const { currentUser } = this.props;
     const { ...rest } = this.props;
     const { classes } = this.props;
@@ -88,7 +65,8 @@ class EditProfile extends Component {
       classes.imgRoundedCircle,
       classes.imgFluid
     );
-  
+
+
     return (
       <div>
         <Header
@@ -138,88 +116,14 @@ class EditProfile extends Component {
                           <Link to="/privacypolicy">Privacy Policy</Link>.
     </div>
 
-                        <Form
-                          onSubmit={this.submit}
-                          mapping={inputs => {
-							currentUser.name = inputs.name;
-							currentUser.email = inputs.email;
-							currentUser.url = inputs.url;
-                          }}
-                          onChange={this.togglePristine}
-                          layout="vertical"
-                        >
-                          <div className="form-group">
-                            <Input
-                              name="name"
-                              autoComplete="name"
-                              id="name-input"
-                              label="Your name"
-                              type="text"
-                              value={currentUser.name}
-                              placeholder="John Doe."
-                              validations="minLength:3"
-                              validationErrors={{
-                                minLength: 'Please enter your name',
-                              }}
-                              required
-                              autoFocus
-                            />
-                          </div>
-
-                          <div className="form-group">
-                            <Input
-                              name="email"
-                              autoComplete="email"
-                              label="Email"
-                              value={currentUser.email}
-                              placeholder="email@example.com"
-                              validations="isEmail"
-                              help="Please enter your email address."
-                              validationErrors={{
-                                isEmail: "Oops, that's not a valid email address.",
-                              }}
-                            />
-                          </div>
-
-                          <FormsyImageUploader
-                            setImage={this.setImage}
-                            avatar={currentUser.avatar}
-                            aspectRatio={1}
-                          />
-
-                          <div className="form-group">
-                            <Input
-                              name="url"
-                              label="Your Profile"
-                              type="text"
-                              value={currentUser.url}
-                              placeholder="Your profile url"
-                              help="Provide a link to some more info about you, this will help to build trust. You could add your linkedin profile, Twitter account or a relevant website."
-                              validations="isUrl"
-                              validationErrors={{
-                                isUrl: 'Please enter a valid url',
-                              }}
-                            />
-                          </div>
-
-                          <div className="form-group">
-                            <Box my={2} display="flex" justifyContent="flex-end">
-                              <Box>
-                                <LoaderButton
-                                  color="primary"
-                                  className="btn btn-info"
-                                  formNoValidate
-                                  type="submit"
-                                  disabled={isSaving || isPristine || (currentUser && currentUser.giverId === 0)}
-                                  isLoading={isSaving}
-                                  loadingText="Saving..."
-                                >
-                                  Save profile
-                                </LoaderButton>
-                              </Box>
-                            </Box>
-                          </div>
-                        </Form>
+                      <FormProfile
+                        user={currentUser}
+                        isSaving={isSaving}
+                        onSubmit={(newValues) => {
+                          this.setState({ isSaving: true });
+                          this.props.registerCurrentUser(this.props.currentUser);
+                        }}
+                      ></FormProfile>
                       </div>
                     )}
 
