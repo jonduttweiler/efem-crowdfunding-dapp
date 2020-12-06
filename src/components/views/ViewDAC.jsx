@@ -12,7 +12,7 @@ import CampaignCard from '../CampaignCard';
 import DAC from '../../models/DAC';
 import ProfileCardMini from '../ProfileCardMini';
 import { connect } from 'react-redux'
-import { selectDac } from '../../redux/reducers/dacsSlice'
+import { selectCascadeDonationsByDac, selectCascadeFiatAmountTargetByDac, selectDac } from '../../redux/reducers/dacsSlice'
 import { selectCampaignsByDac } from '../../redux/reducers/campaignsSlice';
 import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
 import DacCard from '../DacCard';
@@ -59,7 +59,7 @@ class ViewDAC extends Component {
   }
 
   render() {
-    const { classes, dac, campaigns, donations, balance, history, t } = this.props;
+    const { classes, dac, campaigns, cascadeDonationIds, cascadeFiatAmountTarget, balance, history, t } = this.props;
     const {
       isLoading,
       isLoadingCampaigns,
@@ -148,7 +148,7 @@ class ViewDAC extends Component {
 
               <GridContainer justify="center" className="spacer-top-50">
                 <GridItem xs={12} sm={12} md={8}>
-	                <DonationsBalance donationIds={dac.budgetDonationIds}></DonationsBalance>
+                  <DonationsBalance donationIds={cascadeDonationIds} fiatTarget={cascadeFiatAmountTarget}></DonationsBalance>
                 </GridItem>
               </GridContainer>
 
@@ -183,7 +183,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     dac: selectDac(state, dacId),
     campaigns: selectCampaignsByDac(state, dacId),
-    donations: selectDonationsByEntity(state, dacId)
+    cascadeDonationIds: selectCascadeDonationsByDac(state, dacId),
+    cascadeFiatAmountTarget: selectCascadeFiatAmountTargetByDac(state, dacId)
   }
 }
 

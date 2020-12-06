@@ -16,6 +16,8 @@ import imagesStyles from "assets/jss/material-kit-react/imagesStyles.js";
 import { cardTitle } from "assets/jss/material-kit-react.js";
 import { withStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
+import DonationsBalanceMini from './DonationsBalanceMini';
+import StatusBanner from './StatusBanner';
 
 const styles = {
   ...imagesStyles,
@@ -107,6 +109,13 @@ class MilestoneCard extends Component {
           <h4 className={classes.cardTitle}>{getTruncatedText(milestone.title, 40)}</h4>
           <p>{getTruncatedText(milestone.description, 100)}</p>
         </CardBody>
+
+        <DonationsBalanceMini
+          donationIds={milestone.budgetDonationIds}
+          fiatTarget={milestone.fiatAmountTarget}>
+        </DonationsBalanceMini>
+
+        <StatusBanner status={milestone.status} />
 
         <div className="card-footer">
           <CardStats

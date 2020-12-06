@@ -1,17 +1,19 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { getTruncatedText, history } from '../lib/helpers';
-import CardStats from './CardStats';
-import Campaign from '../models/Campaign';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { getTruncatedText, history } from '../lib/helpers'
+import CardStats from './CardStats'
+import Campaign from '../models/Campaign'
 import messageUtils from '../redux/utils/messageUtils'
-
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
-
-import imagesStyles from "assets/jss/material-kit-react/imagesStyles.js";
-import { cardTitle } from "assets/jss/material-kit-react.js";
-import { withStyles } from '@material-ui/core/styles';
-import { withTranslation } from 'react-i18next';
+import Card from "components/Card/Card.js"
+import CardBody from "components/Card/CardBody.js"
+import imagesStyles from "assets/jss/material-kit-react/imagesStyles.js"
+import { cardTitle } from "assets/jss/material-kit-react.js"
+import { withStyles } from '@material-ui/core/styles'
+import { withTranslation } from 'react-i18next'
+import StatusBanner from './StatusBanner'
+import { selectCascadeDonationsByCampaign, selectCascadeFiatAmountTargetByCampaign } from '../redux/reducers/campaignsSlice'
+import DonationsBalanceMini from './DonationsBalanceMini'
+import { connect } from 'react-redux'
 
 const styles = {
   ...imagesStyles,
@@ -40,7 +42,7 @@ class CampaignCard extends Component {
   }
 
   render() {
-    const { classes, t, campaign } = this.props;
+    const { classes, cascadeDonationIds, cascadeFiatAmountTarget, t, campaign } = this.props;
 
     return (
       <Card
@@ -58,6 +60,13 @@ class CampaignCard extends Component {
           <p>{getTruncatedText(campaign.description,100)}</p>
         </CardBody>
 
+        <DonationsBalanceMini
+          donationIds={cascadeDonationIds}
+          fiatTarget={cascadeFiatAmountTarget}>
+        </DonationsBalanceMini>
+
+        <StatusBanner status={campaign.status} />
+
         <div className="card-footer">
             <CardStats
               type="campaign"
@@ -72,9 +81,20 @@ class CampaignCard extends Component {
 }
 
 CampaignCard.propTypes = {
-  campaign: PropTypes.instanceOf(Campaign).isRequired,
+  campaign: PropTypes.instanceOf(Campaign).isRequired
 };
 
 CampaignCard.defaultProps = {};
 
-export default withTranslation()(withStyles(styles)(CampaignCard));
+const mapStateToProps = (state, ownProps) => {
+  return {
+    cascadeDonationIds: selectCascadeDonationsByCampaign(state, ownProps.campaign.id),
+    cascadeFiatAmountTarget: selectCascadeFiatAmountTargetByCampaign(state, ownProps.campaign.id)
+  }
+}
+
+const mapDispatchToProps = { }
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  (withStyles(styles)(withTranslation() (CampaignCard)))
+)

@@ -16,11 +16,23 @@ import CardHeader from '@material-ui/core/CardHeader';
 import FiatAmount from './FiatAmount'
 import { green } from '@material-ui/core/colors';
 import FiatTargetProgress from './FiatTargetProgress';
+import { fetchDonationsByIds } from '../redux/reducers/donationsSlice'
 
 class DonationsBalance extends Component {
 
   constructor() {
     super();
+  }
+
+  componentDidMount() {
+    this.props.fetchDonationsByIds(this.props.donationIds);
+  }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (JSON.stringify(this.props.donationIds) !== JSON.stringify(prevProps.donationIds)) {
+      this.props.fetchDonationsByIds(this.props.donationIds);
+    }
   }
 
   render() {
@@ -36,7 +48,7 @@ class DonationsBalance extends Component {
           }
           subheader={t('donationsBalance')}>
         </CardHeader>
-        <CardContent>
+        <CardContent className={classes.content}>
 
           <ListItem alignItems="flex-start" className={classes.donationsCount}>
             <ListItemAvatar>
@@ -94,6 +106,9 @@ const styles = theme => ({
   header: {
     paddingBottom: '0px'
   },
+  content: {
+    paddingTop: '0px'
+  },
   donationsCount: {
     padding: '0px'
   },
@@ -115,7 +130,7 @@ const makeMapStateToProps = () => {
   return mapStateToProps
 }
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { fetchDonationsByIds }
 
 export default connect(makeMapStateToProps, mapDispatchToProps)(
   withStyles(styles)(

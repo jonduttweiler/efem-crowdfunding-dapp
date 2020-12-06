@@ -89,6 +89,9 @@
     "countSelected": "Seleccionados",
 
     "target": "Objetivo",
+    "targetProgress": "{{fiatBalance}} recaudado de {{fiatTarget}} objetivo",
+
+    "status": "Estado",
 
     "web3InstallMetaMask": "Instale MetaMask",
     "web3NotWeb3BrowserTitle": "Su browser no soporta nuestras características blockchain",

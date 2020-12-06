@@ -1,43 +1,41 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import classNames from "classnames";
-
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
-import ReactHtmlParser from 'react-html-parser';
-import BigNumber from 'bignumber.js';
-
-import { feathersClient } from '../../lib/feathersClient';
-import Loader from '../Loader';
-import MilestoneCard from '../MilestoneCard';
-import GoBackButton from '../GoBackButton';
-import { isOwner } from '../../lib/helpers';
-import Donate from '../Donate';
-import TransferCampaign from '../TransferCampaign';
-import Campaign from '../../models/Campaign';
-import CommunityButton from '../CommunityButton';
-import DonationList from '../DonationList';
-import DonationsBalance from '../DonationsBalance';
-import User from '../../models/User';
-import ErrorBoundary from '../ErrorBoundary';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import classNames from "classnames"
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
+import ReactHtmlParser from 'react-html-parser'
+import Loader from '../Loader'
+import MilestoneCard from '../MilestoneCard'
+import GoBackButton from '../GoBackButton'
+import { isOwner } from '../../lib/helpers'
+import Donate from '../Donate'
+import TransferCampaign from '../TransferCampaign'
+import Campaign from '../../models/Campaign'
+import CommunityButton from '../CommunityButton'
+import DonationList from '../DonationList'
+import DonationsBalance from '../DonationsBalance'
+import User from '../../models/User'
+import ErrorBoundary from '../ErrorBoundary'
 import { connect } from 'react-redux'
-import { selectCampaign } from '../../redux/reducers/campaignsSlice'
-import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice';
-import ProfileCardMini from '../ProfileCardMini';
-import CampaignCard from '../CampaignCard';
-import { withTranslation } from 'react-i18next';
-import EditCampaignButton from '../EditCampaignButton';
-import Header from "components/Header/Header.js";
-import Footer from "components/Footer/Footer.js";
-import Parallax from "components/Parallax/Parallax.js";
-import MainMenu from 'components/MainMenu';
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import { withStyles } from '@material-ui/core/styles';
-import styles from "assets/jss/material-kit-react/views/campaignView.js";
-import Typography from '@material-ui/core/Typography';
-import { Box } from '@material-ui/core';
-import OnlyCorrectNetwork from 'components/OnlyCorrectNetwork';
+import { selectCampaign,
+  selectCascadeDonationsByCampaign,
+  selectCascadeFiatAmountTargetByCampaign } from '../../redux/reducers/campaignsSlice'
+import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice'
+import ProfileCardMini from '../ProfileCardMini'
+import CampaignCard from '../CampaignCard'
+import { withTranslation } from 'react-i18next'
+import EditCampaignButton from '../EditCampaignButton'
+import Header from "components/Header/Header.js"
+import Footer from "components/Footer/Footer.js"
+import Parallax from "components/Parallax/Parallax.js"
+import MainMenu from 'components/MainMenu'
+import GridContainer from "components/Grid/GridContainer.js"
+import GridItem from "components/Grid/GridItem.js"
+import { withStyles } from '@material-ui/core/styles'
+import styles from "assets/jss/material-kit-react/views/campaignView.js"
+import Typography from '@material-ui/core/Typography'
+import { Box } from '@material-ui/core'
+import OnlyCorrectNetwork from 'components/OnlyCorrectNetwork'
 
 /**
  * The Campaign detail view mapped to /campaign/id
@@ -100,7 +98,7 @@ class ViewCampaign extends Component {
 
   render() {
     const { isLoading, isLoadingMilestones, milestonesLoaded, milestonesTotal } = this.state;
-    const { classes, campaign, milestones, donations, history, currentUser, t } = this.props;
+    const { classes, campaign, milestones, cascadeDonationIds, cascadeFiatAmountTarget, history, currentUser, t } = this.props;
     const { ...rest } = this.props;
 
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
@@ -257,13 +255,13 @@ class ViewCampaign extends Component {
 
                     <GridContainer justify="center" className="spacer-bottom-50">
                       <GridItem xs={12} sm={12} md={8}>
-	                    <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
+	                      <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
                       </GridItem>
                     </GridContainer>
 
                     <GridContainer justify="center" className="spacer-bottom-50">
                       <GridItem xs={12} sm={12} md={8}>
-	                    <DonationsBalance donationIds={campaign.budgetDonationIds}></DonationsBalance>
+	                      <DonationsBalance donationIds={cascadeDonationIds} fiatTarget={cascadeFiatAmountTarget}></DonationsBalance>
                       </GridItem>
                     </GridContainer>
 
@@ -310,7 +308,9 @@ const mapStateToProps = (state, ownProps) => {
   const campaignId = parseInt(ownProps.match.params.id);
   return {
     campaign: selectCampaign(state, campaignId),
-    milestones: selectMilestonesByCampaign(state, campaignId)
+    milestones: selectMilestonesByCampaign(state, campaignId),
+    cascadeDonationIds: selectCascadeDonationsByCampaign(state, campaignId),
+    cascadeFiatAmountTarget: selectCascadeFiatAmountTargetByCampaign(state, campaignId)
   }
 }
 

@@ -1,5 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
-import Campaign from '../../models/Campaign';
+import { createSlice } from '@reduxjs/toolkit'
+import BigNumber from 'bignumber.js'
+import Campaign from '../../models/Campaign'
+import { selectMilestone } from './milestonesSlice'
 
 export const campaignsSlice = createSlice({
   name: 'campaigns',
@@ -84,6 +86,33 @@ export const selectCampaignsByIds = (state, ids) => {
   return state.campaigns.filter(c => ids.includes(c.id)).map(function (campaignStore) {
     return new Campaign(campaignStore);
   });
+}
+export const selectCascadeDonationsByCampaign = (state, id) => {
+  let donationIds = [];
+  let campaignStore = state.campaigns.find(c => c.id === id);
+  if (campaignStore) {
+    donationIds = donationIds.concat(campaignStore.budgetDonationIds);
+    campaignStore.milestoneIds.forEach(mId => {
+      let milestone = selectMilestone(state, mId);
+      if(milestone) {
+        donationIds = donationIds.concat(milestone.budgetDonationIds);
+      }
+    });
+  }
+  return donationIds;
+}
+export const selectCascadeFiatAmountTargetByCampaign = (state, id) => {
+  let fiatAmountTarget = new BigNumber(0);
+  let campaignStore = state.campaigns.find(c => c.id === id);
+  if (campaignStore) {
+    campaignStore.milestoneIds.forEach(mId => {
+      let milestone = selectMilestone(state, mId);
+      if(milestone) {
+        fiatAmountTarget = BigNumber.sum(fiatAmountTarget, milestone.fiatAmountTarget);
+      }      
+    });
+  }
+  return fiatAmountTarget;
 }
 
 export default campaignsSlice.reducer;
