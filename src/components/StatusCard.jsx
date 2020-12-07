@@ -4,12 +4,7 @@ import PropTypes from 'prop-types';
 import Status from '../models/Status';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import { green, red } from '@material-ui/core/colors';
 import { withTranslation } from 'react-i18next';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -18,7 +13,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 /**
  * Presenta un estado
  */
-class StatusBanner extends Component {
+class StatusCard extends Component {
 
     constructor(props) {
         super(props);
@@ -29,11 +24,12 @@ class StatusBanner extends Component {
         let iconSize = 10;
         let icon = (<CheckCircleOutlineIcon size={iconSize} />);
         if (status.isLocal) {
-            icon = (<CircularProgress size={iconSize} color="secondary"/>);
+            icon = (<CircularProgress size={iconSize} color="secondary" />);
         }
         return (
             <Card className={classes.root}>
                 <CardHeader
+                    className={classes.header}
                     avatar={
                         <Avatar aria-label="recipe" className={classes.avatar}>
                             {icon}
@@ -47,40 +43,27 @@ class StatusBanner extends Component {
     }
 }
 
-StatusBanner.propTypes = {
+StatusCard.propTypes = {
     status: PropTypes.instanceOf(Status).isRequired,
 };
 
-StatusBanner.defaultProps = {
+StatusCard.defaultProps = {
 
 };
 
 const styles = theme => ({
-    /*root: {
-        padding: '1em',
-        
-    },*/
-    inline: {
-        display: 'inline',
-    },
-    logo: {
-        /*width: theme.spacing(6),
-        height: theme.spacing(6),*/
-    },
-    green: {
-        color: green[500],
-        /*backgroundColor: white[500],*/
-    },
     root: {
-        /*maxWidth: 345,*/
-        backgroundColor: 'rgb(182, 188, 226)',
-        margin: '0.75em'
+        backgroundColor: '#f2f3fa',
+        marginTop: '0.5em'
+    },
+    header: {
+        padding: '0.3em'
     },
     avatar: {
-        backgroundColor: '#3f51b5',
+        backgroundColor: '#b6bce2'
     }
 });
 
 export default withStyles(styles)(
-    withTranslation()(StatusBanner)
+    withTranslation()(StatusCard)
 );

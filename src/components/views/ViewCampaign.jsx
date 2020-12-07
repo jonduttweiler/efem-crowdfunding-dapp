@@ -22,7 +22,7 @@ import { selectCampaign,
   selectCascadeFiatAmountTargetByCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice'
 import ProfileCardMini from '../ProfileCardMini'
-import CampaignCard from '../CampaignCard'
+import CampaignCardMini from '../CampaignCardMini'
 import { withTranslation } from 'react-i18next'
 import EditCampaignButton from '../EditCampaignButton'
 import Header from "components/Header/Header.js"
@@ -127,7 +127,7 @@ class ViewCampaign extends Component {
                     <h1 className={classes.entityName}>{campaign.title}</h1>
                     <Donate
                       entityId={campaign.id}
-                      entityCard={<CampaignCard campaign={campaign} />}
+                      entityCard={<CampaignCardMini campaign={campaign} />}
                       title={t('donateCampaignTitle')}
                       description={t('donateCampaignDescription')}
                       enabled={campaign.canReceiveFunds}>

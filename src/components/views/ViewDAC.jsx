@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import classNames from "classnames";
-
 import PropTypes from 'prop-types';
 import ReactHtmlParser from 'react-html-parser';
 import Loader from '../Loader';
@@ -14,20 +13,18 @@ import ProfileCardMini from '../ProfileCardMini';
 import { connect } from 'react-redux'
 import { selectCascadeDonationsByDac, selectCascadeFiatAmountTargetByDac, selectDac } from '../../redux/reducers/dacsSlice'
 import { selectCampaignsByDac } from '../../redux/reducers/campaignsSlice';
-import { fetchDonationsByIds, selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
-import DacCard from '../DacCard';
+import { fetchDonationsByIds } from '../../redux/reducers/donationsSlice'
+import DacCardMini from '../DacCardMini';
 import { withTranslation } from 'react-i18next';
 import Donate from '../Donate';
 import TransferDac from '../TransferDac';
 import DonationsBalance from '../DonationsBalance';
-
 import Header from "components/Header/Header.js";
 import Footer from "components/Footer/Footer.js";
 import Parallax from "components/Parallax/Parallax.js";
 import MainMenu from 'components/MainMenu';
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-
 import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/dacView.js";
 
@@ -89,7 +86,7 @@ class ViewDAC extends Component {
               <h1 className={classes.entityName}>{dac.title}</h1>
               <Donate
                 entityId={dac.id}
-                entityCard={<DacCard dac={dac} />}
+                entityCard={<DacCardMini dac={dac} />}
                 title={t('donateDacTitle')}
                 description={t('donateDacDescription')}
                 enabled={dac.canReceiveFunds}>

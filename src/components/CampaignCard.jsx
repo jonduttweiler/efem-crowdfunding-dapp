@@ -1,33 +1,26 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { getTruncatedText, history } from '../lib/helpers'
-import CardStats from './CardStats'
 import Campaign from '../models/Campaign'
 import messageUtils from '../redux/utils/messageUtils'
-import Card from "components/Card/Card.js"
-import CardBody from "components/Card/CardBody.js"
-import imagesStyles from "assets/jss/material-kit-react/imagesStyles.js"
-import { cardTitle } from "assets/jss/material-kit-react.js"
 import { withStyles } from '@material-ui/core/styles'
 import { withTranslation } from 'react-i18next'
-import StatusBanner from './StatusBanner'
+import StatusCard from './StatusCard'
 import { selectCascadeDonationsByCampaign, selectCascadeFiatAmountTargetByCampaign } from '../redux/reducers/campaignsSlice'
 import DonationsBalanceMini from './DonationsBalanceMini'
 import { connect } from 'react-redux'
+import Card from '@material-ui/core/Card'
+import CardActionArea from '@material-ui/core/CardActionArea'
+import CardActions from '@material-ui/core/CardActions'
+import CardContent from '@material-ui/core/CardContent'
+import CardMedia from '@material-ui/core/CardMedia'
+import Typography from '@material-ui/core/Typography'
+import Donate from './Donate'
+import CampaignCardMini from './CampaignCardMini'
+import Grid from '@material-ui/core/Grid'
 
-const styles = {
-  ...imagesStyles,
-  cardTitle,
-};
-
-
-/**
- * Campaign Card visible in the DACs view.
- *
- * @param currentUser  Currently logged in user information
- * @param history      Browser history object
- */
 class CampaignCard extends Component {
+
   constructor(props) {
     super(props);
     this.viewCampaign = this.viewCampaign.bind(this);
@@ -42,39 +35,52 @@ class CampaignCard extends Component {
   }
 
   render() {
-    const { classes, cascadeDonationIds, cascadeFiatAmountTarget, t, campaign } = this.props;
+    const { cascadeDonationIds, cascadeFiatAmountTarget, t, classes, campaign } = this.props;
 
     return (
       <Card
-        id={campaign.id} // eslint-disable-line no-underscore-dangle
-        onClick={this.viewCampaign}
-        onKeyPress={this.viewCampaign}
-        role="button"
-        tabIndex="0"
-      >
-      
-        <div className={classes.cardImg} style={{ backgroundImage: `url(${campaign.imageCidUrl})` }} />
-
-        <CardBody>
-          <h4 className={classes.cardTitle}>{getTruncatedText(campaign.title, 40)}</h4>
-          <p>{getTruncatedText(campaign.description,100)}</p>
-        </CardBody>
-
-        <DonationsBalanceMini
-          donationIds={cascadeDonationIds}
-          fiatTarget={cascadeFiatAmountTarget}>
-        </DonationsBalanceMini>
-
-        <StatusBanner status={campaign.status} />
-
-        <div className="card-footer">
-            <CardStats
-              type="campaign"
-              status={campaign.status}
-              donations={campaign.budgetDonationsCount}
-            />
-        </div>
-
+        className={classes.root}>
+        <CardActionArea onClick={this.viewCampaign}>
+          <CardMedia
+            component="img"
+            height="150"
+            image={campaign.imageCidUrl}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2">
+              {getTruncatedText(campaign.title, 40)}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+              className={classes.description}>
+              {getTruncatedText(campaign.description, 200)}
+            </Typography>
+            <DonationsBalanceMini
+              donationIds={cascadeDonationIds}
+              fiatTarget={cascadeFiatAmountTarget}>
+            </DonationsBalanceMini>
+            <StatusCard status={campaign.status} />
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+          >
+            <Grid item xs={6} className={classes.actions}>
+              <Donate
+                entityId={campaign.id}
+                entityCard={<CampaignCardMini campaign={campaign} />}
+                title={t('donateCampaignTitle')}
+                description={t('donateCampaignDescription')}
+                enabled={campaign.canReceiveFunds}>
+              </Donate>
+            </Grid>
+          </Grid>
+        </CardActions>
       </Card>
     );
   }
@@ -86,6 +92,18 @@ CampaignCard.propTypes = {
 
 CampaignCard.defaultProps = {};
 
+const styles = theme => ({
+  root: {
+
+  },
+  description: {
+    height: '7em'
+  },
+  actions: {
+    textAlign: 'right'
+  }
+});
+
 const mapStateToProps = (state, ownProps) => {
   return {
     cascadeDonationIds: selectCascadeDonationsByCampaign(state, ownProps.campaign.id),
@@ -93,8 +111,8 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = { }
+const mapDispatchToProps = {}
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  (withStyles(styles)(withTranslation() (CampaignCard)))
+  (withStyles(styles)(withTranslation()(CampaignCard)))
 )

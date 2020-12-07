@@ -20,7 +20,7 @@ import StatusIndicator from '../StatusIndicator'
 import { fetchActivitiesByIds, selectActivitiesByMilestone } from '../../redux/reducers/activitiesSlice'
 import { selectCurrentUser } from '../../redux/reducers/currentUserSlice'
 import DateViewer from '../DateViewer'
-import MilestoneCard from '../MilestoneCard'
+import MilestoneCardMini from '../MilestoneCardMini'
 import Header from "components/Header/Header.js"
 import Footer from "components/Footer/Footer.js"
 import Parallax from "components/Parallax/Parallax.js"
@@ -127,7 +127,7 @@ class ViewMilestone extends Component {
                   <div className="milestone-actions">
                     <Donate
                       entityId={milestone.id}
-                      entityCard={<MilestoneCard milestone={milestone} />}
+                      entityCard={<MilestoneCardMini milestone={milestone} />}
                       title={t('donateMilestoneTitle')}
                       description={t('donateMilestoneDescription')}
                       enabled={milestone.canReceiveFunds}>  

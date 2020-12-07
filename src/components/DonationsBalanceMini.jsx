@@ -3,9 +3,6 @@ import { withStyles } from '@material-ui/core/styles'
 import { withTranslation } from 'react-i18next'
 import makeSelectDonationsBalance from '../redux/selectors/donationsBalanceSelector'
 import { connect } from 'react-redux'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import CardHeader from '@material-ui/core/CardHeader'
 import { green } from '@material-ui/core/colors'
 import FiatTargetProgress from './FiatTargetProgress'
 import { fetchDonationsByIds } from '../redux/reducers/donationsSlice'
@@ -31,20 +28,10 @@ class DonationsBalanceMini extends Component {
     const { balances, fiatTarget, classes, t } = this.props;
 
     return (
-      <Card className={classes.root}>
-        <CardHeader
-          className={classes.header}
-          subheader={t('donationsBalance')}>
-        </CardHeader>
-        <CardContent className={classes.content}>          
-          {fiatTarget && (
-            <FiatTargetProgress
-              fiatBalance={balances.fiatTotalBalance}
-              fiatTarget={fiatTarget}>
-            </FiatTargetProgress>
-          )}
-        </CardContent>
-      </Card>
+      <FiatTargetProgress
+        fiatBalance={balances.fiatTotalBalance}
+        fiatTarget={fiatTarget}>
+      </FiatTargetProgress>
     );
   }
 }
@@ -59,7 +46,7 @@ DonationsBalanceMini.defaultProps = {
 
 const styles = theme => ({
   root: {
-    minWidth: 275,
+    /*marginTop: '2em'*/
   },
   header: {
     paddingBottom: '0px'

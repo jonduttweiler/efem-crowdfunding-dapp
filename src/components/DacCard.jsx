@@ -1,41 +1,32 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { getTruncatedText, history } from '../lib/helpers'
-import CardStats from './CardStats'
 import DAC from '../models/DAC'
 import messageUtils from '../redux/utils/messageUtils'
-import Card from "components/Card/Card.js"
-import CardBody from "components/Card/CardBody.js"
-import imagesStyles from "assets/jss/material-kit-react/imagesStyles.js"
-import { cardTitle } from "assets/jss/material-kit-react.js"
 import { withStyles } from '@material-ui/core/styles'
 import { withTranslation } from 'react-i18next'
-import { connect } from 'react-redux'
+import StatusCard from './StatusCard'
+import { selectCascadeDonationsByDac, selectCascadeFiatAmountTargetByDac } from '../redux/reducers/dacsSlice'
 import DonationsBalanceMini from './DonationsBalanceMini'
-import {
-  selectCascadeDonationsByDac,
-  selectCascadeFiatAmountTargetByDac
-} from '../redux/reducers/dacsSlice'
-import StatusBanner from './StatusBanner'
+import { connect } from 'react-redux'
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Typography from '@material-ui/core/Typography';
+import Donate from './Donate'
+import DacCardMini from './DacCardMini'
+import Grid from '@material-ui/core/Grid'
 
-const styles = {
-  ...imagesStyles,
-  cardTitle,
-};
-
-/**
- * DAC Card visible in the DACs view.
- *
- * @param currentUser  Currently logged in user information
- */
 class DacCard extends Component {
+
   constructor(props) {
     super(props);
-
-    this.viewDAC = this.viewDAC.bind(this);
+    this.viewDac = this.viewDac.bind(this);
   }
 
-  viewDAC() {
+  viewDac() {
     if (this.props.dac.isPending) {
       messageUtils.addMessageWarn({ text: 'La DAC no ha sido confirmada aún.' });
     } else {
@@ -48,44 +39,70 @@ class DacCard extends Component {
 
     return (
       <Card
-        id={dac.id}
-        onClick={this.viewDAC}
-        onKeyPress={this.viewDAC}
-        role="button"
-        tabIndex="0"
-      >
-
-        <div className={classes.cardImg} style={{ backgroundImage: `url(${dac.imageCidUrl})` }} />
-
-        <CardBody>
-          <h4 className={classes.cardTitle}>{getTruncatedText(dac.title, 40)}</h4>
-          <p>{getTruncatedText(dac.description, 100)}</p>
-        </CardBody>
-
-        <DonationsBalanceMini
-          donationIds={cascadeDonationIds}
-          fiatTarget={cascadeFiatAmountTarget}>
-        </DonationsBalanceMini>
-
-        <StatusBanner status={dac.status} />
-
-        <div className="card-footer">
-          <CardStats
-            type="dac"
-            status={dac.status}
-            donations={dac.budgetDonationsCount}
+        className={classes.root}>
+        <CardActionArea onClick={this.viewDac}>
+          <CardMedia
+            component="img"
+            height="150"
+            image={dac.imageCidUrl}
           />
-        </div>
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2">
+              {getTruncatedText(dac.title, 40)}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+              className={classes.description}>
+              {getTruncatedText(dac.description, 200)}
+            </Typography>
+            <DonationsBalanceMini
+              donationIds={cascadeDonationIds}
+              fiatTarget={cascadeFiatAmountTarget}>
+            </DonationsBalanceMini>
+            <StatusCard status={dac.status} />
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+          >
+            <Grid item xs={6} className={classes.actions}>
+              <Donate
+                entityId={dac.id}
+                entityCard={<DacCardMini dac={dac} />}
+                title={t('donateDacTitle')}
+                description={t('donateDacDescription')}
+                enabled={dac.canReceiveFunds}>
+              </Donate>
+            </Grid>
+          </Grid>
+        </CardActions>
       </Card>
     );
   }
 }
 
 DacCard.propTypes = {
-  dac: PropTypes.instanceOf(DAC).isRequired,
+  dac: PropTypes.instanceOf(DAC).isRequired
 };
 
 DacCard.defaultProps = {};
+
+const styles = theme => ({
+  root: {
+
+  },
+  description: {
+    height: '7em'
+  },
+  actions: {
+    textAlign: 'right'
+  }
+});
 
 const mapStateToProps = (state, ownProps) => {
   return {
