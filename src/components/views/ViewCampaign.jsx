@@ -38,6 +38,7 @@ import styles from "assets/jss/material-kit-react/views/campaignView.js";
 import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
 import OnlyCorrectNetwork from 'components/OnlyCorrectNetwork';
+import ProfilePopup from 'components/ProfilePopup';
 
 /**
  * The Campaign detail view mapped to /campaign/id
@@ -135,6 +136,10 @@ class ViewCampaign extends Component {
                       enabled={campaign.canReceiveFunds}>
                     </Donate>
                     
+                    <ProfilePopup
+                      title={"Profile"}
+                    >
+                    </ProfilePopup>
 					          <TransferCampaign campaign={campaign}></TransferCampaign>
 
                     <EditCampaignButton 

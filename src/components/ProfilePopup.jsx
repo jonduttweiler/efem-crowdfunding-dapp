@@ -15,7 +15,7 @@ import { connect } from 'react-redux'
 import User from 'models/User';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 import OnlyCorrectNetwork from './OnlyCorrectNetwork';
-import FormProfile from './FormProfile';
+import ProfileForm from './ProfileForm';
 
 import { Box } from '@material-ui/core';
 
@@ -97,11 +97,11 @@ class ProfilePopup extends Component {
           </AppBar>
           <div className={classes.root}>
             <Grid >
-              <FormProfile
+              <ProfileForm
                   user={currentUser}
                   isSaving={false}
                   showSubmit={false}
-              ></FormProfile>
+              ></ProfileForm>
             </Grid>
           </div>
         </Dialog>

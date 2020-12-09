@@ -5,7 +5,7 @@ import FormsyImageUploader from './FormsyImageUploader';
 import LoaderButton from './LoaderButton';
 import GridItem from './Grid/GridItem';
 
-const FormProfile = ({ user, isSaving, onSubmit, showSubmit = true }) => {
+const ProfileForm = ({ user, isSaving, onSubmit, showSubmit = true }) => {
     
     const [isPristine, setIsPristine] = useState(true);
     const [image, setImage] = useState("");
@@ -17,7 +17,6 @@ const FormProfile = ({ user, isSaving, onSubmit, showSubmit = true }) => {
     const saveDisabled = isSaving || isPristine || (user && user.giverId === 0);
 
     return (
-
         <Form
             onSubmit={() => onSubmit(user)}
             mapping={inputs => {
@@ -107,7 +106,7 @@ const FormProfile = ({ user, isSaving, onSubmit, showSubmit = true }) => {
     )
 }
 
-export default FormProfile;
+export default ProfileForm;
 
 
 

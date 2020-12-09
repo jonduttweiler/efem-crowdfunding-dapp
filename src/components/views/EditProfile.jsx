@@ -14,7 +14,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
-import FormProfile from 'components/FormProfile';
+import ProfileForm from 'components/ProfileForm';
 import { isLoggedIn } from '../../lib/middleware';
 import Loader from '../Loader';
 import { connect } from 'react-redux';
@@ -116,14 +116,14 @@ class EditProfile extends Component {
                           <Link to="/privacypolicy">Privacy Policy</Link>.
     </div>
 
-                      <FormProfile
+                      <ProfileForm
                         user={currentUser}
                         isSaving={isSaving}
                         onSubmit={(newValues) => {
                           this.setState({ isSaving: true });
                           this.props.registerCurrentUser(this.props.currentUser);
                         }}
-                      ></FormProfile>
+                      ></ProfileForm>
                       </div>
                     )}
 
