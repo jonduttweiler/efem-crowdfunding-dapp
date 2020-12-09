@@ -101,6 +101,7 @@ class ProfilePopup extends Component {
                   user={currentUser}
                   isSaving={false}
                   showSubmit={false}
+                  showCompact={true}
               ></ProfileForm>
             </Grid>
           </div>

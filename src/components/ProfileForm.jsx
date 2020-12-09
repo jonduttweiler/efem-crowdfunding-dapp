@@ -5,7 +5,7 @@ import FormsyImageUploader from './FormsyImageUploader';
 import LoaderButton from './LoaderButton';
 import GridItem from './Grid/GridItem';
 
-const ProfileForm = ({ user, isSaving, onSubmit, showSubmit = true }) => {
+const ProfileForm = ({ user, isSaving, onSubmit, showSubmit = true, showCompact=false }) => {
     
     const [isPristine, setIsPristine] = useState(true);
     const [image, setImage] = useState("");
@@ -15,6 +15,10 @@ const ProfileForm = ({ user, isSaving, onSubmit, showSubmit = true }) => {
     }, [image])
 
     const saveDisabled = isSaving || isPristine || (user && user.giverId === 0);
+
+    const columnWidth = showCompact? 6: 12 ;
+    console.log(`columnWidth: ${columnWidth}`)
+    
 
     return (
         <Form
@@ -27,40 +31,43 @@ const ProfileForm = ({ user, isSaving, onSubmit, showSubmit = true }) => {
             onChange={(currentValues, isChanged) => setIsPristine(!isChanged)}
             layout="vertical"
         >
-            <Grid container direction="row">
-                <GridItem xs={12} sm={12} md={6}>
-                    <div className="form-group">
-                        <Input
-                            name="name"
-                            autoComplete="name"
-                            id="name-input"
-                            label="Your name"
-                            type="text"
-                            value={user.name}
-                            placeholder="John Doe."
-                            validations="minLength:3"
-                            validationErrors={{ minLength: 'Please enter your name', }}
-                            required
-                            autoFocus
-                        />
-                    </div>
-                </GridItem>
+            <Box style={{ marginLeft:-15,marginRight:-15 }}>
+                <Grid container direction="row">
+                    <GridItem xs={12} sm={12} md={columnWidth}>
+                        <div className="form-group">
+                            <Input
+                                name="name"
+                                autoComplete="name"
+                                id="name-input"
+                                label="Your name"
+                                type="text"
+                                value={user.name}
+                                placeholder="John Doe."
+                                validations="minLength:3"
+                                validationErrors={{ minLength: 'Please enter your name', }}
+                                required
+                                autoFocus
+                            />
+                        </div>
+                    </GridItem>
 
-                <GridItem xs={12} sm={12} md={6}>
-                    <div className="form-group">
-                        <Input
-                            name="email"
-                            autoComplete="email"
-                            label="Email"
-                            value={user.email}
-                            placeholder="email@example.com"
-                            validations="isEmail"
-                            help="Please enter your email address."
-                            validationErrors={{ isEmail: "Oops, that's not a valid email address.", }}
-                        />
-                    </div>
-                </GridItem>
-            </Grid>
+                    <GridItem xs={12} sm={12} md={columnWidth}>
+                        <div className="form-group">
+                            <Input
+                                name="email"
+                                autoComplete="email"
+                                label="Email"
+                                value={user.email}
+                                placeholder="email@example.com"
+                                validations="isEmail"
+                                help="Please enter your email address."
+                                validationErrors={{ isEmail: "Oops, that's not a valid email address.", }}
+                            />
+                        </div>
+                    </GridItem>
+                </Grid>
+            </Box>
+            
 
             <FormsyImageUploader
                 setImage={setImage}
@@ -102,6 +109,7 @@ const ProfileForm = ({ user, isSaving, onSubmit, showSubmit = true }) => {
                     </Box>
                 </div>)
             }
+            
         </Form>
     )
 }
