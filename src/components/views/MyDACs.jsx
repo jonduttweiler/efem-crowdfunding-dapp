@@ -66,7 +66,7 @@ class MyDACs extends Component {
   }
 
   editDAC(id) {
-    checkBalance(this.props.balance)
+    /*checkBalance(this.props.balance)
       .then(() => {
         history.push(`/dacs/${id}/edit`);
       })
@@ -74,7 +74,7 @@ class MyDACs extends Component {
         if (err === 'noBalance') {
           // handle no balance error
         }
-      });
+      });*/
   }
 
   handlePageChanged(newPage) {
@@ -198,7 +198,7 @@ class MyDACs extends Component {
 
 MyDACs.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,
-  balance: PropTypes.objectOf(utils.BN).isRequired,
+  //balance: PropTypes.objectOf(utils.BN).isRequired,
 };
 
 export default MyDACs;

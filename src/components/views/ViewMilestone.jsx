@@ -1,41 +1,36 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from "classnames";
-
-import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
-import BigNumber from 'bignumber.js';
-import User from 'models/User';
-import MilestoneActions from '../MilestoneActions';
-import Donate from '../Donate';
-import GoBackButton from '../GoBackButton';
-import DonationList from '../DonationList';
-import Loader from '../Loader';
-import ActivityList from '../ActivityList';
-import Milestone from '../../models/Milestone';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from "classnames"
+import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser'
+import User from 'models/User'
+import MilestoneActions from '../MilestoneActions'
+import Donate from '../Donate'
+import GoBackButton from '../GoBackButton'
+import DonationList from '../DonationList'
+import Loader from '../Loader'
+import ActivityList from '../ActivityList'
+import Milestone from '../../models/Milestone'
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
-import { selectMilestone } from '../../redux/reducers/milestonesSlice';
-import FiatAmount from '../FiatAmount';
-import ProfileCard from '../ProfileCard';
-import Campaign from '../../models/Campaign';
-import StatusIndicator from '../StatusIndicator';
-import { selectDonationsByEntity } from '../../redux/reducers/donationsSlice'
+import { selectMilestone } from '../../redux/reducers/milestonesSlice'
+import FiatAmount from '../FiatAmount'
+import ProfileCardMini from '../ProfileCardMini'
+import Campaign from '../../models/Campaign'
+import StatusIndicator from '../StatusIndicator'
 import { fetchActivitiesByIds, selectActivitiesByMilestone } from '../../redux/reducers/activitiesSlice'
-import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
-import DateViewer from '../DateViewer';
-import MilestoneCard from '../MilestoneCard';
-
-import Header from "components/Header/Header.js";
-import Footer from "components/Footer/Footer.js";
-import Parallax from "components/Parallax/Parallax.js";
-import MainMenu from 'components/MainMenu';
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-
-import { withStyles } from '@material-ui/core/styles';
-import styles from "assets/jss/material-kit-react/views/milestoneView.js";
-import { withTranslation } from 'react-i18next';
-import DonationsBalance from '../DonationsBalance';
+import { selectCurrentUser } from '../../redux/reducers/currentUserSlice'
+import DateViewer from '../DateViewer'
+import MilestoneCardMini from '../MilestoneCardMini'
+import Header from "components/Header/Header.js"
+import Footer from "components/Footer/Footer.js"
+import Parallax from "components/Parallax/Parallax.js"
+import MainMenu from 'components/MainMenu'
+import GridContainer from "components/Grid/GridContainer.js"
+import GridItem from "components/Grid/GridItem.js"
+import { withStyles } from '@material-ui/core/styles'
+import styles from "assets/jss/material-kit-react/views/milestoneView.js"
+import { withTranslation } from 'react-i18next'
+import DonationsBalance from '../DonationsBalance'
 
 class ViewMilestone extends Component {
   constructor(props) {
@@ -45,7 +40,6 @@ class ViewMilestone extends Component {
       //isLoading: true,
       isLoading: false,
       isLoadingDonations: true,
-      donations: [],
       recipient: {},
       campaign: props.campaign,
       milestone: props.milestone,
@@ -90,7 +84,7 @@ class ViewMilestone extends Component {
   }
 
   render() {
-    const { classes, donations, activities, history, user, balance, campaign, milestone, t } = this.props;
+    const { classes, activities, history, user, campaign, milestone, t } = this.props;
     const { ...rest } = this.props;
 
     const {
@@ -133,7 +127,7 @@ class ViewMilestone extends Component {
                   <div className="milestone-actions">
                     <Donate
                       entityId={milestone.id}
-                      entityCard={<MilestoneCard milestone={milestone} />}
+                      entityCard={<MilestoneCardMini milestone={milestone} />}
                       title={t('donateMilestoneTitle')}
                       description={t('donateMilestoneDescription')}
                       enabled={milestone.canReceiveFunds}>  
@@ -144,7 +138,6 @@ class ViewMilestone extends Component {
                           <DelegateMultipleButton
                             milestone={milestone}
                             campaign={campaign}
-                            balance={balance}
                             user={user}
                           />
                         )}
@@ -154,7 +147,7 @@ class ViewMilestone extends Component {
                     {/* Milestone actions */}
 
                     {user && (
-                      <MilestoneActions milestone={milestone} user={user} balance={balance} />
+                      <MilestoneActions milestone={milestone} user={user} />
                     )}
                   </div>
                 </center>
@@ -173,7 +166,7 @@ class ViewMilestone extends Component {
                         title={`Campaign: ${campaign.title}`}
                       />
 
-                      <ProfileCard address={milestone.managerAddress} />
+                      <ProfileCardMini address={milestone.managerAddress} />
 
                       <div className="card content-card">
                         <div className="card-body content">{this.renderDescription()}</div>
@@ -193,7 +186,7 @@ class ViewMilestone extends Component {
                           <small className="form-text">
                             This person will review the actual completion of the Milestone
                           </small>
-                          <ProfileCard address={milestone.reviewerAddress} namePosition="right" />
+                          <ProfileCardMini address={milestone.reviewerAddress} namePosition="right" />
                         </div>
 
 
@@ -202,7 +195,7 @@ class ViewMilestone extends Component {
                           <small className="form-text">
                             Where the funds go after successful completion of the Milestone
                           </small>
-                          <ProfileCard address={milestone.recipientAddress} namePosition="right" />
+                          <ProfileCardMini address={milestone.recipientAddress} namePosition="right" />
                         </div>
 
                         {milestone.date && (
@@ -284,7 +277,6 @@ ViewMilestone.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   user: PropTypes.instanceOf(User),
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       milestoneId: PropTypes.string.isRequired,
@@ -295,16 +287,14 @@ ViewMilestone.propTypes = {
 ViewMilestone.defaultProps = {
   user: undefined,
   milestone: new Milestone(),
-  campaign: new Campaign(),
-  donations: []
+  campaign: new Campaign()
 };
 
 const mapStateToProps = (state, ownProps) => {
   const reduxProps = {
     user: undefined,
     milestone: undefined,
-    campaign: undefined,
-    donations: []
+    campaign: undefined
   }
   reduxProps.user = selectCurrentUser(state);
   const milestoneId = parseInt(ownProps.match.params.milestoneId);
@@ -312,7 +302,6 @@ const mapStateToProps = (state, ownProps) => {
   if (reduxProps.milestone) {
     reduxProps.campaign = selectCampaign(state, reduxProps.milestone.campaignId);
   }
-  reduxProps.donations = selectDonationsByEntity(state, milestoneId);
   reduxProps.activities = selectActivitiesByMilestone(state, milestoneId);
   return reduxProps;
 }

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import config from '../configuration';
-import Web3Utils from '../utils/Web3Utils';
+import Web3Utils from '../lib/blockchain/Web3Utils';
 
 /**
  * Presenta una cantidad de dinero crypto.

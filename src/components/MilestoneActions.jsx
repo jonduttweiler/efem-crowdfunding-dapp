@@ -6,7 +6,6 @@ import BigNumber from 'bignumber.js';
 
 import DeleteProposedMilestoneButton from 'components/DeleteProposedMilestoneButton';
 import AcceptRejectProposedMilestoneButtons from 'components/AcceptRejectProposedMilestoneButtons';
-import ReproposeRejectedMilestoneButton from 'components/ReproposeRejectedMilestoneButton';
 import CancelMilestoneButton from 'components/CancelMilestoneButton';
 import MilestoneWithdrawButton from './MilestoneWithdrawButton';
 import MilestoneComplete from './MilestoneComplete';
@@ -15,56 +14,45 @@ import MilestoneReject from './MilestoneReject';
 
 class MilestoneActions extends Component {
   render() {
-    const { milestone, user, balance } = this.props;
+    const { milestone, user } = this.props;
 
     return (
       <Fragment>
         <MilestoneComplete
-          milestone={milestone}
-          currentUser={user}>
+          milestone={milestone}>
         </MilestoneComplete>
 
         <MilestoneApprove
-          milestone={milestone}
-          currentUser={user}>
+          milestone={milestone}>
         </MilestoneApprove>
 
         <MilestoneReject
-          milestone={milestone}
-          currentUser={user}>
+          milestone={milestone}>
         </MilestoneReject>
 
         <MilestoneWithdrawButton
           milestone={milestone}
-          balance={balance}
           user={user} />
 
         {/*
         <AcceptRejectProposedMilestoneButtons
           milestone={milestone}
-          balance={balance}
           currentUser={currentUser}/>
-        */}
-        {/*
-        <ReproposeRejectedMilestoneButton milestone={milestone} currentUser={currentUser} />
         */}
         {/*
         <CancelMilestoneButton
           milestone={milestone}
-          balance={balance}
           currentUser={currentUser}/>
         */}
         {/*
           <DeleteProposedMilestoneButton
           milestone={milestone}
-          balance={balance}
           currentUser={currentUser}/>
         */}
 
         {/*
         <EditMilestoneButton
           milestone={milestone}
-          balance={balance}
           currentUser={currentUser}/>
         */}
       </Fragment>
@@ -73,8 +61,7 @@ class MilestoneActions extends Component {
 }
 
 MilestoneActions.propTypes = {
-  milestone: PropTypes.instanceOf(Milestone).isRequired,
-  balance: PropTypes.instanceOf(BigNumber).isRequired,
+  milestone: PropTypes.instanceOf(Milestone).isRequired
 };
 
 export default MilestoneActions;

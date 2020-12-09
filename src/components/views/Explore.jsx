@@ -4,12 +4,17 @@ import Campaigns from './Campaigns';
 import Milestones from './Milestones';
 import JoinGivethCommunity from '../JoinGivethCommunity';
 
+
 const Explore = ({ history }) => (
   <div>
     <JoinGivethCommunity history={history} />
     {/*<DACs />*/}
+    Blances
     <Campaigns />
     {/*<Milestones />*/}
+    
+    
+
   </div>
 );
 

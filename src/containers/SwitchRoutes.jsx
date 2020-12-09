@@ -28,7 +28,7 @@ import EditMilestone from '../components/views/EditMilestone';
 import LandingPage from "views/LandingPage/LandingPage.js";
 import LoginPage from "views/LoginPage/LoginPage.js";
 
-const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
+const SwitchRoutes = ({ currentUser}) => (
     <Switch>
 
         {/*NOTE order matters, wrong order breaks routes!*/}
@@ -50,8 +50,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                     isNew
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
-                    isCorrectNetwork={isCorrectNetwork}
                     {...props}
                 />
             )}
@@ -62,7 +60,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
             render={props => (
                 <ViewDAC
                     currentUser={currentUser}
-                    balance={balance}
                     {...props}
                 />
             )}
@@ -74,8 +71,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                 <EditDAC
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
-                    isCorrectNetwork={isCorrectNetwork}
                     {...props}
                 />
             )}
@@ -89,8 +84,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                     isNew
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
-                    isCorrectNetwork={isCorrectNetwork}
                     {...props}
                 />
             )}
@@ -101,7 +94,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
             render={props => (
                 <ViewCampaign
                     currentUser={currentUser}
-                    balance={balance}
                     {...props}
                 />
             )}
@@ -113,8 +105,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                 <EditCampaign
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
-                    isCorrectNetwork={isCorrectNetwork}
                     {...props}
                 />
             )}
@@ -128,8 +118,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                     isNew
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
-                    isCorrectNetwork={isCorrectNetwork}
                     {...props}
                 />
             )}
@@ -143,8 +131,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                     isProposed
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    isCorrectNetwork={isCorrectNetwork}
-                    balance={balance}
                     {...props}
                 />
             )}
@@ -155,7 +141,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
             render={props => (
                 <ViewMilestone
                     currentUser={currentUser}
-                    balance={balance}
                     {...props}
                 />
             )}
@@ -167,8 +152,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                 <EditMilestone
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
-                    isCorrectNetwork={isCorrectNetwork}
                     {...props}
                 />
             )}
@@ -187,8 +170,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                 <EditMilestone
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
-                    isCorrectNetwork={isCorrectNetwork}
                     {...props}
                 />
             )}
@@ -200,37 +181,33 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                 <EditMilestone
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
-                    isCorrectNetwork={isCorrectNetwork}
                     isProposed
                     {...props}
                 />
             )}
         />
-        <Route
+        {/*<Route
             exact
             path="/donations"
             render={props => (
                 <Donations
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
                     {...props}
                 />
             )}
-        />
-        <Route
+        />*/}
+        {/*<Route
             exact
             path="/delegations"
             render={props => (
                 <Delegations
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
                     {...props}
                 />
             )}
-        />
+        />*/}
         <Route
             exact
             path="/my-dacs"
@@ -238,7 +215,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                 <MyDACs
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
                     {...props}
                 />
             )}
@@ -250,7 +226,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                 <MyCampaigns
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
                     {...props}
                 />
             )}
@@ -262,7 +237,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
                 <MyMilestones
                     key={currentUser ? currentUser.id : 0}
                     currentUser={currentUser}
-                    balance={balance}
                     {...props}
                 />
             )}
@@ -273,7 +247,6 @@ const SwitchRoutes = ({ currentUser,balance,isCorrectNetwork}) => (
             render={props => (
                 <EditProfile
                     key={currentUser ? currentUser.id : 0}
-                    isCorrectNetwork={isCorrectNetwork}
                     {...props}
                 />
             )}

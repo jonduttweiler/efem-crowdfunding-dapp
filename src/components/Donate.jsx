@@ -20,14 +20,18 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import config from '../configuration';
 import TokenBalance from './TokenBalance';
-import Web3Utils from '../utils/Web3Utils';
+import Web3Utils from '../lib/blockchain/Web3Utils';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
+import FiatAmountByToken from './FiatAmountByToken';
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
+import ProfileCard from './ProfileCard';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 class Donate extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -102,6 +106,7 @@ class Donate extends Component {
 
     // TODO Definir parametrización de donación.
     const balance = currentUser.balance;
+
     const max = Web3Utils.weiToEther(balance);
     const inputProps = {
       step: 0.0001,
@@ -110,7 +115,6 @@ class Donate extends Component {
       size: 31
     };
 
-
     let tokenConfig = config.tokens[this.props.tokenAddress];
     let tokenSymbol = tokenConfig.symbol;
 
@@ -118,20 +122,22 @@ class Donate extends Component {
     if (amount > 0) {
       donationIsValid = true;
     }
-
+    let amountWei = Web3Utils.etherToWei(amount);
     return (
       <div>
         {enabled && (
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<FavoriteIcon />}
-            onClick={this.handleClickOpen}
-          >
-            {t('donate')}
-          </Button>)
-        }
+          <OnlyCorrectNetwork>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<FavoriteIcon />}
+              onClick={this.handleClickOpen}
+            >
+              {t('donate')}
+            </Button>
+          </OnlyCorrectNetwork>
+        )}
         <Dialog fullWidth={true}
           maxWidth="md"
           open={open}
@@ -155,14 +161,15 @@ class Donate extends Component {
           </AppBar>
           <div className={classes.root}>
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={5}>
                 {entityCard}
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={7}>
                 <Grid container>
                   <Typography variant="subtitle1" gutterBottom>
                     {description}
                   </Typography>
+                  <ProfileCard address={currentUser.address} />
                   <TokenBalance balance={balance}></TokenBalance>
                   <TextField
                     id="donate-amount"
@@ -184,6 +191,7 @@ class Donate extends Component {
                     }
                     inputProps={inputProps}
                   />
+                  <FiatAmountByToken amount={amountWei}/>
                 </Grid>
               </Grid>
             </Grid>

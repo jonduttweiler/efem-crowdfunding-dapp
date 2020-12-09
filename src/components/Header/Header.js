@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // nodejs library to set properties for components
@@ -15,6 +15,9 @@ import Menu from "@material-ui/icons/Menu";
 // core components
 import styles from "assets/jss/material-kit-react/components/headerStyle.js";
 import { NavLink } from "react-router-dom";
+import Web3Banner from '../../lib/blockchain/Web3Banner';
+import { AppTransactionContext } from '../../lib/blockchain/Web3App';
+import config from '../../configuration';
 
 const useStyles = makeStyles(styles);
 
@@ -63,11 +66,14 @@ export default function Header(props) {
   const brandComponent =  <NavLink className={classes.title} to="/">
                             {brand} 
                           </NavLink>;
+  const { network, web3Fallback } = useContext(AppTransactionContext);
+
   return (
+      
     <AppBar className={appBarClasses}>
       <Toolbar className={classes.container}>
-        {leftLinks !== undefined ? brandComponent : null}
-        <div className={classes.flex}>
+        {/*leftLinks !== undefined ? brandComponent : null*/}
+        {/*<div className={classes.flex}>
           {leftLinks !== undefined ? (
             <Hidden smDown implementation="css">
               {leftLinks}
@@ -75,7 +81,15 @@ export default function Header(props) {
           ) : (
             brandComponent
           )}
-        </div>
+        </div>*/}
+        
+        <Web3Banner
+          currentNetwork={network.current.id}
+          requiredNetwork={config.network.requiredId}
+          isCorrectNetwork={network.isCorrectNetwork}
+          onWeb3Fallback={web3Fallback}
+        />
+
         <Hidden smDown implementation="css">
           {rightLinks}
         </Hidden>
@@ -89,6 +103,7 @@ export default function Header(props) {
           </IconButton>
         </Hidden>
       </Toolbar>
+
       <Hidden mdUp implementation="js">
         <Drawer
           variant="temporary"
@@ -105,6 +120,9 @@ export default function Header(props) {
           </div>
         </Drawer>
       </Hidden>
+
+      
+
     </AppBar>
   );
 }

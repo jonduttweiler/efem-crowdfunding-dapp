@@ -1,5 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
-import DAC from '../../models/DAC';
+import { createSlice } from '@reduxjs/toolkit'
+import DAC from '../../models/DAC'
+import { selectCascadeDonationsByCampaign, selectCascadeFiatAmountTargetByCampaign } from './campaignsSlice'
+import BigNumber from 'bignumber.js'
 
 export const DACsSlice = createSlice({
   name: 'dacs',
@@ -62,6 +64,27 @@ export const selectDac = (state, id) => {
     return new DAC(dacStore);
   }
   return undefined;
+}
+export const selectCascadeDonationsByDac = (state, id) => {
+  let donationIds = [];
+  let dacStore = state.dacs.find(d => d.id === id);
+  if (dacStore) {
+    donationIds = donationIds.concat(dacStore.budgetDonationIds);
+    dacStore.campaignIds.forEach(cId => {
+      donationIds = donationIds.concat(selectCascadeDonationsByCampaign(state, cId));
+    });
+  }
+  return donationIds;
+}
+export const selectCascadeFiatAmountTargetByDac = (state, id) => {
+  let fiatAmountTarget = new BigNumber(0);
+  let dacStore = state.dacs.find(c => c.id === id);
+  if (dacStore) {
+    dacStore.campaignIds.forEach(cId => {
+      fiatAmountTarget = BigNumber.sum(fiatAmountTarget, selectCascadeFiatAmountTargetByCampaign(state, cId));
+    });
+  }
+  return fiatAmountTarget;
 }
 
 export default DACsSlice.reducer;

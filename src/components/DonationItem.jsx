@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Donation from '../models/Donation';
 import { withStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -8,7 +7,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import DateTimeViewer from './DateTimeViewer';
 import Divider from '@material-ui/core/Divider';
 import { withTranslation } from 'react-i18next';
-import ProfileCard from './ProfileCard';
+import ProfileCardMini from './ProfileCardMini';
 import CryptoAmount from './CryptoAmount';
 import StatusIndicator from './StatusIndicator';
 import { connect } from 'react-redux'
@@ -50,11 +49,10 @@ class DonationItem extends Component {
       <React.Fragment>
         <ListItem alignItems="flex-start" onClick={this.handleClick}>
           <ListItemAvatar>
-            <ProfileCard address={donation.giverAddress} namePosition="bottom" />
+            <ProfileCardMini address={donation.giverAddress} namePosition="bottom" />
           </ListItemAvatar>
           <ListItemText
             className={classes.text}
-    
             secondary={
               <React.Fragment>
                 <Grid container spacing={3}>

@@ -9,6 +9,7 @@ import milestonesReducer from './reducers/milestonesSlice.js'
 import activitiesReducer from './reducers/activitiesSlice.js'
 import donationsReducer from './reducers/donationsSlice.js'
 import messagesReducer from './reducers/messagesSlice.js'
+import transactionsReducer from './reducers/transactionsSlice.js'
 import exchangeRatesReducer from './reducers/exchangeRatesSlice'
 
 import { registerCurrentUserEpic, loadCurrentUserEpic } from './epics/currentUserEpics';
@@ -63,6 +64,7 @@ const composedEnhancers = compose(...enhancers)
 const rootReducer = combineReducers({
   currentUser: currentUserReducer,
   messages: messagesReducer,
+  transactions: transactionsReducer,
   dacs: dacsReducer,
   campaigns: campaignsReducer,
   milestones: milestonesReducer,

@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Donation from '../models/Donation';
 import { withStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import DateTimeViewer from './DateTimeViewer';
-import Divider from '@material-ui/core/Divider';
 import { withTranslation } from 'react-i18next';
-import ProfileCard from './ProfileCard';
+import ProfileCardMini from './ProfileCardMini';
 import CryptoAmount from './CryptoAmount';
-import StatusIndicator from './StatusIndicator';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Checkbox from '@material-ui/core/Checkbox';
 import { selectDonation } from '../redux/reducers/donationsSlice'

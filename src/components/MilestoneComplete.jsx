@@ -21,6 +21,8 @@ import MilestoneCard from './MilestoneCard';
 import User from 'models/User';
 import TextField from '@material-ui/core/TextField';
 import DoneIcon from '@material-ui/icons/Done';
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
+import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -55,10 +57,11 @@ class MilestoneComplete extends Component {
   };
 
   handleComplete() {
-    const { milestone } = this.props;
+    const { milestone, currentUser } = this.props;
     const { activity } = this.state;
     milestone.status = Milestone.COMPLETING;
     activity.action = Activity.ACTION_COMPLETE;
+    activity.userAddress = currentUser.address;
     this.props.complete({
       milestone,
       activity
@@ -106,15 +109,18 @@ class MilestoneComplete extends Component {
     return (
       <div>
         {showButton && (
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            startIcon={<DoneIcon />}
-            onClick={this.handleClickOpen}
-          >
-            {t('milestoneComplete')}
-          </Button>)
+          <OnlyCorrectNetwork>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              startIcon={<DoneIcon />}
+              onClick={this.handleClickOpen}
+            >
+              {t('milestoneComplete')}
+            </Button>
+          </OnlyCorrectNetwork>
+         )
         }
         <Dialog fullWidth={true}
           maxWidth="md"
@@ -212,6 +218,7 @@ const styles = theme => ({
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    currentUser: selectCurrentUser(state)
   }
 }
 

@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import Avatar from 'react-avatar';
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { selectUserByAddress, fetchUserByAddress } from '../redux/reducers/usersSlice'
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import ProfileCardAnonymous from './ProfileCardAnonymous';
+import AddressLink from './AddressLink';
 
-class ProfileCard extends Component {  //va a recibir como prop un address
+class ProfileCard extends Component {
+
+    preventDefault = (event) => event.preventDefault();
+
     componentDidMount() {
         if (this.props.address) {
             this.props.fetchUserByAddress(this.props.address);
         }
     }
-
-    /*shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.address === nextProps.address) {
-            return false;
-        }
-        return true;
-    }*/
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.address !== prevProps.address) {
@@ -27,31 +29,52 @@ class ProfileCard extends Component {  //va a recibir como prop un address
     }
 
     render() {
-        const { user, namePosition } = this.props;
-        const descriptionClass = namePosition === "left" || namePosition === "right" ? "" : "small";
-        if (!user) {
-            // TODO Implementar un Skeletor (https://material-ui.com/components/skeleton/) cuando no esté en Labs.
-            return (<div></div>)
+        const { address, user, classes } = this.props;
+        if (!user || !user.registered) {
+            return (
+                <ProfileCardAnonymous address={address} />
+            )
         }
         return (
-            <div>
-                <Link className={`profile-card ${namePosition}`} to={`/profile/${user.address}`}>
-                    <Avatar size={50} src={user.avatar} round />
-                    <p className={`description ${descriptionClass}`}>{user.name}</p>
-                </Link>
-            </div>
+            <ListItem alignItems="flex-start" className={classes.root}>
+                <ListItemAvatar>
+                    <Avatar src={user.avatar} className={classes.logo} />
+                </ListItemAvatar>
+                <ListItemText
+                    primary={user.name}
+                    secondary={
+                        <React.Fragment>
+                            <AddressLink address={address} />
+                            <Typography
+                                variant="body2"
+                                color="textSecondary"
+                            >
+                                {user.email}
+                            </Typography>
+                        </React.Fragment>
+                    }
+                />
+            </ListItem>
         );
     }
 }
 
 ProfileCard.propTypes = {
-    address: PropTypes.string,
-    namePosition: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+    address: PropTypes.string
 };
 
-ProfileCard.defaultProps = {
-    namePosition: 'bottom'
-};
+const styles = theme => ({
+    root: {
+        padding: '0px'
+    },
+    inline: {
+        display: 'inline',
+    },
+    logo: {
+        width: theme.spacing(6),
+        height: theme.spacing(6),
+    }
+});
 
 const mapStateToProps = (state, props) => {
     return {
@@ -62,5 +85,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = { fetchUserByAddress }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTranslation()(ProfileCard)
+    withStyles(styles)(
+        withTranslation()(ProfileCard)
+    )
 );

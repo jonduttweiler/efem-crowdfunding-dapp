@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
-
-import { Consumer as Web3Consumer } from '../contextProviders/Web3Provider';
 import { history } from '../lib/helpers';
-
 import { connect } from 'react-redux';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice';
 import LanguageSelector from '../components/LanguageSelector'
-
-// @material-ui/core components
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Button from "components/CustomButtons/Button.js";
 import CustomDropdown from './CustomDropdown/CustomDropdown';
-
 import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js";
 import { withStyles } from '@material-ui/core/styles';
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
 
 const signUpSwal = () => {
   React.swal({
@@ -37,7 +32,7 @@ const signUpSwal = () => {
  * The main top menu
  */
 class MainMenu extends Component {
-
+  
   componentDidMount() {
     // when route changes, close the menu
     history.listen(() => this.setState({ showMobileMenu: false }));
@@ -50,76 +45,51 @@ class MainMenu extends Component {
   render() {
     const { classes, currentUser } = this.props;
     const registered =  currentUser && currentUser.registered || false;
-
+    const { validProvider, isEnabled, failedToLoad } = this.context;
+    
     return (
-      <Web3Consumer>
-        {({ state: { validProvider, isEnabled, failedToLoad }, actions: { enableProvider } }) => (
-          <List className={classes.list}>
+      <List className={classes.list}>
+        
+        <ListItem className={classes.listItem}>
+          <LanguageSelector ></LanguageSelector>
+        </ListItem>
 
+        {validProvider && !failedToLoad && !isEnabled && (
           <ListItem className={classes.listItem}>
-            <LanguageSelector ></LanguageSelector>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              onClick={signUpSwal}
+            >
+              Reg&iacute;strate!
+            </Button>
           </ListItem>
-
-          {validProvider && !failedToLoad && !isEnabled && (
-              <ListItem className={classes.listItem}>
-                <Button
-                  color="transparent"
-                  target="_blank"
-                  className={classes.navLink}
-                  onClick={() => enableProvider()}
-                >
-                  Enable Web3
-                </Button>
-              </ListItem>
-            )}
-            {validProvider && !failedToLoad && isEnabled && !currentUser && (
-              <small className="text-muted">Please unlock MetaMask</small>
-            )}
-            {validProvider && !failedToLoad && !isEnabled && (
-              <ListItem className={classes.listItem}>
-                <Button
-                  color="transparent"
-                  className={classes.navLink}
-                  onClick={signUpSwal}
-                >
-                  Reg&iacute;strate!
-                </Button>
-              </ListItem>
-            )}
-
-            {currentUser && (
-              <ListItem className={classes.listItem}>
-                <CustomDropdown
-                  noLiPadding
-                  //TODO: mostrar avatar del usuario
-                  /*avatar={currentUser.avatar && (
-                          <Avatar
-                            className="menu-avatar"
-                            size={30}
-                            src={currentUser.avatar}
-                            round
-                          />
-                        )}*/
-                  buttonText={(currentUser.name && <span>{currentUser.name}</span>) ||
-                              (!currentUser.name && <span>&iexcl;Hola!</span>)}
-                  buttonProps={{
-                    className: classes.navLink,
-                    color: "transparent"
-                  }}
-                  dropdownList={[
-                    <NavLink className={classes.dropdownLink} to="/profile">
-                        {registered ? <span>Perfil</span> : <span>Reg&iacute;strate</span>} 
-                    </NavLink>
-                  ]}
-                />
-              </ListItem>
-              )}
-          </List>
         )}
-      </Web3Consumer>
+
+        {currentUser && (
+          <ListItem className={classes.listItem}>
+            <CustomDropdown
+              noLiPadding
+              buttonText={(currentUser.name && <span>{currentUser.name}</span>) ||
+                          (!currentUser.name && <span>&iexcl;Hola!</span>)}
+              buttonProps={{
+                className: classes.navLink,
+                color: "transparent"
+              }}
+              dropdownList={[
+                <NavLink className={classes.dropdownLink} to="/profile">
+                  {registered ? <span>Perfil</span> : <span>Reg&iacute;strate</span>} 
+                </NavLink>
+              ]}
+            />
+          </ListItem>
+        )}
+      </List>
     );
   }
 }
+
+MainMenu.contextType = AppTransactionContext;
 
 const mapStateToProps = (state, ownProps) => ({
   currentUser: selectCurrentUser(state)

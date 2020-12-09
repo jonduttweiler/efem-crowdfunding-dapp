@@ -15,7 +15,7 @@ import ItemList from './ItemList';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import { withTranslation } from 'react-i18next';
-import ProfileCard from './ProfileCard';
+import ProfileCardMini from './ProfileCardMini';
 
 class ActivityItem extends Component {
 
@@ -43,7 +43,7 @@ class ActivityItem extends Component {
       <React.Fragment>
         <ListItem alignItems="flex-start" onClick={this.handleClick}>
           <ListItemAvatar>
-            <ProfileCard address={activity.userAddress} namePosition="bottom"/>
+            <ProfileCardMini address={activity.userAddress} namePosition="bottom"/>
           </ListItemAvatar>
           <ListItemText
             className={classes.text}

@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import User from '../../models/User';
+import Web3Utils from '../../lib/blockchain/Web3Utils';
 
 export const usersSlice = createSlice({
     name: 'users',
@@ -74,7 +75,7 @@ function merge(stateUser, newUser) {
 export const { fetchUserByAddress, fetchUsers } = usersSlice.actions;
 
 export const selectUserByAddress = (state, address) => {
-    let userStore = state.users.find(u => u.address === address);
+    let userStore = state.users.find(u => Web3Utils.addressEquals(u.address, address));
     if(userStore) {
         return new User(userStore);
     }

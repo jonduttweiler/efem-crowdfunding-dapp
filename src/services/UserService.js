@@ -1,7 +1,6 @@
 import { feathersClient } from '../lib/feathersClient';
 import ErrorPopup from '../components/ErrorPopup';
 import ipfsService from '../ipfs/IpfsService';
-import walletApi from '../lib/blockchain/WalletApi';
 import crowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -26,16 +25,9 @@ class UserService {
 
       try {
 
-        // Se carga la cuenta del usuario desde la wallet
-        let address = await walletApi.getAccountAddress();
-        currentUser.address = address;
-        subscriber.next(currentUser);
+        let address = currentUser.address;
 
         if (address) {
-          // Se obtiene el balance del usuario.
-          let balance = await walletApi.getBalance(address);
-          currentUser.balance = new BigNumber(balance);
-          subscriber.next(currentUser);
 
           feathersClient.service('/users').get(address).then(data => {
             const { name, email, avatar, url } = data;
@@ -80,16 +72,18 @@ class UserService {
   loadUserByAddress(address) {
     return new Observable(async subscriber => {
       try {
-        //if (address) {
-          const userdata = await feathersClient.service('/users').get(address);
-          subscriber.next(new User({ ...userdata }));
-        /*} else {
-          // Si la dirección es vacía, se obtiene un usuario por defecto.
-          subscriber.next(new User());
-        }*/
+        const userdata = await feathersClient.service('/users').get(address);
+        // El usuario se encuentra registrado.
+        userdata.registered = true;
+        subscriber.next(new User({ ...userdata }));
       } catch (e) {
-        console.error(`Error obteniedo usuario por address ${address}.`, e);
-        subscriber.error(e);
+        console.error(`Error obteniendo usuario por address ${address}.`, e);
+        if (e.name === 'NotFound') {
+          // El usuario no está registrado.
+          subscriber.next(new User({ address: address }));
+        } else {
+          subscriber.error(e);
+        }
       }
     });
   }

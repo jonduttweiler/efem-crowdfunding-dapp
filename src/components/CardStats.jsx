@@ -18,12 +18,12 @@ const CardStats = ({
       
   <div className="row card-stats">
 
-    <div className="col text-left">
+    {/*<div className="col text-left">
       <p>Donaciones</p>
       <p>{donations}</p>
-    </div>
+    </div>*/}
 
-    {type === 'milestone' && (
+    {/*type === 'milestone' && (
       <div className="col text-center card-center">
         {fiatAmountTarget && (
           <span>
@@ -32,12 +32,12 @@ const CardStats = ({
           </span>
         )}
       </div>
-    )}
+        )*/}
 
-    <div className="col-4 text-right">
+    {/*<div className="col-4 text-right">
       <p>Estado</p>
       <StatusIndicator status={status}></StatusIndicator>
-    </div>
+      </div>*/}
     
   </div>
 );
