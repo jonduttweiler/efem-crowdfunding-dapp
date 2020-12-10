@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { registerCurrentUser } from '../redux/reducers/currentUserSlice';
+
 import { Box, Grid } from '@material-ui/core';
 import { Form, Input } from 'formsy-react-components';
 import FormsyImageUploader from './FormsyImageUploader';
 import LoaderButton from './LoaderButton';
 import GridItem from './Grid/GridItem';
 
-const ProfileForm = ({ user, isSaving, onSubmit, showSubmit = true, showCompact=false }) => {
-    
+
+const ProfileForm = ({ user, showSubmit = true, showCompact=false }) => {
+
+    const [isSaving, setIsSaving] = useState(false);
     const [isPristine, setIsPristine] = useState(true);
     const [image, setImage] = useState("");
+    const dispatch = useDispatch();
 
     useEffect(() => {
         user.newAvatar = image;
     }, [image])
+
+    useEffect(() => {
+        if(isSaving && user.isRegistered){
+            setIsSaving(false);
+        }
+    },[isSaving,user]);
+
 
     const saveDisabled = isSaving || isPristine || (user && user.giverId === 0);
 
@@ -20,7 +33,10 @@ const ProfileForm = ({ user, isSaving, onSubmit, showSubmit = true, showCompact=
 
     return (
         <Form
-            onSubmit={() => onSubmit(user)}
+            onSubmit={() => {
+                setIsSaving(true);
+                dispatch(registerCurrentUser(user));
+            }}
             mapping={inputs => {
                 user.name = inputs.name;
                 user.email = inputs.email;

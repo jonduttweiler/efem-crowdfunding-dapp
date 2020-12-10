@@ -30,7 +30,6 @@ class EditProfile extends Component {
 
     this.state = {
       isLoading: true,
-      isSaving: false,
     };
   }
 
@@ -46,16 +45,8 @@ class EditProfile extends Component {
       }); 
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isSaving && this.props.currentUser.isRegistered) {
-      this.setState({
-        isSaving: false
-      });
-    }
-  }
-
   render() {
-    const { isLoading, isSaving } = this.state;
+    const { isLoading } = this.state;
     const { currentUser } = this.props;
     const { ...rest } = this.props;
     const { classes } = this.props;
@@ -118,11 +109,6 @@ class EditProfile extends Component {
 
                       <ProfileForm
                         user={currentUser}
-                        isSaving={isSaving}
-                        onSubmit={(newValues) => {
-                          this.setState({ isSaving: true });
-                          this.props.registerCurrentUser(this.props.currentUser);
-                        }}
                       ></ProfileForm>
                       </div>
                     )}
