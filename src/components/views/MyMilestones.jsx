@@ -5,13 +5,13 @@ import moment from 'moment';
 import Pagination from 'react-js-pagination';
 import BigNumber from 'bignumber.js';
 import MilestoneActions from 'components/MilestoneActions';
-import { isLoggedIn } from 'lib/middleware';
 import Loader from '../Loader';
 import User from '../../models/User';
 import { getTruncatedText, getReadableStatus } from '../../lib/helpers';
 import MilestoneService from '../../services/MilestoneService';
 import Milestone from '../../models/Milestone';
 import DateViewer from '../DateViewer';
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
 
 const reviewDue = updatedAt =>
   moment()
@@ -40,7 +40,8 @@ class MyMilestones extends Component {
   }
 
   componentDidMount() {
-    isLoggedIn(this.props.currentUser)
+    const { authenticateIfPossible } = this.context.modals.methods;
+    authenticateIfPossible(this.props.currentUser)
       .then(() => this.loadMileStones())
       .catch(err => {
         if (err === 'notLoggedIn') {
@@ -277,6 +278,8 @@ class MyMilestones extends Component {
     );
   }
 }
+
+MyMilestones.contextType = AppTransactionContext;
 
 MyMilestones.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,

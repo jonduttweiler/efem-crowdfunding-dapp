@@ -1,12 +1,10 @@
-import BigNumber from 'bignumber.js';
-
-import { paramsForServer } from 'feathers-hooks-common';
-import { feathersClient } from '../lib/feathersClient';
-import DAC from '../models/DAC';
-import Campaign from '../models/Campaign';
-import Donation from '../models/Donation';
-import ErrorPopup from '../components/ErrorPopup';
-import crowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi';
+import BigNumber from 'bignumber.js'
+import { paramsForServer } from 'feathers-hooks-common'
+import { feathersClient } from '../lib/feathersClient'
+import DAC from '../models/DAC'
+import Campaign from '../models/Campaign'
+import Donation from '../models/Donation'
+import crowdfundingContractApi from '../lib/blockchain/CrowdfundingContractApi'
 
 BigNumber.config({ DECIMAL_PLACES: 18 });
 

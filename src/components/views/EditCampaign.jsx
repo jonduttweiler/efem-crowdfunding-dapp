@@ -12,7 +12,6 @@ import SelectUsers from '../SelectUsers';
 import FormsyImageUploader from '../FormsyImageUploader';
 import GoBackButton from '../GoBackButton';
 import { isOwner, history } from '../../lib/helpers';
-import { authenticateIfPossible, checkProfile } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
 import Campaign from '../../models/Campaign';
@@ -36,6 +35,8 @@ import { withTranslation } from 'react-i18next';
 import { Box } from '@material-ui/core';
 import CategorySelector from 'components/CategorySelector';
 
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
+
 /**
  * View to create or edit a Campaign
  *
@@ -48,7 +49,7 @@ class EditCampaign extends Component {
     super(props);
 
     const campaign = new Campaign({
-      managerAddress: props.user && props.user.address,
+      managerAddress: props.currentUser && props.currentUser.address,
       status: Campaign.PENDING
     });
 
@@ -73,7 +74,6 @@ class EditCampaign extends Component {
 
     this.checkUser().then(() => {
       const isEditingCampaign = !this.props.isNew;
-
       if (isEditingCampaign) {
         const campaign = this.props.campaign;
         this.setState({ campaign, isLoading: false })
@@ -88,12 +88,12 @@ class EditCampaign extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.currentUser !== this.props.currentUser) {
+    /*if (prevProps.currentUser !== this.props.currentUser) {
       this.checkUser().then(() => {
         if (!this.props.isNew && !isOwner(this.state.campaign.managerddress, this.props.currentUser))
           history.goBack();
       });
-    }
+    }*/
   }
 
   componentWillUnmount() {
@@ -113,7 +113,11 @@ class EditCampaign extends Component {
   }
 
   checkUser() {
-    if (!this.props.currentUser) {
+
+    const { currentUser } = this.props;
+    const { authenticateIfPossible, checkProfile } = this.context.modals.methods;
+
+    if (!currentUser) {
       history.push('/');
       return Promise.reject("Not allowed. No user logged in");
     }
@@ -124,8 +128,8 @@ class EditCampaign extends Component {
     }
 
 
-    return authenticateIfPossible(this.props.currentUser)
-      .then(() => checkProfile(this.props.currentUser));
+    return authenticateIfPossible(currentUser)
+      .then(() => checkProfile(currentUser));
   }
 
   submit() {
@@ -348,6 +352,9 @@ class EditCampaign extends Component {
   }
 }
 
+
+EditCampaign.contextType = AppTransactionContext;
+
 EditCampaign.propTypes = {
   currentUser: PropTypes.instanceOf(User),
   isNew: PropTypes.bool,
@@ -368,7 +375,7 @@ EditCampaign.defaultProps = {
 const mapStateToProps = (state, props) => {
   const campaignId = parseInt(props.match.params.id);
   return {
-    user: selectCurrentUser(state),
+    currentUser: selectCurrentUser(state),
     isCampaignManager: selectCurrentUser(state).isCampaignManager(),
     reviewers: campaignReviewers(state),
     campaign: selectCampaign(state, campaignId)

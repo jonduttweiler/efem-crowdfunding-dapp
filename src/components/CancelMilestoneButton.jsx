@@ -1,14 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-
 import MilestoneService from 'services/MilestoneService';
 import Milestone from 'models/Milestone';
 import User from 'models/User';
 import ErrorPopup from 'components/ErrorPopup';
 import ConversationModal from 'components/ConversationModal';
 import GA from 'lib/GoogleAnalytics';
-import { checkBalance } from 'lib/middleware';
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
 
 class CancelMilestoneButton extends Component {
   constructor() {
@@ -18,7 +17,7 @@ class CancelMilestoneButton extends Component {
 
   cancelMilestone() {
     const { milestone, balance, currentUser } = this.props;
-
+    const { checkBalance } = this.context.modals.methods;
     checkBalance(balance)
       .then(() => {
         this.conversationModal.current
@@ -114,5 +113,7 @@ CancelMilestoneButton.propTypes = {
   balance: PropTypes.instanceOf(BigNumber).isRequired,
   milestone: PropTypes.instanceOf(Milestone).isRequired,
 };
+
+CancelMilestoneButton.contextType = AppTransactionContext;
 
 export default CancelMilestoneButton;

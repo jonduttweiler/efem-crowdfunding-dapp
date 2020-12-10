@@ -15,9 +15,9 @@ import GridItem from "components/Grid/GridItem.js";
 
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
 import FormProfile from 'components/FormProfile';
-import { isLoggedIn } from '../../lib/middleware';
 import Loader from '../Loader';
 import { connect } from 'react-redux';
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
  
 /**
  * Edición del usuario actual.
@@ -35,7 +35,8 @@ class EditProfile extends Component {
   }
 
   componentDidMount() {
-    isLoggedIn(this.props.currentUser)
+    const { authenticateIfPossible } = this.context.modals.methods;
+    authenticateIfPossible(this.props.currentUser)
       .then(() => this.setState({ isLoading: false }))
       .catch(err => {
         if (err === 'noBalance') {
@@ -139,6 +140,7 @@ class EditProfile extends Component {
   }
 }
 
+EditProfile.contextType = AppTransactionContext;
 
 const mapStateToProps = (state, ownProps) => {
   return {

@@ -13,6 +13,7 @@ import ValidationPendingModal from "./components/ValidationPendingModal";
 import UserRejectedValidationModal from "./components/UserRejectedValidationModal";
 
 import LowFundsModal from "./components/LowFundsModal";
+import SignatureRequestModal from "./components/SignatureRequestModal";
 
 class ConnectionModalUtil extends React.Component {
   render() {
@@ -58,6 +59,12 @@ class ConnectionModalUtil extends React.Component {
           isOpen={this.props.modals.data.accountConnectionPending}
           currentNetwork={this.props.network.current}
         />
+
+        <SignatureRequestModal 
+          closeModal={this.props.modals.methods.closeSignatureRequestModal}
+          isOpen={this.props.modals.data.accountSignatureRequest}
+        />
+
         <UserRejectedConnectionModal
           closeModal={
             this.props.modals.methods.closeUserRejectedConnectionModal

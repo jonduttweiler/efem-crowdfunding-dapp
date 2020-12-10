@@ -26,7 +26,7 @@ import Divider from '@material-ui/core/Divider';
 import { fetchDonationsByIds, transferDonations } from '../redux/reducers/donationsSlice'
 import DonationItemTransfer from './DonationItemTransfer';
 import { selectMilestonesByCampaign } from '../redux/reducers/milestonesSlice';
-import CampaignCard from './CampaignCard';
+import CampaignCardMini from './CampaignCardMini';
 import TransferMilestoneSelector from './TransferMilestoneSelector';
 import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 
@@ -269,7 +269,7 @@ class TransferCampaign extends Component {
           <div className={classes.root}>
             <Grid container spacing={3}>
               <Grid item xs={3}>
-                {<CampaignCard campaign={campaign} />}
+                {<CampaignCardMini campaign={campaign} />}
               </Grid>
               <Grid item xs={9}>
                 <Grid container spacing={2}>

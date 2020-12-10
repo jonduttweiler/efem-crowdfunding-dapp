@@ -107,6 +107,11 @@
     "web3ConnectionPendingWaitTitle": "Waiting for connection confirmation...",
     "web3ConnectionPendingWaitDescription": "This won’t cost you any RBTC",
 
+    "web3SignatureRequestTitle": "Verify your RSK account",
+    "web3SignatureRequestDescription": "Please, sign the message that's just appeared. This shows us you have access to this RSK account.",
+    "web3SignatureRequestWaitTitle": "Waiting for you to sign...",
+    "web3SignatureRequestWaitDescription": "This won’t cost you any RBTC",
+
     "transactionExplore": "View on Etherscan",
     "transactionWaitConfirmationTitle": "Waiting for confirmation...",
     "transactionWaitConfirmationDescription": "Don't see the MetaMask popup?",

@@ -10,7 +10,6 @@ import QuillFormsy from '../QuillFormsy';
 import FormsyImageUploader from '../FormsyImageUploader';
 import GoBackButton from '../GoBackButton';
 import { isOwner, history } from '../../lib/helpers';
-import { checkProfile, authenticateIfPossible } from '../../lib/middleware';
 import LoaderButton from '../LoaderButton';
 import DAC from '../../models/DAC';
 import User from '../../models/User';
@@ -29,6 +28,7 @@ import GridItem from "components/Grid/GridItem.js";
 import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/dacPage.js";
 import { Box } from '@material-ui/core';
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
 
 // Save dac
 const showToast = (msg, url, isSuccess = false) => {
@@ -61,7 +61,7 @@ class EditDAC extends Component {
 
     // DAC model
     const dac = new DAC({ 
-      delegateAddress: props.user && props.user.address,
+      delegateAddress: props.currentUser && props.currentUser.address,
       status: DAC.PENDING
     });
 
@@ -79,17 +79,14 @@ class EditDAC extends Component {
     this.setImage = this.setImage.bind(this);
   }
 
-
-
   componentDidMount() {
 
     this.checkUser().then(() => {      
       if (!this.props.isNew) {
-
         const dac = this.props.dac;
         if(dac){
           // The user is not an owner, hence can not change the DAC
-          if (!isOwner(dac.delegateAddress, this.props.user)) {
+          if (!isOwner(dac.delegateAddress, this.props.currentUser)) {
             history.goBack();// TODO: Not really user friendly
           } else {
             this.setState({ isLoading: false, dac });
@@ -105,12 +102,12 @@ class EditDAC extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.user !== this.props.user) {
+    /*if (prevProps.user !== this.props.user) {
       this.checkUser().then(() => {
         if (!this.props.isNew && !isOwner(this.state.dac.delegateAddress, this.props.user))
           history.goBack();
       });
-    }
+    }*/
   }
 
   componentWillUnmount() {
@@ -124,7 +121,11 @@ class EditDAC extends Component {
   }
 
   checkUser() {
-    if (!this.props.user) { //Si no hay nadie logeado?
+
+    const { currentUser } = this.props;
+    const { authenticateIfPossible, checkProfile } = this.context.modals.methods;
+
+    if (!currentUser) { //Si no hay nadie logeado?
       history.push('/');
       return Promise.reject("Not allowed. No user logged in");
     }
@@ -134,8 +135,8 @@ class EditDAC extends Component {
       return Promise.reject("Not allowed. User is not delegate");
     }
 
-    return authenticateIfPossible(this.props.user)
-          .then(() => checkProfile(this.props.user));
+    return authenticateIfPossible(currentUser)
+          .then(() => checkProfile(currentUser));
   }
 
   submit() {
@@ -330,6 +331,8 @@ class EditDAC extends Component {
   }
 }
 
+EditDAC.contextType = AppTransactionContext;
+
 EditDAC.propTypes = {
   user: PropTypes.instanceOf(User),
   isNew: PropTypes.bool,
@@ -342,12 +345,12 @@ EditDAC.propTypes = {
 };
 
 EditDAC.defaultProps = {
-  user: undefined,
+  currentUser: undefined,
   isNew: false,
 };
 
 const mapStateToProps = (state, props) => ({
-    user: selectCurrentUser(state),
+    currentUser: selectCurrentUser(state),
     dac: selectDac(state, props.match.params.id),
     roles: selectRoles(state),
     isDelegate: selectCurrentUser(state).isDelegate()

@@ -2,16 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Pagination from 'react-js-pagination';
-import { utils } from 'web3';
-
-import { isLoggedIn, checkBalance } from '../../lib/middleware';
-import { getTruncatedText, history } from '../../lib/helpers';
-
+import { getTruncatedText } from '../../lib/helpers';
 import Loader from '../Loader';
-
 import User from '../../models/User';
 import DACservice from '../../services/DACService';
 import DAC from '../../models/DAC';
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
 
 /**
  * The my dacs view
@@ -33,7 +29,8 @@ class MyDACs extends Component {
   }
 
   componentDidMount() {
-    isLoggedIn(this.props.currentUser)
+    const { authenticateIfPossible } = this.context.modals.methods;
+    authenticateIfPossible(this.props.currentUser)
       .then(() => this.loadDACs())
       .catch(err => {
         if (err === 'notLoggedIn') {
@@ -195,6 +192,8 @@ class MyDACs extends Component {
     );
   }
 }
+
+MyDACs.contextType = AppTransactionContext;
 
 MyDACs.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,

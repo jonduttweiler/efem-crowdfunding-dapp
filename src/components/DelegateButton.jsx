@@ -15,9 +15,9 @@ import GA from 'lib/GoogleAnalytics';
 import Donation from 'models/Donation';
 import Milestone from 'models/Milestone';
 import Campaign from 'models/Campaign';
-import { checkBalance } from '../lib/middleware';
 
 import DonationService from '../services/DonationService';
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
 
 const modalStyles = {
   content: {
@@ -52,6 +52,7 @@ class DelegateButton extends Component {
   }
 
   openDialog() {
+    const { checkBalance } = this.context.modals.methods;
     checkBalance(this.props.balance)
       .then(() =>
         this.setState({
@@ -283,5 +284,7 @@ DelegateButton.propTypes = {
 DelegateButton.defaultProps = {
   milestoneOnly: false,
 };
+
+DelegateButton.contextType = AppTransactionContext;
 
 export default DelegateButton;

@@ -6,9 +6,9 @@ import MilestoneService from 'services/MilestoneService';
 import Milestone from 'models/Milestone';
 import User from 'models/User';
 import ErrorPopup from 'components/ErrorPopup';
-import { checkBalance } from 'lib/middleware';
 import ConversationModal from 'components/ConversationModal';
 import GA from 'lib/GoogleAnalytics';
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
 
 class AcceptRejectProposedMilestoneButtons extends Component {
   constructor() {
@@ -39,7 +39,7 @@ class AcceptRejectProposedMilestoneButtons extends Component {
 
   acceptProposedMilestone() {
     const { milestone, currentUser } = this.props;
-
+    const { checkBalance } = this.context.modals.methods;
     checkBalance(this.props.balance)
       .then(() =>
         this.conversationModal.current
@@ -144,5 +144,7 @@ AcceptRejectProposedMilestoneButtons.propTypes = {
   balance: PropTypes.instanceOf(BigNumber).isRequired,
   milestone: PropTypes.instanceOf(Milestone).isRequired,
 };
+
+AcceptRejectProposedMilestoneButtons.contextType = AppTransactionContext;
 
 export default AcceptRejectProposedMilestoneButtons;

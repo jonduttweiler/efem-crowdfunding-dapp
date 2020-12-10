@@ -4,10 +4,13 @@ import NetworkUtils from "./NetworkUtils";
 import ConnectionModalUtil from "./ConnectionModalsUtil";
 import TransactionUtil from "./TransactionUtil";
 import config from '../../configuration';
-
 import { connect } from 'react-redux';
 import { initCurrentUser, updateCurrentUserBalance } from '../../redux/reducers/currentUserSlice';
 import BigNumber from 'bignumber.js';
+import { feathersClient } from '../feathersClient';
+import Web3Utils from "./Web3Utils";
+import { history } from '../helpers';
+import { utils } from 'web3';
 
 export const AppTransactionContext = React.createContext({
   contract: {},
@@ -17,21 +20,21 @@ export const AppTransactionContext = React.createContext({
   web3: {},
   web3Fallback: {},
   transactions: {},
-  checkPreflight: () => {},
-  initWeb3: () => {},
-  initContract: () => {},
-  initAccount: () => {},
-  rejectAccountConnect: () => {},
+  checkPreflight: () => { },
+  initWeb3: () => { },
+  initContract: () => { },
+  initAccount: () => { },
+  rejectAccountConnect: () => { },
   accountValidated: {},
   accountValidationPending: {},
-  rejectValidation: () => {},
-  validateAccount: () => {},
-  connectAndValidateAccount: () => {},
+  rejectValidation: () => { },
+  validateAccount: () => { },
+  connectAndValidateAccount: () => { },
   network: {
     required: {},
     current: {},
     isCorrectNetwork: null,
-    checkNetwork: () => {}
+    checkNetwork: () => { }
   },
   modals: {
     data: {
@@ -39,6 +42,7 @@ export const AppTransactionContext = React.createContext({
       noWalletModalIsOpen: {},
       connectionModalIsOpen: {},
       accountConnectionPending: {},
+      accountSignatureRequest: {},
       userRejectedConnect: {},
       accountValidationPending: {},
       userRejectedValidation: {},
@@ -47,22 +51,22 @@ export const AppTransactionContext = React.createContext({
       lowFundsModalIsOpen: {}
     },
     methods: {
-      openNoWeb3BrowserModal: () => {},
-      closeNoWeb3BrowserModal: () => {},
-      closeConnectionPendingModal: () => {},
-      openConnectionPendingModal: () => {},
-      closeUserRejectedConnectionModal: () => {},
-      openUserRejectedConnectionModal: () => {},
-      closeValidationPendingModal: () => {},
-      openValidationPendingModal: () => {},
-      closeUserRejectedValidationModal: () => {},
-      openUserRejectedValidationModal: () => {},
-      closeWrongNetworkModal: () => {},
-      openWrongNetworkModal: () => {},
-      closeTransactionConnectionModal: () => {},
-      openTransactionConnectionModal: () => {},
-      closeLowFundsModal: () => {},
-      openLowFundsModal: () => {}
+      openNoWeb3BrowserModal: () => { },
+      closeNoWeb3BrowserModal: () => { },
+      closeConnectionPendingModal: () => { },
+      openConnectionPendingModal: () => { },
+      closeUserRejectedConnectionModal: () => { },
+      openUserRejectedConnectionModal: () => { },
+      closeValidationPendingModal: () => { },
+      openValidationPendingModal: () => { },
+      closeUserRejectedValidationModal: () => { },
+      openUserRejectedValidationModal: () => { },
+      closeWrongNetworkModal: () => { },
+      openWrongNetworkModal: () => { },
+      closeTransactionConnectionModal: () => { },
+      openTransactionConnectionModal: () => { },
+      closeLowFundsModal: () => { },
+      openLowFundsModal: () => { }
     }
   },
   transaction: {
@@ -138,7 +142,7 @@ class AppTransaction extends React.Component {
   // Validates user's browser is web3 capable
   checkModernBrowser = async () => {
     const validBrowser = NetworkUtils.browserIsWeb3Capable();
-    
+
     this.setState({
       validBrowser
     });
@@ -152,7 +156,7 @@ class AppTransaction extends React.Component {
     this.checkModernBrowser();
 
     let web3 = await getWeb3();
-    
+
     // Set fallback property, used to show modal
     this.setState({ web3Fallback: !web3.isThereWallet });
 
@@ -198,7 +202,7 @@ class AppTransaction extends React.Component {
         // Request account access if needed
         await window.ethereum.enable().then(wallets => {
           const account = wallets[0];
-          
+
           this.closeConnectionPendingModal();
           this.setState({ account });
 
@@ -305,7 +309,7 @@ class AppTransaction extends React.Component {
     // If provided a minimum from http://192.168.1.103:3000/ then use it, else default to 1
     const accountBalanceMinimum =
       typeof this.config !== "undefined" &&
-      typeof this.config.accountBalanceMinimum !== "undefined"
+        typeof this.config.accountBalanceMinimum !== "undefined"
         ? this.config.accountBalanceMinimum
         : 1;
     // Determine if the account balance is low
@@ -348,7 +352,7 @@ class AppTransaction extends React.Component {
     return window.web3.personal.sign(
       window.web3.fromUtf8(
         `Hi there from Rimble! To connect, sign this message to prove you have access to this account. This won’t cost you any Ether.
- 
+
         Message ID: 48d4f84f-f402-4268-8af4-a692fabff5da (this is for security, you don’t need to remember this)`
       ),
       this.state.account,
@@ -410,7 +414,7 @@ class AppTransaction extends React.Component {
   getRequiredNetwork = () => {
     const networkId =
       typeof this.config !== "undefined" &&
-      typeof this.config.requiredNetwork !== "undefined"
+        typeof this.config.requiredNetwork !== "undefined"
         ? this.config.requiredNetwork
         : 1;
     let networkName = "";
@@ -457,7 +461,7 @@ class AppTransaction extends React.Component {
     current.name = NetworkUtils.getEthNetworkNameById(current.id);
     let network = { ...this.state.network };
     network.current = current;
-    this.setState({ network });    
+    this.setState({ network });
     /*try {
       return this.state.web3.eth.net.getId((error, networkId) => {
         let current = { ...this.state.network.current };
@@ -471,19 +475,19 @@ class AppTransaction extends React.Component {
     }*/
   };
 
- /*getNetworkName = async () => {
-    try {
-      return this.state.web3.eth.net.getNetworkType((error, networkName) => {
-        let current = { ...this.state.network.current };
-        current.name = networkName;
-        let network = { ...this.state.network };
-        network.current = current;
-        this.setState({ network });
-      });
-    } catch (error) {
-      console.log("Could not get network Name: ", error);
-    }
-  };*/
+  /*getNetworkName = async () => {
+     try {
+       return this.state.web3.eth.net.getNetworkType((error, networkName) => {
+         let current = { ...this.state.network.current };
+         current.name = networkName;
+         let network = { ...this.state.network };
+         network.current = current;
+         this.setState({ network });
+       });
+     } catch (error) {
+       console.log("Could not get network Name: ", error);
+     }
+   };*/
 
   checkNetwork = async () => {
     this.getRequiredNetwork();
@@ -563,7 +567,7 @@ class AppTransaction extends React.Component {
 
     // Are there a minimum amount of funds?
     if (this.state.accountBalanceLow) {
-      this.openLowFundsModal(null, () => {});
+      this.openLowFundsModal(null, () => { });
       return;
     }
 
@@ -748,6 +752,29 @@ class AppTransaction extends React.Component {
 
     let modals = { ...this.state.modals };
     modals.data.accountConnectionPending = true;
+    modals.data.transactionConnectionModalIsOpen = false;
+    modals.data.connectionModalIsOpen = false;
+
+    this.setState({ modals });
+  };
+
+  closeSignatureRequestModal = e => {
+    if (typeof e !== "undefined") {
+      e.preventDefault();
+    }
+
+    let modals = { ...this.state.modals };
+    modals.data.accountSignatureRequest = false;
+    this.setState({ modals });
+  };
+
+  openSignatureRequestModal = e => {
+    if (typeof e !== "undefined") {
+      e.preventDefault();
+    }
+
+    let modals = { ...this.state.modals };
+    modals.data.accountSignatureRequest = true;
     modals.data.transactionConnectionModalIsOpen = false;
     modals.data.connectionModalIsOpen = false;
 
@@ -943,6 +970,145 @@ class AppTransaction extends React.Component {
     this.setState({ modals, callback: callback });
   };
 
+  /*isLoggedIn = async (currentUser) => {
+    new Promise((resolve, reject) => {
+      if (currentUser && currentUser.address && currentUser.authenticated) resolve();
+      else {
+        authenticateIfPossible(currentUser);
+        reject();
+      }
+    });
+  };*/
+
+
+  authenticateIfPossible = async (currentUser) => {
+    
+    if (currentUser && currentUser.address && currentUser.authenticated) {
+      return true;
+    }
+
+    currentUser.authenticated = await this.authenticate(currentUser.address);
+
+    return currentUser.authenticated;
+  };
+
+  authenticate = async (address, redirectOnFail = true) => {
+    const web3 = await getWeb3();
+    const authData = {
+      strategy: 'web3',
+      address,
+    };
+    const accessToken = await feathersClient.passport.getJWT();
+    if (accessToken) {
+      const payload = await feathersClient.passport.verifyJWT(accessToken);
+      if (Web3Utils.addressEquals(address, payload.userId)) {
+        await feathersClient.authenticate(); // authenticate the socket connection
+        return true;
+      }
+      await feathersClient.logout();
+    }
+
+    try {
+      await feathersClient.authenticate(authData);
+      return true;
+    } catch (response) {
+      // normal flow will issue a 401 with a challenge message we need to sign and send to
+      // verify our identity
+      if (response.code === 401 && response.data.startsWith('Challenge =')) {
+        const msg = response.data.replace('Challenge =', '').trim();
+        console.log('Mensaje', msg);
+        /*const res = await React.swal({
+          title: 'You need to sign in!',
+          text:
+            // 'By signing in we are able to provide instant updates to the app after you take an action. The signin process simply requires you to verify that you own this address by signing a randomly generated message. If you choose to skip this step, the app will not reflect any actions you make until the transactions have been mined.',
+            'In order to provide the best experience possible, we are going to ask you to sign a randomly generated message proving that you own the current account. This will enable us to provide instant updates to the app after any action.',
+          icon: 'info',
+          buttons: [false, 'OK'],
+        });*/
+
+        this.openSignatureRequestModal();
+
+        /*if (!res) {
+          if (redirectOnFail) history.goBack();
+          return false;
+        }*/
+
+        /*React.swal({
+          title: 'Please sign the MetaMask transaction...',
+          text:
+            "A MetaMask transaction should have popped-up. If you don't see it check the pending transaction in the MetaMask browser extension. Alternatively make sure to check that your popup blocker is disabled.",
+          icon: 'success',
+          button: false,
+        });*/
+
+        // we have to wrap in a timeout b/c if you close the chrome window MetaMask opens, the promise never resolves
+        const signOrTimeout = () =>
+          new Promise(async resolve => {
+            const timeOut = setTimeout(() => {
+              resolve(false);
+              history.goBack();
+              //React.swal.close();
+              this.closeSignatureRequestModal();
+            }, 30000);
+
+            try {
+              const signature = await web3.eth.personal.sign(msg, address);
+              authData.signature = signature;
+              await feathersClient.authenticate(authData);
+              //React.swal.close();
+              this.closeSignatureRequestModal();
+              clearTimeout(timeOut);
+              resolve(true);
+            } catch (e) {
+              console.error('Error firmando mensaje de autenticación', e);
+              clearTimeout(timeOut);
+              history.goBack();
+              resolve(false);
+            }
+          });
+
+        return signOrTimeout();
+      }
+    }
+    return false;
+  };
+
+  checkProfile = async (currentUser) => {
+    // already created a profile
+    if (!currentUser || currentUser.name) return;
+    const redirect = await React.swal({
+      title: 'Please Register!',
+      text: 'It appears that you have not yet created your profile. In order to gain the trust of givers, we strongly recommend creating your profile!',
+      icon: 'info',
+      buttons: ['Skip', 'Create My Profile!'],
+    });
+    if (redirect) history.push('/profile');
+  };
+
+  checkBalance = (balance) => {
+    new Promise(resolve => {
+      const minimumWalletBalance = 0.000005;
+      const minimumWalletBalanceInWei = new BigNumber(
+        utils.toWei(new BigNumber(minimumWalletBalance).toString()),
+      );
+      if (balance && balance.gte(minimumWalletBalanceInWei)) {
+        resolve();
+      } else {
+        React.swal({
+          title: 'Insufficient wallet balance',
+          content: React.swal.msg(
+            <p>
+              Unfortunately you need at least {minimumWalletBalance} {config.nativeTokenName} in
+              your wallet to continue. Please transfer some ${config.nativeTokenName} to your wallet
+              first.
+            </p>,
+          ),
+          icon: 'warning',
+        });
+      }
+    });
+  };
+
   state = {
     contract: {},
     account: null,
@@ -974,6 +1140,7 @@ class AppTransaction extends React.Component {
         noWalletModalIsOpen: this.noWalletModalIsOpen,
         connectionModalIsOpen: null,
         accountConnectionPending: null,
+        accountSignatureRequest: null,
         userRejectedConnect: null,
         accountValidationPending: null,
         userRejectedValidation: null,
@@ -1001,7 +1168,10 @@ class AppTransaction extends React.Component {
         closeTransactionConnectionModal: this.closeTransactionConnectionModal,
         openTransactionConnectionModal: this.openTransactionConnectionModal,
         closeLowFundsModal: this.closeLowFundsModal,
-        openLowFundsModal: this.openLowFundsModal
+        openLowFundsModal: this.openLowFundsModal,
+        authenticateIfPossible: this.authenticateIfPossible,
+        checkProfile: this.checkProfile,
+        checkBalance: this.checkBalance
       }
     },
     transaction: {
@@ -1015,9 +1185,9 @@ class AppTransaction extends React.Component {
 
   componentDidMount() {
     // Performs a check on browser and will load a web3 provider
-     this.initWeb3().then(() => {
-       console.log('Web3 configurado');
-     });
+    this.initWeb3().then(() => {
+      console.log('Web3 configurado');
+    });
   }
 
   render() {
@@ -1029,6 +1199,7 @@ class AppTransaction extends React.Component {
           account={this.state.account}
           validateAccount={this.state.validateAccount}
           accountConnectionPending={this.state.accountConnectionPending}
+          accountSignatureRequest={this.state.accountSignatureRequest}
           accountValidationPending={this.state.accountValidationPending}
           accountValidated={this.state.accountValidated}
           network={this.state.network}

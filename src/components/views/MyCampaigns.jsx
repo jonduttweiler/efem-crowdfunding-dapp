@@ -2,17 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Pagination from 'react-js-pagination';
-import { utils } from 'web3';
-
-import GA from 'lib/GoogleAnalytics';
-import { isLoggedIn, checkBalance } from '../../lib/middleware';
-import confirmationDialog from '../../lib/confirmationDialog';
 import Loader from '../Loader';
 import User from '../../models/User';
 import { getTruncatedText, history } from '../../lib/helpers';
 import CampaignService from '../../services/CampaignService';
 import Campaign from '../../models/Campaign';
 import AuthenticationWarning from '../AuthenticationWarning';
+import { AppTransactionContext } from 'lib/blockchain/Web3App';
 
 /**
  * The my campaings view
@@ -35,7 +31,8 @@ class MyCampaigns extends Component {
   }
 
   componentDidMount() {
-    isLoggedIn(this.props.currentUser)
+    const { authenticateIfPossible } = this.context.modals.methods;
+    authenticateIfPossible(this.props.currentUser)
       .then(() => this.loadCampaigns())
       .catch(err => {
         if (err === 'notLoggedIn') {
@@ -265,6 +262,8 @@ class MyCampaigns extends Component {
     );
   }
 }
+
+MyCampaigns.contextType = AppTransactionContext;
 
 MyCampaigns.propTypes = {
   currentUser: PropTypes.instanceOf(User).isRequired,

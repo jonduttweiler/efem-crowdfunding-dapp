@@ -6,7 +6,6 @@ import { selectExchangeRateByToken } from '../redux/reducers/exchangeRatesSlice'
 import FiatAmount from "./FiatAmount";
 import BigNumber from 'bignumber.js';
 import config from '../configuration';
-import Web3Utils from '../lib/blockchain/Web3Utils';
 
 const { nativeToken } = config;
 

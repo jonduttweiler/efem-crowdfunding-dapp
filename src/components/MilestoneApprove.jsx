@@ -16,7 +16,7 @@ import { withTranslation } from 'react-i18next';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
 import { review } from '../redux/reducers/milestonesSlice';
-import MilestoneCard from './MilestoneCard';
+import MilestoneCardMini from './MilestoneCardMini';
 import User from 'models/User';
 import TextField from '@material-ui/core/TextField';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
@@ -135,7 +135,7 @@ class MilestoneApprove extends Component {
           <div className={classes.root}>
             <Grid container spacing={3}>
               <Grid item xs={4}>
-                <MilestoneCard milestone={milestone} />
+                <MilestoneCardMini milestone={milestone} />
               </Grid>
               <Grid item xs={8}>
                 <Grid container spacing={1}>

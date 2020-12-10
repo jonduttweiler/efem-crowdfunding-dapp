@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { withTranslation } from 'react-i18next';
-import ProfileCardMini from './ProfileCardMini';
-import CryptoAmount from './CryptoAmount';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Checkbox from '@material-ui/core/Checkbox';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import { withTranslation } from 'react-i18next'
+import CryptoAmount from './CryptoAmount'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import Checkbox from '@material-ui/core/Checkbox'
 import { selectDonation } from '../redux/reducers/donationsSlice'
 import { connect } from 'react-redux'
 
@@ -22,7 +21,7 @@ class DonationItemTransfer extends Component {
   }
 
   render() {
-    const { donation, isChecked, classes, t } = this.props;
+    const { donation, isChecked, classes } = this.props;
     const donationId = donation.id;
     const isTransferible = donation.isTransferible;
     const labelId = `transfer-list-all-item-${donationId}-label`;
