@@ -16,9 +16,7 @@ const ProfileForm = ({ user, isSaving, onSubmit, showSubmit = true, showCompact=
 
     const saveDisabled = isSaving || isPristine || (user && user.giverId === 0);
 
-    const columnWidth = showCompact? 6: 12 ;
-    console.log(`columnWidth: ${columnWidth}`)
-    
+    const columnWidth = showCompact? 6: 12 ;   
 
     return (
         <Form

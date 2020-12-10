@@ -29,7 +29,7 @@ class ProfilePopup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true,
+      open: props.open || false,
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -44,6 +44,7 @@ class ProfilePopup extends Component {
 
   handleClose() {
     this.close();
+    this.props.handleClose && this.props.handleClose();
   };
 
   open() {
@@ -60,20 +61,10 @@ class ProfilePopup extends Component {
 
   render() {
     const { open } = this.state;
-    const { title, currentUser, classes, t } = this.props;
+    const { currentUser, classes, t } = this.props;
 
     return (
       <div>
-          <OnlyCorrectNetwork>
-            <Button
-              variant="outlined"
-              color="link"
-              className={classes.button}
-              onClick={this.handleClickOpen}
-            >
-              {"Profile"}
-            </Button>
-          </OnlyCorrectNetwork>
         <Dialog fullWidth={true}
           maxWidth="md"
           open={open}
@@ -85,14 +76,9 @@ class ProfilePopup extends Component {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" className={classes.title}>
-                {title}
+                {"Profile"}
               </Typography>
-              <Button autoFocus
-                color="inherit"
-                onClick={() => console.log("Save profile?")}
-                >
-                {"save profile"}
-              </Button>
+              
             </Toolbar>
           </AppBar>
           <div className={classes.root}>
@@ -100,7 +86,6 @@ class ProfilePopup extends Component {
               <ProfileForm
                   user={currentUser}
                   isSaving={false}
-                  showSubmit={false}
                   showCompact={true}
               ></ProfileForm>
             </Grid>
