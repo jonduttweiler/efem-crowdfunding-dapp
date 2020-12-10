@@ -18,6 +18,8 @@ import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 import ProfileForm from './ProfileForm';
 
 import { Box } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { isLoggedIn } from 'lib/middleware';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -36,6 +38,10 @@ class ProfilePopup extends Component {
 
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
+  }
+
+  componentDidMount() {
+    isLoggedIn(this.props.currentUser) /* Esto hace aparecer el modal pidiendole que firme la transaccion */
   }
 
   handleClickOpen() {
@@ -61,7 +67,7 @@ class ProfilePopup extends Component {
 
   render() {
     const { open } = this.state;
-    const { currentUser, classes, t } = this.props;
+    const { currentUser, classes, t, requireFullProfile = false } = this.props;
 
     return (
       <div>
@@ -78,15 +84,27 @@ class ProfilePopup extends Component {
               <Typography variant="h6" className={classes.title}>
                 {"Profile"}
               </Typography>
-              
+
             </Toolbar>
           </AppBar>
           <div className={classes.root}>
             <Grid >
+              <div className="alert alert-warning">
+                <i className="fa fa-exclamation-triangle" />
+                  Due to the amount of the donation we need you to complete some information before.<br/>
+                  For more information please see our {' '}
+                <Link to="/termsandconditions">Terms and Conditions</Link> and{' '}
+                <Link to="/privacypolicy">Privacy Policy</Link>.
+              </div>
+
               <ProfileForm
-                  user={currentUser}
-                  isSaving={false}
-                  showCompact={true}
+                user={currentUser}
+                showCompact={true}
+                requireFullProfile={requireFullProfile}
+                onFinishEdition={() => {
+                  //TODO: HANDLE result
+                  this.setState({open:false})
+                }}
               ></ProfileForm>
             </Grid>
           </div>
@@ -130,7 +148,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = {  }
+const mapDispatchToProps = {}
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(

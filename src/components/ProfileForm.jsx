@@ -9,8 +9,9 @@ import LoaderButton from './LoaderButton';
 import GridItem from './Grid/GridItem';
 
 
-const ProfileForm = ({ user, showSubmit = true, showCompact=false }) => {
+const ProfileForm = ({ user, showSubmit = true, showCompact = false, requireFullProfile = false ,onFinishEdition}) => {
 
+    const [canSubmit, setCanSubmit] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isPristine, setIsPristine] = useState(true);
     const [image, setImage] = useState("");
@@ -23,13 +24,26 @@ const ProfileForm = ({ user, showSubmit = true, showCompact=false }) => {
     useEffect(() => {
         if(isSaving && user.isRegistered){
             setIsSaving(false);
+
+            if(onFinishEdition && typeof onFinishEdition === 'function'){
+                onFinishEdition();
+            }
         }
     },[isSaving,user]);
 
 
-    const saveDisabled = isSaving || isPristine || (user && user.giverId === 0);
+    const saveDisabled = isSaving || isPristine || !canSubmit || (user && user.giverId === 0);
 
     const columnWidth = showCompact? 6: 12 ;   
+
+    const requiredFields = {}
+    requiredFields["name"] = true;
+    
+    if(requireFullProfile){
+        requiredFields["email"] = true;
+        requiredFields["url"] = true;
+        requiredFields["avatar"] = true;
+    }
 
     return (
         <Form
@@ -37,6 +51,8 @@ const ProfileForm = ({ user, showSubmit = true, showCompact=false }) => {
                 setIsSaving(true);
                 dispatch(registerCurrentUser(user));
             }}
+            onValid={() => setCanSubmit(true)}
+            onInvalid={() => setCanSubmit(false)}
             mapping={inputs => {
                 user.name = inputs.name;
                 user.email = inputs.email;
@@ -59,7 +75,7 @@ const ProfileForm = ({ user, showSubmit = true, showCompact=false }) => {
                                 placeholder="John Doe."
                                 validations="minLength:3"
                                 validationErrors={{ minLength: 'Please enter your name', }}
-                                required
+                                required={requiredFields["name"]}
                                 autoFocus
                             />
                         </div>
@@ -75,6 +91,7 @@ const ProfileForm = ({ user, showSubmit = true, showCompact=false }) => {
                                 placeholder="email@example.com"
                                 validations="isEmail"
                                 help="Please enter your email address."
+                                required={requiredFields["email"]}
                                 validationErrors={{ isEmail: "Oops, that's not a valid email address.", }}
                             />
                         </div>
@@ -87,6 +104,7 @@ const ProfileForm = ({ user, showSubmit = true, showCompact=false }) => {
                 setImage={setImage}
                 avatar={user.avatar}
                 aspectRatio={1}
+                isRequired={requiredFields["avatar"]}
             />
 
             <div className="form-group">
@@ -97,6 +115,7 @@ const ProfileForm = ({ user, showSubmit = true, showCompact=false }) => {
                     value={user.url}
                     placeholder="Your profile url"
                     help="Provide a link to some more info about you, this will help to build trust. You could add your linkedin profile, Twitter account or a relevant website."
+                    required={requiredFields["url"]}
                     validations="isUrl"
                     validationErrors={{
                         isUrl: 'Please enter a valid url',

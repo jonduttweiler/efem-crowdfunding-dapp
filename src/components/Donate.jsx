@@ -85,7 +85,8 @@ class Donate extends Component {
     const dollarsAmount = centsFiatAmount.dividedBy(100).toNumber();
     
     const ANONYMOUS_THRESHOLD = 10000;
-    if(dollarsAmount > ANONYMOUS_THRESHOLD ){ //and currentUser !registered
+    if(dollarsAmount > ANONYMOUS_THRESHOLD && !currentUser.hasCompleteProfile()){ 
+      console.log(currentUser.hasCompleteProfile())
       console.log("showProfilePopup")
       this.setState({showProfilePopup:true})
 
@@ -212,6 +213,7 @@ class Donate extends Component {
             (
             <ProfilePopup 
               open={true}
+              requireFullProfile={true}
               handleClose = {() => {this.setState({showProfilePopup:false})}}
               handleSubmit = {() => {this.setState({showProfilePopup:false})}}
              ></ProfilePopup> 

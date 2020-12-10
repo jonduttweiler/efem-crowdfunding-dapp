@@ -95,17 +95,17 @@ class EditProfile extends Component {
     </p>
                         <div className="alert alert-warning">
                           <i className="fa fa-exclamation-triangle" />
-      Please note that all the information entered will be stored on a publicly
-      accessible permanent storage like blockchain. We are not able to erase or alter
-      any of the information.{' '}
+                            Please note that all the information entered will be stored on a publicly
+                            accessible permanent storage like blockchain. We are not able to erase or alter
+                            any of the information.{' '}
                           <strong>
                             Do not input anything that you do not have permision to share or you are not
                             comfortable with being forever accessible.
-      </strong>{' '}
-      For more information please see our{' '}
+                          </strong>{' '}
+                          For more information please see our{' '}
                           <Link to="/termsandconditions">Terms and Conditions</Link> and{' '}
                           <Link to="/privacypolicy">Privacy Policy</Link>.
-    </div>
+                        </div>
 
                       <ProfileForm
                         user={currentUser}
