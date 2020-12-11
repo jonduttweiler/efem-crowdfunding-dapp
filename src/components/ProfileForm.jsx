@@ -42,7 +42,7 @@ const ProfileForm = ({ user, showSubmit = true, showCompact = false, requireFull
     if(requireFullProfile){
         requiredFields["email"] = true;
         requiredFields["url"] = true;
-        requiredFields["avatar"] = true;
+        requiredFields["avatar"] = !user.avatar; //requerido solo para nuevos usuarios
     }
 
     return (

@@ -41,7 +41,7 @@ class ProfilePopup extends Component {
   }
 
   componentDidMount() {
-    isLoggedIn(this.props.currentUser) /* Esto hace aparecer el modal pidiendole que firme la transaccion */
+     isLoggedIn(this.props.currentUser).catch(err => {}) /* Esto hace aparecer el modal pidiendole que firme la transaccion */
   }
 
   handleClickOpen() {

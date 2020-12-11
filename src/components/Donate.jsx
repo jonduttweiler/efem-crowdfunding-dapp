@@ -133,7 +133,7 @@ class Donate extends Component {
     if (amount > 0) {
       donationIsValid = true;
     }
-    let amountWei = Web3Utils.etherToWei(amount);
+    let amountWei = Web3Utils.etherToWei(amount||0);
     return (
       <div>
         {enabled && (
