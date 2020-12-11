@@ -29,6 +29,8 @@ import ProfilePopup from './ProfilePopup';
 
 import { selectExchangeRateByToken } from '../redux/reducers/exchangeRatesSlice';
 
+const ANONYMOUS_DONATION_THRESHOLD = config.anonymousDonationThreshold;
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -83,13 +85,9 @@ class Donate extends Component {
     const amountWei = Web3Utils.etherToWei(amount);
     const centsFiatAmount = amountWei.dividedBy(rate);
     const dollarsAmount = centsFiatAmount.dividedBy(100).toNumber();
-    
-    const ANONYMOUS_THRESHOLD = 10000;
-    if(dollarsAmount > ANONYMOUS_THRESHOLD && !currentUser.hasCompleteProfile()){ 
-      console.log(currentUser.hasCompleteProfile())
-      console.log("showProfilePopup")
-      this.setState({showProfilePopup:true})
 
+    if(dollarsAmount > ANONYMOUS_DONATION_THRESHOLD && !currentUser.hasCompleteProfile()){ 
+      this.setState({showProfilePopup:true})
     } else {
       const donation = new Donation();
       donation.entityId = entityId;
