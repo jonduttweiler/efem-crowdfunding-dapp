@@ -16,6 +16,7 @@ const {
   REACT_APP_NODE_ID,
   REACT_APP_IPFS_GATEWAY,
   REACT_APP_IPFS_PINNING_ENABLED,
+  REACT_APP_ANONYMOUS_DONATION_THRESHOLD, //In fiat amount
 } = process.env;
 
 const configurations = {
@@ -68,7 +69,8 @@ const configurations = {
         logoCid: '/ipfs/QmTsctkHWeVcuz6z2AWdi5zv3YCcVWSbmg2XF3tVs8jfn1',
         showDecimals: 4
       }
-    }
+    },
+    anonymousDonationThreshold: 5000
   },
   rsk_testnet: {
     network: {
@@ -119,7 +121,8 @@ const configurations = {
         logoCid: '/ipfs/QmTsctkHWeVcuz6z2AWdi5zv3YCcVWSbmg2XF3tVs8jfn1',
         showDecimals: 4
       }
-    }
+    },
+    anonymousDonationThreshold: 10000
   },
   rsk_mainnet: {
     network: {
@@ -172,6 +175,7 @@ const configurations = {
       }
     }
   },
+  anonymousDonationThreshold: 10000
 };
 
 // Unknown environment
@@ -207,6 +211,8 @@ config.nativeTokenName = REACT_APP_NATIVE_TOKEN_NAME || config.nativeTokenName;
 
 config.ipfsGateway = REACT_APP_IPFS_GATEWAY || config.ipfsGateway;
 config.ipfsPinningEnabled = (REACT_APP_IPFS_PINNING_ENABLED !== undefined) ? (REACT_APP_IPFS_PINNING_ENABLED == "true") : config.ipfsPinningEnabled;
+
+config.anonymousDonationThreshold = REACT_APP_ANONYMOUS_DONATION_THRESHOLD ||  config.anonymousDonationThreshold;
 
 
 //config.sendErrors = ['develop', 'release', 'beta', 'rsk_testnet'].includes(REACT_APP_ENVIRONMENT);

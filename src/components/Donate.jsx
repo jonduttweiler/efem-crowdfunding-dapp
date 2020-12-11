@@ -25,6 +25,11 @@ import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 import FiatAmountByToken from './FiatAmountByToken';
 import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 import ProfileCard from './ProfileCard';
+import ProfilePopup from './ProfilePopup';
+
+import { selectExchangeRateByToken } from '../redux/reducers/exchangeRatesSlice';
+
+const ANONYMOUS_DONATION_THRESHOLD = config.anonymousDonationThreshold;
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -36,6 +41,7 @@ class Donate extends Component {
     super(props);
     this.state = {
       open: false,
+      showProfilePopup: false,
       amount: 0
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -66,26 +72,31 @@ class Donate extends Component {
     const { currentUser } = this.props;
     const max = Web3Utils.weiToEther(currentUser.balance);
     if (amount < 0) {
-      this.setState({
-        amount: 0
-      });
+      this.setState({amount: 0,});
     } else if (amount > max) {
-      this.setState({
-        amount: max
-      });
+      this.setState({amount: max});
     }
   };
 
   handleDonate() {
     const { amount } = this.state;
-    const { entityId, currentUser, tokenAddress, addDonation } = this.props;
-    const donation = new Donation();
-    donation.entityId = entityId;
-    donation.tokenAddress = tokenAddress;
-    donation.amount = Web3Utils.etherToWei(amount);
-    donation.giverAddress = currentUser.address;
-    addDonation(donation);
-    this.close();
+    const { entityId, currentUser, tokenAddress, addDonation, rate } = this.props;
+    
+    const amountWei = Web3Utils.etherToWei(amount);
+    const centsFiatAmount = amountWei.dividedBy(rate);
+    const dollarsAmount = centsFiatAmount.dividedBy(100).toNumber();
+
+    if(dollarsAmount > ANONYMOUS_DONATION_THRESHOLD && !currentUser.hasCompleteProfile()){ 
+      this.setState({showProfilePopup:true})
+    } else {
+      const donation = new Donation();
+      donation.entityId = entityId;
+      donation.tokenAddress = tokenAddress;
+      donation.amount = Web3Utils.etherToWei(amount);
+      donation.giverAddress = currentUser.address;
+      addDonation(donation);
+      this.close(); 
+    }
   };
 
   open() {
@@ -101,8 +112,8 @@ class Donate extends Component {
   }
 
   render() {
-    const { open, amount } = this.state;
-    const { title, description, entityCard, enabled, currentUser, classes, t } = this.props;
+    const { open, amount, showProfilePopup } = this.state;
+    const { title, description, entityCard, enabled, currentUser, classes, t, rate } = this.props;
 
     // TODO Definir parametrización de donación.
     const balance = currentUser.balance;
@@ -122,7 +133,7 @@ class Donate extends Component {
     if (amount > 0) {
       donationIsValid = true;
     }
-    let amountWei = Web3Utils.etherToWei(amount);
+    let amountWei = Web3Utils.etherToWei(amount||0);
     return (
       <div>
         {enabled && (
@@ -196,7 +207,17 @@ class Donate extends Component {
               </Grid>
             </Grid>
           </div>
+        {showProfilePopup && 
+            (
+            <ProfilePopup 
+              open={true}
+              requireFullProfile={true}
+              handleClose = {() => {this.setState({showProfilePopup:false})}}
+              handleSubmit = {() => {this.setState({showProfilePopup:false})}}
+             ></ProfilePopup> 
+            )}
         </Dialog>
+
       </div >
     );
   }
@@ -236,7 +257,8 @@ const styles = theme => ({
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: selectCurrentUser(state)
+    currentUser: selectCurrentUser(state),
+    rate: (selectExchangeRateByToken(state, ownProps.tokenAddress || config.nativeToken.address))?.rate
   }
 }
 

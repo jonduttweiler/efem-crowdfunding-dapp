@@ -15,9 +15,11 @@ import { connect } from 'react-redux'
 import User from 'models/User';
 import { selectCurrentUser } from '../redux/reducers/currentUserSlice'
 import OnlyCorrectNetwork from './OnlyCorrectNetwork';
-import FormProfile from './FormProfile';
+import ProfileForm from './ProfileForm';
 
 import { Box } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { isLoggedIn } from 'lib/middleware';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -29,7 +31,7 @@ class ProfilePopup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true,
+      open: props.open || false,
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -38,12 +40,17 @@ class ProfilePopup extends Component {
     this.close = this.close.bind(this);
   }
 
+  componentDidMount() {
+     isLoggedIn(this.props.currentUser).catch(err => {}) /* Esto hace aparecer el modal pidiendole que firme la transaccion */
+  }
+
   handleClickOpen() {
     this.open();
   };
 
   handleClose() {
     this.close();
+    this.props.handleClose && this.props.handleClose();
   };
 
   open() {
@@ -60,20 +67,10 @@ class ProfilePopup extends Component {
 
   render() {
     const { open } = this.state;
-    const { title, currentUser, classes, t } = this.props;
+    const { currentUser, classes, t, requireFullProfile = false } = this.props;
 
     return (
       <div>
-          <OnlyCorrectNetwork>
-            <Button
-              variant="outlined"
-              color="link"
-              className={classes.button}
-              onClick={this.handleClickOpen}
-            >
-              {"Profile"}
-            </Button>
-          </OnlyCorrectNetwork>
         <Dialog fullWidth={true}
           maxWidth="md"
           open={open}
@@ -85,23 +82,30 @@ class ProfilePopup extends Component {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" className={classes.title}>
-                {title}
+                {"Profile"}
               </Typography>
-              <Button autoFocus
-                color="inherit"
-                onClick={() => console.log("Save profile?")}
-                >
-                {"save profile"}
-              </Button>
+
             </Toolbar>
           </AppBar>
           <div className={classes.root}>
             <Grid >
-              <FormProfile
-                  user={currentUser}
-                  isSaving={false}
-                  showSubmit={false}
-              ></FormProfile>
+              <div className="alert alert-warning">
+                <i className="fa fa-exclamation-triangle" />
+                  Due to the amount of the donation we need you to complete some information before.<br/>
+                  For more information please see our {' '}
+                <Link to="/termsandconditions">Terms and Conditions</Link> and{' '}
+                <Link to="/privacypolicy">Privacy Policy</Link>.
+              </div>
+
+              <ProfileForm
+                user={currentUser}
+                showCompact={true}
+                requireFullProfile={requireFullProfile}
+                onFinishEdition={() => {
+                  //TODO: HANDLE result
+                  this.setState({open:false})
+                }}
+              ></ProfileForm>
             </Grid>
           </div>
         </Dialog>
@@ -144,7 +148,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = {  }
+const mapDispatchToProps = {}
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(
