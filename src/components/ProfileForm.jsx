@@ -102,7 +102,7 @@ const ProfileForm = ({ user, showSubmit = true, showCompact = false, requireFull
 
             <FormsyImageUploader
                 setImage={setImage}
-                avatar={user.avatar}
+                avatar={image || user.avatar}
                 aspectRatio={1}
                 isRequired={requiredFields["avatar"]}
             />
