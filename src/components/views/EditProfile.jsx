@@ -14,7 +14,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
-import FormProfile from 'components/FormProfile';
+import ProfileForm from 'components/ProfileForm';
 import Loader from '../Loader';
 import { connect } from 'react-redux';
 import { AppTransactionContext } from 'lib/blockchain/Web3App';
@@ -30,7 +30,6 @@ class EditProfile extends Component {
 
     this.state = {
       isLoading: true,
-      isSaving: false,
     };
   }
 
@@ -47,16 +46,8 @@ class EditProfile extends Component {
       }); 
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isSaving && this.props.currentUser.isRegistered) {
-      this.setState({
-        isSaving: false
-      });
-    }
-  }
-
   render() {
-    const { isLoading, isSaving } = this.state;
+    const { isLoading } = this.state;
     const { currentUser } = this.props;
     const { ...rest } = this.props;
     const { classes } = this.props;
@@ -105,26 +96,21 @@ class EditProfile extends Component {
     </p>
                         <div className="alert alert-warning">
                           <i className="fa fa-exclamation-triangle" />
-      Please note that all the information entered will be stored on a publicly
-      accessible permanent storage like blockchain. We are not able to erase or alter
-      any of the information.{' '}
+                            Please note that all the information entered will be stored on a publicly
+                            accessible permanent storage like blockchain. We are not able to erase or alter
+                            any of the information.{' '}
                           <strong>
                             Do not input anything that you do not have permision to share or you are not
                             comfortable with being forever accessible.
-      </strong>{' '}
-      For more information please see our{' '}
+                          </strong>{' '}
+                          For more information please see our{' '}
                           <Link to="/termsandconditions">Terms and Conditions</Link> and{' '}
                           <Link to="/privacypolicy">Privacy Policy</Link>.
-    </div>
+                        </div>
 
-                      <FormProfile
+                      <ProfileForm
                         user={currentUser}
-                        isSaving={isSaving}
-                        onSubmit={(newValues) => {
-                          this.setState({ isSaving: true });
-                          this.props.registerCurrentUser(this.props.currentUser);
-                        }}
-                      ></FormProfile>
+                      ></ProfileForm>
                       </div>
                     )}
 

@@ -274,6 +274,24 @@ class User extends Model {
   isRecipient() {
     return this.roles.includes(RECIPIENT_ROLE);
   }
+
+
+  hasCompleteProfile(){
+    let hasCompleteProfile = true;
+    const requiredProperties = ["address", "name", "email", "url", "avatar"];
+
+    for(const prop of requiredProperties){
+      if (this[prop] == undefined || this[prop].trim() == "") {
+        hasCompleteProfile = false;
+        break;
+      }
+    }
+
+    return hasCompleteProfile;
+  }
+
+
+
 }
 
 export default User;

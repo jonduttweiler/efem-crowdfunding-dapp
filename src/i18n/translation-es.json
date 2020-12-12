@@ -21,6 +21,7 @@
     "campaignDescriptionError": "Proporciona al menos 10 caracteres.",
     "campaignCategoriesLabel": "Categorías",
     "campaignCategoriesHelp": "¿Cuáles de estas categorías describen mejor tu campaña?",
+    "campaignCategoriesAllLabel": "Todas",
     "campaignBeneficiariesLabel": "Beneficiarios",
     "campaignBeneficiariesPlaceholder": "Ej. 30 familias de la región",
     "campaignBeneficiariesHelp": "Cuéntanos en pocas palabras quiénes o cuántos serán los beneficiarios de esta campaña.",
