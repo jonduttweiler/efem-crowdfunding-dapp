@@ -31,6 +31,7 @@ import { withStyles } from '@material-ui/core/styles'
 import styles from "assets/jss/material-kit-react/views/milestoneView.js"
 import { withTranslation } from 'react-i18next'
 import DonationsBalance from '../DonationsBalance'
+import { Avatar, Box } from '@material-ui/core'
 
 class ViewMilestone extends Component {
   constructor(props) {
@@ -105,7 +106,7 @@ class ViewMilestone extends Component {
           <div>
             <Header
               color="white"
-              brand="Give for forests"
+              brand="Give4Forest"
               rightLinks={<MainMenu />}
               fixed
               changeColorOnScroll={{
@@ -114,43 +115,50 @@ class ViewMilestone extends Component {
               }}
               {...rest}
             />
-            <Parallax medium image={milestone.imageCidUrl}>
-              <div className="vertical-align">
-                <center>
-                <h6 className={classes.entityType}>{t('milestone')}</h6>
-                  <h1 className={classes.entityName}>{milestone.title}</h1>
 
-                  {!milestone.status === 'InProgress' && <p>This milestone is not active anymore</p>}
+            <Parallax medium>
+              <div className={classes.container}>
+                <GridContainer justify="center" className={classes.headerContainer}>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <Box display="flex" flexGrow={1} alignItems="center">
+                      <Box>
+                        <Avatar alt={milestone.title} className={classes.avatar} src={milestone.imageCidUrl} />
+                      </Box>
+                      <Box m={2} flexGrow={1}>
+                        <h6 className={classes.entityType}>{t('milestone')}</h6>
+                        <h3 className={classes.entityName}>{milestone.title}</h3>
+                        {!milestone.status === 'InProgress' && <p>This milestone is not active anymore</p>}
+                        <h6 className={classes.entityType}>{t('campaign')}: {campaign.title}</h6>
+                      </Box>
+                      <Box>
+                        <Donate
+                          entityId={milestone.id}
+                          entityCard={<MilestoneCardMini milestone={milestone} />}
+                          title={t('donateMilestoneTitle')}
+                          description={t('donateMilestoneDescription')}
+                          enabled={milestone.canReceiveFunds}>  
+                        </Donate>
+                        {/*this.isActiveMilestone() && (
+                          <Fragment>
+                            {user && (
+                              <DelegateMultipleButton
+                                milestone={milestone}
+                                campaign={campaign}
+                                user={user}
+                              />
+                            )}
+                          </Fragment>
+                        )*/}
 
-                  <h6 className={classes.entityType}>Campaign: {campaign.title}</h6>
+                        {/* Milestone actions */}
 
-                  <div className="milestone-actions">
-                    <Donate
-                      entityId={milestone.id}
-                      entityCard={<MilestoneCardMini milestone={milestone} />}
-                      title={t('donateMilestoneTitle')}
-                      description={t('donateMilestoneDescription')}
-                      enabled={milestone.canReceiveFunds}>  
-                    </Donate>
-                    {/*this.isActiveMilestone() && (
-                      <Fragment>
                         {user && (
-                          <DelegateMultipleButton
-                            milestone={milestone}
-                            campaign={campaign}
-                            user={user}
-                          />
+                          <MilestoneActions milestone={milestone} user={user} />
                         )}
-                      </Fragment>
-                    )*/}
-
-                    {/* Milestone actions */}
-
-                    {user && (
-                      <MilestoneActions milestone={milestone} user={user} />
-                    )}
-                  </div>
-                </center>
+                      </Box>
+                    </Box>
+                  </GridItem>
+                </GridContainer>
               </div>
             </Parallax>
 

@@ -7,12 +7,22 @@ const landingPageStyle = {
     ...container
   },
   entityType: {
-    color: "#FFF",
+    color: "#555",
     margin: "0"
   },
+  headerContainer: {
+    margin: "0 30px",
+    width: "calc(100% - 60px)"
+  },
+  avatar: {
+    width: "180px",
+    height: "180px"
+  },
   entityName: {
-    color: "#FFF",
-    margin: "0"
+    color: "#555",
+    margin: "0",
+    fontWeight: "400",
+    lineHeight: "1.2em"
   },
   title: {
     ...title,

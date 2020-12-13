@@ -38,7 +38,7 @@ export default function Components(props) {
   return (
     <div>
       <Header
-        brand="Give for forests"
+        brand="Give4Forest"
         rightLinks={<HeaderLinks />}
         fixed
         color="transparent"
@@ -53,7 +53,7 @@ export default function Components(props) {
           <GridContainer>
             <GridItem>
               <div className={classes.brand}>
-                <h1 className={classes.title}>Give for forests</h1>
+                <h1 className={classes.title}>Give4Forest</h1>
                 <h3 className={classes.subtitle}>
                   Introducción...
                 </h3>

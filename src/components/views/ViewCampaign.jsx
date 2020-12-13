@@ -34,7 +34,7 @@ import GridItem from "components/Grid/GridItem.js"
 import { withStyles } from '@material-ui/core/styles'
 import styles from "assets/jss/material-kit-react/views/campaignView.js"
 import Typography from '@material-ui/core/Typography'
-import { Box } from '@material-ui/core'
+import { Avatar, Box } from '@material-ui/core'
 import OnlyCorrectNetwork from 'components/OnlyCorrectNetwork'
 
 /**
@@ -111,7 +111,7 @@ class ViewCampaign extends Component {
             <div>
               <Header
                 color="white"
-                brand="Give for forests"
+                brand="Give4Forest"
                 rightLinks={<MainMenu />}
                 fixed
                 changeColorOnScroll={{
@@ -120,37 +120,45 @@ class ViewCampaign extends Component {
                 }}
                 {...rest}
               />
-              <Parallax medium image={campaign.imageCidUrl}>
-                <div className="vertical-align">
-                  <center>
-                    <h6 className={classes.entityType}>{t('campaign')}</h6>
-                    <h1 className={classes.entityName}>{campaign.title}</h1>
-                    <Donate
-                      entityId={campaign.id}
-                      entityCard={<CampaignCardMini campaign={campaign} />}
-                      title={t('donateCampaignTitle')}
-                      description={t('donateCampaignDescription')}
-                      enabled={campaign.canReceiveFunds}>
-                    </Donate>
-                    
-					          <TransferCampaign campaign={campaign}></TransferCampaign>
 
-                    <EditCampaignButton 
-                      currentUser={currentUser}
-                      campaign={campaign}
-                      title={t('donateCampaignTitle')}
-                      >
-                    </EditCampaignButton>
-
-                    {campaign.url && (
-                      <span style={{ paddingLeft: '10px' }}>
-                        <CommunityButton className="btn btn-secondary" url={campaign.url}>
-                          Join our community
-                        </CommunityButton>
-                      </span>
-                    )}
-
-                  </center>
+              <Parallax medium>
+                <div className={classes.container}>
+                  <GridContainer justify="center" className={classes.headerContainer}>
+                    <GridItem xs={12} sm={12} md={12}>
+                      <Box display="flex" flexGrow={1} alignItems="center">
+                        <Box>
+                          <Avatar alt={campaign.title} className={classes.avatar} src={campaign.imageCidUrl} />
+                        </Box>
+                        <Box m={2} flexGrow={1}>
+                          <h6 className={classes.entityType}>{t('campaign')}</h6>
+                          <h3 className={classes.entityName}>{campaign.title}</h3>
+                        </Box>
+                        <Box>
+                          <Donate
+                            entityId={campaign.id}
+                            entityCard={<CampaignCardMini campaign={campaign} />}
+                            title={t('donateCampaignTitle')}
+                            description={t('donateCampaignDescription')}
+                            enabled={campaign.canReceiveFunds}>
+                          </Donate>
+                          <TransferCampaign campaign={campaign}></TransferCampaign>
+                          <EditCampaignButton 
+                            currentUser={currentUser}
+                            campaign={campaign}
+                            title={t('donateCampaignTitle')}
+                            >
+                          </EditCampaignButton>
+                          {campaign.url && (
+                            <span style={{ paddingLeft: '10px' }}>
+                              <CommunityButton className="btn btn-secondary" url={campaign.url}>
+                                Join our community
+                              </CommunityButton>
+                            </span>
+                          )}
+                        </Box>
+                      </Box>
+                    </GridItem>
+                  </GridContainer>
                 </div>
               </Parallax>
 
@@ -187,7 +195,7 @@ class ViewCampaign extends Component {
 
                         <div className="milestone-header spacer-bottom-50 card-view">
 
-                          <Box display="flex">
+                        <Box display="flex">
                             <Box my={2} flexGrow={1}>
                               <Typography variant="h5">
                                 {t('milestones')}

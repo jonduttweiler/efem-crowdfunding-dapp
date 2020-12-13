@@ -63,7 +63,7 @@ class EditProfile extends Component {
       <div>
         <Header
           color="white"
-          brand="Give for forests"
+          brand="Give4Forest"
           rightLinks={<MainMenu />}
           fixed
           changeColorOnScroll={{

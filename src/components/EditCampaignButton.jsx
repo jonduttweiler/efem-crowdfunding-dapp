@@ -27,6 +27,7 @@ class EditCampaignButton extends Component {
             variant="contained"
             type="button"
             startIcon={<EditIcon />}
+            style={{margin: "4px"}}
             onClick={() => this.editCampaign()}>
             {t('edit')}
           </Button>

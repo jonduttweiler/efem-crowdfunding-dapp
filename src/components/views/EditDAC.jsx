@@ -174,7 +174,7 @@ class EditDAC extends Component {
       <div id="edit-dac-view">
         <Header
           color="white"
-          brand="Give for forests"
+          brand="Give4Forest"
           rightLinks={<MainMenu />}
           fixed
           changeColorOnScroll={{

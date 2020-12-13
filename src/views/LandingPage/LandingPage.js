@@ -18,7 +18,7 @@ import JoinGivethCommunity from 'components/JoinGivethCommunity.jsx';
 import MainMenu from "components/MainMenu.jsx";
 
 import styles from "assets/jss/material-kit-react/views/landingPage.js";
-
+  
 const useStyles = makeStyles(styles);
 
 export default function LandingPage(props) {
@@ -28,7 +28,7 @@ export default function LandingPage(props) {
     <div>
       <Header
         color="transparent"
-        brand="Give for forests"
+        brand="Give4Forest"
         rightLinks={<MainMenu />}
         fixed
         changeColorOnScroll={{
@@ -41,7 +41,7 @@ export default function LandingPage(props) {
         <div className={classes.container}>
           <GridContainer>
             <GridItem xs={12} sm={12} md={6}>
-              <h1 className={classes.title}>Give for forests</h1>
+              <h1 className={classes.title}>Give4Forest</h1>
               <h4>
                 Breve descripción del sitio.
               </h4>

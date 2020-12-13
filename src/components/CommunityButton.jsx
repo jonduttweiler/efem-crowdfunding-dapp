@@ -29,6 +29,7 @@ class CommunityButton extends Component {
         href={this.props.url}
         target="_blank"
         rel="noopener noreferrer"
+        style={{margin: "4px"}}
       >
         <i className={`fa ${this.state.icon}`} />
         {this.props.children}
