@@ -41,3 +41,11 @@ export const registerCurrentUserEpic = (action$) => action$.pipe(
   )
 )
 
+export const setCurrentUserEpic = (action$) => action$.pipe(
+  ofType('currentUser/setCurrentUser'),
+  map(action => ({
+    type: 'users/mergeUser',
+    payload: action.payload
+  }))
+)
+

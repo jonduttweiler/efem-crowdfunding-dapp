@@ -124,7 +124,8 @@ class UserService {
 
         await feathersClient.service('/users').patch(user.address, user.toFeathers());
         //user.isRegistered = true;
-
+        user.registered = true;
+        
         subscriber.next(user);
         messageUtils.addMessageSuccess({
           title: 'Felicitaciones!',
