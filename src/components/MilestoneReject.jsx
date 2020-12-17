@@ -195,7 +195,7 @@ const styles = theme => ({
     flex: 1
   },
   button: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0.5),
   }
 });
 

@@ -131,30 +131,31 @@ class ViewMilestone extends Component {
                         <h6 className={classes.entityType}>{t('campaign')}: {campaign.title}</h6>
                       </Box>
                       <Box>
-                        <Donate
-                          entityId={milestone.id}
-                          entityCard={<MilestoneCardMini milestone={milestone} />}
-                          title={t('donateMilestoneTitle')}
-                          description={t('donateMilestoneDescription')}
-                          enabled={milestone.canReceiveFunds}>  
-                        </Donate>
-                        {/*this.isActiveMilestone() && (
-                          <Fragment>
-                            {user && (
-                              <DelegateMultipleButton
-                                milestone={milestone}
-                                campaign={campaign}
-                                user={user}
-                              />
-                            )}
-                          </Fragment>
-                        )*/}
+                        <div style={{textAlign: 'center'}}>
+                          <Donate
+                            entityId={milestone.id}
+                            entityCard={<MilestoneCardMini milestone={milestone} />}
+                            title={t('donateMilestoneTitle')}
+                            description={t('donateMilestoneDescription')}
+                            enabled={milestone.canReceiveFunds}>  
+                          </Donate>
+                          {/*this.isActiveMilestone() && (
+                            <Fragment>
+                              {user && (
+                                <DelegateMultipleButton
+                                  milestone={milestone}
+                                  campaign={campaign}
+                                  user={user}
+                                />
+                              )}
+                            </Fragment>
+                          )*/}
 
-                        {/* Milestone actions */}
-
-                        {user && (
-                          <MilestoneActions milestone={milestone} user={user} />
-                        )}
+                          {/* Milestone actions */}
+                          {user && (
+                            <MilestoneActions milestone={milestone} user={user} />
+                          )}
+                        </div>
                       </Box>
                     </Box>
                   </GridItem>

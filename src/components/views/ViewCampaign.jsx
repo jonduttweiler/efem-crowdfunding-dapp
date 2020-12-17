@@ -134,27 +134,27 @@ class ViewCampaign extends Component {
                           <h3 className={classes.entityName}>{campaign.title}</h3>
                         </Box>
                         <Box>
-                          <Donate
-                            entityId={campaign.id}
-                            entityCard={<CampaignCardMini campaign={campaign} />}
-                            title={t('donateCampaignTitle')}
-                            description={t('donateCampaignDescription')}
-                            enabled={campaign.canReceiveFunds}>
-                          </Donate>
-                          <TransferCampaign campaign={campaign}></TransferCampaign>
-                          <EditCampaignButton 
-                            currentUser={currentUser}
-                            campaign={campaign}
-                            title={t('donateCampaignTitle')}
-                            >
-                          </EditCampaignButton>
-                          {campaign.url && (
-                            <span style={{ paddingLeft: '10px' }}>
+                          <div style={{textAlign: 'center'}}>
+                            <Donate
+                              entityId={campaign.id}
+                              entityCard={<CampaignCardMini campaign={campaign} />}
+                              title={t('donateCampaignTitle')}
+                              description={t('donateCampaignDescription')}
+                              enabled={campaign.canReceiveFunds}>
+                            </Donate>
+                            <TransferCampaign campaign={campaign}></TransferCampaign>
+                            <EditCampaignButton 
+                              currentUser={currentUser}
+                              campaign={campaign}
+                              title={t('donateCampaignTitle')}
+                              >
+                            </EditCampaignButton>
+                            {campaign.url && (
                               <CommunityButton className="btn btn-secondary" url={campaign.url}>
                                 Join our community
                               </CommunityButton>
-                            </span>
-                          )}
+                            )}
+                          </div>
                         </Box>
                       </Box>
                     </GridItem>

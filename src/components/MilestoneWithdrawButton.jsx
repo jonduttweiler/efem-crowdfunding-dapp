@@ -33,6 +33,7 @@ class MilestoneWithdrawButton extends Component {
             type="button"
             className="btn btn-success btn-sm"
             onClick={() => this.withdraw()}>
+            style={{margin: '4px'}}
             <i className="fa fa-usd" />{' '}{buttonLabel}
           </button>
         )}
