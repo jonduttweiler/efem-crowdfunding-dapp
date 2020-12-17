@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { Button, Link } from '@material-ui/core';
 class CommunityButton extends Component {
   constructor(props) {
     super(props);
@@ -24,16 +24,17 @@ class CommunityButton extends Component {
 
   render() {
     return (
-      <a
-        className={this.props.className}
-        href={this.props.url}
-        target="_blank"
+      <Button className={this.props.className}
         rel="noopener noreferrer"
-        style={{margin: "4px"}}
+        size={this.props.size}
+        variant={this.props.variant}
+        color={this.props.color}
       >
-        <i className={`fa ${this.state.icon}`} />
-        {this.props.children}
-      </a>
+        <Link href={this.props.url} target="_blank" underline="none" style={{color: "#555"}}>
+          <i className={`fa ${this.state.icon}`} />
+          {this.props.children}
+        </Link>
+      </Button>
     );
   }
 }

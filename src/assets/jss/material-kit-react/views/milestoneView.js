@@ -20,7 +20,7 @@ const landingPageStyle = {
   },
   entityName: {
     color: "#555",
-    margin: "0",
+    margin: "0.5em 0",
     fontWeight: "400",
     lineHeight: "1.2em"
   },

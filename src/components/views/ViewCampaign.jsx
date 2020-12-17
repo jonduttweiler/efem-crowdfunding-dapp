@@ -132,6 +132,15 @@ class ViewCampaign extends Component {
                         <Box m={2} flexGrow={1}>
                           <h6 className={classes.entityType}>{t('campaign')}</h6>
                           <h3 className={classes.entityName}>{campaign.title}</h3>
+                          {campaign.url && (
+                            <CommunityButton
+                              size="small"
+                              color="default"
+                              variant="outlined"
+                              url={campaign.url}>
+                              {t('joinCommunity')}
+                            </CommunityButton>
+                          )}
                         </Box>
                         <Box>
                           <div style={{textAlign: 'center'}}>
@@ -149,11 +158,6 @@ class ViewCampaign extends Component {
                               title={t('donateCampaignTitle')}
                               >
                             </EditCampaignButton>
-                            {campaign.url && (
-                              <CommunityButton className="btn btn-secondary" url={campaign.url}>
-                                Join our community
-                              </CommunityButton>
-                            )}
                           </div>
                         </Box>
                       </Box>
