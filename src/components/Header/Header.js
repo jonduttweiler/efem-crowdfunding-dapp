@@ -63,26 +63,26 @@ export default function Header(props) {
     [classes.absolute]: absolute,
     [classes.fixed]: fixed
   });
-  const brandComponent =  <NavLink className={classes.title} to="/">
-                            {brand} 
-                          </NavLink>;
+  const brandComponent = <NavLink className={classes.title} to="/">
+    {brand}
+  </NavLink>;
   const { network, web3Fallback } = useContext(AppTransactionContext);
 
   return (
-      
+
     <AppBar className={appBarClasses}>
       <Toolbar className={classes.container}>
-        {/*leftLinks !== undefined ? brandComponent : null*/}
-        {/*<div className={classes.flex}>
+        {leftLinks !== undefined ? brandComponent : null}
+        {<div className={classes.flex}>
           {leftLinks !== undefined ? (
             <Hidden smDown implementation="css">
               {leftLinks}
             </Hidden>
           ) : (
-            brandComponent
-          )}
-        </div>*/}
-        
+              brandComponent
+            )}
+        </div>}
+
         <Web3Banner
           currentNetwork={network.current.id}
           requiredNetwork={config.network.requiredId}
@@ -120,9 +120,6 @@ export default function Header(props) {
           </div>
         </Drawer>
       </Hidden>
-
-      
-
     </AppBar>
   );
 }

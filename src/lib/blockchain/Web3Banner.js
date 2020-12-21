@@ -149,7 +149,7 @@ class Web3Banner extends Component {
   };
 
   state = {
-    
+
   };
 
   componentDidMount() {
@@ -177,7 +177,7 @@ class Web3Banner extends Component {
     return (
 
       <div style={{
-        width: '60%'
+        marginRight: '1em'
       }}>
         {this.state.browserIsWeb3Capable === false ? (
           <NotWeb3Browser
@@ -196,7 +196,6 @@ class Web3Banner extends Component {
         <TransactionProgressBanner
           transaction={transactionFirstPending}>
         </TransactionProgressBanner>
-
       </div>
     );
   }
