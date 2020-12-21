@@ -95,8 +95,12 @@ class ViewDAC extends Component {
               <TransferDac dac={dac}></TransferDac>
 
               {dac.url && (
-                <CommunityButton className="btn btn-secondary" url={dac.url}>
-                  Join our community
+                <CommunityButton
+                  size="small"
+                  color="default"
+                  variant="outlined"
+                  url={dac.url}>
+                  {t('joinCommunity')}
                 </CommunityButton>
               )}
             </center>
