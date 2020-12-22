@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import Avatar from 'react-avatar';
+import Avatar from '@material-ui/core/Avatar';
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { selectUserByAddress, fetchUserByAddress } from '../redux/reducers/usersSlice'
+import ProfileCardMiniAnonymous from './ProfileCardMiniAnonymous';
+import { withStyles } from '@material-ui/core/styles';
 
 class ProfileCardMini extends Component {  //va a recibir como prop un address
     componentDidMount() {
@@ -20,16 +22,22 @@ class ProfileCardMini extends Component {  //va a recibir como prop un address
     }
 
     render() {
-        const { user, namePosition } = this.props;
+        const { user, namePosition, classes } = this.props;
         const descriptionClass = namePosition === "left" || namePosition === "right" ? "" : "small";
         if (!user) {
-            // TODO Implementar un Skeletor (https://material-ui.com/components/skeleton/) cuando no esté en Labs.
-            return (<div></div>)
+            return (
+                <div></div>
+            )
+        }
+        if (!user.registered) {
+            return (
+                <ProfileCardMiniAnonymous address={user.address} />
+            )
         }
         return (
             <div>
                 <Link className={`profile-card ${namePosition}`} to={`/profile/${user.address}`}>
-                    <Avatar size={50} src={user.avatar} round />
+                    <Avatar src={user.avatar} className={classes.logo} />
                     <p className={`description ${descriptionClass}`}>{user.name}</p>
                 </Link>
             </div>
@@ -46,6 +54,13 @@ ProfileCardMini.defaultProps = {
     namePosition: 'bottom'
 };
 
+const styles = theme => ({
+    logo: {
+        width: theme.spacing(6),
+        height: theme.spacing(6),
+    }
+});
+
 const mapStateToProps = (state, props) => {
     return {
         user: selectUserByAddress(state, props.address)
@@ -55,5 +70,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = { fetchUserByAddress }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTranslation()(ProfileCardMini)
+    withStyles(styles)(
+        withTranslation()(ProfileCardMini)
+    )
 );
