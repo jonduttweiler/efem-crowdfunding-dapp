@@ -64,7 +64,7 @@
     "donateMilestoneDescription": "Está comprometiendo sus fondos para este hito. Si ha completado la información de contacto en su perfil, se le notificará cómo se gastan sus fondos.",
     "donations": "Donaciones",
     "donationsBalance": "Balance de donaciones",
-    "donationInitial": "Donación inicial",
+    "donationInitial": "Donación inicial de {{amount}} a {{entity}}",
     "donationsEmpty": "Aún no se han realizado donaciones. Sé el primero en donar!",
     "donationsAvailables": "Donaciones disponibles",
     "donationsToTransfer": "Donaciones a transferir",

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Donation from '../models/Donation';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import DonationItem from './DonationItem';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { withTranslation } from 'react-i18next';
-import { fetchDonationsByIds, selectDonationsByEntity } from '../redux/reducers/donationsSlice'
+import { fetchDonationsByIds } from '../redux/reducers/donationsSlice'
 import { connect } from 'react-redux'
 
 class DonationList extends Component {
@@ -50,7 +48,7 @@ class DonationList extends Component {
 }
 
 DonationList.propTypes = {
-  //donations: PropTypes.arrayOf(PropTypes.instanceOf(Donation)).isRequired
+  
 };
 
 const styles = {

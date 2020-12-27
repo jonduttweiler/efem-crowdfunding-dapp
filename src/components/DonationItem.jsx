@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import makeEntitySelect from '../redux/selectors/entitiesSelector';
 import Avatar from '@material-ui/core/Avatar';
+import CryptoUtils from 'utils/CryptoUtils';
 
 class DonationItem extends Component {
 
@@ -48,41 +49,39 @@ class DonationItem extends Component {
     return (
       <React.Fragment>
         <ListItem alignItems="flex-start" onClick={this.handleClick}>
-          <ListItemAvatar>
+          <ListItemAvatar className={classes.avatar}>
             <ProfileCardMini address={donation.giverAddress} namePosition="bottom" />
           </ListItemAvatar>
           <ListItemText
             className={classes.text}
-            secondary={
-              <React.Fragment>
-                <Grid container spacing={3}>
-                  <Grid item xs={3}>
-                    <Typography variant="h6">
-                      <CryptoAmount amount={donation.amountRemainding} tokenAddress={donation.tokenAddress} />
-                    </Typography>
-                    <StatusIndicator status={donation.status}></StatusIndicator>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Typography variant="h6" gutterBottom>
-                      {t('donationInitial')}
-                    </Typography>
-                    <ListItem alignItems="flex-start" className={classes.root}>
-                      <ListItemAvatar>
-                        <Avatar variant="rounded" src={entity.imageCidUrl} className={classes.entityLogo} />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={entity.title}
-                        secondary={
-                          <React.Fragment>
-                            <CryptoAmount amount={donation.amount} tokenAddress={donation.tokenAddress} />
-                            <DateTimeViewer value={donation.createdAt} />
-                          </React.Fragment>
-                        }
-                      />
-                    </ListItem>
-                  </Grid>
+            primary={
+              <Grid container spacing={1}>
+                <Grid item xs={9}>
+                  <Typography variant="h6">
+                    <CryptoAmount amount={donation.amountRemainding} tokenAddress={donation.tokenAddress} />
+                  </Typography>
                 </Grid>
-              </React.Fragment>
+                <Grid item xs={3}>
+                  <StatusIndicator status={donation.status}></StatusIndicator>
+                </Grid>
+              </Grid>
+            }
+            secondary={
+              <Grid container spacing={0}>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">
+                    <DateTimeViewer value={donation.createdAt} />
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">
+                    {t('donationInitial', {
+                      amount: CryptoUtils.format(donation.tokenAddress, donation.amount),
+                      entity: entity.title
+                    })}
+                  </Typography>
+                </Grid>
+              </Grid>
             }
           />
         </ListItem>
@@ -104,9 +103,8 @@ const styles = theme => ({
   text: {
     marginLeft: '2em'
   },
-  entityLogo: {
-    width: theme.spacing(6),
-    height: theme.spacing(6)
+  avatar: {
+    width: '8em'
   }
 });
 

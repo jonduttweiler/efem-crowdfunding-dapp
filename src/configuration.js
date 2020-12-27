@@ -67,7 +67,7 @@ const configurations = {
       '0x0000000000000000000000000000000000000000': {
         symbol: 'RBTC',
         logoCid: '/ipfs/QmTsctkHWeVcuz6z2AWdi5zv3YCcVWSbmg2XF3tVs8jfn1',
-        showDecimals: 4
+        showDecimals: 5
       }
     },
     anonymousDonationThreshold: 5000
@@ -119,7 +119,7 @@ const configurations = {
       '0x0000000000000000000000000000000000000000': {
         symbol: 'RBTC',
         logoCid: '/ipfs/QmTsctkHWeVcuz6z2AWdi5zv3YCcVWSbmg2XF3tVs8jfn1',
-        showDecimals: 4
+        showDecimals: 5
       }
     },
     anonymousDonationThreshold: 10000
@@ -171,7 +171,7 @@ const configurations = {
       '0x0000000000000000000000000000000000000000': {
         symbol: 'RBTC',
         logoCid: '/ipfs/QmTsctkHWeVcuz6z2AWdi5zv3YCcVWSbmg2XF3tVs8jfn1',
-        showDecimals: 4
+        showDecimals: 5
       }
     }
   },

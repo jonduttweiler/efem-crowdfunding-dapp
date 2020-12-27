@@ -1,9 +1,9 @@
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import config from '../configuration';
-import Web3Utils from '../lib/blockchain/Web3Utils';
+import CryptoUtils from 'utils/CryptoUtils';
 
 /**
  * Presenta una cantidad de dinero crypto.
@@ -12,12 +12,7 @@ import Web3Utils from '../lib/blockchain/Web3Utils';
 class CryptoAmount extends Component {
 
     render() {
-        let tokenConfig = config.tokens[this.props.tokenAddress];
-        let amount = Web3Utils.weiToEther(this.props.amount).toFixed(tokenConfig.showDecimals);
-        let symbol = tokenConfig.symbol;
-        return (
-            <span>{amount}{' '}{symbol}</span>
-        );
+        return CryptoUtils.format(this.props.tokenAddress, this.props.amount)
     }
 }
 

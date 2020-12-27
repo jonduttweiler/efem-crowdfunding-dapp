@@ -64,7 +64,7 @@
     "donateMilestoneDescription": "You are committing your funds to this milestone. If you have filled out contact information in your profile you will be notified about how your funds are spent.",
     "donations": "Donations",
     "donationsBalance": "Donations balance",
-    "donationInitial": "Initial donation",
+    "donationInitial": "Initial donation of {{amount}} to {{entity}}",
     "donationsEmpty": "No donations have been made yet. Be the first to donate!",
     "donationsAvailables": "Donations availables",
     "donationsToTransfer": "Donations to transfer",
