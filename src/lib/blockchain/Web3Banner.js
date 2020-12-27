@@ -177,7 +177,8 @@ class Web3Banner extends Component {
     return (
 
       <div style={{
-        marginRight: '1em'
+        marginRight: '1em',
+        width: '60%'
       }}>
         {this.state.browserIsWeb3Capable === false ? (
           <NotWeb3Browser
