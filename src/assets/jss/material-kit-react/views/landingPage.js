@@ -10,15 +10,26 @@ const landingPageStyle = {
     ...title,
     display: "inline-block",
     position: "relative",
-    marginTop: "30px",
+    margin: "1em 10%",
     minHeight: "32px",
     color: "#FFFFFF",
-    textDecoration: "none"
+    textDecoration: "none",
+    textAlign: "center",
+    textShadow: "1px 1px 2px rgba(0, 0, 0, 1)",
+    fontWeight: "500",
+    width: "70%",
+    margin: "1em 15%"
+ 
   },
   subtitle: {
-    fontSize: "1.313rem",
-    maxWidth: "500px",
-    margin: "10px auto 0"
+    textAlign: "center",
+    textShadow: "1px 1px 2px rgba(0, 0, 0, 1)",
+    fontWeight: "400",
+    width: "70%",
+    margin: "1em 15%"
+  },
+  highlight: {
+    color: "yellow"
   },
   main: {
     background: "#FFFFFF",

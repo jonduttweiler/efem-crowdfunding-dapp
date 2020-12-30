@@ -60,6 +60,7 @@ const headerStyle = {
     color: "inherit",
     padding: "8px 16px",
     letterSpacing: "unset",
+    textShadow: "1px 1px 2px rgba(0, 0, 0, 1)",
     "&:hover,&:focus": {
       color: "inherit",
       background: "transparent"
@@ -105,9 +106,9 @@ const headerStyle = {
       "0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 12px -5px rgba(233, 30, 99, 0.46)"
   },
   transparent: {
-    backgroundColor: "transparent !important",
+    backgroundColor: "rgba(255, 255, 255, 0.2) !important",
     boxShadow: "none",
-    paddingTop: "25px",
+    /*paddingTop: "25px",*/
     color: "#FFFFFF"
   },
   dark: {

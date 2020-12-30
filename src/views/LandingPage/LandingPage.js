@@ -18,7 +18,9 @@ import JoinGivethCommunity from 'components/JoinGivethCommunity.jsx';
 import MainMenu from "components/MainMenu.jsx";
 
 import styles from "assets/jss/material-kit-react/views/landingPage.js";
-  
+import CommunityButton from "components/CommunityButton";
+import { Box } from '@material-ui/core';
+
 const useStyles = makeStyles(styles);
 
 export default function LandingPage(props) {
@@ -37,13 +39,13 @@ export default function LandingPage(props) {
         }}
         {...rest}
       />
-      <Parallax image={require("assets/img/landing-bg.jpg")}>
+      <Parallax image={require("assets/img/landing-bg.png")}>
         <div className={classes.container}>
           <GridContainer>
-            <GridItem xs={12} sm={12} md={6}>
-              <h1 className={classes.title}>Give4Forest</h1>
-              <h4>
-                Breve descripción del sitio.
+            <GridItem xs={12} sm={12} md={12}>
+              <h2 className={classes.title}>Crypto-fondos que nos conectan íntimamente con el planeta</h2>
+              <h4 className={classes.subtitle}>
+                Con <span className={classes.highlight}>Blockchain</span> apoyamos de forma transparente programas que fomentan el reconocimiento de quiénes somos y nuestra conexión con el planeta.
               </h4>
               <br />
             </GridItem>
