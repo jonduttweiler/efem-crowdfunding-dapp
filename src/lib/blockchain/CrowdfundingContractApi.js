@@ -54,7 +54,7 @@ class CrowdfundingContractApi {
 
             let clientId = dac.clientId;
 
-            const method = crowdfunding.methods.newDac(infoCid);
+            const method = crowdfunding.methods.saveDac(infoCid,0);
 
             const gasEstimated = await method.estimateGas({
                 from: dac.delegateAddress
@@ -466,13 +466,15 @@ class CrowdfundingContractApi {
 
             let clientId = milestone.clientId;
 
-            const method = crowdfunding.methods.newMilestone(
+            const method = crowdfunding.methods.saveMilestone(
                 infoCid,
                 milestone.campaignId,
                 milestone.fiatAmountTarget,
                 milestone.reviewerAddress,
                 milestone.recipientAddress,
-                milestone.campaignReviewerAddress);
+                milestone.campaignReviewerAddress,
+                0
+            );
 
             const gasEstimated = await method.estimateGas({
                 from: milestone.managerAddress
