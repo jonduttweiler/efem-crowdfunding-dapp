@@ -133,6 +133,15 @@
     "transactionFailuredTitleCreateDac": "The DAC '{{dacTitle}}' was not created",
     "transactionFailuredDescriptionCreateDac": "A failure occurred during DAC creation.",
 
+    
+    "transactionCreatedTitleUpdateDac": "Confirm your update of DAC '{{dacTitle}}' in the wallet",
+    "transactionCreatedSubtitleUpdateDac": "Double check the details here – your update of DAC can't be refunded.",
+    "transactionPendingTitleUpdateDac": "Updating DAC '{{dacTitle}}'...",
+    "transactionConfirmedTitleUpdateDac": "The DAC '{{dacTitle}}' has been updated",
+    "transactionConfirmedDescriptionUpdateDac": "Congratulations! The DAC has been updated and is available to add campaigns and receive funds.",
+    "transactionFailuredTitleUpdateDac": "The DAC '{{dacTitle}}' was not updated",
+    "transactionFailuredDescriptionUpdateDac": "A failure occurred during DAC update.",
+
     "transactionCreatedTitleCreateCampaign": "Confirm your creation of campaign '{{campaignTitle}}' in the wallet",
     "transactionCreatedSubtitleCreateCampaign": "Double check the details here – your creation of campaign can't be refunded.",
     "transactionPendingTitleCreateCampaign": "Creating campaign '{{campaignTitle}}'...",

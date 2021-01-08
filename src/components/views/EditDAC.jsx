@@ -4,7 +4,6 @@ import classNames from "classnames";
 
 import PropTypes from 'prop-types';
 import { Form, Input } from 'formsy-react-components';
-import GA from 'lib/GoogleAnalytics';
 import Loader from '../Loader';
 import QuillFormsy from '../QuillFormsy';
 import FormsyImageUploader from '../FormsyImageUploader';
@@ -15,7 +14,7 @@ import DAC from '../../models/DAC';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
 import { connect } from 'react-redux'
-import { addDac, selectDac } from '../../redux/reducers/dacsSlice';
+import { saveDac, selectDac } from '../../redux/reducers/dacsSlice';
 import { selectRoles , selectCurrentUser} from '../../redux/reducers/currentUserSlice';
 
 import Header from "components/Header/Header.js";
@@ -29,23 +28,6 @@ import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/dacPage.js";
 import { Box } from '@material-ui/core';
 import { AppTransactionContext } from 'lib/blockchain/Web3App';
-
-// Save dac
-const showToast = (msg, url, isSuccess = false) => {
-  const toast = url ? (
-    <p>
-      {msg}<br />
-      <a href={url} target="_blank" rel="noopener noreferrer">View transaction</a>
-    </p>
-  ) : (
-      msg
-    );
-
-  if (isSuccess) React.toast.success(toast);
-  else React.toast.info(toast);
-};
-
-
 
 /**
  * View to create or edit a DAC
@@ -66,7 +48,7 @@ class EditDAC extends Component {
     });
 
     this.state = {
-      isLoading: true,
+      isLoading: true, 
       isSaving: false,
       formIsValid: false,
       dac: dac,
@@ -80,22 +62,18 @@ class EditDAC extends Component {
   }
 
   componentDidMount() {
+    console.log("component did mount")
 
-    this.checkUser().then(() => {      
-      if (!this.props.isNew) {
+    this.checkUser().then(() => {
+      const isEditingDac = !this.props.isNew;
+      if (isEditingDac) {
         const dac = this.props.dac;
-        if(dac){
-          // The user is not an owner, hence can not change the DAC
-          if (!isOwner(dac.delegateAddress, this.props.currentUser)) {
-            history.goBack();// TODO: Not really user friendly
-          } else {
-            this.setState({ isLoading: false, dac });
-          }
-        }
+        this.setState({ dac, isLoading: false });
       } else { //dac is new
         this.setState({ isLoading: false });
       }
     }).catch(err => {
+      console.log(err);
       ErrorPopup('There has been a problem loading the Fund. Please refresh the page and try again.',err);
     });
     this.mounted = true;
@@ -140,14 +118,12 @@ class EditDAC extends Component {
   }
 
   submit() {
-    const afterSave = dac => { //TODO: MOVER AL componentDidUpdate
-      if (this.mounted) this.setState({ isSaving: false });
-      GA.trackEvent({category: 'DAC',action: 'updated',label: dac.id,});
+    const afterSave = dac => {
       history.push(`/`);
     };
     
-    this.setState({ isSaving: true, isBlocking: false, }, () => {
-        this.props.addDac(this.state.dac);
+    this.setState({ isSaving: true, isBlocking: false }, () => {
+        this.props.saveDac(this.state.dac);
         afterSave(this.state.dac);
       },
     );
@@ -185,7 +161,7 @@ class EditDAC extends Component {
         />
 
         {isNew && <Parallax small image={require("assets/img/dac-default-bg.jpg")}/>}
-        {!isNew && <Parallax small image={dac.image}/>}
+        {!isNew && <Parallax small image={dac.imageCidUrl}/>}
         
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div>
@@ -276,7 +252,7 @@ class EditDAC extends Component {
                           <FormsyImageUploader
                             name="image"
                             setImage={this.setImage}
-                            previewImage={dac.image}
+                            previewImage={dac.imageCidUrl}
                             isRequired={isNew}
                           />
                         </div>
@@ -349,12 +325,15 @@ EditDAC.defaultProps = {
   isNew: false,
 };
 
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = (state, props) => {
+  const dacId = parseInt(props.match.params.id);
+  return {
     currentUser: selectCurrentUser(state),
-    dac: selectDac(state, props.match.params.id),
     roles: selectRoles(state),
-    isDelegate: selectCurrentUser(state).isDelegate()
-});
-const mapDispatchToProps = { addDac }
+    isDelegate: selectCurrentUser(state).isDelegate(),
+    dac: selectDac(state, dacId),
+  }
+};
+const mapDispatchToProps = { saveDac }
 
 export default connect(mapStateToProps,mapDispatchToProps)((withStyles(styles)(EditDAC)));

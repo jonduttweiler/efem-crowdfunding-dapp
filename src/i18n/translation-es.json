@@ -133,6 +133,14 @@
     "transactionFailuredTitleCreateDac": "No se creó la DAC '{{dacTitle}}'",
     "transactionFailuredDescriptionCreateDac": "Ocurrió una falla durante la creación de la DAC.",
 
+    "transactionCreatedTitleUpdateDac": "Confirma tu edición de DAC '{{dacTitle}}' en la billetera",
+    "transactionCreatedSubtitleUpdateDac": "Verifique los detalles aquí - su edición de DAC no puede ser reembolsada.",
+    "transactionPendingTitleUpdateDac": "Editando DAC '{{dacTitle}}'...",
+    "transactionConfirmedTitleUpdateDac": "La DAC '{{dacTitle}}' ha sido editada",
+    "transactionConfirmedDescriptionUpdateDac": "Felicitaciones! La DAC ha sido editada y está disponible para agregar campañas y recibir fondos.",
+    "transactionFailuredTitleUpdateDac": "No se creó la DAC '{{dacTitle}}'",
+    "transactionFailuredDescriptionUpdateDac": "Ocurrió una falla durante la edición de la DAC.",
+    
     "transactionCreatedTitleCreateCampaign": "Confirma tu creación de campaña '{{campaignTitle}}' en la billetera",
     "transactionCreatedSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada.",
     "transactionPendingTitleCreateCampaign": "Creando campaña '{{campaignTitle}}'...",

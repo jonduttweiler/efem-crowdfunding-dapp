@@ -35,8 +35,8 @@ export const fetchDacEpic = action$ => action$.pipe(
  * 
  * @param action$ de Redux.
  */
-export const addDacEpic = action$ => action$.pipe(
-  ofType('dacs/addDac'),
+export const saveDacEpic = action$ => action$.pipe(
+  ofType('dacs/saveDac'),
   mergeMap(action => crowdfundingContractApi.saveDAC(action.payload)),
   map(dac => ({
     type: 'dacs/updateDacByClientId',

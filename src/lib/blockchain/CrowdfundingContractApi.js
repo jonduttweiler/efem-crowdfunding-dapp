@@ -44,17 +44,20 @@ class CrowdfundingContractApi {
      */
     saveDAC(dac) {
         return new Observable(async subscriber => {
-
             let thisApi = this;
 
             const crowdfunding = await this.getCrowdfunding();
 
+
+            const dacId = dac.id || 0; //zero is for new dacs;
+            const isNew = dacId === 0;
+
             // Se almacena en IPFS toda la información de la Dac.
             let infoCid = await dacIpfsConnector.upload(dac);
 
-            let clientId = dac.clientId;
+            const clientId = dac.clientId;
 
-            const method = crowdfunding.methods.saveDac(infoCid,0);
+            const method = crowdfunding.methods.saveDac(infoCid,dacId);
 
             const gasEstimated = await method.estimateGas({
                 from: dac.delegateAddress
@@ -65,37 +68,37 @@ class CrowdfundingContractApi {
                 gasEstimated: new BigNumber(gasEstimated),
                 gasPrice: gasPrice,
                 createdTitle: {
-                    key: 'transactionCreatedTitleCreateDac',
+                    key: isNew?'transactionCreatedTitleCreateDac':'transactionCreatedTitleUpdateDac',
                     args: {
                         dacTitle: dac.title
                     }
                 },
                 createdSubtitle: {
-                    key: 'transactionCreatedSubtitleCreateDac'
+                    key:isNew?'transactionCreatedSubtitleCreateDac':'transactionCreatedSubtitleUpdateDac',
                 },
                 pendingTitle: {
-                    key: 'transactionPendingTitleCreateDac',
+                    key: isNew? 'transactionPendingTitleCreateDac':'transactionPendingTitleUpdateDac',
                     args: {
                         dacTitle: dac.title
                     }
                 },
                 confirmedTitle: {
-                    key: 'transactionConfirmedTitleCreateDac',
+                    key: isNew?'transactionConfirmedTitleCreateDac':'transactionConfirmedTitleUpdateDac',
                     args: {
                         dacTitle: dac.title
                     }
                 },
                 confirmedDescription: {
-                    key: 'transactionConfirmedDescriptionCreateDac'
+                    key: isNew?'transactionConfirmedDescriptionCreateDac':'transactionConfirmedDescriptionUpdateDac'
                 },
                 failuredTitle: {
-                    key: 'transactionFailuredTitleCreateDac',
+                    key: isNew?'transactionFailuredTitleCreateDac':'transactionFailuredTitleUpdateDac',
                     args: {
                         dacTitle: dac.title
                     }
                 },
                 failuredDescription: {
-                    key: 'transactionFailuredDescriptionCreateDac'
+                    key: isNew?'transactionFailuredDescriptionCreateDac':'transactionFailuredDescriptionUpdateDac'
                 }
             });
 
