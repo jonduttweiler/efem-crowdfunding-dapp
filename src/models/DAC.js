@@ -1,6 +1,7 @@
 import Entity from './Entity';
 import StatusUtils from '../utils/StatusUtils';
 import Status from './Status';
+import Web3Utils from 'lib/blockchain/Web3Utils';
 
 /**
  * The DApp DAC model
@@ -127,6 +128,18 @@ class DAC extends Entity {
   get canReceiveFunds() {
     return this.isActive;
   }
+
+  /**
+   * Determina si el usuario es el delegate de la dac.
+   * 
+   * @param user a determinar si es el delegate de la dac.
+   */
+  isDelegate(user) {
+    return user && Web3Utils.addressEquals(user.address, this.delegateAddress);
+  }
+
+
+
 }
 
 export default DAC;

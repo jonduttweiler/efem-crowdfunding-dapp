@@ -13,7 +13,7 @@ import transactionsReducer from './reducers/transactionsSlice.js'
 import exchangeRatesReducer from './reducers/exchangeRatesSlice'
 
 import { registerCurrentUserEpic, setCurrentUserEpic, loadCurrentUserEpic } from './epics/currentUserEpics';
-import { fetchDacsEpic, fetchDacEpic, addDacEpic } from './epics/dacsEpics';
+import { fetchDacsEpic, fetchDacEpic, saveDacEpic } from './epics/dacsEpics';
 import {
   fetchMilestonesEpic,
   fetchMilestoneEpic,
@@ -34,7 +34,7 @@ const rootEpic = combineEpics(
   setCurrentUserEpic,
   fetchDacsEpic,
   fetchDacEpic,
-  addDacEpic,
+  saveDacEpic,
   fetchCampaignsEpic,
   fetchCampaignEpic,
   saveCampaignEpic,

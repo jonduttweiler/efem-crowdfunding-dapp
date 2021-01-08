@@ -13,9 +13,11 @@ class DacIpfsConnector {
    * @return CID de la dac en IPFS
    */
   async upload(dac) {
-    // Se almacena en IPFS la imagen de la Dac.
-    let imageCid = await ipfsService.upload(dac.image);
-    dac.imageCid = imageCid;
+    if (dac.image) {
+      // Se almacena en IPFS la imagen de la Dac.
+      let imageCid = await ipfsService.upload(dac.image);
+      dac.imageCid = imageCid;
+    }
     // Se almacena en IPFS toda la información de la Dac.
     let infoCid = await ipfsService.upload(dac.toIpfs());
     return infoCid;

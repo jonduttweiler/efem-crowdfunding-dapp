@@ -202,6 +202,14 @@
     "transactionFailuredTitleCreateDac": "No se creó la DAC '{{dacTitle}}'",
     "transactionFailuredDescriptionCreateDac": "Ocurrió una falla durante la creación de la DAC.",
 
+    "transactionCreatedTitleUpdateDac": "Confirma tu edición de DAC '{{dacTitle}}' en la billetera",
+    "transactionCreatedSubtitleUpdateDac": "Verifique los detalles aquí - su edición de DAC no puede ser reembolsada.",
+    "transactionPendingTitleUpdateDac": "Editando DAC '{{dacTitle}}'...",
+    "transactionConfirmedTitleUpdateDac": "La DAC '{{dacTitle}}' ha sido editada",
+    "transactionConfirmedDescriptionUpdateDac": "Felicitaciones! La DAC ha sido editada y está disponible para agregar campañas y recibir fondos.",
+    "transactionFailuredTitleUpdateDac": "No se creó la DAC '{{dacTitle}}'",
+    "transactionFailuredDescriptionUpdateDac": "Ocurrió una falla durante la edición de la DAC.",
+
     "transactionCreatedTitleCreateCampaign": "Confirma tu creación de campaña '{{campaignTitle}}' en la billetera",
     "transactionCreatedSubtitleCreateCampaign": "Verifique los detalles aquí - su creación de campaña no puede ser reembolsada.",
     "transactionPendingTitleCreateCampaign": "Creando campaña '{{campaignTitle}}'...",
@@ -225,6 +233,14 @@
     "transactionConfirmedDescriptionCreateMilestone": "Felicitaciones! El hito ha sido creado y está disponible para recibir fondos.",
     "transactionFailuredTitleCreateMilestone": "No se creó el hito '{{milestoneTitle}}'",
     "transactionFailuredDescriptionCreateMilestone": "Ocurrió una falla durante la creación del hito.",
+
+    "transactionCreatedTitleUpdateMilestone": "Confirma tu edición de hito '{{milestoneTitle}}' en la billetera",
+    "transactionCreatedSubtitleUpdateMilestone": "Verifique los detalles aquí - su edición de hito no puede ser reembolsada.",
+    "transactionPendingTitleUpdateMilestone": "Editando hito '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleUpdateMilestone": "El hito '{{milestoneTitle}}' ha sido editado",
+    "transactionConfirmedDescriptionUpdateMilestone": "Felicitaciones! El hito ha sido editado y está disponible para recibir fondos.",
+    "transactionFailuredTitleUpdateMilestone": "No se editó el hito '{{milestoneTitle}}'",
+    "transactionFailuredDescriptionUpdateMilestone": "Ocurrió una falla durante la edición del hito.",
 
     "transactionCreatedTitleDonate": "Confirma tu donación en la billetera",
     "transactionCreatedSubtitleDonate": "Verifique los detalles aquí - su donación no puede ser reembolsada.",
@@ -273,4 +289,5 @@
     "transactionConfirmedDescriptionMilestoneWithdraw": "¡Felicidades! Los fondos del hito se han retirado al destinatario.",
     "transactionFailuredTitleMilestoneWithdraw": "Los fondos del hito '{{milestoneTitle}}' no se retiraron",
     "transactionFailuredDescriptionMilestoneWithdraw": "Ocurrió una falla retirando fondos del hito."
+
 }
