@@ -116,9 +116,10 @@ class UserService {
    */
   save(user) {
     return new Observable(async subscriber => {
-      await this._updateAvatar(user);
-
+      
       try {
+
+        await this._updateAvatar(user);
 
         await _uploadUserToIPFS(user);
 
