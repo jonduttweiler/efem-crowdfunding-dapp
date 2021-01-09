@@ -18,7 +18,7 @@ const headerStyle = {
     border: "0",
     borderRadius: "3px",
     padding: "0.625rem 0",
-    marginBottom: "20px",
+    /*marginBottom: "20px",*/
     color: "#555",
     width: "100%",
     backgroundColor: "#fff",
@@ -60,7 +60,7 @@ const headerStyle = {
     color: "inherit",
     padding: "8px 16px",
     letterSpacing: "unset",
-    textShadow: "1px 1px 2px rgba(0, 0, 0, 1)",
+    /*textShadow: "1px 1px 2px rgba(0, 0, 0, 1)",*/
     "&:hover,&:focus": {
       color: "inherit",
       background: "transparent"
@@ -120,7 +120,7 @@ const headerStyle = {
   white: {
     border: "0",
     padding: "0.625rem 0",
-    marginBottom: "20px",
+    /*marginBottom: "20px",*/
     color: "#555",
     backgroundColor: "#fff !important",
     boxShadow:

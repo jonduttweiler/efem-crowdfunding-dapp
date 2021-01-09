@@ -6,30 +6,35 @@ const landingPageStyle = {
     color: "#FFFFFF",
     ...container
   },
+  titleContainer: {
+    backgroundColor: "rgba(0,0,0,0.3)",
+    borderRadius: "10px",
+    padding: "1em"
+  },
   title: {
     ...title,
     display: "inline-block",
     position: "relative",
-    margin: "1em 10%",
+    margin: "0 10%",
     minHeight: "32px",
     color: "#FFFFFF",
     textDecoration: "none",
     textAlign: "center",
     textShadow: "1px 1px 2px rgba(0, 0, 0, 1)",
-    fontWeight: "500",
+    fontWeight: "600",
     width: "70%",
-    margin: "1em 15%"
+    margin: "0 15%"
  
   },
   subtitle: {
     textAlign: "center",
     textShadow: "1px 1px 2px rgba(0, 0, 0, 1)",
-    fontWeight: "400",
+    fontWeight: "500",
     width: "70%",
-    margin: "1em 15%"
+    margin: "1rem 15%"
   },
   highlight: {
-    color: "yellow"
+    textDecoration: "underline"
   },
   main: {
     background: "#FFFFFF",
