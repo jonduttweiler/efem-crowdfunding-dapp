@@ -165,6 +165,14 @@
     "transactionFailuredTitleCreateMilestone": "No se creó el hito '{{milestoneTitle}}'",
     "transactionFailuredDescriptionCreateMilestone": "Ocurrió una falla durante la creación del hito.",
 
+    "transactionCreatedTitleUpdateMilestone": "Confirma tu edición de hito '{{milestoneTitle}}' en la billetera",
+    "transactionCreatedSubtitleUpdateMilestone": "Verifique los detalles aquí - su edición de hito no puede ser reembolsada.",
+    "transactionPendingTitleUpdateMilestone": "Editando hito '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleUpdateMilestone": "El hito '{{milestoneTitle}}' ha sido editado",
+    "transactionConfirmedDescriptionUpdateMilestone": "Felicitaciones! El hito ha sido editado y está disponible para recibir fondos.",
+    "transactionFailuredTitleUpdateMilestone": "No se editó el hito '{{milestoneTitle}}'",
+    "transactionFailuredDescriptionUpdateMilestone": "Ocurrió una falla durante la edición del hito.",
+
     "transactionCreatedTitleDonate": "Confirma tu donación en la billetera",
     "transactionCreatedSubtitleDonate": "Verifique los detalles aquí - su donación no puede ser reembolsada.",
     "transactionPendingTitleDonate": "Donando...",

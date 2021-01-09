@@ -4,40 +4,48 @@ import PropTypes from 'prop-types';
 import Milestone from 'models/Milestone';
 import User from 'models/User';
 import { history } from 'lib/helpers';
+import { Button } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+
+import { withTranslation } from 'react-i18next';
+import OnlyCorrectNetwork from './OnlyCorrectNetwork';
 
 class EditMilestoneButton extends Component {
   editMilestone() {
     const { milestone } = this.props;
 
-    if (['Proposed', 'Rejected'].includes(milestone.status)) {
-      history.push(`/campaigns/${milestone.campaignId}/milestones/${milestone._id}/edit/proposed`);
+    if (milestone.isActive || milestone.isRejected) {
+      history.push(`/campaigns/${milestone.campaignId}/milestones/${milestone.id}/edit/proposed`);
     } else {
-      history.push(`/campaigns/${milestone.campaignId}/milestones/${milestone._id}/edit`);
+      history.push(`/campaigns/${milestone.campaignId}/milestones/${milestone.id}/edit`);
     }
   }
 
   render() {
-    const { milestone, currentUser } = this.props;
+    const { milestone, user, t } = this.props;
+    if (!user || !milestone.inEditableStatus() || !milestone.canUserEdit(user)) {
+      return null;
+    }
 
     return (
-      <Fragment>
-        {currentUser &&
-          (milestone.ownerAddress === currentUser.address ||
-            milestone.campaign.ownerAddress === currentUser.address) &&
-          ['Proposed', 'Rejected', 'InProgress', 'NeedsReview'].includes(milestone.status) && (
-            <button type="button" className="btn btn-link" onClick={() => this.editMilestone()}>
-              <i className="fa fa-edit" />
-              &nbsp;Editar
-            </button>
-          )}
-      </Fragment>
+      <OnlyCorrectNetwork>
+        <Button
+          color="primary"
+          variant="contained"
+          type="button"
+          startIcon={<EditIcon />}
+          style={{ margin: "4px" }}
+          onClick={() => this.editMilestone()}>
+          {t('edit')}
+        </Button>
+      </OnlyCorrectNetwork>
     );
   }
 }
 
 EditMilestoneButton.propTypes = {
-  currentUser: PropTypes.instanceOf(User).isRequired,
+  user: PropTypes.instanceOf(User).isRequired,
   milestone: PropTypes.instanceOf(Milestone).isRequired,
 };
 
-export default EditMilestoneButton;
+export default withTranslation()(EditMilestoneButton);

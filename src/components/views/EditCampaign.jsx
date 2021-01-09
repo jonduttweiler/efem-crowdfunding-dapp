@@ -133,18 +133,11 @@ class EditCampaign extends Component {
   }
 
   submit() {
-    //Esto tiene que comprobar aunque sea que se hayan cargado los requeridos
-    const afterSave = campaign => {
-      //React.toast.success('Your Campaign has been saved!');
-      history.push(`/`);
-    };
-
     this.setState({ isSaving: true, isBlocking: false }, () => {
       // Save the campaign
       this.props.saveCampaign(this.state.campaign);
-      afterSave(this.state.campaign);
-    },
-    );
+      history.push(`/`);
+    });
   }
 
   toggleFormValid(state) {

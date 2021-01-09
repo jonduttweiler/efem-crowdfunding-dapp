@@ -11,6 +11,7 @@ import MilestoneWithdrawButton from './MilestoneWithdrawButton';
 import MilestoneComplete from './MilestoneComplete';
 import MilestoneApprove from './MilestoneApprove';
 import MilestoneReject from './MilestoneReject';
+import EditMilestoneButton from './EditMilestoneButton';
 
 class MilestoneActions extends Component {
   render() {
@@ -50,11 +51,11 @@ class MilestoneActions extends Component {
           currentUser={currentUser}/>
         */}
 
-        {/*
+        
         <EditMilestoneButton
           milestone={milestone}
-          currentUser={currentUser}/>
-        */}
+          user={user}/>
+        
       </Fragment>
     );
   }

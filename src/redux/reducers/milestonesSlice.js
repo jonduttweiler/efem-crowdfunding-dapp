@@ -21,7 +21,7 @@ export const milestonesSlice = createSlice({
       }
       pendings.forEach(m => state.push(m));
     },
-    addMilestone: (state, action) => {
+    saveMilestone: (state, action) => {
       let milestoneStore = action.payload.toStore();
       state.push(milestoneStore);
     },
@@ -76,7 +76,7 @@ export const {
   fetchMilestones,
   fetchMilestone,
   resetMilestones,
-  addMilestone,
+  saveMilestone,
   updateMilestoneByClientId,
   complete,
   review,

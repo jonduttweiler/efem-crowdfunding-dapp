@@ -166,6 +166,15 @@
     "transactionFailuredTitleCreateMilestone": "The milestone '{{milestoneTitle}}' was not created",
     "transactionFailuredDescriptionCreateMilestone": "A failure occurred during milestone creation.",
 
+
+    "transactionCreatedTitleUpdateMilestone": "Confirm your update of milestone '{{milestoneTitle}}' in the wallet",
+    "transactionCreatedSubtitleUpdateMilestone": "Double check the details here – your update of milestone can't be refunded.",
+    "transactionPendingTitleUpdateMilestone": "Updating milestone '{{milestoneTitle}}'...",
+    "transactionConfirmedTitleUpdateMilestone": "The milestone '{{milestoneTitle}}' has been updated",
+    "transactionConfirmedDescriptionUpdateMilestone": "Congratulations! The milestone has been updated and is available to receive funds.",
+    "transactionFailuredTitleUpdateMilestone": "The milestone '{{milestoneTitle}}' was not updated",
+    "transactionFailuredDescriptionUpdateMilestone": "A failure occurred during milestone update.",
+
     "transactionCreatedTitleDonate": "Confirm your donation in the wallet",
     "transactionCreatedSubtitleDonate": "Double check the details here – your donation can't be refunded.",
     "transactionPendingTitleDonate": "Donating...",
