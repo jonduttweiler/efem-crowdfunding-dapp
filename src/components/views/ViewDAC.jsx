@@ -30,6 +30,7 @@ import styles from "assets/jss/material-kit-react/views/dacView.js";
 import EditDACButton from 'components/EditDACButton';
 import { User } from 'models';
 
+import { Avatar, Box } from '@material-ui/core'
 /**
  * The DAC detail view mapped to /dac/id
  *
@@ -44,17 +45,6 @@ class ViewDAC extends Component {
       isLoading: false,
       campaigns: []
     };
-  }
-
-  componentDidMount() {
-    this.props.fetchDonationsByIds(this.props.dac.donationIds);
-  }
-
-  componentDidUpdate(prevProps) {
-    // Typical usage (don't forget to compare props):
-    if (JSON.stringify(this.props.dac.donationIds) !== JSON.stringify(prevProps.dac.donationIds)) {
-      this.props.fetchDonationsByIds(this.props.dac.donationIds);
-    }
   }
 
   render() {
@@ -81,36 +71,48 @@ class ViewDAC extends Component {
           }}
           {...rest}
         />
-        <Parallax medium image={dac.imageCidUrl}>
-          <div className="vertical-align">
-            <center>
-              <h6 className={classes.entityType}>{t('dac')}</h6>
-              <h1 className={classes.entityName}>{dac.title}</h1>
-              <Donate
-                entityId={dac.id}
-                entityCard={<DacCardMini dac={dac} />}
-                title={t('donateDacTitle')}
-                description={t('donateDacDescription')}
-                enabled={dac.canReceiveFunds}>
-              </Donate>
+        <Parallax medium>
+          <div className={classes.container}>
+            <GridContainer justify="center" className={classes.headerContainer}>
+              <GridItem xs={12} sm={12} md={12}>
+                <Box display="flex" flexGrow={1} alignItems="center">
+                  <Box>
+                    <Avatar alt={dac.title} className={classes.avatar} src={dac.imageCidUrl} />
+                  </Box>
+                  <Box m={2} flexGrow={1}>
+                    <h6 className={classes.entityType}>{t('dac')}</h6>
+                    <h3 className={classes.entityName}>{dac.title}</h3>
+                    {dac.url && (
+                      <CommunityButton
+                        size="small"
+                        color="default"
+                        variant="outlined"
+                        url={dac.url}>
+                        {t('joinCommunity')}
+                      </CommunityButton>
+                    )}
+                  </Box>
+                  <Box>
+                    <div style={{ textAlign: 'center' }}>
+                      <Donate
+                        entityId={dac.id}
+                        entityCard={<DacCardMini dac={dac} />}
+                        title={t('donateDacTitle')}
+                        description={t('donateDacDescription')}
+                        enabled={dac.canReceiveFunds}>
+                      </Donate>
 
-              <TransferDac dac={dac}></TransferDac>
-              <EditDACButton 
-                currentUser={currentUser}
-                dac={dac}
-                title={t('donateCampaignTitle')}
-              />
-              
-              {dac.url && (
-                <CommunityButton
-                  size="small"
-                  color="default"
-                  variant="outlined"
-                  url={dac.url}>
-                  {t('joinCommunity')}
-                </CommunityButton>
-              )}
-            </center>
+                      <TransferDac dac={dac}></TransferDac>
+                      <EditDACButton
+                        currentUser={currentUser}
+                        dac={dac}
+                        title={t('donateCampaignTitle')}
+                      />
+                    </div>
+                  </Box>
+                </Box>
+              </GridItem>
+            </GridContainer>
           </div>
         </Parallax>
 
