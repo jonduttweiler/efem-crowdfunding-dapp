@@ -41,6 +41,10 @@ class UserService {
             console.error('Error obteniendo datos del usuario desde Feathers.', err);
             if (err.code === 404) {
               currentUser.registered = false;
+              currentUser.name = undefined;
+              currentUser.email = undefined;
+              currentUser.avatar = undefined;
+              currentUser.url = undefined;
               subscriber.next(currentUser);
               return;
             }
