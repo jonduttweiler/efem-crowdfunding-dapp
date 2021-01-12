@@ -13,6 +13,8 @@ import Parallax from "components/Parallax/Parallax.js";
 
 // Sections for this page
 import Campaigns from "components/views/Campaigns.jsx";
+import PlatformFeatures from "components/views/PlatformFeatures.jsx";
+import BlockchainBenefits from "components/views/BlockchainBenefits.jsx";
 import JoinGivethCommunity from 'components/JoinGivethCommunity.jsx';
 import MainMenu from "components/MainMenu.jsx";
 
@@ -71,6 +73,8 @@ export default withTranslation()(function LandingPage(props) {
           <JoinGivethCommunity history={props.history} />
           {/*<DACs />*/}
           <Campaigns />
+          <PlatformFeatures />
+          <BlockchainBenefits />
         </div>
       </div>
       <Footer />
