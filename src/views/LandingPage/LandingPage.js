@@ -71,6 +71,7 @@ export default withTranslation()(function LandingPage(props) {
       <div className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.container}>
           <JoinGivethCommunity history={props.history} />
+          <img src={require("assets/img/icons/separator.png")} alt="" className={classes.imgSeparator} />
           {/*<DACs />*/}
           <Campaigns />
           <PlatformFeatures />
