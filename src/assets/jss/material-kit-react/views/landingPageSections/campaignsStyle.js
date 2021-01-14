@@ -6,7 +6,7 @@ const campaignsStyle = {
 
   section: {
     padding: "0",
-    textAlign: "left"
+    textAlign: "center"
   },
   title: {
     ...title,
@@ -14,11 +14,12 @@ const campaignsStyle = {
     marginTop: "30px",
     minHeight: "32px",
     textDecoration: "none",
-    color: "#999"
+    color: "#000"
   },
   description: {
-    color: "#999",
-    paddingBottom: "1em"
+    color: "#000",
+    margin: "0 auto 1em auto",
+    fontWeight: "normal"
   },
   cardHeader: {
     width: "auto",

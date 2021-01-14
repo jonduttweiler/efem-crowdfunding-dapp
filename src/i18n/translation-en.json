@@ -1,4 +1,5 @@
 {
+    "give4forest": "Give for forest",
 
     "landingPageTitle": "Crypto-funds that connect us with the planet",
 
@@ -52,6 +53,20 @@
 
     "blockchainSecurityBenefitTitle": "Security",
     "blockchainSecurityBenefitDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua",
+
+    "relatedServices": "Related services",
+
+    "avalDAO": "AvalDAO",
+    "decentralizedInvestments": "Decentralized investments",
+    
+    "contactUs": "Contact us",
+    "mailAddress": "info@giveforforest.org",
+
+    "iniciativeOf": "Iniciative of: ",
+    "argentina": "ARGENTINA ",
+    "disclaimer": "Copyright 2020 | RSK - The future is in the forest | All rights reserved. ",
+    "termsAndConditions": "Terms and conditions. ",
+    "dataHandlingPolicy": "Data handling policy. ",
 
     "userAnonymous": "Anonymous user",
     

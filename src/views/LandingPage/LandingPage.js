@@ -35,10 +35,10 @@ export default withTranslation()(function LandingPage(props) {
   const { t,...rest } = props;
   
   return (
-    <div>
+    <div className={classes.landingPage}>
       <Header
         color="white"
-        brand="Give4Forest"
+        brand={<img src={require("assets/img/logos/give4forest.svg")} alt={t('give4forest')} className={classes.dappLogo}/>}
         rightLinks={<MainMenu />}
         {...rest}
       />
@@ -71,14 +71,15 @@ export default withTranslation()(function LandingPage(props) {
       <div className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.container}>
           <JoinGivethCommunity history={props.history} />
-          <img src={require("assets/img/icons/separator.png")} alt="" className={classes.imgSeparator} />
+          <img src={require("assets/img/icons/separator.png")} alt="" className={classes.topSeparator} />
           {/*<DACs />*/}
           <Campaigns />
           <PlatformFeatures />
           <BlockchainBenefits />
+          <img src={require("assets/img/icons/separator.png")} alt="" className={classes.bottomSeparator} />
+          <Footer />
         </div>
       </div>
-      <Footer />
     </div>
   );
 });
