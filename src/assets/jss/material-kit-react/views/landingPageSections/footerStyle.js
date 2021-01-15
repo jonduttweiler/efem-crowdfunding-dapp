@@ -13,7 +13,8 @@ const footerStyle = {
   dappLogo: {
     padding: "1em",
     width: "50%",
-    textAlign: "left"
+    textAlign: "left",
+    maxWidth: "120px"
   },
   rightSection: {
     borderLeft: "2px solid #999",
@@ -38,7 +39,8 @@ const footerStyle = {
   },
   logo: {
     width: "75%",
-    textAlign: "center"
+    textAlign: "center",
+    maxWidth: "100px"
   }
 
 

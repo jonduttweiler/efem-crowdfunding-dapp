@@ -33,9 +33,9 @@ class Footer extends Component {
               {t('relatedServices')}
             </h6>
             <h6 className={classes.description}>
-              <Link href="https://avaldao.com/" target="_blank">
+              <a href="http://avaldao.com" target="_blank">
                 <b>{t('avalDAO')} {" >"}</b>
-              </Link>
+              </a>
               <br />
               {t('decentralizedInvestments')}
             </h6>
@@ -46,7 +46,7 @@ class Footer extends Component {
             </h6>
             <h6 className={classes.description}>
               <a href="mailto:info@giveforforest.org">
-                {t('mailAddress')}
+                info@giveforforest.org
               </a>
             </h6>
           </Grid>
@@ -74,10 +74,10 @@ class Footer extends Component {
         <br/>
         <h6 className={classes.disclaimer}>
           <b>{t('argentina')}</b>{t('disclaimer')}
-          <Link href="#" target="_blank" underline="always">
+          <Link to="/termsandconditions" target="_blank" underline="always">
             {t('termsAndConditions')}
           </Link>
-          <Link href="#" target="_blank" underline="always">
+          <Link to="/privacypolicy" target="_blank" underline="always">
           {t('dataHandlingPolicy')}
           </Link>
         </h6>

@@ -60,8 +60,7 @@
     "decentralizedInvestments": "Inversiones descentralizadas",
     
     "contactUs": "Contáctanos",
-    "mailAddress": "info@giveforforest.org",
-
+    
     "iniciativeOf": "Una iniciativa de: ",
     "argentina": "ARGENTINA ",
     "disclaimer": "Copyright 2020 | RSK - El futuro está en el monte | Todos los derechos reservados. ",
@@ -75,6 +74,7 @@
     "dacsSectionDescription":"Estas Comunidades están llevando proyectos a cabo. ¡Ayúdelas a alcanzar sus objetivos dándoles Bitcoins o tokens!",
     "campaigns": "Campañas",
     "campaign": "Campaña",
+    "noCampaignsYet": "¡Aún no hay campañas!",
     "edit": "Editar",
     "campaignsSectionDescription":"Nuestros emprendimientos de vida",
     "newCampaignTitle": "Comienza una nueva campaña!",

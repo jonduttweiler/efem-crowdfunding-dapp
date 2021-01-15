@@ -7,7 +7,7 @@ const platformFeaturesStyle = {
   section: {
     padding: "0",
     textAlign: "center",
-    marginTop: "5em"
+    marginTop: "3em"
   },
   title: {
     ...title,
@@ -24,7 +24,8 @@ const platformFeaturesStyle = {
     fontWeight: "normal"
   },
   image: {
-    width: "50%"
+    width: "50%",
+    maxWidth: "120px"
   },
   sectionTitle: {
     color: primaryColor,

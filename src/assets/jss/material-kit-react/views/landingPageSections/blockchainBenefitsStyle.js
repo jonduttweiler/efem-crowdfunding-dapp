@@ -19,7 +19,8 @@ const blockchainBenefitsStyle = {
     textAlign: "center"
   },
   image: {
-    width: "20%"
+    width: "20%",
+    maxWidth: "80px"
   },
   sectionTitle: {
     color: "#000",

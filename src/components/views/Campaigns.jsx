@@ -86,7 +86,7 @@ class Campaigns extends Component {
           !hasError && !isLoading && campaigns.length === 0 && (
             <div>
               <center>
-                <p className={classes.description}>&iexcl;A&uacute;n no hay campa&ntilde;as!</p>
+                <p className={classes.description}>{t('noCampaignsYet')}</p>
                 <img
                   className="empty-state-img"
                   src={`${process.env.PUBLIC_URL}/img/campaign.svg`}

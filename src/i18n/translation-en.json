@@ -60,7 +60,6 @@
     "decentralizedInvestments": "Decentralized investments",
     
     "contactUs": "Contact us",
-    "mailAddress": "info@giveforforest.org",
 
     "iniciativeOf": "Iniciative of: ",
     "argentina": "ARGENTINA ",
@@ -75,6 +74,7 @@
     "dacsSectionDescription":"These Funds are solving causes. Help them realise their goals by giving Bitcoin or tokens!",
     "campaigns": "Campaigns",
     "campaign": "Campaign",
+    "noCampaignsYet": "There are no campaings yet!",
     "edit": "Edit",
     "campaignsSectionDescription":"Our life endeavours",
     "newCampaignTitle": "Start a new campaign!",

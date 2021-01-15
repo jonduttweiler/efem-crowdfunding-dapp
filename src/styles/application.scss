@@ -116,10 +116,11 @@ i {
 }
 
 .empty-state-img {
-  margin: 40px 0;
+  /*margin: 40px 0;
   &.reduce-margin {
     margin: 20px 0;
-  }
+  }*/
+  max-width: 120px;
 }
 
 .spacer-top {
