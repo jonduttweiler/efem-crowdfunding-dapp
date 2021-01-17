@@ -13,9 +13,11 @@ class MilestoneIpfsConnector {
    * @return CID del milestone en IPFS
    */
   async upload(milestone) {
-    // Se almacena en IPFS la imagen del Milestone.
-    let imageCid = await ipfsService.upload(milestone.image);
-    milestone.imageCid = imageCid;
+    if(milestone.image){
+      // Se almacena en IPFS la imagen del Milestone.
+      let imageCid = await ipfsService.upload(milestone.image);
+      milestone.imageCid = imageCid;
+    }
     // Se almacena en IPFS toda la información del Milestone.
     let infoCid = await ipfsService.upload(milestone.toIpfs());
     return infoCid;

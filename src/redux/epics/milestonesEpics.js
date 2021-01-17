@@ -43,7 +43,7 @@ export const fetchMilestoneEpic = action$ => action$.pipe(
  * @param action$ de Redux.
  */
 export const addMilestoneEpic = action$ => action$.pipe(
-  ofType('milestones/addMilestone'),
+  ofType('milestones/saveMilestone'),
   mergeMap(action => crowdfundingContractApi.saveMilestone(action.payload)),
   map(milestone => ({
     type: 'milestones/updateMilestoneByClientId',

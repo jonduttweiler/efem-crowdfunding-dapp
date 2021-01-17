@@ -48,7 +48,6 @@ class CrowdfundingContractApi {
 
             const crowdfunding = await this.getCrowdfunding();
 
-
             const dacId = dac.id || 0; //zero is for new dacs;
             const isNew = dacId === 0;
 
@@ -464,6 +463,9 @@ class CrowdfundingContractApi {
 
             const crowdfunding = await this.getCrowdfunding();
 
+            const milestoneId = milestone.id || 0; //zero is for new milestone;
+            const isNew = milestoneId === 0;
+
             // Se almacena en IPFS toda la información del Milestone.
             let infoCid = await milestoneIpfsConnector.upload(milestone);
 
@@ -477,7 +479,7 @@ class CrowdfundingContractApi {
                 milestone.reviewerAddress,
                 milestone.recipientAddress,
                 milestone.campaignReviewerAddress,
-                0
+                milestoneId
             );
 
             const gasEstimated = await method.estimateGas({
@@ -489,37 +491,37 @@ class CrowdfundingContractApi {
                 gasEstimated: new BigNumber(gasEstimated),
                 gasPrice: gasPrice,
                 createdTitle: {
-                    key: 'transactionCreatedTitleCreateMilestone',
+                    key: isNew?'transactionCreatedTitleCreateMilestone':'transactionCreatedTitleUpdateMilestone',
                     args: {
                         milestoneTitle: milestone.title
                     }
                 },
                 createdSubtitle: {
-                    key: 'transactionCreatedSubtitleCreateMilestone'
+                    key: isNew?'transactionCreatedSubtitleCreateMilestone':'transactionCreatedSubtitleUpdateMilestone',
                 },
                 pendingTitle: {
-                    key: 'transactionPendingTitleCreateMilestone',
+                    key: isNew?'transactionPendingTitleCreateMilestone':'transactionPendingTitleUpdateMilestone',
                     args: {
                         milestoneTitle: milestone.title
                     }
                 },
                 confirmedTitle: {
-                    key: 'transactionConfirmedTitleCreateMilestone',
+                    key: isNew?'transactionConfirmedTitleCreateMilestone':'transactionConfirmedTitleUpdateMilestone',
                     args: {
                         milestoneTitle: milestone.title
                     }
                 },
                 confirmedDescription: {
-                    key: 'transactionConfirmedDescriptionCreateMilestone'
+                    key: isNew?'transactionConfirmedDescriptionCreateMilestone':'transactionConfirmedDescriptionUpdateMilestone',
                 },
                 failuredTitle: {
-                    key: 'transactionFailuredTitleCreateMilestone',
+                    key: isNew?'transactionFailuredTitleCreateMilestone':'transactionFailuredTitleUpdateMilestone',
                     args: {
                         milestoneTitle: milestone.title
                     }
                 },
                 failuredDescription: {
-                    key: 'transactionFailuredDescriptionCreateMilestone'
+                    key: isNew?'transactionFailuredDescriptionCreateMilestone':'transactionFailuredDescriptionUpdateMilestone',
                 }
             });
 

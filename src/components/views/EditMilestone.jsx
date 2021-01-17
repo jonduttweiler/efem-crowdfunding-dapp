@@ -23,7 +23,7 @@ import FiatUtils from '../../utils/FiatUtils';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectCurrentUser } from '../../redux/reducers/currentUserSlice';
-import { addMilestone } from '../../redux/reducers/milestonesSlice';
+import { saveMilestone, selectMilestone } from '../../redux/reducers/milestonesSlice';
 import { milestoneReviewers, recipients } from '../../redux/reducers/usersSlice';
 
 import Header from "components/Header/Header.js";
@@ -73,34 +73,19 @@ class EditMilestone extends Component {
   }
 
   componentDidMount() {
-    this.checkUser()
-      .then(async () => {
-        this.setState({
-          //campaignId: this.props.match.params.id,
-        });
-
-        // load a single milestones (when editing)
+    console.log("[Edit milestone] component did mount!")
+    this.checkUser().then(() => {
         if (!this.props.isNew) {
-        
+          console.log("editing milestone!")
           try {
-            const milestone = await MilestoneService.get(this.props.match.params.milestoneId);
+            const campaign = this.props.campaign;
+            const milestone = this.props.milestone;
 
-            if (
-              !(
-                isOwner(milestone.managerAddress, this.props.currentUser) ||
-                isOwner(milestone.campaign.managerAddress, this.props.currentUser)
-              )
-            ) {
+            if(!milestone.canUserEdit(this.props.currentUser)){
               this.props.history.goBack();
             }
-            this.setState({
-              milestone,
-              campaign: milestone.campaign
-            });
-
-            this.setState({
-              isLoading: false,
-            });
+            
+            this.setState({ isLoading: false, milestone, campaign });
           } catch (err) {
             ErrorPopup(
               'Sadly we were unable to load the requested milestone details. Please try again.',
@@ -230,15 +215,10 @@ class EditMilestone extends Component {
         : milestone.status; // make sure not to change status!*/
     milestone.status = Milestone.PENDING;
 
-    this.setState(
-      {
-        isSaving: true,
-        isBlocking: false,
-      },
-      () => {
+    this.setState({isSaving: true,isBlocking: false,},() => {
 
         // Save the milestone
-        this.props.addMilestone(milestone);
+        this.props.saveMilestone(milestone);
         GA.trackEvent({
           category: 'Milestone',
           action: 'updated',
@@ -312,7 +292,7 @@ class EditMilestone extends Component {
         />
 
         {isNew && <Parallax small image={require("assets/img/milestone-default-bg.jpg")}/>}
-        {!isNew && <Parallax small image={milestone.image}/>}
+        {!isNew && <Parallax small image={milestone.imageCidUrl}/>}
 
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div>
@@ -404,7 +384,7 @@ class EditMilestone extends Component {
                         <div className="form-group">
                           <FormsyImageUploader
                             setImage={this.setImage}
-                            previewImage={milestone.image}
+                            previewImage={milestone.imageCidUrl}
                             required={isNew}
                           />
                         </div>
@@ -558,15 +538,17 @@ const EdtMilestone = props => (
 
 const mapStateToProps = (state, ownProps) => {
   const campaignId = parseInt(ownProps.match.params.id);
+  const milestoneId = parseInt(ownProps.match.params.milestoneId);
   return {
     currentUser: selectCurrentUser(state),
     campaign: selectCampaign(state, campaignId),
+    milestone: selectMilestone(state,milestoneId),
     isCampaignManager: selectCurrentUser(state).isCampaignManager(),
     reviewers: milestoneReviewers(state),
     recipients: recipients(state)
   }
 }
 
-const mapDispatchToProps = { addMilestone }
+const mapDispatchToProps = { saveMilestone }
 
 export default connect(mapStateToProps,mapDispatchToProps)((withStyles(styles)(withTranslation()(EdtMilestone))));
