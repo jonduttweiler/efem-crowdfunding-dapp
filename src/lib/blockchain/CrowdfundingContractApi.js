@@ -473,6 +473,7 @@ class CrowdfundingContractApi {
                 infoCid,
                 milestone.campaignId,
                 milestone.fiatAmountTarget,
+                milestone.managerAddress, //Por ahora el milestone manager es el campaign manager, pero podemos pasarle cualquier address con el rol CREATE_MILESTONE_ROLE
                 milestone.reviewerAddress,
                 milestone.recipientAddress,
                 milestone.campaignReviewerAddress,
@@ -1187,6 +1188,7 @@ class CrowdfundingContractApi {
                 subscriber.next(exchangeRates);
 
             } catch (error) {
+                console.log(error);
                 subscriber.error(error);
             }
         });
