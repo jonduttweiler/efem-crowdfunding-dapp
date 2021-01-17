@@ -95,6 +95,19 @@ export default class Milestone extends Entity {
     return this.isActive || this.isRejected;
   }
 
+  isCampaignManager(user){
+    return false; 
+  }
+  
+  //TODO: Implementar isCampaignManager, por ahora va a funcionar porque son la misma persona
+  canUserEdit(user){
+    return this.isManager(user) || this.isCampaignManager(user);
+  }
+
+  inEditableStatus(){
+    return this.isActive;
+  }
+  
   static get PENDING() {
     return StatusUtils.build('Pending', true);
   }
