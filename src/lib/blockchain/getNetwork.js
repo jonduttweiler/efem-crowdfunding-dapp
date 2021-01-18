@@ -13,7 +13,6 @@ export default async () => {
     let newNetwork = Object.assign({}, config);
 
     newNetwork.crowdfunding = new web3.eth.Contract(CrowdfundingAbi, newNetwork.crowdfundingAddress);
-    console.log('newNetwork.exchangeRateProviderAddress', newNetwork.exchangeRateProviderAddress);
     newNetwork.exchangeRateProvider = new web3.eth.Contract(ExchangeRateProviderAbi, newNetwork.exchangeRateProviderAddress);
 
     network = newNetwork;
