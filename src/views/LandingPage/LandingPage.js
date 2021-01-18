@@ -39,7 +39,9 @@ export default withTranslation()(function LandingPage(props) {
     <div className={classes.landingPage}>
       <Header
         color="white"
-        brand={<img src={require("assets/img/logos/give4forest.svg")} alt={t('give4forest')} className={classes.dappLogo}/>}
+        brand={<img src={require("assets/img/logos/give4forest.svg")}
+        alt={t('give4forest')}
+        className={classes.dappLogo}/>}
         rightLinks={<MainMenu />}
         {...rest}
       />

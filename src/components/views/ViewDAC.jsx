@@ -62,7 +62,9 @@ class ViewDAC extends Component {
       <div id="view-cause-view">
         <Header
           color="white"
-          brand="Give4Forest"
+          brand={<img src={require("assets/img/logos/give4forest.svg")}
+          alt={t('give4forest')}
+          className={classes.dappLogo}/>}
           rightLinks={<MainMenu />}
           fixed
           changeColorOnScroll={{

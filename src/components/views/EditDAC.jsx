@@ -16,18 +16,17 @@ import ErrorPopup from '../ErrorPopup';
 import { connect } from 'react-redux'
 import { saveDac, selectDac } from '../../redux/reducers/dacsSlice';
 import { selectRoles , selectCurrentUser} from '../../redux/reducers/currentUserSlice';
-
 import Header from "components/Header/Header.js";
 import Footer from "components/Footer/Footer.js";
 import Parallax from "components/Parallax/Parallax.js";
 import MainMenu from 'components/MainMenu';
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-
 import { withStyles } from '@material-ui/core/styles';
 import styles from "assets/jss/material-kit-react/views/dacPage.js";
 import { Box } from '@material-ui/core';
 import { AppTransactionContext } from 'lib/blockchain/Web3App';
+import { withTranslation } from 'react-i18next';
 
 /**
  * View to create or edit a DAC
@@ -140,7 +139,7 @@ class EditDAC extends Component {
   }
 
   render() {
-    const { isNew } = this.props;
+    const { isNew, t } = this.props;
     const { isLoading, isSaving, dac, formIsValid, isBlocking } = this.state;
 
     const { ...rest } = this.props;
@@ -150,7 +149,9 @@ class EditDAC extends Component {
       <div id="edit-dac-view">
         <Header
           color="white"
-          brand="Give4Forest"
+          brand={<img src={require("assets/img/logos/give4forest.svg")}
+          alt={t('give4forest')}
+          className={classes.dappLogo}/>}
           rightLinks={<MainMenu />}
           fixed
           changeColorOnScroll={{
@@ -336,4 +337,6 @@ const mapStateToProps = (state, props) => {
 };
 const mapDispatchToProps = { saveDac }
 
-export default connect(mapStateToProps,mapDispatchToProps)((withStyles(styles)(EditDAC)));
+export default connect(mapStateToProps,mapDispatchToProps)(
+  (withStyles(styles)(withTranslation() (EditDAC)))  
+);

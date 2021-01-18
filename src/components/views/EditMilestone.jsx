@@ -271,7 +271,7 @@ class EditMilestone extends Component {
 
   render() {
 
-    const { isNew, isProposed, history, fiatTypes, reviewers, recipients } = this.props;
+    const { isNew, isProposed, history, fiatTypes, reviewers, recipients, t } = this.props;
     const { isLoading, isSaving, formIsValid, campaign, isBlocking, milestone } = this.state;
     const { classes } = this.props;
     const { ...rest } = this.props;
@@ -281,7 +281,9 @@ class EditMilestone extends Component {
       <div id="edit-milestone-view">
         <Header
           color="white"
-          brand="Give4Forest"
+          brand={<img src={require("assets/img/logos/give4forest.svg")}
+          alt={t('give4forest')}
+          className={classes.dappLogo}/>}
           rightLinks={<MainMenu />}
           fixed
           changeColorOnScroll={{

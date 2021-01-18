@@ -18,7 +18,8 @@ import ProfileForm from 'components/ProfileForm';
 import Loader from '../Loader';
 import { connect } from 'react-redux';
 import { AppTransactionContext } from 'lib/blockchain/Web3App';
- 
+import { withTranslation } from 'react-i18next';
+
 /**
  * Edición del usuario actual.
  *
@@ -50,7 +51,7 @@ class EditProfile extends Component {
     const { isLoading } = this.state;
     const { currentUser } = this.props;
     const { ...rest } = this.props;
-    const { classes } = this.props;
+    const { classes, t } = this.props;
 
     const imageClasses = classNames(
       classes.imgRaised,
@@ -63,7 +64,9 @@ class EditProfile extends Component {
       <div>
         <Header
           color="white"
-          brand="Give4Forest"
+          brand={<img src={require("assets/img/logos/give4forest.svg")}
+          alt={t('give4forest')}
+          className={classes.dappLogo}/>}
           rightLinks={<MainMenu />}
           fixed
           changeColorOnScroll={{
@@ -135,4 +138,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = { registerCurrentUser }
 
-export default connect(mapStateToProps,mapDispatchToProps)((withStyles(styles)(EditProfile)));
+export default connect(mapStateToProps,mapDispatchToProps)((withStyles(styles)(
+  withTranslation()(EditProfile)))
+);

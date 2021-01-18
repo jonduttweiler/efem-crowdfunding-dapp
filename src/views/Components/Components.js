@@ -29,16 +29,20 @@ import SectionExamples from "./Sections/SectionExamples.js";
 import SectionDownload from "./Sections/SectionDownload.js";
 
 import styles from "assets/jss/material-kit-react/views/components.js";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(styles);
 
 export default function Components(props) {
   const classes = useStyles();
+  const { t } = useTranslation();
   const { ...rest } = props;
   return (
     <div>
       <Header
-        brand="Give4Forest"
+        brand={<img src={require("assets/img/logos/give4forest.svg")}
+        alt={t('give4forest')}
+        className={classes.dappLogo}/>}
         rightLinks={<HeaderLinks />}
         fixed
         color="transparent"
