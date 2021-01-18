@@ -70,8 +70,8 @@ export default withTranslation()(function LandingPage(props) {
       </Parallax>
       <div className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.container}>
-          <JoinGivethCommunity history={props.history} />
           <img src={require("assets/img/icons/separator.png")} alt="" className={classes.topSeparator} />
+          <JoinGivethCommunity history={props.history} />
           {/*<DACs />*/}
           <Campaigns />
           <PlatformFeatures />
