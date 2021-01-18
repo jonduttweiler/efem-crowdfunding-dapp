@@ -45,8 +45,8 @@ class Footer extends Component {
               {t('contactUs')}
             </h6>
             <h6 className={classes.description}>
-              <a href="mailto:info@giveforforest.org">
-                info@giveforforest.org
+              <a href="mailto:give4forests@acdi.org.ar">
+                give4forests@acdi.org.ar
               </a>
             </h6>
           </Grid>
