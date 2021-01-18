@@ -22,16 +22,22 @@ export const milestonesSlice = createSlice({
       pendings.forEach(m => state.push(m));
     },
     saveMilestone: (state, action) => {
-      let milestoneStore = action.payload.toStore();
-      state.push(milestoneStore);
+      const milestone = action.payload;
+      milestone.status = Milestone.PENDING;
+      const milestoneStore = milestone.toStore();
+      const index = state.findIndex(m => m.clientId === milestoneStore.clientId);
+
+      if (index != -1) {
+        state[index] = milestoneStore;
+      } else {
+        state.push(milestoneStore);
+      }
     },
     updateMilestone: (state, action) => {
-      if (action.payload) {
-        let milestoneStore = action.payload.toStore();
-        let index = state.findIndex(m => m.id === milestoneStore.id);
-        if (index != -1) {
-          state[index] = milestoneStore;
-        }
+      let milestoneStore = action.payload.toStore();
+      let index = state.findIndex(m => m.id === milestoneStore.id);
+      if (index != -1) {
+        state[index] = milestoneStore;
       }
     },
     updateMilestoneByClientId: (state, action) => {

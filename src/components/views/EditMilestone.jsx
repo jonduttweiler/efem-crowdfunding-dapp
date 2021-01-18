@@ -13,12 +13,11 @@ import QuillFormsy from '../QuillFormsy';
 import SelectFormsy from '../SelectFormsy';
 import FormsyImageUploader from '../FormsyImageUploader';
 import GoBackButton from '../GoBackButton';
-import { isOwner, getTruncatedText } from '../../lib/helpers';
+import { getTruncatedText } from '../../lib/helpers';
 import LoaderButton from '../LoaderButton';
 import User from '../../models/User';
 import ErrorPopup from '../ErrorPopup';
 import { Consumer as WhiteListConsumer } from '../../contextProviders/WhiteListProvider';
-import MilestoneService from '../../services/MilestoneService';
 import FiatUtils from '../../utils/FiatUtils';
 import { connect } from 'react-redux'
 import { selectCampaign } from '../../redux/reducers/campaignsSlice'
@@ -276,6 +275,7 @@ class EditMilestone extends Component {
     const { isLoading, isSaving, formIsValid, campaign, isBlocking, milestone } = this.state;
     const { classes } = this.props;
     const { ...rest } = this.props;
+    const fiatAmountTarget = FiatUtils.centToDollar(milestone.fiatAmountTarget);
 
     return (
       <div id="edit-milestone-view">
@@ -434,6 +434,7 @@ class EditMilestone extends Component {
                                   name="fiatAmountTarget"
                                   min="0"
                                   id="fiataAmountTarget-input"
+                                  value={fiatAmountTarget}
                                   type="number"
                                   step="any"
                                   label={`Target amount in ${milestone.fiatType}`}

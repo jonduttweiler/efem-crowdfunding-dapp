@@ -29,7 +29,7 @@ class CrowdfundingContractApi {
             const crowdfunding = await this.getCrowdfunding();
             const hashedRole = web3.utils.keccak256(role);
             const response = await crowdfunding.methods.canPerform(address, hashedRole, []).call();
-            //console.log(address,role,response);
+            //console.log('Can perform role', address, role, response);
             return response;
         } catch (err) {
             console.log("Fail to invoke canPerform on smart contract:", err);
@@ -121,7 +121,7 @@ class CrowdfundingContractApi {
 
                     // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
                     // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
-                    const idFromEvent = parseInt(receipt.events['NewDac'].returnValues.id);
+                    const idFromEvent = parseInt(receipt.events['SaveDac'].returnValues.id);
 
                     thisApi.getDacById(idFromEvent).then(dac => {
                         dac.clientId = clientId;
@@ -545,7 +545,7 @@ class CrowdfundingContractApi {
 
                     // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
                     // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
-                    const idFromEvent = parseInt(receipt.events['NewMilestone'].returnValues.id);
+                    const idFromEvent = parseInt(receipt.events['SaveMilestone'].returnValues.id);
 
                     thisApi.getMilestoneById(idFromEvent).then(milestone => {
                         milestone.clientId = clientId;

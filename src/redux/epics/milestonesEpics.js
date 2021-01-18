@@ -42,7 +42,7 @@ export const fetchMilestoneEpic = action$ => action$.pipe(
  * 
  * @param action$ de Redux.
  */
-export const addMilestoneEpic = action$ => action$.pipe(
+export const saveMilestoneEpic = action$ => action$.pipe(
   ofType('milestones/saveMilestone'),
   mergeMap(action => crowdfundingContractApi.saveMilestone(action.payload)),
   map(milestone => ({

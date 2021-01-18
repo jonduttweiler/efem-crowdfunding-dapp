@@ -17,7 +17,7 @@ import { fetchDacsEpic, fetchDacEpic, saveDacEpic } from './epics/dacsEpics';
 import {
   fetchMilestonesEpic,
   fetchMilestoneEpic,
-  addMilestoneEpic,
+  saveMilestoneEpic,
   milestoneCompleteEpic,
   milestoneReviewEpic,
   milestoneWithdrawEpic
@@ -40,7 +40,7 @@ const rootEpic = combineEpics(
   saveCampaignEpic,
   fetchMilestonesEpic,
   fetchMilestoneEpic,
-  addMilestoneEpic,
+  saveMilestoneEpic,
   milestoneCompleteEpic,
   milestoneReviewEpic,
   milestoneWithdrawEpic,

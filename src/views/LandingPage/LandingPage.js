@@ -12,6 +12,7 @@ import GridItem from "components/Grid/GridItem.js";
 import Parallax from "components/Parallax/Parallax.js";
 
 // Sections for this page
+import DACs from "components/views/DACs.jsx";
 import Campaigns from "components/views/Campaigns.jsx";
 import PlatformFeatures from "components/views/PlatformFeatures.jsx";
 import BlockchainBenefits from "components/views/BlockchainBenefits.jsx";
