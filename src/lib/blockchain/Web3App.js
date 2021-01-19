@@ -12,6 +12,8 @@ import Web3Utils from "./Web3Utils";
 import { history } from '../helpers';
 import { utils } from 'web3';
 
+const POLL_ACCOUNTS_INTERVAL = 3000;
+
 export const AppTransactionContext = React.createContext({
   contract: {},
   account: {},
@@ -512,7 +514,8 @@ class AppTransaction extends React.Component {
   pollAccountUpdates = () => {
     let account = this.state.account;
     let requiresUpdate = false;
-    let accountInterval = setInterval(() => {
+
+    let accountInterval = setInterval(async () => {
       if (
         this.state.modals.data.accountValidationPending ||
         this.state.modals.data.accountConnectionPending
@@ -520,9 +523,10 @@ class AppTransaction extends React.Component {
         return;
       }
       if (window.ethereum.isConnected()) {
-        const updatedAccount = window.web3.eth.accounts[0];
+        /* const updatedAccount = window.web3.eth.accounts[0]; */
+        const updatedAccount = (await window.ethereum.request({ method: 'eth_accounts' }))[0];
 
-        if (updatedAccount.toLowerCase() !== account.toLowerCase()) {
+        if (updatedAccount && (updatedAccount.toLowerCase() !== account.toLowerCase())) {
           requiresUpdate = true;
         }
 
@@ -546,7 +550,7 @@ class AppTransaction extends React.Component {
           );
         }
       }
-    }, 1000);
+    }, POLL_ACCOUNTS_INTERVAL);
   };
 
   contractMethodSendWrapper = (contractMethod, callback) => {
