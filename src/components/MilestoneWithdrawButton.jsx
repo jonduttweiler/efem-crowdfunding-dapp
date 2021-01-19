@@ -23,17 +23,17 @@ class MilestoneWithdrawButton extends Component {
 
   render() {
     const { milestone, user } = this.props;
-    let showButton = (milestone.isRecipient(user) || milestone.isManager(user))
+    let showButton = (milestone.isRecipient(user) /*|| milestone.isManager(user)*/)
       && milestone.isApproved;
-    let buttonLabel = milestone.isRecipient(user) ? 'Retirar' : 'Desembolsar';
+    let buttonLabel = /*milestone.isRecipient(user)*/ true ? 'Retirar' : 'Desembolsar';
     return (
       <Fragment>
         {showButton && (
           <button
             type="button"
             className="btn btn-success btn-sm"
-            onClick={() => this.withdraw()}>
-            style={{margin: '4px'}}
+            onClick={() => this.withdraw()}
+            style={{margin: '4px'}}>            
             <i className="fa fa-usd" />{' '}{buttonLabel}
           </button>
         )}

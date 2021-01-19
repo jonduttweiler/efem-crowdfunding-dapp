@@ -31,9 +31,9 @@ class MilestoneActions extends Component {
           milestone={milestone}>
         </MilestoneReject>
 
-        <MilestoneWithdrawButton
+        {<MilestoneWithdrawButton
           milestone={milestone}
-          user={user} />
+          user={user} />}
 
         {/*
         <AcceptRejectProposedMilestoneButtons
