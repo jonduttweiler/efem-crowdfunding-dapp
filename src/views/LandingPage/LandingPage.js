@@ -12,6 +12,7 @@ import GridItem from "components/Grid/GridItem.js";
 import Parallax from "components/Parallax/Parallax.js";
 
 // Sections for this page
+import DACs from "components/views/DACs.jsx";
 import Campaigns from "components/views/Campaigns.jsx";
 import PlatformFeatures from "components/views/PlatformFeatures.jsx";
 import BlockchainBenefits from "components/views/BlockchainBenefits.jsx";
@@ -38,7 +39,9 @@ export default withTranslation()(function LandingPage(props) {
     <div className={classes.landingPage}>
       <Header
         color="white"
-        brand={<img src={require("assets/img/logos/give4forest.svg")} alt={t('give4forest')} className={classes.dappLogo}/>}
+        brand={<img src={require("assets/img/logos/give4forest.svg")}
+        alt={t('give4forest')}
+        className={classes.dappLogo}/>}
         rightLinks={<MainMenu />}
         {...rest}
       />

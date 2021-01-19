@@ -23,9 +23,17 @@ export const DACsSlice = createSlice({
       }
       pendings.forEach(d => state.push(d));
     },
-    addDac: (state, action) => {
-      let dacStore = action.payload.toStore();
-      state.push(dacStore);
+    saveDac: (state, action) => {
+      const dac = action.payload;
+      dac.status = DAC.PENDING;
+      const dacStore = action.payload.toStore();
+      const index = state.findIndex(dac => dac.clientId === dacStore.clientId);
+      
+      if (index != -1) {
+        state[index] = dacStore;
+      } else {
+        state.push(dacStore);
+      }
     },
     updateDacByClientId: (state, action) => {
       let dacStore = action.payload.toStore();
@@ -51,7 +59,7 @@ export const DACsSlice = createSlice({
   },
 });
 
-export const { addDac, updateDacByClientId, fetchDacs, fetchDac } = DACsSlice.actions;
+export const { saveDac, updateDacByClientId, fetchDacs, fetchDac } = DACsSlice.actions;
 
 export const selectDacs = state => {
   return state.dacs.map(function (dacStore) {

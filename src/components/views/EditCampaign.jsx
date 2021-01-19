@@ -133,18 +133,11 @@ class EditCampaign extends Component {
   }
 
   submit() {
-    //Esto tiene que comprobar aunque sea que se hayan cargado los requeridos
-    const afterSave = campaign => {
-      //React.toast.success('Your Campaign has been saved!');
-      history.push(`/`);
-    };
-
     this.setState({ isSaving: true, isBlocking: false }, () => {
       // Save the campaign
       this.props.saveCampaign(this.state.campaign);
-      afterSave(this.state.campaign);
-    },
-    );
+      history.push(`/`);
+    });
   }
 
   toggleFormValid(state) {
@@ -168,7 +161,9 @@ class EditCampaign extends Component {
       <div id="edit-campaign-view">
         <Header
           color="white"
-          brand="Give4Forest"
+          brand={<img src={require("assets/img/logos/give4forest.svg")}
+          alt={t('give4forest')}
+          className={classes.dappLogo}/>}
           rightLinks={<MainMenu />}
           fixed
           changeColorOnScroll={{
@@ -177,7 +172,6 @@ class EditCampaign extends Component {
           }}
           {...rest}
         />
-
         {isNew && <Parallax small image={require("assets/img/campaign-default-bg.jpg")}/>}
         {!isNew && <Parallax small image={campaign.imageCidUrl}/>}
         

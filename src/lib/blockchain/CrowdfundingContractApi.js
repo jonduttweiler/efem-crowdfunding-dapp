@@ -29,7 +29,7 @@ class CrowdfundingContractApi {
             const crowdfunding = await this.getCrowdfunding();
             const hashedRole = web3.utils.keccak256(role);
             const response = await crowdfunding.methods.canPerform(address, hashedRole, []).call();
-            //console.log(address,role,response);
+            //console.log('Can perform role', address, role, response);
             return response;
         } catch (err) {
             console.log("Fail to invoke canPerform on smart contract:", err);
@@ -44,17 +44,19 @@ class CrowdfundingContractApi {
      */
     saveDAC(dac) {
         return new Observable(async subscriber => {
-
             let thisApi = this;
 
             const crowdfunding = await this.getCrowdfunding();
 
+            const dacId = dac.id || 0; //zero is for new dacs;
+            const isNew = dacId === 0;
+
             // Se almacena en IPFS toda la información de la Dac.
             let infoCid = await dacIpfsConnector.upload(dac);
 
-            let clientId = dac.clientId;
+            const clientId = dac.clientId;
 
-            const method = crowdfunding.methods.newDac(infoCid);
+            const method = crowdfunding.methods.saveDac(infoCid,dacId);
 
             const gasEstimated = await method.estimateGas({
                 from: dac.delegateAddress
@@ -65,37 +67,37 @@ class CrowdfundingContractApi {
                 gasEstimated: new BigNumber(gasEstimated),
                 gasPrice: gasPrice,
                 createdTitle: {
-                    key: 'transactionCreatedTitleCreateDac',
+                    key: isNew?'transactionCreatedTitleCreateDac':'transactionCreatedTitleUpdateDac',
                     args: {
                         dacTitle: dac.title
                     }
                 },
                 createdSubtitle: {
-                    key: 'transactionCreatedSubtitleCreateDac'
+                    key:isNew?'transactionCreatedSubtitleCreateDac':'transactionCreatedSubtitleUpdateDac',
                 },
                 pendingTitle: {
-                    key: 'transactionPendingTitleCreateDac',
+                    key: isNew? 'transactionPendingTitleCreateDac':'transactionPendingTitleUpdateDac',
                     args: {
                         dacTitle: dac.title
                     }
                 },
                 confirmedTitle: {
-                    key: 'transactionConfirmedTitleCreateDac',
+                    key: isNew?'transactionConfirmedTitleCreateDac':'transactionConfirmedTitleUpdateDac',
                     args: {
                         dacTitle: dac.title
                     }
                 },
                 confirmedDescription: {
-                    key: 'transactionConfirmedDescriptionCreateDac'
+                    key: isNew?'transactionConfirmedDescriptionCreateDac':'transactionConfirmedDescriptionUpdateDac'
                 },
                 failuredTitle: {
-                    key: 'transactionFailuredTitleCreateDac',
+                    key: isNew?'transactionFailuredTitleCreateDac':'transactionFailuredTitleUpdateDac',
                     args: {
                         dacTitle: dac.title
                     }
                 },
                 failuredDescription: {
-                    key: 'transactionFailuredDescriptionCreateDac'
+                    key: isNew?'transactionFailuredDescriptionCreateDac':'transactionFailuredDescriptionUpdateDac'
                 }
             });
 
@@ -119,7 +121,7 @@ class CrowdfundingContractApi {
 
                     // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
                     // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
-                    const idFromEvent = parseInt(receipt.events['NewDac'].returnValues.id);
+                    const idFromEvent = parseInt(receipt.events['SaveDac'].returnValues.id);
 
                     thisApi.getDacById(idFromEvent).then(dac => {
                         dac.clientId = clientId;
@@ -461,18 +463,24 @@ class CrowdfundingContractApi {
 
             const crowdfunding = await this.getCrowdfunding();
 
+            const milestoneId = milestone.id || 0; //zero is for new milestone;
+            const isNew = milestoneId === 0;
+
             // Se almacena en IPFS toda la información del Milestone.
             let infoCid = await milestoneIpfsConnector.upload(milestone);
 
             let clientId = milestone.clientId;
 
-            const method = crowdfunding.methods.newMilestone(
+            const method = crowdfunding.methods.saveMilestone(
                 infoCid,
                 milestone.campaignId,
                 milestone.fiatAmountTarget,
+                milestone.managerAddress, //Por ahora el milestone manager es el campaign manager, pero podemos pasarle cualquier address con el rol CREATE_MILESTONE_ROLE
                 milestone.reviewerAddress,
                 milestone.recipientAddress,
-                milestone.campaignReviewerAddress);
+                milestone.campaignReviewerAddress,
+                milestoneId
+            );
 
             const gasEstimated = await method.estimateGas({
                 from: milestone.managerAddress
@@ -483,37 +491,37 @@ class CrowdfundingContractApi {
                 gasEstimated: new BigNumber(gasEstimated),
                 gasPrice: gasPrice,
                 createdTitle: {
-                    key: 'transactionCreatedTitleCreateMilestone',
+                    key: isNew?'transactionCreatedTitleCreateMilestone':'transactionCreatedTitleUpdateMilestone',
                     args: {
                         milestoneTitle: milestone.title
                     }
                 },
                 createdSubtitle: {
-                    key: 'transactionCreatedSubtitleCreateMilestone'
+                    key: isNew?'transactionCreatedSubtitleCreateMilestone':'transactionCreatedSubtitleUpdateMilestone',
                 },
                 pendingTitle: {
-                    key: 'transactionPendingTitleCreateMilestone',
+                    key: isNew?'transactionPendingTitleCreateMilestone':'transactionPendingTitleUpdateMilestone',
                     args: {
                         milestoneTitle: milestone.title
                     }
                 },
                 confirmedTitle: {
-                    key: 'transactionConfirmedTitleCreateMilestone',
+                    key: isNew?'transactionConfirmedTitleCreateMilestone':'transactionConfirmedTitleUpdateMilestone',
                     args: {
                         milestoneTitle: milestone.title
                     }
                 },
                 confirmedDescription: {
-                    key: 'transactionConfirmedDescriptionCreateMilestone'
+                    key: isNew?'transactionConfirmedDescriptionCreateMilestone':'transactionConfirmedDescriptionUpdateMilestone',
                 },
                 failuredTitle: {
-                    key: 'transactionFailuredTitleCreateMilestone',
+                    key: isNew?'transactionFailuredTitleCreateMilestone':'transactionFailuredTitleUpdateMilestone',
                     args: {
                         milestoneTitle: milestone.title
                     }
                 },
                 failuredDescription: {
-                    key: 'transactionFailuredDescriptionCreateMilestone'
+                    key: isNew?'transactionFailuredDescriptionCreateMilestone':'transactionFailuredDescriptionUpdateMilestone',
                 }
             });
 
@@ -537,7 +545,7 @@ class CrowdfundingContractApi {
 
                     // La transacción ha sido incluida en un bloque sin bloques de confirmación (once).                        
                     // TODO Aquí debería gregarse lógica para esperar un número determinado de bloques confirmados (on, confNumber).
-                    const idFromEvent = parseInt(receipt.events['NewMilestone'].returnValues.id);
+                    const idFromEvent = parseInt(receipt.events['SaveMilestone'].returnValues.id);
 
                     thisApi.getMilestoneById(idFromEvent).then(milestone => {
                         milestone.clientId = clientId;
@@ -1182,6 +1190,7 @@ class CrowdfundingContractApi {
                 subscriber.next(exchangeRates);
 
             } catch (error) {
+                console.log(error);
                 subscriber.error(error);
             }
         });

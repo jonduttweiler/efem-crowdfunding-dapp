@@ -95,6 +95,17 @@ export default class Milestone extends Entity {
     return this.isActive || this.isRejected;
   }
 
+
+  /*TODO: CRITICAL: revisar funciones del milestoneManager, probablemente se pueda agregar una funcion isCampaignManager de ser necesario 
+     en el modelo del milestone*/
+  canUserEdit(user){
+    return this.isManager(user);
+  }
+
+  inEditableStatus(){
+    return this.isActive;
+  }
+
   static get PENDING() {
     return StatusUtils.build('Pending', true);
   }
