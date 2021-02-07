@@ -119,12 +119,12 @@ $aspect-ratio: percentage(9/16); //16:9 ratio
 .card-view {
   .card {
     cursor: pointer;
-    transition: transform .2s ease-in-out;
+    /*transition: transform .2s ease-in-out;
 
     &:hover {
       will-change: transform;
       transform: scale(1.01);
-    }
+    }*/
   }
 }
 

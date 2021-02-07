@@ -105,6 +105,12 @@
     "campaignLoadingText": "Guardando...",
     "createCampaignBtn": "Crear Campaña",
     "updateCampaignBtn": "Actualizar Campaña",
+        
+    "campaignDescriptionTab": "Descripción",
+    "campaignDonationsTab": "Donaciones",
+    "campaignBalanceTab": "Balance",
+    "campaignRevisorTab": "Revisor",
+
     "unsavedChanges": "Tienes cambios sin guardar. ¿Estás seguro que deseas salir de esta página?",
     "milestones": "Hitos",
     "milestone": "Hito",

@@ -17,12 +17,12 @@ const cardStyle = {
     fontSize: ".875rem",
     transition: "all 300ms linear",
     cursor: "pointer",
-    transition: "transform .2s ease-in-out",
+    /*transition: "transform .2s ease-in-out",
 
     "&:hover": {
       willChange: "transform",
       transform: "scale(1.01)"
-    }
+    }*/
   },
 
   cardPlain: {
