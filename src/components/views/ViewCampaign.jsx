@@ -40,6 +40,7 @@ import OnlyCorrectNetwork from 'components/OnlyCorrectNetwork'
 import Grid from '@material-ui/core/Grid';
 import CustomTabs from 'components/CustomTabs/CustomTabs';
 import CampaignCard from 'components/CampaignCard';
+import SupportCampaignCard from 'components/SupportCampaignCard';
 
 
 /**
@@ -107,6 +108,42 @@ class ViewCampaign extends Component {
     const { ...rest } = this.props;
 
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
+
+    const tabs = [
+      {
+        tabName: t('campaignDescriptionTab'),
+        tabContent: (
+          <span>
+            Hola hola hola
+            {ReactHtmlParser(campaign.description)}
+          </span>
+        )
+      },
+      {
+        tabName: t('campaignDonationsTab'),
+        tabContent: (
+          <span>
+            <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
+          </span>
+        )
+      },
+      {
+        tabName: t('campaignBalanceTab'),
+        tabContent: (
+          <span>
+            <DonationsBalance donationIds={cascadeDonationIds} fiatTarget={cascadeFiatAmountTarget}></DonationsBalance>
+          </span>
+        )
+      },
+      {
+        tabName: t('campaignRevisorTab'),
+        tabContent: (
+          <span>
+            <ProfileCardMini address={campaign.reviewerAddress} />
+          </span>
+        )
+      }];
+
     return (
       <ErrorBoundary>
         <div id="view-campaign-view" className={classes.campaignView}>
@@ -141,41 +178,7 @@ class ViewCampaign extends Component {
                       plainTabs
                       headerColor="info"
                       customClasses={classes.cardHeader}
-                      tabs={[
-                        {
-                          tabName: t('campaignDescriptionTab'),
-                          tabContent: (
-                            <span>
-                              Hola hola hola
-                              {ReactHtmlParser(campaign.description)}
-                            </span>
-                          )
-                        },
-                        {
-                          tabName: t('campaignDonationsTab'),
-                          tabContent: (
-                            <span>
-                              <DonationList donationIds={campaign.budgetDonationIds}></DonationList>
-                            </span>
-                          )
-                        },
-                        {
-                          tabName: t('campaignBalanceTab'),
-                          tabContent: (
-                            <span>
-                              <DonationsBalance donationIds={cascadeDonationIds} fiatTarget={cascadeFiatAmountTarget}></DonationsBalance>
-                            </span>
-                          )
-                        },
-                        {
-                          tabName: t('campaignRevisorTab'),
-                          tabContent: (
-                            <span>
-                              <ProfileCardMini address={campaign.reviewerAddress} />
-                            </span>
-                          )
-                        }]
-                      }
+                      tabs={tabs}
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={4}>
@@ -187,7 +190,7 @@ class ViewCampaign extends Component {
                         </Typography>
                       </Box>
                     </Box>
-                    <CampaignCard key={campaign.clientId} campaign={campaign} />
+                    <SupportCampaignCard key={campaign.clientId} campaign={campaign} />
                   
                     <Box display="flex">
                       <Box my={1} flexGrow={1}>
