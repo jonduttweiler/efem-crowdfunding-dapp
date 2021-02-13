@@ -50,7 +50,7 @@ const landingPageStyle = {
     margin: "10px auto 0"
   },
   main: {
-    background: "#FFFFFF",
+    /*background: "#FFFFFF",*/
     position: "relative",
     zIndex: "3"
   },

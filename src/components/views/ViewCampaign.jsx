@@ -39,8 +39,13 @@ import { Avatar, Box } from '@material-ui/core'
 import OnlyCorrectNetwork from 'components/OnlyCorrectNetwork'
 import Grid from '@material-ui/core/Grid';
 import CustomTabs from 'components/CustomTabs/CustomTabs';
-import CampaignCard from 'components/CampaignCard';
 import SupportCampaignCard from 'components/SupportCampaignCard';
+
+import TelegramIcon from '@material-ui/icons/Telegram';
+import RedditIcon from '@material-ui/icons/Reddit';
+import WhatsAppIcon from '@material-ui/icons/WhatsApp';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import DateTimeViewer from 'components/DateTimeViewer';
 
 
 /**
@@ -109,13 +114,38 @@ class ViewCampaign extends Component {
 
     if (!isLoading && !campaign) return <p>Unable to find a campaign</p>;
 
+    function compartirWhatsapp(e) {
+      e.preventDefault();
+      console.log('Compartir en Whatsapp.');
+    }
+  
+    function compartirReddit(e) {
+      e.preventDefault();
+      console.log('Compartir en Reddit.');
+    }
+  
+    function compartirTelegram(e) {
+      e.preventDefault();
+      console.log('Compartir en Telegram.');
+    }
+  
+    function compartirFacebook(e) {
+      e.preventDefault();
+      console.log('Compartir en Facebook.');
+    }
+  
     const tabs = [
       {
         tabName: t('campaignDescriptionTab'),
         tabContent: (
           <span>
-            Hola hola hola
+            <DateTimeViewer value={campaign.createdAt} style={{textAlign: 'right'}}/>
             {ReactHtmlParser(campaign.description)}
+            {campaign.beneficiaries && (
+              <p>
+                  {t('campaignBeneficiariesLabel')}: {campaign.beneficiaries}
+              </p>
+            )}
           </span>
         )
       },
@@ -160,7 +190,7 @@ class ViewCampaign extends Component {
                 {...rest}
               />
 
-              <Parallax small image={require("assets/img/icons/campaignBkg.png")}>
+              <Parallax small image={require("assets/img/icons/campaignBkg.png")} style={{backgroundPositionY: '100%'}}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <Avatar alt={campaign.title} className={classes.avatar} src={campaign.imageCidUrl} />
@@ -183,6 +213,34 @@ class ViewCampaign extends Component {
                   </Grid>
                   <Grid item xs={12} sm={12} md={4}>
 
+                    <Box display="flex" justifyContent="flex-end">
+                      <Box m={1}>
+                        <Typography variant="h7">
+                          {t('campaignShare')}
+                        </Typography>
+                      </Box>
+                      <Box m={1}>
+                        <TelegramIcon
+                          style={{cursor: "pointer", color: "#279ED1"}}
+                          onClick={compartirTelegram} />
+                      </Box>
+                      <Box m={1}>
+                        <RedditIcon
+                          style={{cursor: "pointer", color: "#FF4500"}}
+                          onClick={compartirReddit} />
+                      </Box>
+                      <Box m={1}>
+                        <WhatsAppIcon
+                          style={{cursor: "pointer", color: "#4BDA81"}}
+                          onClick={compartirWhatsapp} />
+                      </Box>
+                      <Box m={1}>
+                        <FacebookIcon
+                          style={{cursor: "pointer", color: "#4E71A8"}}
+                          onClick={compartirFacebook} />
+                      </Box>
+                    </Box>
+
                     <Box display="flex">
                       <Box my={1} flexGrow={1}>
                         <Typography variant="h6">
@@ -203,9 +261,9 @@ class ViewCampaign extends Component {
                           <OnlyCorrectNetwork>
                             <div>
                               <Link
-                                className="btn btn-primary btn-sm pull-right"
+                                className="btn btn-success btn-sm pull-right"
                                 to={`/campaigns/${campaign.id}/milestones/new`}>
-                                Add Milestone
+                                {t('milestoneAdd')}
                               </Link>
                             </div>
                           </OnlyCorrectNetwork>                                

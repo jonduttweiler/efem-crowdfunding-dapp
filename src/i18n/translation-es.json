@@ -111,10 +111,12 @@
     "campaignBalanceTab": "Balance",
     "campaignRevisorTab": "Revisor",
     "supportCampaign": "Apoya esta campaña",
+    "campaignShare": "Comparte",
 
     "unsavedChanges": "Tienes cambios sin guardar. ¿Estás seguro que deseas salir de esta página?",
     "milestones": "Hitos",
     "milestone": "Hito",
+    "milestoneAdd": "Agregar hito",
     "milestoneComplete": "Completar",
     "milestoneCompleteTitle": "Completar hito",
     "milestoneCompleteDescription": "Describe lo que has hecho para terminar el trabajo de este hito y adjunta pruebas si es necesario. Esta información será visible públicamente y se enviará por correo electrónico al revisor.",
