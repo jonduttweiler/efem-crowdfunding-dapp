@@ -17,9 +17,13 @@ const landingPageStyle = {
     margin: "0 auto"
   },
   avatar: {
-    width: "150px",
-    height: "150px",
+    width: "130px",
+    height: "130px",
     margin: "0 auto"
+  },
+  parallax: {
+    backgroundPositionY: '100%',
+    zIndex: "-1"
   },
   entityType: {
     color: "#555",
@@ -50,7 +54,7 @@ const landingPageStyle = {
     margin: "10px auto 0"
   },
   main: {
-    /*background: "#FFFFFF",*/
+    background: "#FFFFFF",
     position: "relative",
     zIndex: "3"
   },

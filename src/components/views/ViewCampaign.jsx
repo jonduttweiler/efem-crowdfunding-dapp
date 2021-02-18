@@ -7,10 +7,7 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import ReactHtmlParser from 'react-html-parser'
 import Loader from '../Loader'
 import MilestoneCard from '../MilestoneCard'
-import GoBackButton from '../GoBackButton'
 import { isOwner } from '../../lib/helpers'
-import Donate from '../Donate'
-import TransferCampaign from '../TransferCampaign'
 import Campaign from '../../models/Campaign'
 import CommunityButton from '../CommunityButton'
 import DonationList from '../DonationList'
@@ -23,15 +20,11 @@ import { selectCampaign,
   selectCascadeFiatAmountTargetByCampaign } from '../../redux/reducers/campaignsSlice'
 import { selectMilestonesByCampaign } from '../../redux/reducers/milestonesSlice'
 import ProfileCardMini from '../ProfileCardMini'
-import CampaignCardMini from '../CampaignCardMini'
 import { withTranslation } from 'react-i18next'
-import EditCampaignButton from '../EditCampaignButton'
 import Header from "components/Header/Header.js"
 import Footer from "components/Footer/Footer.js"
 import Parallax from "components/Parallax/Parallax.js"
 import MainMenu from 'components/MainMenu'
-import GridContainer from "components/Grid/GridContainer.js"
-import GridItem from "components/Grid/GridItem.js"
 import { withStyles } from '@material-ui/core/styles'
 import styles from "assets/jss/material-kit-react/views/campaignView.js"
 import Typography from '@material-ui/core/Typography'
@@ -139,6 +132,7 @@ class ViewCampaign extends Component {
         tabName: t('campaignDescriptionTab'),
         tabContent: (
           <span>
+            <img src={campaign.imageCidUrl} style={{width: '100%', height: 'auto'}} alt="Campaign image" />
             <DateTimeViewer value={campaign.createdAt} style={{textAlign: 'right'}}/>
             {ReactHtmlParser(campaign.description)}
             {campaign.beneficiaries && (
@@ -190,13 +184,26 @@ class ViewCampaign extends Component {
                 {...rest}
               />
 
-              <Parallax small image={require("assets/img/icons/campaignBkg.png")} style={{backgroundPositionY: '100%'}}>
+              <Parallax small image={require("assets/img/icons/campaignBkg.png")} className={classes.parallax}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <Avatar alt={campaign.title} className={classes.avatar} src={campaign.imageCidUrl} />
                   </Grid>
                   <Grid item xs={12}>
                     <h2 className={classes.entityName}>{campaign.title}</h2>
+                  </Grid>
+                  <Grid item xs={12}>
+                    {campaign.url && (
+                      <div style={{textAlign: 'center'}}>
+                        <CommunityButton
+                          size="small"
+                          color="default"
+                          variant="outlined"
+                          url={campaign.url}>
+                          {t('joinCommunity')}
+                        </CommunityButton>
+                      </div>
+                    )}
                   </Grid>
                 </Grid>
               </Parallax>
@@ -248,7 +255,7 @@ class ViewCampaign extends Component {
                         </Typography>
                       </Box>
                     </Box>
-                    <SupportCampaignCard key={campaign.clientId} campaign={campaign} />
+                    <SupportCampaignCard key={campaign.clientId} campaign={campaign} currentUser={currentUser}/>
                   
                     <Box display="flex">
                       <Box my={1} flexGrow={1}>

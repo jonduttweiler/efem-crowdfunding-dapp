@@ -29,9 +29,6 @@ class DonationList extends Component {
     const { donationIds, classes, t } = this.props;
     return (
       <Container fixed>
-        <Typography variant="overline">
-          {t('donations')}
-        </Typography>
         <List className={classes.root}>
           {donationIds.map(donationId => (
             <DonationItem key={donationId} donationId={donationId}></DonationItem>

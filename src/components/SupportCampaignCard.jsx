@@ -16,6 +16,12 @@ import Donate from './Donate'
 import CampaignCardMini from './CampaignCardMini'
 import Grid from '@material-ui/core/Grid'
 
+import { Box } from '@material-ui/core'
+import CommunityButton from './CommunityButton'
+import EditCampaignButton from './EditCampaignButton'
+import TransferCampaign from './TransferCampaign'
+
+
 class SupportCampaignCard extends Component {
 
   constructor(props) {
@@ -23,7 +29,7 @@ class SupportCampaignCard extends Component {
   }
 
   render() {
-    const { cascadeDonationIds, cascadeFiatAmountTarget, t, classes, campaign } = this.props;
+    const { cascadeDonationIds, cascadeFiatAmountTarget, t, classes, campaign, currentUser } = this.props;
 
     return (
       <Card
@@ -46,14 +52,27 @@ class SupportCampaignCard extends Component {
             direction="row"
             justify="flex-end"
           >
-            <Grid item xs={6} className={classes.actions}>
-              <Donate
-                entityId={campaign.id}
-                entityCard={<CampaignCardMini campaign={campaign} />}
-                title={t('donateCampaignTitle')}
-                description={t('donateCampaignDescription')}
-                enabled={campaign.canReceiveFunds}>
-              </Donate>
+            <Grid item xs={12} className={classes.actions}>
+              <Box display="flex" flexGrow={1} alignItems="center" justifyContent="flex-end">
+                <Box>
+                  <div style={{textAlign: 'center'}}>
+                    <Donate
+                      entityId={campaign.id}
+                      entityCard={<CampaignCardMini campaign={campaign} />}
+                      title={t('donateCampaignTitle')}
+                      description={t('donateCampaignDescription')}
+                      enabled={campaign.canReceiveFunds}>
+                    </Donate>
+                    <TransferCampaign campaign={campaign}></TransferCampaign>
+                    <EditCampaignButton 
+                      currentUser={currentUser}
+                      campaign={campaign}
+                      title={t('donateCampaignTitle')}
+                      >
+                    </EditCampaignButton>
+                  </div>
+                </Box>
+              </Box>
             </Grid>
           </Grid>
         </CardActions>
