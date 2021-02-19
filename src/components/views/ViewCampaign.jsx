@@ -109,21 +109,34 @@ class ViewCampaign extends Component {
 
     function compartirWhatsapp(e) {
       e.preventDefault();
-      console.log('Compartir en Whatsapp.');
+      const params = new URLSearchParams();
+      params.append("text", "*" + campaign.title + "*\n" + t('campaignShareTitle') + "\n" + window.location.href);
+      window.open("https://web.whatsapp.com/send?" + params.toString(), "_blank");
     }
   
     function compartirReddit(e) {
       e.preventDefault();
+      const params = new URLSearchParams();
+      params.append("title", campaign.title);
+      params.append("text", t('campaignShareTitle') + "\n" + window.location.href);
+      window.open("https://www.reddit.com/submit?" + params.toString(), "_blank");
       console.log('Compartir en Reddit.');
     }
   
     function compartirTelegram(e) {
       e.preventDefault();
+      const params = new URLSearchParams();
+      params.append("text", campaign.title + ". " + t('campaignShareTitle'));
+      params.append("url",  window.location.href);
+      window.open("https://telegram.me/share/url?" + params.toString(), "_blank");
       console.log('Compartir en Telegram.');
     }
   
     function compartirFacebook(e) {
       e.preventDefault();
+      const params = new URLSearchParams();
+      params.append("u", window.location.href);
+      window.open("https://www.facebook.com/sharer/sharer.php?" + params.toString(), "_blank");
       console.log('Compartir en Facebook.');
     }
   
