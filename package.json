@@ -113,6 +113,8 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p watch-css start-js",
     "build": "npm run build-css && react-app-rewired build",
+    "start:hybrid": "env-cmd -f .env.hybrid npm-run-all -p watch-css start-js",
+    "start:localhost": "env-cmd -f .env.localhost npm-run-all -p watch-css start-js",
     "build:localhost": "NODE_OPTIONS='--max-old-space-size=8192' env-cmd -f .env.localhost npm run build",
     "build:staging": "NODE_OPTIONS='--max-old-space-size=8192' env-cmd -f .env.staging npm run build",
     "serve:localhost": "pm2 serve --name efem-dapp --port 3012 ./build",
