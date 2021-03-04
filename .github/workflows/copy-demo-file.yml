@@ -14,7 +14,7 @@ jobs:
         with:
           switches: -avzr --delete
           path: src/index.js
-          remote_path: /var/www/html/
+          remote_path: /home/deployer/
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_port: 22
           remote_user: deployer
