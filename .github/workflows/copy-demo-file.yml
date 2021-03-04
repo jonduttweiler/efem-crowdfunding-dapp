@@ -1,5 +1,5 @@
 
-name: Build and deploy dapp - staging
+name: Copy demo file
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
         with:
           switches: -avzr --delete
           path: src/index.js
-          remote_path: /var/www/html/dapp
+          remote_path: /var/www/html/
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_port: 22
           remote_user: deployer
