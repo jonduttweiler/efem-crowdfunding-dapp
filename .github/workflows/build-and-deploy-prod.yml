@@ -10,6 +10,10 @@ jobs:
     steps:
       - name: testing target rules
         run: echo ${{ github.sha }} 
+      - name: echo tag
+        run: echo ${{ github.ref:10}}
+
+         
       #- uses: actions/checkout@master
       #- uses: actions/setup-node@master
       #  with:
