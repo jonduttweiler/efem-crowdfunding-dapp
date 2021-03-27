@@ -9,28 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: test
-        run: echo ${{env.RELEASE_VERSION}}
-      - name: testing target rules
-        run: echo ${{ github.sha }} 
-      - name: echo tag
-        run: echo ${{ github.ref }}
-
-         
-      #- uses: actions/checkout@master
-      #- uses: actions/setup-node@master
-      #  with:
-      #    node-version: '10.23.0'
-      #- run: npm install
-      #- run: npm run build:staging
-      #- name: rsync deployments
-      #  uses: burnett01/rsync-deployments@4.1
-      #  with:
-      #    switches: -avzr --delete
-      #    path: build/
-      #    remote_path: /home/deployer/dapp
-      #    remote_host: ${{ secrets.DEPLOY_HOST }}
-      #    remote_user: ${{ secrets.DEPLOY_USER }}
-      #    remote_key: ${{ secrets.DEPLOY_KEY }}
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV   
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: '10.23.0'
+      - run: npm install
+      - run: npm run build:staging
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@4.1
+        with:
+          switches: -avzr --delete
+          path: build/
+          remote_path: /home/deployer/${{env.RELEASE_VERSION}}
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_user: ${{ secrets.DEPLOY_USER }}
+          remote_key: ${{ secrets.DEPLOY_KEY }}
    
