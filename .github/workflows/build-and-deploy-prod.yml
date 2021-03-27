@@ -11,7 +11,7 @@ jobs:
       - name: testing target rules
         run: echo ${{ github.sha }} 
       - name: echo tag
-        run: echo ${{ github.ref:10}}
+        run: echo ${{ github.ref }}
 
          
       #- uses: actions/checkout@master
